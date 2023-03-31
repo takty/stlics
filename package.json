@@ -1,18 +1,18 @@
 {
-	"name": "consatjs",
+	"name": "stlics-js",
 	"version": "1.0.0",
 	"description": "CSP Library",
-	"productName": "Consatjs",
+	"productName": "Stlics-JS",
 	"scripts": {
 		"start": "gulp"
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/takty/consatjs.git"
+		"url": "git+https://github.com/takty/stlics-js.git"
 	},
 	"author": "Takuto Yanagida",
 	"license": "MIT",
-	"homepage": "https://github.com/takty/consatjs#readme",
+	"homepage": "https://github.com/takty/stlics-js#readme",
 	"dependencies": {
 		"@babel/core": "^7.21.3",
 		"@babel/preset-env": "^7.20.2",
