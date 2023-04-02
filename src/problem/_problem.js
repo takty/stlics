@@ -2,7 +2,7 @@
  * The class represents a constraint satisfaction problem.
  *
  * @author Takuto Yanagida
- * @version 2023-03-25
+ * @version 2023-04-02
  */
 
 class Problem {
@@ -82,7 +82,7 @@ class Problem {
 		this._cons.push(c);
 		for (const v of args.variables) v.connect(c);
 		if (c.isFuzzy()) this._isFuzzy = true;
-		if (args.name) v.setName(args.name);
+		if (args.name) c.setName(args.name);
 		return c;
 	}
 

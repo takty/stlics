@@ -2,7 +2,7 @@
  * Utility class for constraint satisfaction problems.
  *
  * @author Takuto Yanagida
- * @version 2023-03-26
+ * @version 2023-04-02
  */
 
 class Problems {
@@ -22,7 +22,7 @@ class Problems {
 				}
 			}
 		}
-		vo.addAll(vn);
+		for (const vi of vn) vo.add(vi);
 		for (const vi of vn) {
 			Problems.#averagePathLength(p, vi, length, baseLength + 1, vo);
 		}
@@ -68,7 +68,7 @@ class Problems {
 		const ls = new Array(p.variableSize());
 
 		for (const v of p.variables()) {
-			ls[v.index()] = Problems.#averagePathLength(p, v);
+			ls[v.index()] = Problems.averagePathLength(p, v);
 		}
 		return ls;
 	}
