@@ -3,8 +3,10 @@
 // @include problem/_relation.js
 // @include problem/_relation-crisp.js
 // @include problem/_relation-crisp-table.js
+// @include problem/_relation-crisp-function.js
 // @include problem/_relation-fuzzy.js
 // @include problem/_relation-fuzzy-table.js
+// @include problem/_relation-fuzzy-function.js
 // @include problem/_relation-view.js
 
 // @include problem/_constraint.js
