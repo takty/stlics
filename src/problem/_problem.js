@@ -2,7 +2,7 @@
  * The class represents a constraint satisfaction problem.
  *
  * @author Takuto Yanagida
- * @version 2023-04-02
+ * @version 2023-04-07
  */
 
 class Problem {
@@ -38,6 +38,7 @@ class Problem {
 		} else if ('min' in args && 'max' in args) {
 			return new DomainRanged(args.min, args.max);
 		}
+		return null;
 	}
 
 	/**
