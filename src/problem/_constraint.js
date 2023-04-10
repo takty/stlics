@@ -2,7 +2,7 @@
  * The class represents a constraint.
  *
  * @author Takuto Yanagida
- * @version 2023-03-29
+ * @version 2023-04-10
  */
 
 class Constraint extends Element {
@@ -102,7 +102,7 @@ class Constraint extends Element {
 
 	/**
 	 * Gets the current satisfaction degree.
-	 * @return Degree 0.0 - 1.0, UNDEFINED if undefined.
+	 * @return Degree 0 - 1, UNDEFINED if undefined.
 	 */
 	satisfactionDegree() {}
 

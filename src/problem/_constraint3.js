@@ -3,7 +3,7 @@
  * The constructor is not called directly, since it is created by the Problem.
  *
  * @author Takuto Yanagida
- * @version 2023-03-26
+ * @version 2023-04-10
  */
 
 class Constraint3 extends Constraint {
@@ -112,68 +112,67 @@ class Constraint3 extends Constraint {
 	 */
 	highestConsistencyDegree() {
 		const sd = this.satisfactionDegree();
-		if (sd !== Constraint.UNDEFINED) return sd;
-		let cd = 1.0;
+		if (sd !== Constraint.UNDEFINED) {
+			return sd;
+		}
+		let cd = 1;
 		const val1 = this.#v1.value();
 		const val2 = this.#v2.value();
 		const val3 = this.#v3.value();
 		const d1   = this.#v1.domain();
 		const d2   = this.#v2.domain();
 		const d3   = this.#v3.domain();
-		const n1   = d1.size();
-		const n2   = d2.size();
-		const n3   = d3.size();
 
 		if (this.#v1.isEmpty() && !this.#v2.isEmpty() && !this.#v3.isEmpty()) {
-			for (let i = 0; i < n1; ++i) {
-				const s = this.fuzzyRelation().satisfactionDegree(d1.at(i), val2, val3);
+			for (const val1 of d1) {
+				const s = this.fuzzyRelation().satisfactionDegree(val1, val2, val3);
 				if (s > cd) cd = s;
-				if (cd === 1.0) break;
+				if (cd === 1) break;
 			}
 		} else if (!this.#v1.isEmpty() && this.#v2.isEmpty() && !this.#v3.isEmpty()) {
-			for (let i = 0; i < n2; ++i) {
-				const s = this.fuzzyRelation().satisfactionDegree(val1, d2.at(i), val3);
+			for (const val2 of d2) {
+				const s = this.fuzzyRelation().satisfactionDegree(val1, val2, val3);
 				if (s > cd) cd = s;
-				if (cd === 1.0) break;
+				if (cd === 1) break;
 			}
 		} else if (!this.#v1.isEmpty() && !this.#v2.isEmpty() && this.#v3.isEmpty()) {
-			for (let i = 0; i < n3; ++i) {
-				const s = this.fuzzyRelation().satisfactionDegree(val1, val2, d3.at(i));
+			for (const val3 of d3) {
+				const s = this.fuzzyRelation().satisfactionDegree(val1, val2, val3);
 				if (s > cd) cd = s;
-				if (cd === 1.0) break;
+				if (cd === 1) break;
 			}
 
 		} else if (this.#v1.isEmpty() && this.#v2.isEmpty() && !this.#v3.isEmpty()) {
-			for (let i = 0; i < n1; ++i) {
-				for (let j = 0; j < n2; ++j) {
-					const s = this.fuzzyRelation().satisfactionDegree(d1.at(i), d2.at(j), val3);
+			for (const val1 of d1) {
+				for (const val2 of d2) {
+					const s = this.fuzzyRelation().satisfactionDegree(val1, val2, val3);
 					if (s > cd) cd = s;
-					if (cd === 1.0) break;
+					if (cd === 1) break;
 				}
 			}
 		} else if (this.#v1.isEmpty() && !this.#v2.isEmpty() && this.#v3.isEmpty()) {
-			for (let i = 0; i < n1; ++i) {
-				for (let j = 0; j < n3; ++j) {
-					const s = this.fuzzyRelation().satisfactionDegree(d1.at(i), val2, d3.at(j));
+			for (const val1 of d1) {
+				for (const val3 of d3) {
+					const s = this.fuzzyRelation().satisfactionDegree(val1, val2, val3);
 					if (s > cd) cd = s;
-					if (cd === 1.0) break;
+					if (cd === 1) break;
 				}
 			}
 		} else if (!this.#v1.isEmpty() && this.#v2.isEmpty() && this.#v3.isEmpty()) {
-			for (let i = 0; i < n2; ++i) {
-				for (let j = 0; j < n3; ++j) {
-					const s = this.fuzzyRelation().satisfactionDegree(val1, d2.at(i), d3.at(j));
+			for (const val2 of d2) {
+				for (const val3 of d3) {
+					const s = this.fuzzyRelation().satisfactionDegree(val1, val2, val3);
 					if (s > cd) cd = s;
-					if (cd === 1.0) break;
+					if (cd === 1) break;
 				}
 			}
 		} else {
-			for (let i = 0; i < n1; ++i) {
-				for (let j = 0; j < n2; ++j) {
-					for(let k = 0; k < n3; ++k) {
-						const s = this.fuzzyRelation().satisfactionDegree(d1.at(i), d2.at(j), d3.at(k));
+			for (const val1 of d1) {
+				for (const val2 of d2) {
+					for (const val3 of d3) {
+						const s = this.fuzzyRelation().satisfactionDegree(val1, val2, val3);
 						if (s > cd) cd = s;
-						if (cd === 1.0) break;
+						if (cd === 1) break;
 					}
 				}
 			}
@@ -186,67 +185,66 @@ class Constraint3 extends Constraint {
 	 */
 	lowestConsistencyDegree() {
 		const sd = this.satisfactionDegree();
-		if (sd !== Constraint.UNDEFINED) return sd;
-		let cd = 1.0;
+		if (sd !== Constraint.UNDEFINED) {
+			return sd;
+		}
+		let cd = 1;
 		const val1 = this.#v1.value();
 		const val2 = this.#v2.value();
 		const val3 = this.#v3.value();
 		const d1   = this.#v1.domain();
 		const d2   = this.#v2.domain();
 		const d3   = this.#v3.domain();
-		const n1   = d1.size();
-		const n2   = d2.size();
-		const n3   = d3.size();
 
 		if (this.#v1.isEmpty() && !this.#v2.isEmpty() && !this.#v3.isEmpty()) {
-			for (let i = 0; i < n1; ++i) {
-				const s = this.fuzzyRelation().satisfactionDegree(d1.at(i), val2, val3);
+			for (const val1 of d1) {
+				const s = this.fuzzyRelation().satisfactionDegree(val1, val2, val3);
 				if (s < cd) cd = s;
-				if (cd === 0.0) break;
+				if (cd === 0) break;
 			}
 		} else if (!this.#v1.isEmpty() && this.#v2.isEmpty() && !this.#v3.isEmpty()) {
-			for (let i = 0; i < n2; ++i) {
-				const s = this.fuzzyRelation().satisfactionDegree(val1, d2.at(i), val3);
+			for (const val2 of d2) {
+				const s = this.fuzzyRelation().satisfactionDegree(val1, val2, val3);
 				if (s < cd) cd = s;
-				if (cd === 0.0) break;
+				if (cd === 0) break;
 			}
 		} else if (!this.#v1.isEmpty() && !this.#v2.isEmpty() && this.#v3.isEmpty()) {
-			for (let i = 0; i < n3; ++i) {
-				const s = this.fuzzyRelation().satisfactionDegree(val1, val2, d3.at(i));
+			for (const val3 of d3) {
+				const s = this.fuzzyRelation().satisfactionDegree(val1, val2, val3);
 				if (s < cd) cd = s;
-				if (cd === 0.0) break;
+				if (cd === 0) break;
 			}
 		} else if (this.#v1.isEmpty() && this.#v2.isEmpty() && !this.#v3.isEmpty()) {
-			for (let i = 0; i < n1; ++i) {
-				for (let j = 0; j < n2; ++j) {
-					const s = this.fuzzyRelation().satisfactionDegree(d1.at(i), d2.at(j), val3);
+			for (const val1 of d1) {
+				for (const val2 of d2) {
+					const s = this.fuzzyRelation().satisfactionDegree(val1, val2, val3);
 					if (s < cd) cd = s;
-					if (cd === 0.0) break;
+					if (cd === 0) break;
 				}
 			}
 		} else if (this.#v1.isEmpty() && !this.#v2.isEmpty() && this.#v3.isEmpty()) {
-			for (let i = 0; i < n1; ++i) {
-				for (let j = 0; j < n3; ++j) {
-					const s = this.fuzzyRelation().satisfactionDegree(d1.at(i), val2, d3.at(j));
+			for (const val1 of d1) {
+				for (const val3 of d3) {
+					const s = this.fuzzyRelation().satisfactionDegree(val1, val2, val3);
 					if (s < cd) cd = s;
-					if (cd === 0.0) break;
+					if (cd === 0) break;
 				}
 			}
 		} else if (!this.#v1.isEmpty() && this.#v2.isEmpty() && this.#v3.isEmpty()) {
-			for (let i = 0; i < n2; ++i) {
-				for (let j = 0; j < n3; ++j) {
-					const s = this.fuzzyRelation().satisfactionDegree(val1, d2.at(i), d3.at(j));
+			for (const val2 of d2) {
+				for (const val3 of d3) {
+					const s = this.fuzzyRelation().satisfactionDegree(val1, val2, val3);
 					if (s < cd) cd = s;
-					if (cd === 0.0) break;
+					if (cd === 0) break;
 				}
 			}
 		} else {
-			for (let i = 0; i < n1; ++i) {
-				for (let j = 0; j < n2; ++j) {
-					for(let k = 0; k < n3; ++k) {
-						const s = this.fuzzyRelation().satisfactionDegree(d1.at(i), d2.at(j), d3.at(k));
+			for (const val1 of d1) {
+				for (const val2 of d2) {
+					for (const val3 of d3) {
+						const s = this.fuzzyRelation().satisfactionDegree(val1, val2, val3);
 						if (s < cd) cd = s;
-						if (cd === 0.0) break;
+						if (cd === 0) break;
 					}
 				}
 			}

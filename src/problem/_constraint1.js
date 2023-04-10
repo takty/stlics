@@ -3,7 +3,7 @@
  * The constructor is not called directly, since it is created by the Problem.
  *
  * @author Takuto Yanagida
- * @version 2023-03-26
+ * @version 2023-04-10
  */
 
 class Constraint1 extends Constraint {
@@ -91,14 +91,15 @@ class Constraint1 extends Constraint {
 	 */
 	highestConsistencyDegree() {
 		const sd = this.satisfactionDegree();
-		if (sd !== Constraint.UNDEFINED) return sd;
-		let cd = 0.0;
-		const d = this.#v.domain();
+		if (sd !== Constraint.UNDEFINED) {
+			return sd;
+		}
+		let cd = 0;
 
-		for (let i = 0, n = d.size(); i < n; ++i) {
-			const s = this.fuzzyRelation().satisfactionDegree(d.at(i));
+		for (const val of this.#v.domain()) {
+			const s = this.fuzzyRelation().satisfactionDegree(val);
 			if (s > cd) cd = s;
-			if (cd === 1.0) break;
+			if (cd === 1) break;
 		}
 		return cd;
 	}
@@ -108,14 +109,15 @@ class Constraint1 extends Constraint {
 	 */
 	lowestConsistencyDegree() {
 		const sd = this.satisfactionDegree();
-		if (sd !== Constraint.UNDEFINED) return sd;
-		let cd = 1.0;
-		const d = this.#v.domain();
+		if (sd !== Constraint.UNDEFINED) {
+			return sd;
+		}
+		let cd = 1;
 
-		for (let i = 0, n = d.size(); i < n; ++i) {
-			const s = this.fuzzyRelation().satisfactionDegree(d.at(i));
+		for (const val of this.#v.domain()) {
+			const s = this.fuzzyRelation().satisfactionDegree(val);
 			if (s < cd) cd = s;
-			if (cd === 0.0) break;
+			if (cd === 0) break;
 		}
 		return cd;
 	}

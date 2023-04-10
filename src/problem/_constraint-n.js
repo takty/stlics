@@ -3,7 +3,7 @@
  * The constructor is not called directly, since it is created by the Problem.
  *
  * @author Takuto Yanagida
- * @version 2023-03-26
+ * @version 2023-04-10
  */
 
 class ConstraintN extends Constraint {
@@ -151,15 +151,15 @@ class ConstraintN extends Constraint {
 		const d     = this.#vars[index].domain();
 
 		if (currentStep === emptyIndices.length - 1) {
-			for (let i = 0, n = d.size(); i < n; ++i) {
-				this.#vals[index] = d.at(i);
+			for (const val of d) {
+				this.#vals[index] = val;
 				const s = this.fuzzyRelation().satisfactionDegree(this.#vals);
 				if (s > cd) cd = s;
-				if (cd === 1.0) break;
+				if (cd === 1) break;
 			}
 		} else {
-			for (let i = 0, n = d.size(); i < n; ++i) {
-				this.#vals[index] = d.at(i);
+			for (const val of d) {
+				this.#vals[index] = val;
 				cd = this.checkLCD(emptyIndices, currentStep + 1, cd);
 			}
 		}
@@ -171,15 +171,15 @@ class ConstraintN extends Constraint {
 		const d     = this.#vars[index].domain();
 
 		if (currentStep === emptyIndices.length - 1) {
-			for (let i = 0, n = d.size(); i < n; ++i) {
-				this.#vals[index] = d.at(i);
+			for (const val of d) {
+				this.#vals[index] = val;
 				const s = this.fuzzyRelation().satisfactionDegree(this.#vals);
 				if (s < cd) cd = s;
-				if (cd === 0.0) break;
+				if (cd === 0) break;
 			}
 		} else {
-			for (let i = 0, n = d.size(); i < n; ++i) {
-				this.#vals[index] = d.at(i);
+			for (const val of d) {
+				this.#vals[index] = val;
 				cd = this.checkLCD(emptyIndices, currentStep + 1, cd);
 			}
 		}
