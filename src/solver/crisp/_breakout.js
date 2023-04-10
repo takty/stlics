@@ -3,7 +3,7 @@
  * Solves a problem as a maximum CSP.
  *
  * @author Takuto Yanagida
- * @version 2023-03-31
+ * @version 2023-04-10
  */
 
 class Breakout extends Solver {
@@ -26,14 +26,12 @@ class Breakout extends Solver {
 		for (const v of vioVars) {
 			const v_val = v.value();  // Save the value
 			const v_c   = v.constraints();
-			const v_d   = v.domain();
 
 			let nowVio = 0;
 			for (const c of v_c) {
 				nowVio += (1 - c.isSatisfied()) * this.#weights[c.index()];
 			}
-			out: for (let i = 0; i < v_d.size(); ++i) {
-				const d = v_d.at(i);
+			out: for (const d of v.domain()) {
 				if (v_val === d) continue;
 				v.assign(d);
 				let diff = nowVio;
@@ -58,9 +56,10 @@ class Breakout extends Solver {
 
 	#listViolatingVariables(vioCons) {
 		const vvs = new Set();
-		for (let i = 0; i < vioCons.length; ++i) {
-			const c = vioCons[i];
-			for (let j = 0; j < c.size(); ++j) vvs.add(c.at(j));
+		for (const c of vioCons) {
+			for (let i = 0; i < c.size(); ++i) {
+				vvs.add(c.at(i));
+			}
 		}
 		return Array.from(vvs);
 	}

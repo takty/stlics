@@ -2,7 +2,7 @@
  * Utility class for constraint satisfaction problems.
  *
  * @author Takuto Yanagida
- * @version 2023-04-02
+ * @version 2023-04-10
  */
 
 class Problems {
@@ -98,10 +98,9 @@ class Problems {
 			if (c.size() !== 1) continue;
 			const v       = c.at(0);
 			const origVal = v.value();  // Save the value.
-			const d       = v.domain();
 
-			for (let i = 0; i < d.size(); ++i) {
-				v.assign(d.at(i));
+			for (const val of v.domain()) {
+				v.assign(val);
 				degrees.add(c.satisfactionDegree());
 			}
 			v.assign(origVal);  // Restore the value.

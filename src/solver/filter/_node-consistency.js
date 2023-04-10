@@ -2,7 +2,7 @@
  * Utility class that performs node consistency.
  *
  * @author Takuto Yanagida
- * @version 2023-03-26
+ * @version 2023-04-10
  */
 
 class NodeConsistency {
@@ -24,17 +24,17 @@ class NodeConsistency {
 				const c = v.at(i);
 				if (c.size() !== 1) continue;
 
-				for (let j = 0; j < d.size(); ++j) {
-					v.assign(d.at(j));
+				for (const val of d) {
+					v.assign(val);
 
 					if (c.satisfactionDegree() >= threshold) {
-						elms.add(val);
+						elms.push(val);
 					}
 				}
 				p.removeConstraint(c);
 			}
 			v.assign(origVal);  // Restore the value.
-			if (elms.isEmpty()) {
+			if (elms.length === 0) {
 				return false;
 			}
 			v.setDomain(p.createDomain({ values: elms }));
@@ -58,17 +58,17 @@ class NodeConsistency {
 				const c = v.at(i);
 				if (c.size() !== 1) continue;
 
-				for (let j = 0; j < d.size(); ++j) {
-					v.assign(d.at(j));
+				for (const val of d) {
+					v.assign(val);
 
 					if (c.isSatisfied() === 1) {
-						elms.add(val);
+						elms.push(val);
 					}
 				}
 				p.removeConstraint(c);
 			}
 			v.assign(origVal);  // Restore the value.
-			if (elms.isEmpty()) {
+			if (elms.length === 0) {
 				return false;
 			}
 			v.setDomain(p.createDomain({ values: elms }));

@@ -2,7 +2,7 @@
  * A class that implements the flexible local changes method.
  *
  * @author Takuto Yanagida
- * @version 2023-03-31
+ * @version 2023-04-10
  */
 
 class FlexibleLocalChanges extends Solver {
@@ -235,7 +235,7 @@ class FlexibleLocalChanges extends Solver {
 	}
 
 	#testX12(X1, X2, xi, consX1xi, consX12, cr) {
-		let csd = 1.0;
+		let csd = 1;
 		const cs   = new Set();
 		const temp = [];
 

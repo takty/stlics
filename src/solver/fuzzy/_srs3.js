@@ -2,7 +2,7 @@
  * This class implements the SRS algorithm.
  *
  * @author Takuto Yanagida
- * @version 2023-03-31
+ * @version 2023-04-10
  */
 
 class SRS3 extends Solver {
@@ -60,10 +60,8 @@ class SRS3 extends Solver {
 			const v     = c0.at(i);
 			const v_val = v.value();  // Save the value
 			const v_c   = v.constraints();
-			const v_d   = v.domain();
 
-			out: for (let j = 0; j < v_d.size(); ++j) {
-				const d = v_d.at(j);
+			out: for (const d of v.domain()) {
 				if (v_val === d) continue;
 				v.assign(d);
 				const deg0 = c0.satisfactionDegree();

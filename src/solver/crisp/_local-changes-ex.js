@@ -3,7 +3,7 @@
  * The implementation is optimized by converting recursive calls to loops.
  *
  * @author Takuto Yanagida
- * @version 2023-03-31
+ * @version 2023-04-10
  */
 
 class LocalChangesEx extends Solver {
@@ -108,10 +108,8 @@ class LocalChangesEx extends Solver {
 	}
 
 	#lcVariable(V1, V2, v) {
-		const dom = v.domain();
-		for (let i = 0; i < dom.size(); ++i) {
-			const val = dom.at(i);
-			const s   = AssignmentList.fromVariables(V2);
+		for (const val of v.domain()) {
+			const s = AssignmentList.fromVariables(V2);
 			v.assign(val);
 
 			const ret = this.#lcValue(V1, V2, v);

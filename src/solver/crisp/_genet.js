@@ -4,7 +4,7 @@
  * Find the solution to the problem as the maximum CSP.
  *
  * @author Takuto Yanagida
- * @version 2023-03-31
+ * @version 2023-04-10
  */
 
 class GENET extends Solver {
@@ -156,16 +156,13 @@ class GENET extends Solver {
 		#var;
 		#index;
 		#maxNeurons = [];
-		_neurons;
+		_neurons    = [];
 
 		constructor(v) {
 			this.#var = v;
 
-			const d = v.domain();
-			this._neurons = [];
-
-			for (let i = 0; i < d.size(); ++i) {
-				this._neurons.push(new Neuron(d.at(i)));
+			for (const val of v.domain()) {
+				this._neurons.push(new Neuron(val));
 			}
 			this.#setActivity(Cluster.nextInt(this._neurons.length));
 		}

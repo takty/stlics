@@ -2,7 +2,7 @@
  * Class implements the local changes method.
  *
  * @author Takuto Yanagida
- * @version 2023-03-31
+ * @version 2023-04-10
  */
 
 class LocalChanges extends Solver {
@@ -156,11 +156,10 @@ class LocalChanges extends Solver {
 		if (V3.size === 0) {
 			return true;
 		}
-		const v    = V3.values().next().value;
-		const dom  = v.domain();
-		const d    = new Set();
-		for (let i = 0; i < dom.size(); ++i) {
-			d.add(dom.at(i));
+		const v = V3.values().next().value;
+		const d = new Set();
+		for (const val of v.domain()) {
+			d.add(val);
 		}
 
 		const ret = this.#lcVariable(V1, V2, v, d);

@@ -2,7 +2,7 @@
  * Class implements a solver using the breakout method for fuzzy CSP.
  *
  * @author Takuto Yanagida
- * @version 2023-03-25
+ * @version 2023-04-10
  */
 
 class FuzzyBreakout extends Solver {
@@ -32,14 +32,12 @@ class FuzzyBreakout extends Solver {
 		for (const v of worstVars) {
 			const v_val = v.value();  // Save the value
 			const v_c   = v.constraints();
-			const v_d   = v.domain();
 
 			let nowVio = 0;
 			for (const c of v_c) {
 				nowVio += (1 - c.satisfactionDegree()) * this.#weights[c.index()];
 			}
-			out: for (let i = 0; i < v_d.size(); ++i) {
-				const d = v_d.at(i);
+			out: for (const d of v.domain()) {
 				if (v_val === d) continue;
 				v.assign(d);
 				let diff = nowVio;

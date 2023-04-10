@@ -2,16 +2,14 @@
  * The class implements AC-3, one of the arc consistency algorithms.
  *
  * @author Takuto Yanagida
- * @version 2023-03-26
+ * @version 2023-04-10
  */
 
 class AC3 {
 
 	static #checkConsistency(c, v_j) {
-		const d_j = v_j.domain();
-
-		for (let i = 0; i < d_j.size(); ++i) {  // Is there a partner that satisfies the constraint?
-			v_j.assign(d_j.at(i));
+		for (const val of v_j.domain()) {  // Is there a partner that satisfies the constraint?
+			v_j.assign(val);
 
 			if (c.isSatisfied() === 1) {  // It exists!
 				return true;  // Current assignment of v_i is consistent.
@@ -29,17 +27,17 @@ class AC3 {
 		const cs = [];
 		p.constraintsBetween(v_i, v_j, cs);
 
-		vals: for (let i = 0; i < d_i.size(); ++i) {
-			v_i.assign(d_i.at(i));
+		vals: for (const val of d_i) {
+			v_i.assign(val);
 
-			for (let k = 0; k < cs.size(); ++k) {
-				const c = cs.get(k);
+			for (const c of cs) {
 				if (c.size() !== 2) continue;  // Check the next constraint
 				if (!AC3.#checkConsistency(c, v_j)) continue vals;   // Since there is no partner satisfying the constraint, check the next value.
 			}
-			temp.push(d_i.at(i));
+			temp.push(val);
 		}
-		v_i.assign(val_i); v_j.assign(val_j);  // Restore the value.
+		v_i.assign(val_i);  // Restore the value.
+		v_j.assign(val_j);  // Restore the value.
 
 		if (temp.length !== d_i.size()) {
 			const nd = p.createDomain({ values: temp });
