@@ -30,7 +30,7 @@ class Variable extends Element {
 	}
 
 	// Called only from Problem.
-	deconnect(c) {
+	disconnect(c) {
 		if (!this.isConstrainedBy(c)) {
 			throw new IllegalArgumentException();
 		}

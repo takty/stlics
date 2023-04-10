@@ -100,7 +100,7 @@ class Problem {
 			this._cons[i].setIndex(i);
 		}
 		for (let i = 0; i < c.size(); ++i) {
-			c.at(i).deconnect(c);
+			c.at(i).disconnect(c);
 		}
 		this._isFuzzy = false;
 		for (let i = 0, n = this._cons.length; i < n; ++i) {
