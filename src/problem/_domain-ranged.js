@@ -2,7 +2,7 @@
  * A variable domain with contiguous integer elements.
  *
  * @author Takuto Yanagida
- * @version 2022-08-15
+ * @version 2023-04-10
  */
 
 class DomainRanged extends Domain {
@@ -12,8 +12,8 @@ class DomainRanged extends Domain {
 
 	constructor(min, max) {
 		super();
-		this.#min = min;
-		this.#max = max;
+		this.#min = min | 0;
+		this.#max = max | 0;
 	}
 
 	/**
@@ -47,8 +47,11 @@ class DomainRanged extends Domain {
 	/**
 	 * {@inheritDoc}
 	 */
-	random() {
-		return Math.floor(Math.random() * (this.#max - this.#min + 1) + this.#min);
+	[Symbol.iterator]() {
+		let val = this.#min;
+		return {
+			next: () => (val <= this.#max ? { value: val++, done: false } : { done: true }),
+		};
 	}
 
 }

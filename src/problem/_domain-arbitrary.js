@@ -1,8 +1,8 @@
 /**
- * A variable domain with arbitrary integer elements.
+ * A variable domain with arbitrary elements.
  *
  * @author Takuto Yanagida
- * @version 2022-08-15
+ * @version 2023-04-10
  */
 
 class DomainArbitrary extends Domain {
@@ -45,8 +45,8 @@ class DomainArbitrary extends Domain {
 	/**
 	 * {@inheritDoc}
 	 */
-	random() {
-		return this.#vals[Math.floor(Math.random() * this.#vals.length)];
+	[Symbol.iterator]() {
+		return this.#vals[Symbol.iterator]();
 	}
 
 }
