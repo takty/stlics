@@ -2,7 +2,7 @@
  * The class represents a crisp constraint satisfaction problem.
  *
  * @author Takuto Yanagida
- * @version 2023-03-25
+ * @version 2023-04-10
  */
 
 class CrispProblem extends Problem {
@@ -53,11 +53,10 @@ class CrispProblem extends Problem {
 	/**
 	 * Returns a list of violating constraints.
 	 * Undefined constraints are ignored.
-	 * @param cs Array to get constraints
 	 * @return Array of constraints.
 	 */
-	violatingConstraints(cs) {
-		cs.length = 0;
+	violatingConstraints() {
+		const cs = [];
 		for (const c of this._cons) {
 			if (c.isSatisfied() === 0) cs.push(c);
 		}

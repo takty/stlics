@@ -86,16 +86,17 @@ class Constraint2 extends Constraint {
 	/**
 	 * {@inheritDoc}
 	 */
-	neighbors(dest) {
+	neighbors() {
+		const cs = [];
 		for (let i = 0, n = this.#v1.size(); i < n; ++i) {
 			const c = this.#v1.at(i);
-			if (c !== this) dest.push(c);
+			if (c !== this) cs.push(c);
 		}
 		for (let i = 0, n = this.#v2.size(); i < n; ++i) {
 			const c = this.#v2.at(i);
-			if (c !== this) dest.push(c);
+			if (c !== this) cs.push(c);
 		}
-		return dest;
+		return cs;
 	}
 
 	/**

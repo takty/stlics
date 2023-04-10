@@ -72,11 +72,10 @@ class Breakout extends Solver {
 			if (v.isEmpty()) v.assign(v.domain().at(0));
 		}
 
-		const vc      = [];
 		const canList = new AssignmentList();
 
 		while (true) {
-			this._pro.violatingConstraints(vc);
+			const vc = this._pro.violatingConstraints();
 			if ((this._targetDeg ?? 1) <= this._pro.satisfiedConstraintRate()) {  // Success if violation rate improves from specified
 				if (this._debug) console.log('stop: current degree is above the target');
 				return true;

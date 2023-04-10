@@ -110,7 +110,7 @@ class Constraint extends Element {
 	 * Returns the set of constraints connected via the associated variables.
 	 * @return A set of constraints.
 	 */
-	neighbors(dest) {}
+	neighbors() {}
 
 	/**
 	 * Calculates the highest consistency degree.

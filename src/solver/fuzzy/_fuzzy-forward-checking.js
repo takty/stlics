@@ -5,7 +5,7 @@
  * Forward checking is also performed for problems with polynomial constraints.
  *
  * @author Takuto Yanagida
- * @version 2023-03-25
+ * @version 2023-04-10
  */
 
 class FuzzyForwardChecking extends Solver {
@@ -57,7 +57,6 @@ class FuzzyForwardChecking extends Solver {
 
 	// Initializes a table that caches constraints between two variables.
 	#initializeRelatedConstraintTable() {
-		const temp = [];
 		this.#relCons = [];
 
 		for (let j = 0; j < this.#vars.length; ++j) {
@@ -65,8 +64,7 @@ class FuzzyForwardChecking extends Solver {
 
 			for (let i = 0; i < this.#vars.length; i++) {
 				if (i < j) {
-					this._pro.constraintsBetween(this.#vars[i], this.#vars[j], temp);
-					this.#relCons[j][i] = [...temp];
+					this.#relCons[j][i] = this._pro.constraintsBetween(this.#vars[i], this.#vars[j]);
 				}
 			}
 		}

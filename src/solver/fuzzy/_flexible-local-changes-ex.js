@@ -218,11 +218,10 @@ class FlexibleLocalChangesEx extends Solver {
 
 	#testX1(X1, xi, bestCons, rc) {
 		let cd = 1;
-		const cs   = new Set();
-		const temp = [];
+		const cs = new Set();
 
 		for (const v of X1) {
-			this._pro.constraintsBetween(v, xi, temp);
+			const temp = this._pro.constraintsBetween(v, xi);
 			for (const c of temp) cs.add(c);
 		}
 		for (const c of cs) {
@@ -236,15 +235,14 @@ class FlexibleLocalChangesEx extends Solver {
 
 	#testX12(X1, X2, xi, consX1xi, consX12, cr) {
 		let csd = 1;
-		const cs   = new Set();
-		const temp = [];
+		const cs = new Set();
 
 		for (const v of X1) {
-			this._pro.constraintsBetween(v, xi, temp);
+			const temp = this._pro.constraintsBetween(v, xi);
 			for (const c of temp) cs.add(c);
 		}
 		for (const v of X2) {
-			this._pro.constraintsBetween(v, xi, temp);
+			const temp = this._pro.constraintsBetween(v, xi);
 			for (const c of temp) cs.add(c);
 		}
 		for (const c of cs) {

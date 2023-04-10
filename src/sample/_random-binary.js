@@ -2,7 +2,7 @@
  * Sample implementation of a random binary problem.
  *
  * @author Takuto Yanagida
- * @version 2023-03-31
+ * @version 2023-04-10
  */
 
 class RandomBinary extends ProblemFactory {
@@ -106,13 +106,12 @@ class RandomBinary extends ProblemFactory {
 		for (let i = 0; i <this.#size; ++i) {
 			vs.push(p.createVariable({ domain: p.createDomain({ min: 0, max: this.#sig - 1 }), value: 0 }));
 		}
-		const temp = [];
 		while (p.constraintSize() < r) {
 			const i = RandomBinary.nextInt(this.#size);
 			const j = RandomBinary.nextInt(this.#size);
 
 			if (i !== j) {
-				p.constraintsBetween(vs[i], vs[j], temp);
+				const temp = p.constraintsBetween(vs[i], vs[j]);
 				if (0 === temp.length) {
 					p.createConstraint({ relation: new TableRelation(this.#getRelationTable()), variables: [vs[i], vs[j]] });
 				}

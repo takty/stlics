@@ -93,15 +93,15 @@ class ConstraintN extends Constraint {
 	/**
 	 * {@inheritDoc}
 	 */
-	neighbors(dest) {
-		dest.length = 0;
+	neighbors() {
+		const cs = [];
 		for (const v of this.#vars) {
 			for (let i = 0, I = v.size(); i < I; ++i) {
 				const c = v.at(i);
-				if (c !== this) dest.push(c);
+				if (c !== this) cs.push(c);
 			}
 		}
-		return dest;
+		return cs;
 	}
 
 	/**

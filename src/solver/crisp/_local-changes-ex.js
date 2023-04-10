@@ -50,10 +50,9 @@ class LocalChangesEx extends Solver {
 	#createNewV3(V1_V2, v, val) {
 		const newV3 = new Set();
 		const cs    = new Set();
-		const temp  = [];
 
 		for (const va of V1_V2) {
-			this._pro.constraintsBetween(v, va, temp);
+			const temp = this._pro.constraintsBetween(v, va);
 			for (const c of temp) cs.add(c);
 		}
 		const origVal = v.value();  // Save the value.
@@ -72,11 +71,10 @@ class LocalChangesEx extends Solver {
 	}
 
 	#isConsistent(A, v, val) {
-		const cs   = new Set();
-		const temp = [];
+		const cs = new Set();
 
 		for (const va of A) {
-			this._pro.constraintsBetween(v, va, temp);
+			const temp = this._pro.constraintsBetween(v, va);
 			for (const c of temp) cs.add(c);
 		}
 		const origVal = v.value();  // Save the value.

@@ -3,7 +3,7 @@
  * The minimum-remaining-values (MRV) heuristic can also be used by specifying the option.
  *
  * @author Takuto Yanagida
- * @version 2023-03-31
+ * @version 2023-04-10
  */
 
 class FuzzyForwardCheckingBc extends Solver {
@@ -48,7 +48,6 @@ class FuzzyForwardCheckingBc extends Solver {
 
 	// Initializes a table that caches constraints between two variables.
 	#initializeRelatedConstraintTable() {
-		const temp = [];
 		this.#relCons = [];
 
 		for (let j = 0; j < this.#vars.length; ++j) {
@@ -56,8 +55,7 @@ class FuzzyForwardCheckingBc extends Solver {
 
 			for (let i = 0; i < this.#vars.length; i++) {
 				if (i < j) {
-					this._pro.constraintsBetween(this.#vars[i], this.#vars[j], temp);
-					this.#relCons[j][i] = [...temp];
+					this.#relCons[j][i] = this._pro.constraintsBetween(this.#vars[i], this.#vars[j]);
 				}
 			}
 		}

@@ -24,8 +24,7 @@ class AC3 {
 		const d_i   = v_i.domain();
 		const temp  = [];
 
-		const cs = [];
-		p.constraintsBetween(v_i, v_j, cs);
+		const cs = p.constraintsBetween(v_i, v_j);
 
 		vals: for (const val of d_i) {
 			v_i.assign(val);

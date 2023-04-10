@@ -32,7 +32,7 @@ class CrispSRS3 extends Solver {
 		const index = c.index();
 
 		if (this.#neighborConstraints[index] === null) {
-			this.#neighborConstraints[index] = c.neighbors([]);
+			this.#neighborConstraints[index] = c.neighbors();
 		}
 		return this.#neighborConstraints[index];
 	}
@@ -165,7 +165,7 @@ class CrispSRS3 extends Solver {
 	}
 
 	exec() {
-		const vcs     = this._pro.violatingConstraints([]);
+		const vcs     = this._pro.violatingConstraints();
 		const c_stars = new Set();
 
 		for (const c of vcs) {

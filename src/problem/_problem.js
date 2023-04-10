@@ -247,35 +247,34 @@ class Problem {
 	 * If there are multiple constraints between two variables (including the case of n-ary constraints (2 < n)), they will be included in the return array.
 	 * @param v1 Variable 1
 	 * @param v2 Variable 2
-	 * @param dest Array of returned values.
+	 * @return Constraints.
 	 */
-	constraintsBetween(v1, v2, dest) {
-		dest.length = 0;
+	constraintsBetween(v1, v2) {
+		const cs = [];
 		for (let i = 0, n = v1.size(); i < n; ++i) {
 			const c = v1.at(i);
-			if (c.constrains(v2)) dest.push(c);
+			if (c.constrains(v2)) cs.push(c);
 		}
 	}
 
 	/**
 	 * Finds the set of worst satisfiable constraints in a fuzzy constraint satisfaction problem.
-	 * @param dest  Array of returned values.
-	 * @return Worst satisfaction degree.
+	 * @return Array of constraints and worst satisfaction degree.
 	 */
-	constraintsWithWorstSatisfactionDegree(dest) {
-		dest.length = 0;
-		let cs = 1;
+	constraintsWithWorstSatisfactionDegree() {
+		const cs = [];
+		let cur = 1;
 		for (const c of this._cons) {
 			const s = c.satisfactionDegree();
-			if (s < cs) {
-				cs = s;
-				dest.length = 0;
-				dest.push(c);
-			} else if (s - cs < Number.MIN_VALUE * 10) {
-				dest.push(c);
+			if (s < cur) {
+				cur = s;
+				cs.length = 0;
+				cs.push(c);
+			} else if (s - cur < Number.MIN_VALUE * 10) {
+				cs.push(c);
 			}
 		}
-		return cs;
+		return [cs, cur];
 	}
 
 	// State acquisition methods --------

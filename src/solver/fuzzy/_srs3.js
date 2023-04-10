@@ -41,7 +41,7 @@ class SRS3 extends Solver {
 		const index = c.index();
 
 		if (this.#neighborConstraints[index] === null) {
-			this.#neighborConstraints[index] = c.neighbors([]);
+			this.#neighborConstraints[index] = c.neighbors();
 		}
 		return this.#neighborConstraints[index];
 	}
@@ -135,8 +135,7 @@ class SRS3 extends Solver {
 	#srs() {
 		if (this._debug) console.log('srs');
 
-		const wsdcs = [];
-		this._pro.constraintsWithWorstSatisfactionDegree(wsdcs);
+		const [wsdcs,] = this._pro.constraintsWithWorstSatisfactionDegree();
 		for (const c of wsdcs) {
 			const cn = this.#nodes[c.index()];
 			cn.setParent(null);

@@ -78,13 +78,12 @@ class FuzzyBreakout extends Solver {
 		}
 
 		const deg     = this._pro.worstSatisfactionDegree();
-		const vc      = [];
 		const canList = new AssignmentList();
 
 		const sol = new AssignmentList();
 
 		while (true) {
-			const wsd = this._pro.constraintsWithWorstSatisfactionDegree(vc);
+			const [vc, wsd] = this._pro.constraintsWithWorstSatisfactionDegree();
 			if (this._targetDeg !== null && this._targetDeg <= wsd) {  // Success if the degree improves from specified
 				if (this._debug) console.log('stop: current degree is above the target');
 				return true;

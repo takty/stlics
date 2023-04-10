@@ -71,7 +71,7 @@ class MaxForwardChecking extends Solver {
 
 		for (let i = level + 1; i < this.#vars.length; ++i) {
 			const future = this.#vars[i];
-			this._pro.constraintsBetween(vc, future, this.#cons);
+			this.#cons = this._pro.constraintsBetween(vc, future);
 
 			for (const c of this.#cons) {
 				if (c.emptyVariableSize() !== 1) continue;
@@ -88,7 +88,7 @@ class MaxForwardChecking extends Solver {
 		let avc = 0;
 		this.#checkedCons.clear();  // Reuse.
 		for (let i = 0; i < level; ++i) {
-			this._pro.constraintsBetween(vc, this.#vars[i], this.#cons);
+			this.#cons = this._pro.constraintsBetween(vc, this.#vars[i]);
 
 			for (const c of this.#cons) {
 				if (this.#checkedCons.has(c)) continue;  // Because of the possibility of duplication in polynomial constraints
