@@ -2,7 +2,7 @@
  * Class that represents a variable.
  *
  * @author Takuto Yanagida
- * @version 2023-03-25
+ * @version 2023-04-10
  */
 
 class Variable extends Element {
@@ -142,14 +142,14 @@ class Variable extends Element {
 	 * @return An array of variables
 	 */
 	neighbors() {
-		const dest = [];
+		const vs = [];
 		for (const c of this.#cons) {
 			for(let j = 0, m = c.size(); j < m; j += 1) {
 				const v = c.at(j);
-				if (v !== this) dest.push(v);
+				if (v !== this) vs.push(v);
 			}
 		}
-		return dest;
+		return vs;
 	}
 
 }
