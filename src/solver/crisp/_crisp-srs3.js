@@ -4,7 +4,7 @@
  * Similar to SRS 3, the repair algorithm searches for an assignment that satisfies itself without reducing the number of satisfactions of its neighbors.
  *
  * @author Takuto Yanagida
- * @version 2023-04-10
+ * @version 2023-04-11
  */
 
 class CrispSRS3 extends Solver {
@@ -43,13 +43,11 @@ class CrispSRS3 extends Solver {
 		const candidates = new AssignmentList();
 		let maxDiff = 0;
 
-		for (let i = 0; i < c0.size(); ++i) {
-			const v     = c0.at(i);
+		for (const v of c0) {
 			const v_val = v.value();  // Save the value
-			const v_c   = v.constraints();
 
 			let nowVio = 0;
-			for (const c of v_c) {
+			for (const c of v) {
 				nowVio += (1 - c.isSatisfied());
 			}
 			out: for (const d of v.domain()) {
@@ -58,7 +56,7 @@ class CrispSRS3 extends Solver {
 				if (c0.isSatisfied() !== 1) continue;  // Assuming c0 improvement
 
 				let diff = nowVio;
-				for (const n of v_c) {
+				for (const n of v) {
 					diff -= (1 - n.isSatisfied());
 					if (diff < maxDiff) continue out;  // If the improvement is less than the previous improvement, try the next variable.
 				}

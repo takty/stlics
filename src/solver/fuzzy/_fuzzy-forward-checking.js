@@ -5,7 +5,7 @@
  * Forward checking is also performed for problems with polynomial constraints.
  *
  * @author Takuto Yanagida
- * @version 2023-04-10
+ * @version 2023-04-11
  */
 
 class FuzzyForwardChecking extends Solver {
@@ -120,8 +120,7 @@ class FuzzyForwardChecking extends Solver {
 		const dci = vi.solverObject;
 		const vj  = null;
 
-		for (let i = 0, n = c.size(); i < n; ++i) {
-			const v = c.at(i);
+		for (const v of c) {
 			if (v.isEmpty() && v !== vi) {
 				vj = v;
 				break;

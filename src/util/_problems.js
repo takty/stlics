@@ -2,7 +2,7 @@
  * Utility class for constraint satisfaction problems.
  *
  * @author Takuto Yanagida
- * @version 2023-04-10
+ * @version 2023-04-11
  */
 
 class Problems {
@@ -10,12 +10,8 @@ class Problems {
 	static #averagePathLength(p, v, length, baseLength, vo) {
 		const vn = [];
 
-		for (let j = 0; j < v.size(); ++j) {
-			const c = v.at(j);
-
-			for (let i = 0; i < c.size(); ++i) {
-				const vi = c.at(i);
-
+		for (const c of v) {
+			for (const vi of c) {
 				if (length[vi.index()] === Number.MAX_VALUE) {
 					vn.push(vi);
 					length[vi.index()] = baseLength + 1;
@@ -134,10 +130,10 @@ class Problems {
 			cp.createVariable(v);
 		}
 		for (c of p.constraints()) {
-			const vs = new Array(c.size());
+			const vs = [];
 
-			for (let i = 0; i < vs.length; ++i) {
-				vs[i] = cp.variableAt(c.at(i).index());
+			for (const v of c) {
+				vs.push(cp.variableAt(v.index()));
 			}
 			const r = c.crispRelation();
 

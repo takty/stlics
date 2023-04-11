@@ -2,7 +2,7 @@
  * This class implements the SRS algorithm.
  *
  * @author Takuto Yanagida
- * @version 2023-04-10
+ * @version 2023-04-11
  */
 
 class SRS3 extends Solver {
@@ -56,10 +56,8 @@ class SRS3 extends Solver {
 
 		// If a candidate satisfying the condition is stronger than the previous candidates,
 		// it is replaced, and if no candidate is found until the end, it fails.
-		for (let i = 0; i < c0.size(); ++i) {
-			const v     = c0.at(i);
+		for (const v of c0) {
 			const v_val = v.value();  // Save the value
-			const v_c   = v.constraints();
 
 			out: for (const d of v.domain()) {
 				if (v_val === d) continue;
@@ -68,7 +66,7 @@ class SRS3 extends Solver {
 				// If target c0 cannot be improved, the assignment is rejected.
 				if (minDeg0 > deg0 || maxDeg0 - deg0 > SRS3.REPAIR_THRESHOLD) continue;
 
-				for (const c of v_c) {
+				for (const c of v) {
 					if (c === c0) continue;
 					const deg = c.satisfactionDegree();
 					// If one of the neighborhood constraints c is less than or equal to the worst, the assignment is rejected.
@@ -148,7 +146,7 @@ class SRS3 extends Solver {
 		}
 
 		while (this.#c_stars.size && this.#openList.size) {
-			if (this._iterLimit && this._iterLimit < iterCount++) {  // Failure if repeated a specified number
+			if (this._iterLimit && this._iterLimit < this.#iterCount++) {  // Failure if repeated a specified number
 				if (this._debug) console.log('stop: number of iterations has reached the limit');
 				return false;
 			}

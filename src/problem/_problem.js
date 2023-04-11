@@ -2,7 +2,7 @@
  * The class represents a constraint satisfaction problem.
  *
  * @author Takuto Yanagida
- * @version 2023-04-07
+ * @version 2023-04-11
  */
 
 class Problem {
@@ -251,10 +251,10 @@ class Problem {
 	 */
 	constraintsBetween(v1, v2) {
 		const cs = [];
-		for (let i = 0, n = v1.size(); i < n; ++i) {
-			const c = v1.at(i);
-			if (c.constrains(v2)) cs.push(c);
+		for (const c of v1) {
+			if (c.has(v2)) cs.push(c);
 		}
+		return cs;
 	}
 
 	/**

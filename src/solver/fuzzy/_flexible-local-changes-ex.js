@@ -3,7 +3,7 @@
  * The implementation is optimized by converting recursive calls to loops.
  *
  * @author Takuto Yanagida
- * @version 2023-04-10
+ * @version 2023-04-11
  */
 
 class FlexibleLocalChangesEx extends Solver {
@@ -49,8 +49,7 @@ class FlexibleLocalChangesEx extends Solver {
 			if (!c.isDefined()) {
 				continue;
 			}
-			for (let i = 0; i < c.size(); ++i) {
-				const v = c.at(i);
+			for (const v of c) {
 				if (!res.has(v)) {
 					res.set(v, 1);
 				} else {
@@ -92,9 +91,7 @@ class FlexibleLocalChangesEx extends Solver {
 		let high = 0;
 
 		for (const v of this._pro.variables()) {
-			for (let i = 0; i < v.size(); ++i) {
-				const c = v.at(i);
-
+			for (const c of v) {
 				const l = c.lowestConsistencyDegree();
 				const h = c.highestConsistencyDegree();
 				if (l < low)  low  = l;
@@ -199,8 +196,8 @@ class FlexibleLocalChangesEx extends Solver {
 	#initTest(X, cr) {
 		const cs = new Set();
 		for (const v of X) {
-			for (let i = 0; i < v.size(); ++i) {
-				cs.add(v.at(i));  // All variables in X have been assigned.
+			for (const c of v) {
+				cs.add(c);  // All variables in X have been assigned.
 			}
 		}
 		let ret = 1;

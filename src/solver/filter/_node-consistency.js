@@ -2,7 +2,7 @@
  * Utility class that performs node consistency.
  *
  * @author Takuto Yanagida
- * @version 2023-04-10
+ * @version 2023-04-11
  */
 
 class NodeConsistency {
@@ -20,8 +20,7 @@ class NodeConsistency {
 			const origVal = v.value();  // Save the value.
 			const elms    = [];
 
-			for (let i = 0; i < v.size(); ++i) {
-				const c = v.at(i);
+			for (const c of v) {
 				if (c.size() !== 1) continue;
 
 				for (const val of d) {
@@ -54,8 +53,7 @@ class NodeConsistency {
 			const origVal = v.value();  // Save the value.
 			const elms    = [];
 
-			for (let i = 0; i < v.size(); ++i) {
-				const c = v.at(i);
+			for (const c of v) {
 				if (c.size() !== 1) continue;
 
 				for (const val of d) {

@@ -2,7 +2,7 @@
  * The class represents a constraint.
  *
  * @author Takuto Yanagida
- * @version 2023-04-10
+ * @version 2023-04-11
  */
 
 class Constraint extends Element {
@@ -67,11 +67,16 @@ class Constraint extends Element {
 	at(index) {}
 
 	/**
+	 * Gets the iterator of the associated variables.
+	 */
+	[Symbol.iterator]() {}
+
+	/**
 	 * Returns whether the specified variable is associated or not.
 	 * @param v A variable.
 	 * @return True if it is associated.
 	 */
-	constrains(v) {}
+	has(v) {}
 
 	/**
 	 * Gets the index of a specified variable.

@@ -2,7 +2,7 @@
  * This class implements the SRS algorithm with PF.
  *
  * @author Takuto Yanagida
- * @version 2023-03-31
+ * @version 2023-04-11
  */
 
 class SRS3_PF extends SRS3 {
@@ -33,7 +33,7 @@ class SRS3_PF extends SRS3 {
 		if (this._debug) {
 			console.log(`result: ${res ? 'success' : 'failure'}`);
 			console.log(`satisfaction degree: ${deg} -> ${this._pro.worstSatisfactionDegree()}`);
-			console.log(`uUnassigned size: ${uvs} -> ${this._pro.emptyVariableSize()}`);
+			console.log(`unassigned size: ${uvs} -> ${this._pro.emptyVariableSize()}`);
 		}
 		return res;
 	}

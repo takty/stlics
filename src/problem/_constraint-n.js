@@ -3,7 +3,7 @@
  * The constructor is not called directly, since it is created by the Problem.
  *
  * @author Takuto Yanagida
- * @version 2023-04-10
+ * @version 2023-04-11
  */
 
 class ConstraintN extends Constraint {
@@ -35,7 +35,14 @@ class ConstraintN extends Constraint {
 	/**
 	 * {@inheritDoc}
 	 */
-	constrains(v) {
+	[Symbol.iterator]() {
+		return this.#vars[Symbol.iterator]();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	has(v) {
 		return this.#vars.includes(v);
 	}
 
@@ -96,8 +103,7 @@ class ConstraintN extends Constraint {
 	neighbors() {
 		const cs = [];
 		for (const v of this.#vars) {
-			for (let i = 0, I = v.size(); i < I; ++i) {
-				const c = v.at(i);
+			for (const c of v) {
 				if (c !== this) cs.push(c);
 			}
 		}

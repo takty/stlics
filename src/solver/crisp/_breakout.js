@@ -3,12 +3,14 @@
  * Solves a problem as a maximum CSP.
  *
  * @author Takuto Yanagida
- * @version 2023-04-10
+ * @version 2023-04-11
  */
 
 class Breakout extends Solver {
 
 	#weights;
+
+	#isRandom = true;
 
 	constructor(p) {
 		super(p);
@@ -25,17 +27,16 @@ class Breakout extends Solver {
 
 		for (const v of vioVars) {
 			const v_val = v.value();  // Save the value
-			const v_c   = v.constraints();
 
 			let nowVio = 0;
-			for (const c of v_c) {
+			for (const c of v) {
 				nowVio += (1 - c.isSatisfied()) * this.#weights[c.index()];
 			}
 			out: for (const d of v.domain()) {
 				if (v_val === d) continue;
 				v.assign(d);
 				let diff = nowVio;
-				for (const c of v_c) {
+				for (const c of v) {
 					diff -= (1 - c.isSatisfied()) * this.#weights[c.index()];
 					// If the improvement is less than the previous improvement, try the next variable.
 					if (diff < maxDiff) {
@@ -57,8 +58,8 @@ class Breakout extends Solver {
 	#listViolatingVariables(vioCons) {
 		const vvs = new Set();
 		for (const c of vioCons) {
-			for (let i = 0; i < c.size(); ++i) {
-				vvs.add(c.at(i));
+			for (const v of c) {
+				vvs.add(v);
 			}
 		}
 		return Array.from(vvs);
@@ -93,15 +94,24 @@ class Breakout extends Solver {
 			this.#findCandidates(this.#listViolatingVariables(vc), canList);
 
 			if (0 < canList.size()) {
-				const e = canList.arbitraryAssignment();
+				const e = this.#isRandom ? canList.arbitraryAssignment() : canList.get(0);
 				e.apply();
 				canList.clear();
-				if (this._debug) console.log("\t" + e);
+				if (this._debug) console.log('\t' + e);
 			} else {
 				for (let i = 0; i < vc.length; ++i) this.#weights[vc[i].index()]++;
 				if (this._debug) console.log('breakout');
 			}
 		}
+	}
+
+	/**
+	 * Sets the randomness of the algorithm.
+	 * Enabling randomness reduces the risk of local solutions, but makes the solution unrepeatable.
+	 * @param flag Whether the randomness is enabled.
+	 */
+	setRandomness(flag) {
+		this.#isRandom = flag;
 	}
 
 }

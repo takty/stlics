@@ -2,7 +2,7 @@
  * Class implements the local changes method.
  *
  * @author Takuto Yanagida
- * @version 2023-04-10
+ * @version 2023-04-11
  */
 
 class LocalChanges extends Solver {
@@ -59,8 +59,8 @@ class LocalChanges extends Solver {
 
 		for (const c of cs) {
 			if (c.isSatisfied() === 0) {
-				for (let i = 0; i < c.size(); ++i) {
-					newV3.add(c.at(i));
+				for (const vi of c) {
+					newV3.add(vi);
 				}
 			}
 		}

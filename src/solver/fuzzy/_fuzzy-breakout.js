@@ -2,7 +2,7 @@
  * Class implements a solver using the breakout method for fuzzy CSP.
  *
  * @author Takuto Yanagida
- * @version 2023-04-10
+ * @version 2023-04-11
  */
 
 class FuzzyBreakout extends Solver {
@@ -31,17 +31,16 @@ class FuzzyBreakout extends Solver {
 
 		for (const v of worstVars) {
 			const v_val = v.value();  // Save the value
-			const v_c   = v.constraints();
 
 			let nowVio = 0;
-			for (const c of v_c) {
+			for (const c of v) {
 				nowVio += (1 - c.satisfactionDegree()) * this.#weights[c.index()];
 			}
 			out: for (const d of v.domain()) {
 				if (v_val === d) continue;
 				v.assign(d);
 				let diff = nowVio;
-				for (const c of v_c) {
+				for (const c of v) {
 					diff -= (1 - c.satisfactionDegree()) * this.#weights[c.index()];
 					// If the improvement is less than the previous improvement, try the next variable.
 					if (diff < maxDiff) {
@@ -62,9 +61,8 @@ class FuzzyBreakout extends Solver {
 
 	#listWorstVariables(worstCons) {
 		const wvs = new Set();
-		for (let i = 0; i < worstCons.length; ++i) {
-			const c = worstCons[i];
-			for (let j = 0; j < c.size(); ++j) wvs.add(c.at(j));
+		for (const c of worstCons) {
+			for (const v of c) wvs.add(v);
 		}
 		return Array.from(wvs);
 	}
@@ -113,10 +111,10 @@ class FuzzyBreakout extends Solver {
 				const e = this.#isRandom ? canList.arbitraryAssignment() : canList.get(0);
 				e.apply();
 				canList.clear();
-				if (this._debug) console.log("\t" + e);
+				if (this._debug) console.log('\t' + e);
 			} else {
 				for (let i = 0; i < vc.length; ++i) this.#weights[vc[i].index()]++;
-				if (this._debug) console.log("breakout");
+				if (this._debug) console.log('breakout');
 			}
 		}
 		if (this._targetDeg === null && deg < this._pro.worstSatisfactionDegree()) return true;

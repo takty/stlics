@@ -2,7 +2,7 @@
  * Class that represents a variable.
  *
  * @author Takuto Yanagida
- * @version 2023-04-10
+ * @version 2023-04-11
  */
 
 class Variable extends Element {
@@ -10,9 +10,9 @@ class Variable extends Element {
 	static #INVALID = Number.MIN_VALUE;
 
 	#owner;
-	#cons = [];
 	#dom;
 	#val  = Variable.#INVALID;
+	#cons = [];
 
 	// Called only from Problem.
 	constructor(owner, d) {
@@ -23,7 +23,7 @@ class Variable extends Element {
 
 	// Called only from Problem.
 	connect(c) {
-		if (this.isConstrainedBy(c)) {
+		if (this.has(c)) {
 			throw new IllegalArgumentException();
 		}
 		this.#cons.push(c);
@@ -31,7 +31,7 @@ class Variable extends Element {
 
 	// Called only from Problem.
 	disconnect(c) {
-		if (!this.isConstrainedBy(c)) {
+		if (!this.has(c)) {
 			throw new IllegalArgumentException();
 		}
 		this.#cons = this.#cons.filter(n => n !== c);
@@ -53,7 +53,7 @@ class Variable extends Element {
 	}
 
 	/**
-	 * Returns whether the value is unassigned or not.
+	 * Checks whether the value is unassigned or not.
 	 * @return True if unassigned.
 	 */
 	isEmpty() {
@@ -71,7 +71,7 @@ class Variable extends Element {
 	}
 
 	/**
-	 * Returns the problem that owns this variable.
+	 * Gets the problem that owns this variable.
 	 * @return Owner.
 	 */
 	owner() {
@@ -79,7 +79,7 @@ class Variable extends Element {
 	}
 
 	/**
-	 * Returns the number of associated constraints.
+	 * Gets the number of associated constraints.
 	 * @return Number of constraints.
 	 */
 	size() {
@@ -87,7 +87,7 @@ class Variable extends Element {
 	}
 
 	/**
-	 * Retrieves the associated constraints by specifying their indices.
+	 * Gets the associated constraints by specifying their indices.
 	 * @param index Index.
 	 * @return A constraint.
 	 */
@@ -96,16 +96,14 @@ class Variable extends Element {
 	}
 
 	/**
-	 * Returns an array containing all the constraints associated with the variable.
-	 * If there are no constraints, returns an empty array.
-	 * @return An array of constraints.
+	 * Gets the iterator of the associated constraints.
 	 */
-	constraints() {
-		return [...this.#cons];
+	[Symbol.iterator]() {
+		return this.#cons[Symbol.iterator]();
 	}
 
 	/**
-	 * Returns the domain of the variable.
+	 * Gets the domain of the variable.
 	 * @return The domain.
 	 */
 	domain() {
@@ -113,16 +111,16 @@ class Variable extends Element {
 	}
 
 	/**
-	 * Returns whether or not the variable is associated with the specified constraint.
+	 * Checks whether or not the variable is associated with the specified constraint.
 	 * @param c A constraint.
 	 * @return True if associated.
 	 */
-	isConstrainedBy(c) {
+	has(c) {
 		return this.#cons.includes(c);
 	}
 
 	/**
-	 * Returns a string representation.
+	 * Gets a string representation.
 	 * @return A string representation.
 	 */
 	toString() {
@@ -130,7 +128,7 @@ class Variable extends Element {
 	}
 
 	/**
-	 * Returns the value of the variable.
+	 * Gets the value of the variable.
 	 * @returnThe value of the variable.
 	 */
 	value() {
@@ -138,7 +136,7 @@ class Variable extends Element {
 	}
 
 	/**
-	 * Returns the set of variables connected via the associated constraints.
+	 * Collects the variables connected via the associated constraints.
 	 * @return An array of variables
 	 */
 	neighbors() {

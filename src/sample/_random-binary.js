@@ -9,7 +9,7 @@ class RandomBinary extends ProblemFactory {
 
 	// ################################################################
 
-	static COUNT         = 10;  // Interaction count
+	static COUNT         = 1;  // Interaction count
 	static VAR_NUM       = 10;  // Number of variables
 	static DENSITY       = 0.5;
 	static AVE_TIGHTNESS = 0.5;
@@ -23,14 +23,14 @@ class RandomBinary extends ProblemFactory {
 			const p  = rp.createProblem(new Problem());
 			const t  = Date.now();  // Start time measurement
 
-			const s = new FuzzyForwardChecking(p);
+			// const s = new FuzzyForwardChecking(p);
 			// const s = new FuzzyForwardCheckingBc(p);
 			// const s = new FlexibleLocalChanges(p);
 			// const s = new FlexibleLocalChangesEx(p);
 			// const s = new FuzzyBreakout(p);
 			// const s = new FuzzyGENET(p);
 			// const s = new SRS3(p);
-			// const s = new SRS3_PF(p);
+			const s = new SRS3_PF(p);
 			// s.setTargetRate(null);
 			s.setTimeLimit(10000);
 			const res = s.solve();

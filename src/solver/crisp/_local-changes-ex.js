@@ -3,7 +3,7 @@
  * The implementation is optimized by converting recursive calls to loops.
  *
  * @author Takuto Yanagida
- * @version 2023-04-10
+ * @version 2023-04-11
  */
 
 class LocalChangesEx extends Solver {
@@ -60,8 +60,8 @@ class LocalChangesEx extends Solver {
 
 		for (const c of cs) {
 			if (c.isSatisfied() === 0) {
-				for (let i = 0; i < c.size(); ++i) {
-					newV3.add(c.at(i));
+				for (const vi of c) {
+					newV3.add(vi);
 				}
 			}
 		}
