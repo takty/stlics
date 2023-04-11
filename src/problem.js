@@ -10,9 +10,9 @@
 // @include problem/_relation-view.js
 
 // @include problem/_constraint.js
-// @include problem/_constraint1.js
-// @include problem/_constraint2.js
-// @include problem/_constraint3.js
+// @include problem/_constraint-1.js
+// @include problem/_constraint-2.js
+// @include problem/_constraint-3.js
 // @include problem/_constraint-n.js
 
 // @include problem/_domain.js
