@@ -5,7 +5,7 @@
  * @version 2022-08-15
  */
 
-class Element {
+export class Element {
 
 	#index = -1;
 	#name  = '';

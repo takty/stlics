@@ -2,10 +2,13 @@
  * Class implements a solver using the breakout method for fuzzy CSP.
  *
  * @author Takuto Yanagida
- * @version 2023-04-11
+ * @version 2023-04-16
  */
 
-class FuzzyBreakout extends Solver {
+import { AssignmentList } from '../../util/_assignment-list.js';
+import { Solver } from '../_solver.js';
+
+export class FuzzyBreakout extends Solver {
 
 	#weights;
 	#lastSolDeg;
@@ -113,7 +116,9 @@ class FuzzyBreakout extends Solver {
 				canList.clear();
 				if (this._debug) console.log('\t' + e);
 			} else {
-				for (let i = 0; i < vc.length; ++i) this.#weights[vc[i].index()]++;
+				for (const c of vc) {
+					this.#weights[c.index()] += 1;
+				}
 				if (this._debug) console.log('breakout');
 			}
 		}

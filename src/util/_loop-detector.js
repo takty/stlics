@@ -2,10 +2,10 @@
  * This class detects that a solver's operation is looping.
  *
  * @author Takuto Yanagida
- * @version 2023-03-26
+ * @version 2023-04-16
  */
 
-class LoopDetector {
+export class LoopDetector {
 
 	#indices    = [];
 	#values     = [];
@@ -22,7 +22,7 @@ class LoopDetector {
 	#assignToVariable(index, value) {
 		this.#indices[this.#cur] = index;
 		this.#values[this.#cur]  = value;
-		if(--this.#cur === -1) {
+		if (--this.#cur === -1) {
 			this.#cur = this.#indices.length - 1;
 		}
 	}

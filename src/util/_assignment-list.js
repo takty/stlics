@@ -5,7 +5,9 @@
  * @version 2023-03-25
  */
 
-class AssignmentList {
+import { Assignment } from './_assignment.js';
+
+export class AssignmentList {
 
 	static fromVariables(vs) {
 		const al = new AssignmentList();

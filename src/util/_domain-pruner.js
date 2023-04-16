@@ -5,7 +5,7 @@
  * @version 2023-03-25
  */
 
-class DomainPruner {
+export class DomainPruner {
 
 	static #UNHIDDEN = -1;
 
@@ -64,7 +64,7 @@ class DomainPruner {
 	 * @param level Level
 	 */
 	reveal(level) {
-		for (let i = 0; i < this.#hiddenLevels.length; i++) {
+		for (let i = 0; i < this.#hiddenLevels.length; ++i) {
 			if (this.#hiddenLevels[i] === level) {
 				this.#hiddenLevels[i] = DomainPruner.#UNHIDDEN;
 				--this.#hiddenSize;

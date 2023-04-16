@@ -5,7 +5,11 @@
  * @version 2023-04-11
  */
 
-class SRS3 extends Solver {
+import { Constraint } from '../../problem/_constraint.js';
+import { AssignmentList } from '../../util/_assignment-list.js';
+import { Solver } from '../_solver.js';
+
+export class SRS3 extends Solver {
 
 	// Threshold for adopting a candidate assignment at repair time (should be 0 if strictly following SRS 3)
 	static REPAIR_THRESHOLD = 0;
@@ -24,7 +28,7 @@ class SRS3 extends Solver {
 	constructor(p) {
 		super(p);
 		for (const c of this._pro.constraints()) {
-			this.#nodes.push(new CrispSRS3.TreeNode(c));
+			this.#nodes.push(new SRS3.TreeNode(c));
 			this.#neighborConstraints.push(null);
 		}
 	}
@@ -261,6 +265,6 @@ class SRS3 extends Solver {
 		}
 
 	}
-	CrispSRS3.TreeNode = TreeNode;
+	SRS3.TreeNode = TreeNode;
 
 }

@@ -2,10 +2,10 @@
  * Class of post-stabilization.
  *
  * @author Takuto Yanagida
- * @version 2023-03-26
+ * @version 2023-04-16
  */
 
-class PostStabilization {
+export class PostStabilization {
 
 	static apply(p, orig) {
 		console.log('start post-stabilization');
@@ -19,8 +19,9 @@ class PostStabilization {
 			stabilized = false;
 			let C_min = p.worstSatisfactionDegree();
 
-			for (let i = 0; i < p.variableSize(); ++i) {
-				const v = p.variableAt(i);
+			const vars = p.variables();
+			for (let i = 0; i < vars.length; ++i) {
+				const v   = vars[i];
 				const org = v.value();
 
 				const a = orig.get(i);

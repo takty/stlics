@@ -5,7 +5,9 @@
  * @version 2023-04-10
  */
 
-class DomainArbitrary extends Domain {
+import { Domain } from './_domain.js';
+
+export class DomainArbitrary extends Domain {
 
 	#vals;
 

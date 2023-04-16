@@ -1,4 +1,4 @@
-class Beta {
+export class Beta {
 
 	static #gamma(a) {
 		let t, x, y, u, r;

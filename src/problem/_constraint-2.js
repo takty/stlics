@@ -3,10 +3,12 @@
  * The constructor is not called directly, since it is created by the Problem.
  *
  * @author Takuto Yanagida
- * @version 2023-04-11
+ * @version 2023-04-16
  */
 
-class Constraint2 extends Constraint {
+import { Constraint } from './_constraint.js';
+
+export class Constraint2 extends Constraint {
 
 	#vars = [null, null];
 
@@ -117,7 +119,7 @@ class Constraint2 extends Constraint {
 		const d1   = this.#vars[0].domain();
 		const d2   = this.#vars[1].domain();
 
-		if(this.#vars[0].isEmpty() && !this.#vars[1].isEmpty()) {
+		if (this.#vars[0].isEmpty() && !this.#vars[1].isEmpty()) {
 			for (const val1 of d1) {
 				const s = this.fuzzyRelation().satisfactionDegree(val1, val2);
 				if (s > cd) cd = s;
@@ -146,7 +148,7 @@ class Constraint2 extends Constraint {
 	 */
 	lowestConsistencyDegree() {
 		const sd = this.satisfactionDegree();
-		if(sd !== Constraint.UNDEFINED) {
+		if (sd !== Constraint.UNDEFINED) {
 			return sd;
 		}
 		let cd = 1;

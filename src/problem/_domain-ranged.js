@@ -5,7 +5,9 @@
  * @version 2023-04-10
  */
 
-class DomainRanged extends Domain {
+import { Domain } from './_domain.js';
+
+export class DomainRanged extends Domain {
 
 	#min;
 	#max;

@@ -6,7 +6,9 @@
  * @version 2023-04-11
  */
 
-class ConstraintN extends Constraint {
+import { Constraint } from './_constraint.js';
+
+export class ConstraintN extends Constraint {
 
 	#vars;
 	#vals;  // For reuse.

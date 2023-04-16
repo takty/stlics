@@ -5,7 +5,9 @@
  * @version 2023-03-25
  */
 
-class CrispRelation extends Relation {
+import { Relation } from './_relation.js';
+
+export class CrispRelation extends Relation {
 
 	/**
 	 * Gets whether or not the relation is satisfied in this crisp relation.

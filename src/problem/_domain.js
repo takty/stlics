@@ -6,7 +6,7 @@
  * @version 2023-04-10
  */
 
-class Domain {
+export class Domain {
 
 	/**
 	 * Checks whether the specified value is included as an element of the domain.

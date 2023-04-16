@@ -6,7 +6,9 @@
  * @version 2023-04-11
  */
 
-class Constraint3 extends Constraint {
+import { Constraint } from './_constraint.js';
+
+export class Constraint3 extends Constraint {
 
 	#vars = [null, null, null];
 

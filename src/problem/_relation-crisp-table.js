@@ -5,7 +5,9 @@
  * @version 2023-03-26
  */
 
-class CrispTabledRelation extends CrispRelation {
+import { CrispRelation } from './_relation-crisp.js';
+
+export class CrispTabledRelation extends CrispRelation {
 
 	#elms;
 	#doms;

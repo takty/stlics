@@ -5,7 +5,7 @@
  * @version 2023-04-10
  */
 
-class AC3 {
+export class AC3 {
 
 	static #checkConsistency(c, v_j) {
 		for (const val of v_j.domain()) {  // Is there a partner that satisfies the constraint?

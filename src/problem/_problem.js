@@ -2,10 +2,18 @@
  * The class represents a constraint satisfaction problem.
  *
  * @author Takuto Yanagida
- * @version 2023-04-11
+ * @version 2023-04-16
  */
 
-class Problem {
+import { Variable } from './_variable.js';
+import { DomainRanged } from './_domain-ranged.js';
+import { DomainArbitrary } from './_domain-arbitrary.js';
+import { Constraint } from './_constraint.js';
+import { Constraint1 } from './_constraint-1.js';
+import { Constraint2 } from './_constraint-2.js';
+import { Constraint3 } from './_constraint-3.js';
+
+export class Problem {
 
 	_isFuzzy = false;
 	_vars    = [];
@@ -99,12 +107,12 @@ class Problem {
 		for (let i = index; i < this._cons.length; ++i) {
 			this._cons[i].setIndex(i);
 		}
-		for (let i = 0; i < c.size(); ++i) {
-			c.at(i).disconnect(c);
+		for (const v of c) {
+			v.disconnect(c);
 		}
 		this._isFuzzy = false;
-		for (let i = 0, n = this._cons.length; i < n; ++i) {
-			if (this._cons[i].isFuzzy()) {
+		for (const c of this._cons) {
+			if (c.isFuzzy()) {
 				this._isFuzzy = true;
 				break;
 			}
@@ -126,7 +134,7 @@ class Problem {
 	 */
 	reverseVariables() {
 		this._vars.reverse();
-		for (let i = 0, n = this._vars.length; i < n; ++i) {
+		for (let i = 0; i < this._vars.length; ++i) {
 			this._vars[i].setIndex(i);
 		}
 	}
@@ -138,7 +146,7 @@ class Problem {
 	 */
 	sortVariables(comparator) {
 		this._vars.sort(comparator);
-		for (let i = 0, n = this._vars.length; i < n; ++i) {
+		for (let i = 0; i < this._vars.length; ++i) {
 			this._vars[i].setIndex(i);
 		}
 	}

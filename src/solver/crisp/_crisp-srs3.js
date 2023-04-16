@@ -7,7 +7,10 @@
  * @version 2023-04-11
  */
 
-class CrispSRS3 extends Solver {
+import { AssignmentList } from '../../util/_assignment-list.js';
+import { Solver } from '../_solver.js';
+
+export class CrispSRS3 extends Solver {
 
 	#closedList          = new Set();
 	#openList            = new Set();  // LinkedHashSet is used in the original implementation.

@@ -6,7 +6,10 @@
  * @version 2023-04-10
  */
 
-class FuzzyGENET extends Solver {
+import { AssignmentList } from '../../util/_assignment-list.js';
+import { Solver } from '../_solver.js';
+
+export class FuzzyGENET extends Solver {
 
 	static nextInt(max) {
 		return Math.floor(Math.random() * Math.floor(max));
@@ -81,7 +84,7 @@ class FuzzyGENET extends Solver {
 
 	#shuffle(is) {
 		for (let i = is.length; i > 1; --i) {
-			const j    = GENET.nextInt(i);
+			const j    = FuzzyGENET.nextInt(i);
 			const temp = is[i - 1];
 			is[i - 1] = is[j];
 			is[j]     = temp;
@@ -95,7 +98,7 @@ class FuzzyGENET extends Solver {
 
 		const sol   = new AssignmentList();
 		const order = [];
-		for (let i = 0; i < this.#clusters.length; i++) {
+		for (let i = 0; i < this.#clusters.length; ++i) {
 			order.push(i);
 		}
 

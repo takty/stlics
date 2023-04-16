@@ -6,7 +6,11 @@
  * @version 2023-04-11
  */
 
-class FlexibleLocalChangesEx extends Solver {
+import { Constraint } from '../../problem/_constraint.js';
+import { AssignmentList } from '../../util/_assignment-list.js';
+import { Solver } from '../_solver.js';
+
+export class FlexibleLocalChangesEx extends Solver {
 
 	static #setPlusSet(s1, s2) {
 		const sn = new Set(s1);

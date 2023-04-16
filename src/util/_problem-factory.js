@@ -5,7 +5,7 @@
  * @version 2023-03-25
  */
 
-class ProblemFactory {
+export class ProblemFactory {
 
 	/**
 	 * Generates a constraint satisfaction problems.

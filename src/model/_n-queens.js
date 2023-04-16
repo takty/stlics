@@ -5,45 +5,10 @@
  * @version 2023-03-31
  */
 
-class N_queens extends ProblemFactory {
+import { ProblemFactory } from '../util/_problem-factory.js';
+import { CrispRelation } from '../problem/_relation-crisp.js';
 
-	// ################################################################
-
-	static COUNT     = 1;  // Interaction count
-	static QUEEN_NUM = 20;  // Number of queens
-
-	static main() {
-		let sum_time = 0;
-		let sum_rate = 0;
-
-		for (let i = 0; i < N_queens.COUNT; ++i) {
-			const nq = new N_queens(N_queens.QUEEN_NUM);
-			const p  = nq.createProblem(new CrispProblem());
-			const t  = Date.now();  // Start time measurement
-
-			const s = new ForwardChecking(p);
-			// const s = new MaxForwardChecking(p);
-			// const s = new LocalChanges(p);
-			// const s = new LocalChangesEx(p);
-			// const s = new Breakout(p);
-			// const s = new GENET(p);
-			// const s = new CrispSRS3(p);
-			// s.setTargetRate(null);
-			s.setTimeLimit(10000);
-			const res = s.solve();
-
-			const ct = Date.now() - t;  // Stop time measurement
-			const cr = p.satisfiedConstraintRate();
-			console.log(`solver: ${s.name()}   ${res ? 'success' : 'failure'}`);
-			console.log(`time: ${ct}   rate: ${cr}`);
-			nq.printResult(p);
-			sum_time += ct;
-			sum_rate += cr;
-		}
-		console.log(`average time: ${sum_time / N_queens.COUNT}   average rate: ${sum_rate / N_queens.COUNT}`);
-	}
-
-	// ################################################################
+export class N_queens extends ProblemFactory {
 
 	#size;
 

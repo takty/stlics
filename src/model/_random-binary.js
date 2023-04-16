@@ -5,47 +5,11 @@
  * @version 2023-04-10
  */
 
-class RandomBinary extends ProblemFactory {
+import { ProblemFactory } from '../util/_problem-factory.js';
+import { FuzzyRelation } from '../problem/_relation-fuzzy.js';
+import { Beta } from './_beta.js';
 
-	// ################################################################
-
-	static COUNT         = 1;  // Interaction count
-	static VAR_NUM       = 10;  // Number of variables
-	static DENSITY       = 0.5;
-	static AVE_TIGHTNESS = 0.5;
-
-	static main() {
-		let sum_time   = 0;
-		let sum_degree = 0;
-
-		for (let i = 0; i < RandomBinary.COUNT; ++i) {
-			const rp = new RandomBinary(RandomBinary.VAR_NUM, RandomBinary.DENSITY, RandomBinary.AVE_TIGHTNESS);
-			const p  = rp.createProblem(new Problem());
-			const t  = Date.now();  // Start time measurement
-
-			// const s = new FuzzyForwardChecking(p);
-			// const s = new FuzzyForwardCheckingBc(p);
-			// const s = new FlexibleLocalChanges(p);
-			// const s = new FlexibleLocalChangesEx(p);
-			// const s = new FuzzyBreakout(p);
-			// const s = new FuzzyGENET(p);
-			// const s = new SRS3(p);
-			const s = new SRS3_PF(p);
-			// s.setTargetRate(null);
-			s.setTimeLimit(10000);
-			const res = s.solve();
-
-			const ct = Date.now() - t;  // Stop time measurement
-			const cd = p.worstSatisfactionDegree();
-			console.log(`solver: ${s.name()}   ${res ? 'success' : 'failure'}`);
-			console.log(`trial: ${i + 1}   time: ${ct}   degree: ${cd}`);
-			sum_time   += ct;
-			sum_degree += cd;
-		}
-		console.log(`average time: ${sum_time / RandomBinary.COUNT}   average degree: ${sum_degree / RandomBinary.COUNT}`);
-	}
-
-	// ################################################################
+export class RandomBinary extends ProblemFactory {
 
 	static nextInt(max) {
 		return Math.floor(Math.random() * Math.floor(max));

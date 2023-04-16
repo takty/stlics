@@ -5,7 +5,7 @@
  * @version 2023-04-11
  */
 
-class NodeConsistency {
+export class NodeConsistency {
 
 	/**
 	 * Guarantees consistency of fuzzy unary constraints. The domain of each variable is replaced as needed.

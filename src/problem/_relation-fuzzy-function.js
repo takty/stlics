@@ -5,7 +5,9 @@
  * @version 2023-04-04
  */
 
-class FuzzyRelationFunction extends FuzzyRelation {
+import { FuzzyRelation } from './_relation-fuzzy.js';
+
+export class FuzzyRelationFunction extends FuzzyRelation {
 
 	#fn;
 

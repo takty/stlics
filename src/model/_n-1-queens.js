@@ -7,46 +7,10 @@
  * @version 2023-03-31
  */
 
-class N_1_queens extends ProblemFactory {
+import { ProblemFactory } from '../util/_problem-factory.js';
+import { FuzzyRelation } from '../problem/_relation-fuzzy.js';
 
-	// ################################################################
-
-	static COUNT     = 1;   // Interaction count
-	static QUEEN_NUM = 20;  // Number of queens
-
-	static main() {
-		let sum_time   = 0;
-		let sum_degree = 0;
-
-		for (let i = 0; i < N_1_queens.COUNT; ++i) {
-			const nq = new N_1_queens(N_1_queens.QUEEN_NUM);
-			const p  = nq.createProblem(new Problem());
-			const t  = Date.now();  // Start time measurement
-
-			const s = new FuzzyForwardChecking(p);
-			// const s = new FuzzyForwardCheckingBc(p);
-			// const s = new FlexibleLocalChanges(p);
-			// const s = new FlexibleLocalChangesEx(p);
-			// const s = new FuzzyBreakout(p);
-			// const s = new FuzzyGENET(p);
-			// const s = new SRS3(p);
-			// const s = new SRS3_PF(p);
-			// s.setTargetRate(null);
-			s.setTimeLimit(10000);
-			const res = s.solve();
-
-			const ct = Date.now() - t;  // Stop time measurement
-			const cd = p.worstSatisfactionDegree();
-			console.log(`solver: ${s.name()}   ${res ? 'success' : 'failure'}`);
-			console.log(`trial: ${i + 1}   time: ${ct}   degree: ${cd}`);
-			nq.printResult(p);
-			sum_time   += ct;
-			sum_degree += cd;
-		}
-		console.log(`average time: ${sum_time / N_1_queens.COUNT}   average degree: ${sum_degree / N_1_queens.COUNT}`);
-	}
-
-	// ################################################################
+export class N_1_queens extends ProblemFactory {
 
 	#size;
 

@@ -5,7 +5,10 @@
  * @version 2023-04-11
  */
 
-class LocalChanges extends Solver {
+import { AssignmentList } from '../../util/_assignment-list.js';
+import { Solver } from '../_solver.js';
+
+export class LocalChanges extends Solver {
 
 	static #setPlusSet(s1, s2) {
 		const sn = new Set(s1);

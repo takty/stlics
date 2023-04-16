@@ -5,7 +5,9 @@
  * @version 2023-04-11
  */
 
-class Problems {
+import { CrispProblem } from '../problem/_problem-crisp.js';
+
+export class Problems {
 
 	static #averagePathLength(p, v, length, baseLength, vo) {
 		const vn = [];

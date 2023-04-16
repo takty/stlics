@@ -5,7 +5,11 @@
  * @version 2023-04-11
  */
 
-class SRS3_PF extends SRS3 {
+import { AssignmentList } from '../../util/_assignment-list.js';
+import { PostStabilization } from '../filter/_post-stabilization.js';
+import { SRS3 } from './_srs3.js';
+
+export class SRS3_PF extends SRS3 {
 
 	constructor(p) {
 		super(p);

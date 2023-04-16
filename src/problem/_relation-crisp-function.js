@@ -5,7 +5,9 @@
  * @version 2023-04-04
  */
 
-class CrispRelationFunction extends CrispRelation {
+import { CrispRelation } from './_relation-crisp.js';
+
+export class CrispRelationFunction extends CrispRelation {
 
 	#fn;
 

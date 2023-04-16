@@ -4,10 +4,13 @@
  * Find the solution to the problem as the maximum CSP.
  *
  * @author Takuto Yanagida
- * @version 2023-04-10
+ * @version 2023-04-16
  */
 
-class GENET extends Solver {
+import { AssignmentList } from '../../util/_assignment-list.js';
+import { Solver } from '../_solver.js';
+
+export class GENET extends Solver {
 
 	static nextInt(max) {
 		return Math.floor(Math.random() * Math.floor(max));
@@ -96,7 +99,7 @@ class GENET extends Solver {
 
 		const sol   = new AssignmentList();
 		const order = [];
-		for (let i = 0; i < this.#clusters.length; i++) {
+		for (let i = 0; i < this.#clusters.length; ++i) {
 			order.push(i);
 		}
 

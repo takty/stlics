@@ -2,10 +2,13 @@
  * View of relations.
  *
  * @author Takuto Yanagida
- * @version 2023-03-25
+ * @version 2023-04-12
  */
 
-class CrispRelationView extends CrispRelation {
+import { CrispRelation } from './_relation-crisp.js';
+import { FuzzyRelation } from './_relation-fuzzy.js';
+
+export class CrispRelationView extends CrispRelation {
 
 	constructor(that) {
 		this.that = that;
@@ -17,7 +20,7 @@ class CrispRelationView extends CrispRelation {
 
 }
 
-class FuzzyRelationView extends FuzzyRelation {
+export class FuzzyRelationView extends FuzzyRelation {
 
 	constructor(that) {
 		this.that = that;

@@ -5,10 +5,15 @@
  * Forward checking is also performed for problems with polynomial constraints.
  *
  * @author Takuto Yanagida
- * @version 2023-04-11
+ * @version 2023-04-16
  */
 
-class FuzzyForwardChecking extends Solver {
+import { Constraint } from '../../problem/_constraint.js';
+import { AssignmentList } from '../../util/_assignment-list.js';
+import { DomainPruner } from '../../util/_domain-pruner.js';
+import { Solver } from '../_solver.js';
+
+export class FuzzyForwardChecking extends Solver {
 
 	static CONTINUE  = 0;
 	static TERMINATE = 1;
@@ -62,7 +67,7 @@ class FuzzyForwardChecking extends Solver {
 		for (let j = 0; j < this.#vars.length; ++j) {
 			this.#relCons.push(new Array(this.#vars.length));
 
-			for (let i = 0; i < this.#vars.length; i++) {
+			for (let i = 0; i < this.#vars.length; ++i) {
 				if (i < j) {
 					this.#relCons[j][i] = this._pro.constraintsBetween(this.#vars[i], this.#vars[j]);
 				}
@@ -152,8 +157,7 @@ class FuzzyForwardChecking extends Solver {
 		let vj = null;
 		let vk = null;
 
-		for(let i = 0, n = c.size(); i < n; ++i) {
-			let v = c.at(i);
+		for (const v of c) {
 			if (v.isEmpty() && v !== vi) {
 				if (vj === null) {
 					vj = v;
@@ -168,7 +172,7 @@ class FuzzyForwardChecking extends Solver {
 		const dcj = vj.solverObject;
 		const dck = vk.solverObject;
 
-		loop_i: for(let i = 0, ni = di.size(); i < ni; ++i) {
+		loop_i: for (let i = 0, ni = di.size(); i < ni; ++i) {
 			if (dci.isValueHidden(i)) continue;
 			vi.assign(di.at(i));  // Tentative assignment to vi
 			for (let j = 0, nj = dj.size(); j < nj; ++j) {
@@ -196,9 +200,8 @@ class FuzzyForwardChecking extends Solver {
 		const emp = new Array(emptySize - 1);
 		let j = 0;
 
-		for (let i = 0, n = c.size(); i < n; ++i) {
-			const v = c.at(i);
-			if(v.isEmpty() && v !== vi) emp[j++] = v;
+		for (const v of c) {
+			if (v.isEmpty() && v !== vi) emp[j++] = v;
 		}
 		const indexes = new Array(emp.length);
 
@@ -223,7 +226,7 @@ class FuzzyForwardChecking extends Solver {
 					if (s > this.#solWorstDeg) continue loop_i;  // Tentative assignment to vi was OK -> next tentative assignment.
 				}
 				for (let k = 0; k < emp.length; ++k) {
-					indexes[k]++;
+					indexes[k] += 1;
 					if (indexes[k] < emp[k].domain().size()) break;
 					indexes[k] = 0;
 					if (k === emp.length - 1) break comLoop;
@@ -249,11 +252,11 @@ class FuzzyForwardChecking extends Solver {
 					if (!this.#checkForwardConsistency(level, v_i, c)) return false;
 				} else if (this.#pruneIntensively) {  // Depends on options
 					if (emptySize === 2) {
-						if(!this.#checkForwardConsistency2(level, v_i, c)) return false;
-					} else if(emptySize === 3) {
-						if(!this.#checkForwardConsistency3(level, v_i, c)) return false;
-					} else if(emptySize > 3) {
-						if(!this.#checkForwardConsistencyN(level, v_i, c, emptySize)) return false;
+						if (!this.#checkForwardConsistency2(level, v_i, c)) return false;
+					} else if (emptySize === 3) {
+						if (!this.#checkForwardConsistency3(level, v_i, c)) return false;
+					} else if (emptySize > 3) {
+						if (!this.#checkForwardConsistencyN(level, v_i, c, emptySize)) return false;
 					}
 				}
 			}
@@ -283,7 +286,7 @@ class FuzzyForwardChecking extends Solver {
 	}
 
 	#refresh() {
-		for(let i = 0; i < this.#sequence.length; ++i) {
+		for (let i = 0; i < this.#sequence.length; ++i) {
 			const index_vi = this.#sequence[i].index();
 
 			for (let j = i + 1; j < this.#sequence.length; ++j) {

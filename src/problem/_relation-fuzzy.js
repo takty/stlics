@@ -5,7 +5,9 @@
  * @version 2023-03-25
  */
 
-class FuzzyRelation extends Relation {
+import { Relation } from './_relation.js';
+
+export class FuzzyRelation extends Relation {
 
 	/**
 	 * Gets the satisfaction degree in this fuzzy relation.

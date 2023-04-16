@@ -2,10 +2,13 @@
  * The class represents a crisp constraint satisfaction problem.
  *
  * @author Takuto Yanagida
- * @version 2023-04-10
+ * @version 2023-04-16
  */
 
-class CrispProblem extends Problem {
+import { Problem } from './_problem.js';
+import { FuzzyRelation } from './_relation-fuzzy.js';
+
+export class CrispProblem extends Problem {
 
 	/**
 	 * Generates a crisp constraint.
@@ -17,7 +20,7 @@ class CrispProblem extends Problem {
 	 * @return A constraint.
 	 */
 	createConstraint(args) {
-		if(args.relation instanceof FuzzyRelation) throw new Error();
+		if (args.relation instanceof FuzzyRelation) throw new Error();
 		return super.createConstraint(args);
 	}
 
@@ -44,8 +47,8 @@ class CrispProblem extends Problem {
 	 */
 	satisfiedConstraintSize() {
 		let count = 0;
-		for (let i = 0; i < this._cons.length; ++i) {
-			if (this._cons[i].isSatisfied() === 1) ++count;
+		for (const c of this._cons) {
+			if (c.isSatisfied() === 1) ++count;
 		}
 		return count;
 	}

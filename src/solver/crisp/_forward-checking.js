@@ -9,7 +9,11 @@
  * @version 2023-04-10
  */
 
-class ForwardChecking extends Solver {
+import { AssignmentList } from '../../util/_assignment-list.js';
+import { DomainPruner } from '../../util/_domain-pruner.js';
+import { Solver } from '../_solver.js';
+
+export class ForwardChecking extends Solver {
 
 	#vars;
 	#sol = new AssignmentList();

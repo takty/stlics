@@ -5,7 +5,10 @@
  * @version 2023-04-11
  */
 
-class Constraint extends Element {
+import { Element } from './_element.js';
+import { FuzzyRelation } from './_relation-fuzzy.js';
+
+export class Constraint extends Element {
 
 	/**
 	 * The constant indicating that the satisfaction degree is not defined.

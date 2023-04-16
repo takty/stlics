@@ -6,6 +6,6 @@
  * @version 2023-03-25
  */
 
-class Relation {
+export class Relation {
 
 }

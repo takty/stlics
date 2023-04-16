@@ -5,7 +5,9 @@
  * @version 2023-03-26
  */
 
-class FuzzyTabledRelation extends FuzzyRelation {
+import { FuzzyRelation } from './_relation-fuzzy.js';
+
+export class FuzzyTabledRelation extends FuzzyRelation {
 
 	#elms;
 	#doms;

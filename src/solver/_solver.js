@@ -5,7 +5,7 @@
  * @version 2023-03-25
  */
 
-class Solver {
+export class Solver {
 
 	_debug = true;
 

@@ -7,7 +7,11 @@
  * @version 2023-03-31
  */
 
-class MaxForwardChecking extends Solver {
+import { AssignmentList } from '../../util/_assignment-list.js';
+import { DomainPruner } from '../../util/_domain-pruner.js';
+import { Solver } from '../_solver.js';
+
+export class MaxForwardChecking extends Solver {
 
 	#vars;
 	#sol = new AssignmentList();

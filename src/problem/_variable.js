@@ -2,10 +2,12 @@
  * Class that represents a variable.
  *
  * @author Takuto Yanagida
- * @version 2023-04-11
+ * @version 2023-04-16
  */
 
-class Variable extends Element {
+import { Element } from './_element.js';
+
+export class Variable extends Element {
 
 	static #INVALID = Number.MIN_VALUE;
 
@@ -142,8 +144,7 @@ class Variable extends Element {
 	neighbors() {
 		const vs = [];
 		for (const c of this.#cons) {
-			for(let j = 0, m = c.size(); j < m; j += 1) {
-				const v = c.at(j);
+			for (const v of c) {
 				if (v !== this) vs.push(v);
 			}
 		}
