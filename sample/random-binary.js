@@ -15,7 +15,10 @@ const VAR_NUM       = 10;  // Number of variables
 const DENSITY       = 0.5;
 const AVE_TIGHTNESS = 0.5;
 
-function main() {
+document.addEventListener('DOMContentLoaded', function () {
+	const output = document.getElementById('output');
+	const log    = e => output.value += `${e}\n`;
+
 	let sum_time   = 0;
 	let sum_degree = 0;
 
@@ -34,15 +37,15 @@ function main() {
 		// const s = new SRS3_PF(p);
 		// s.setTargetRate(null);
 		s.setTimeLimit(10000);
+		s.setDebugOutput(log);
 		const res = s.solve();
 
 		const ct = Date.now() - t;  // Stop time measurement
 		const cd = p.worstSatisfactionDegree();
-		console.log(`solver: ${s.name()}   ${res ? 'success' : 'failure'}`);
-		console.log(`trial: ${i + 1}   time: ${ct}   degree: ${cd}`);
+		log(`solver: ${s.name()}   ${res ? 'success' : 'failure'}`);
+		log(`trial: ${i + 1}   time: ${ct}   degree: ${cd}`);
 		sum_time   += ct;
 		sum_degree += cd;
 	}
-	console.log(`average time: ${sum_time / COUNT}   average degree: ${sum_degree / COUNT}`);
-}
-main();
+	log(`average time: ${sum_time / COUNT}   average degree: ${sum_degree / COUNT}`);
+});

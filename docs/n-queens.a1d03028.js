@@ -2864,51 +2864,7 @@ var CrispProblem = /*#__PURE__*/function (_Problem) {
   return CrispProblem;
 }(_problem.Problem);
 exports.CrispProblem = CrispProblem;
-},{"./_problem.js":"../src/problem/_problem.js","./_relation-fuzzy.js":"../src/problem/_relation-fuzzy.js"}],"../src/util/_problem-factory.js":[function(require,module,exports) {
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.ProblemFactory = void 0;
-function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
-function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
-function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
-/**
- * An interface that provides a factory method to generate constraint satisfaction problems.
- *
- * @author Takuto Yanagida
- * @version 2023-03-25
- */
-var ProblemFactory = /*#__PURE__*/function () {
-  function ProblemFactory() {
-    _classCallCheck(this, ProblemFactory);
-  }
-  _createClass(ProblemFactory, [{
-    key: "createProblem",
-    value:
-    /**
-     * Generates a constraint satisfaction problems.
-     * @param p Objects to include the problem to be generated
-     * @return A generated problem.
-     */
-    function createProblem(p) {}
-
-    /**
-     * Returns whether the generated problem is a fuzzy constraint satisfaction problem, i.e., whether it contains fuzzy constraints.
-     * @return If it is a fuzzy constraint satisfaction problem, true
-     */
-  }, {
-    key: "isFuzzy",
-    value: function isFuzzy() {}
-  }]);
-  return ProblemFactory;
-}();
-exports.ProblemFactory = ProblemFactory;
-},{}],"../src/problem/_relation-crisp.js":[function(require,module,exports) {
+},{"./_problem.js":"../src/problem/_problem.js","./_relation-fuzzy.js":"../src/problem/_relation-fuzzy.js"}],"../src/problem/_relation-crisp.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2966,15 +2922,91 @@ var CrispRelation = /*#__PURE__*/function (_Relation) {
   return CrispRelation;
 }(_relation.Relation);
 exports.CrispRelation = CrispRelation;
-},{"./_relation.js":"../src/problem/_relation.js"}],"../src/model/_n-queens.js":[function(require,module,exports) {
+},{"./_relation.js":"../src/problem/_relation.js"}],"../src/model/_model.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Model = void 0;
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
+function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
+/**
+ * The class for models that provides a factory method to generate constraint satisfaction problems.
+ *
+ * @author Takuto Yanagida
+ * @version 2023-04-16
+ */
+var Model = /*#__PURE__*/function () {
+  function Model() {
+    _classCallCheck(this, Model);
+    _defineProperty(this, "_debug", true);
+    _defineProperty(this, "_debugOutput", function (e) {
+      return console.log(e);
+    });
+  }
+  _createClass(Model, [{
+    key: "createProblem",
+    value:
+    /**
+     * Generates a constraint satisfaction problems.
+     * @param p Objects to include the problem to be generated
+     * @return A generated problem.
+     */
+    function createProblem(p) {}
+
+    /**
+     * Returns whether the generated problem is a fuzzy constraint satisfaction problem, i.e., whether it contains fuzzy constraints.
+     * @return If it is a fuzzy constraint satisfaction problem, true
+     */
+  }, {
+    key: "isFuzzy",
+    value: function isFuzzy() {}
+
+    // -------------------------------------------------------------------------
+
+    /**
+     * Sets whether to output debug strings.
+     * @param boolean flag Do output if true.
+     */
+  }, {
+    key: "setDebugMode",
+    value: function setDebugMode(flag) {
+      this._debug = flag;
+    }
+
+    /**
+     * Sets a function that used for outputting debug strings.
+     * @param function fn Function called when debug output.
+     */
+  }, {
+    key: "setDebugOutput",
+    value: function setDebugOutput(fn) {
+      this._debugOutput = fn;
+    }
+  }, {
+    key: "_debugOutput",
+    value: function _debugOutput(str) {
+      if (this._debug) this._debugOutput(str);
+    }
+  }]);
+  return Model;
+}();
+exports.Model = Model;
+},{}],"../src/model/_n-queens.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.N_queens = void 0;
-var _problemFactory = require("../util/_problem-factory.js");
 var _relationCrisp = require("../problem/_relation-crisp.js");
+var _model = require("./_model.js");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
@@ -2998,11 +3030,11 @@ function _classApplyDescriptorSet(receiver, descriptor, value) { if (descriptor.
                                                                                                                                                                                                                                                                     * A sample implementation of the N queens problem.
                                                                                                                                                                                                                                                                     *
                                                                                                                                                                                                                                                                     * @author Takuto Yanagida
-                                                                                                                                                                                                                                                                    * @version 2023-03-31
+                                                                                                                                                                                                                                                                    * @version 2023-04-16
                                                                                                                                                                                                                                                                     */
 var _size = /*#__PURE__*/new WeakMap();
-var N_queens = /*#__PURE__*/function (_ProblemFactory) {
-  _inherits(N_queens, _ProblemFactory);
+var N_queens = /*#__PURE__*/function (_Model) {
+  _inherits(N_queens, _Model);
   var _super = _createSuper(N_queens);
   function N_queens(queenSize) {
     var _this;
@@ -3072,12 +3104,12 @@ var N_queens = /*#__PURE__*/function (_ProblemFactory) {
             }
           }
         }
-        console.log(l);
+        this._debugOutput(l);
       }
     }
   }]);
   return N_queens;
-}(_problemFactory.ProblemFactory);
+}(_model.Model);
 exports.N_queens = N_queens;
 var _dist = /*#__PURE__*/new WeakMap();
 var CrispQueenRelation = /*#__PURE__*/function (_CrispRelation) {
@@ -3108,7 +3140,7 @@ var CrispQueenRelation = /*#__PURE__*/function (_CrispRelation) {
   }]);
   return CrispQueenRelation;
 }(_relationCrisp.CrispRelation);
-},{"../util/_problem-factory.js":"../src/util/_problem-factory.js","../problem/_relation-crisp.js":"../src/problem/_relation-crisp.js"}],"../src/util/_assignment.js":[function(require,module,exports) {
+},{"../problem/_relation-crisp.js":"../src/problem/_relation-crisp.js","./_model.js":"../src/model/_model.js"}],"../src/util/_assignment.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3534,10 +3566,10 @@ function _classExtractFieldDescriptor(receiver, privateMap, action) { if (!priva
 function _classApplyDescriptorGet(receiver, descriptor) { if (descriptor.get) { return descriptor.get.call(receiver); } return descriptor.value; }
 var _listener = /*#__PURE__*/new WeakMap();
 /**
- * The interface of solvers for finding solutions to constraint satisfaction problems.
+ * The class for solvers for finding solutions to constraint satisfaction problems.
  *
  * @author Takuto Yanagida
- * @version 2023-03-25
+ * @version 2023-04-16
  */
 var Solver = /*#__PURE__*/function () {
   /**
@@ -3547,6 +3579,9 @@ var Solver = /*#__PURE__*/function () {
   function Solver(pro) {
     _classCallCheck(this, Solver);
     _defineProperty(this, "_debug", true);
+    _defineProperty(this, "_debugOutput", function (e) {
+      return console.log(e);
+    });
     /**
      * The crisp/fuzzy constraint satisfaction problem solved by the solver.
      */
@@ -3670,6 +3705,33 @@ var Solver = /*#__PURE__*/function () {
       }
       return finish;
     }
+
+    // -------------------------------------------------------------------------
+
+    /**
+     * Sets whether to output debug strings.
+     * @param boolean flag Do output if true.
+     */
+  }, {
+    key: "setDebugMode",
+    value: function setDebugMode(flag) {
+      this._debug = flag;
+    }
+
+    /**
+     * Sets a function that used for outputting debug strings.
+     * @param function fn Function called when debug output.
+     */
+  }, {
+    key: "setDebugOutput",
+    value: function setDebugOutput(fn) {
+      this._debugOutput = fn;
+    }
+  }, {
+    key: "_debugOutput",
+    value: function _debugOutput(str) {
+      if (this._debug) this._debugOutput(str);
+    }
   }]);
   return Solver;
 }();
@@ -3720,7 +3782,7 @@ function _classApplyDescriptorSet(receiver, descriptor, value) { if (descriptor.
                                                                                                                                                                                                                                                                     * Forward checking is also performed for problems with polynomial constraints.
                                                                                                                                                                                                                                                                     *
                                                                                                                                                                                                                                                                     * @author Takuto Yanagida
-                                                                                                                                                                                                                                                                    * @version 2023-04-10
+                                                                                                                                                                                                                                                                    * @version 2023-04-16
                                                                                                                                                                                                                                                                     */
 var _vars = /*#__PURE__*/new WeakMap();
 var _sol = /*#__PURE__*/new WeakMap();
@@ -3918,12 +3980,12 @@ function _branch2(level) {
   var _this$iterCount, _this$iterCount2;
   if (this._iterLimit && this._iterLimit < (_classPrivateFieldSet(this, _iterCount, (_this$iterCount = _classPrivateFieldGet(this, _iterCount), _this$iterCount2 = _this$iterCount++, _this$iterCount)), _this$iterCount2)) {
     // Failure if repeated a specified number.
-    if (this._debug) console.log('stop: number of iterations has reached the limit');
+    this._debugOutput('stop: number of iterations has reached the limit');
     return false;
   }
   if (_classPrivateFieldGet(this, _endTime) < Date.now()) {
     // Failure if time limit is exceeded.
-    if (this._debug) console.log('stop: time limit has been reached');
+    this._debugOutput('stop: time limit has been reached');
     return false;
   }
   if (level === this._pro.variableSize()) {
@@ -3998,7 +4060,7 @@ function _classApplyDescriptorSet(receiver, descriptor, value) { if (descriptor.
                                                                                                                                                                                                                                                                     * Each variable must have its own domain because it hides domain elements as branch pruning.
                                                                                                                                                                                                                                                                     *
                                                                                                                                                                                                                                                                     * @author Takuto Yanagida
-                                                                                                                                                                                                                                                                    * @version 2023-03-31
+                                                                                                                                                                                                                                                                    * @version 2023-04-16
                                                                                                                                                                                                                                                                     */
 var _vars = /*#__PURE__*/new WeakMap();
 var _sol = /*#__PURE__*/new WeakMap();
@@ -4086,16 +4148,14 @@ var MaxForwardChecking = /*#__PURE__*/function (_Solver) {
       _classPrivateFieldSet(this, _iterCount, 0);
       this._pro.clearAllVariables();
       var r = _classPrivateMethodGet(this, _branch, _branch2).call(this, 0, 0);
-      if (this._debug) {
-        if (r) {
-          console.log('stop: current degree is above the target');
-        } else {
-          if (this._iterLimit && this._iterLimit < _classPrivateFieldGet(this, _iterCount)) {
-            console.log('stop: number of iterations has reached the limit');
-          }
-          if (_classPrivateFieldGet(this, _endTime) < Date.now()) {
-            console.log('stop: time limit has been reached');
-          }
+      if (r) {
+        this._debugOutput('stop: current degree is above the target');
+      } else {
+        if (this._iterLimit && this._iterLimit < _classPrivateFieldGet(this, _iterCount)) {
+          this._debugOutput('stop: number of iterations has reached the limit');
+        }
+        if (_classPrivateFieldGet(this, _endTime) < Date.now()) {
+          this._debugOutput('stop: time limit has been reached');
         }
       }
       for (var i = 0; i < _classPrivateFieldGet(this, _sol).size(); ++i) {
@@ -4120,7 +4180,7 @@ function _branch2(level, vioCount) {
       var _this$_targetDeg;
       _classPrivateFieldSet(this, _maxVioCount, vcs);
       _classPrivateFieldGet(this, _sol).setProblem(this._pro);
-      if (this._debug) console.log("   refreshed ".concat(_classPrivateFieldGet(this, _maxVioCount)));
+      this._debugOutput("   refreshed ".concat(_classPrivateFieldGet(this, _maxVioCount)));
       if (((_this$_targetDeg = this._targetDeg) !== null && _this$_targetDeg !== void 0 ? _this$_targetDeg : 1) <= this._pro.satisfiedConstraintRate()) return true;
     }
     return false;
@@ -4248,7 +4308,7 @@ function _classPrivateMethodGet(receiver, privateSet, fn) { if (!privateSet.has(
                                                                                                                                                                                     * Class implements the local changes method.
                                                                                                                                                                                     *
                                                                                                                                                                                     * @author Takuto Yanagida
-                                                                                                                                                                                    * @version 2023-04-11
+                                                                                                                                                                                    * @version 2023-04-16
                                                                                                                                                                                     */
 var _iterCount = /*#__PURE__*/new WeakMap();
 var _endTime = /*#__PURE__*/new WeakMap();
@@ -4479,7 +4539,7 @@ function _lcValue2(V1, V2, v, val) {
   var V3 = _classPrivateMethodGet(this, _createNewV, _createNewV2).call(this, V1_V2, v, val);
   var T = _classStaticPrivateMethodGet(LocalChanges, LocalChanges, _setMinusSet).call(LocalChanges, V1_V2, V3);
   if (!_classPrivateMethodGet(this, _isConsistent, _isConsistent2).call(this, T, v, val)) {
-    if (this._debug) console.log('bug');
+    this._debugOutput('bug');
   }
   var _iterator11 = _createForOfIteratorHelper(V3),
     _step11;
@@ -4515,24 +4575,22 @@ function _lcVariable2(V1, V2, v, d) {
 function _lcVariables2(V1, V2, V3) {
   var _this$_targetDeg;
   var _this$iterCount, _this$iterCount2;
-  if (this._debug) {
-    console.log("V1 ".concat(V1.size, ", V2' ").concat(V2.size, ", V3' ").concat(V3.size));
-  }
+  this._debugOutput("V1 ".concat(V1.size, ", V2' ").concat(V2.size, ", V3' ").concat(V3.size));
   if (((_this$_targetDeg = this._targetDeg) !== null && _this$_targetDeg !== void 0 ? _this$_targetDeg : 1) <= this._pro.satisfiedConstraintRate()) {
     // Success if violation rate improves from specified
-    if (this._debug) console.log('stop: current degree is above the target');
+    this._debugOutput('stop: current degree is above the target');
     _classPrivateFieldSet(this, _globalReturn, true);
     return true;
   }
   if (this._iterLimit && this._iterLimit < (_classPrivateFieldSet(this, _iterCount, (_this$iterCount = _classPrivateFieldGet(this, _iterCount), _this$iterCount2 = _this$iterCount++, _this$iterCount)), _this$iterCount2)) {
     // Failure if repeated a specified number
-    if (this._debug) console.log('stop: number of iterations has reached the limit');
+    this._debugOutput('stop: number of iterations has reached the limit');
     _classPrivateFieldSet(this, _globalReturn, true);
     return false;
   }
   if (_classPrivateFieldGet(this, _endTime) < Date.now()) {
     // Failure if time limit is exceeded
-    if (this._debug) console.log('stop: time limit has been reached');
+    this._debugOutput('stop: time limit has been reached');
     _classPrivateFieldSet(this, _globalReturn, true);
     return false;
   }
@@ -4601,7 +4659,7 @@ function _classPrivateMethodGet(receiver, privateSet, fn) { if (!privateSet.has(
                                                                                                                                                                                     * The implementation is optimized by converting recursive calls to loops.
                                                                                                                                                                                     *
                                                                                                                                                                                     * @author Takuto Yanagida
-                                                                                                                                                                                    * @version 2023-04-11
+                                                                                                                                                                                    * @version 2023-04-16
                                                                                                                                                                                     */
 var _iterCount = /*#__PURE__*/new WeakMap();
 var _endTime = /*#__PURE__*/new WeakMap();
@@ -4862,24 +4920,22 @@ function _lcVariables2(V1, V2, V3) {
 
   while (true) {
     var _this$iterCount, _this$iterCount2, _this$_targetDeg;
-    if (this._debug) {
-      console.log("V1 ".concat(V1.size, ", V2' ").concat(V2.size, ", V3' ").concat(V3.size));
-    }
+    this._debugOutput("V1 ".concat(V1.size, ", V2' ").concat(V2.size, ", V3' ").concat(V3.size));
     if (((_this$_targetDeg = this._targetDeg) !== null && _this$_targetDeg !== void 0 ? _this$_targetDeg : 1) <= this._pro.satisfiedConstraintRate()) {
       // Success if violation rate improves from specified
-      if (this._debug) console.log('stop: current degree is above the target');
+      this._debugOutput('stop: current degree is above the target');
       _classPrivateFieldSet(this, _globalReturn, true);
       return true;
     }
     if (this._iterLimit && this._iterLimit < (_classPrivateFieldSet(this, _iterCount, (_this$iterCount = _classPrivateFieldGet(this, _iterCount), _this$iterCount2 = _this$iterCount++, _this$iterCount)), _this$iterCount2)) {
       // Failure if repeated a specified number
-      if (this._debug) console.log('stop: number of iterations has reached the limit');
+      this._debugOutput('stop: number of iterations has reached the limit');
       _classPrivateFieldSet(this, _globalReturn, true);
       return false;
     }
     if (_classPrivateFieldGet(this, _endTime) < Date.now()) {
       // Failure if time limit is exceeded
-      if (this._debug) console.log('stop: time limit has been reached');
+      this._debugOutput('stop: time limit has been reached');
       _classPrivateFieldSet(this, _globalReturn, true);
       return false;
     }
@@ -4988,26 +5044,26 @@ var Breakout = /*#__PURE__*/function (_Solver) {
         var vc = this._pro.violatingConstraints();
         if (((_this$_targetDeg = this._targetDeg) !== null && _this$_targetDeg !== void 0 ? _this$_targetDeg : 1) <= this._pro.satisfiedConstraintRate()) {
           // Success if violation rate improves from specified
-          if (this._debug) console.log('stop: current degree is above the target');
+          this._debugOutput('stop: current degree is above the target');
           return true;
         }
         if (this._iterLimit && this._iterLimit < iterCount++) {
           // Failure if repeated a specified number
-          if (this._debug) console.log('stop: number of iterations has reached the limit');
+          this._debugOutput('stop: number of iterations has reached the limit');
           return false;
         }
         if (endTime < Date.now()) {
           // Failure if time limit is exceeded
-          if (this._debug) console.log('stop: time limit has been reached');
+          this._debugOutput('stop: time limit has been reached');
           return false;
         }
-        if (this._debug) console.log(vc.length + ' violations');
+        this._debugOutput(vc.length + ' violations');
         _classPrivateMethodGet(this, _findCandidates, _findCandidates2).call(this, _classPrivateMethodGet(this, _listViolatingVariables, _listViolatingVariables2).call(this, vc), canList);
         if (0 < canList.size()) {
           var e = _classPrivateFieldGet(this, _isRandom) ? canList.arbitraryAssignment() : canList.get(0);
           e.apply();
           canList.clear();
-          if (this._debug) console.log('\t' + e);
+          this._debugOutput('\t' + e);
         } else {
           var _iterator2 = _createForOfIteratorHelper(vc),
             _step2;
@@ -5021,7 +5077,7 @@ var Breakout = /*#__PURE__*/function (_Solver) {
           } finally {
             _iterator2.f();
           }
-          if (this._debug) console.log('breakout');
+          this._debugOutput('breakout');
         }
       }
     }
@@ -5227,12 +5283,12 @@ var GENET = /*#__PURE__*/function (_Solver) {
       while (true) {
         if (this._iterLimit && this._iterLimit < iterCount++) {
           // Failure if repeated a specified number
-          if (this._debug) console.log('stop: number of iterations has reached the limit');
+          this._debugOutput('stop: number of iterations has reached the limit');
           break;
         }
         if (endTime < Date.now()) {
           // Failure if time limit is exceeded
-          if (this._debug) console.log('stop: time limit has been reached');
+          this._debugOutput('stop: time limit has been reached');
           break;
         }
         var modified = false;
@@ -5282,11 +5338,11 @@ var GENET = /*#__PURE__*/function (_Solver) {
             var _this$_targetDeg;
             // If it's a better assignment than ever, save it.
             cur = d;
-            if (this._debug) console.log("satisfied constraint rate: ".concat(d));
+            this._debugOutput("satisfied constraint rate: ".concat(d));
             sol.setProblem(this._pro);
             if ((_this$_targetDeg = this._targetDeg) !== null && _this$_targetDeg !== void 0 ? _this$_targetDeg : 1 <= cur) {
               // Success if violation rate improves from specified
-              if (this._debug) console.log('stop: current degree is above the target');
+              this._debugOutput('stop: current degree is above the target');
               sol.apply();
               return true;
             }
@@ -5306,7 +5362,7 @@ var GENET = /*#__PURE__*/function (_Solver) {
 }(_solver.Solver);
 exports.GENET = GENET;
 function _createNetwork2() {
-  if (this._debug) console.log('network creation start');
+  this._debugOutput('network creation start');
   var cons = [];
   var _iterator7 = _createForOfIteratorHelper(this._pro.variables()),
     _step7;
@@ -5389,7 +5445,7 @@ function _createNetwork2() {
     _iterator9.f();
   }
   _classPrivateFieldSet(this, _connections, cons);
-  if (this._debug) console.log('network creation complete');
+  this._debugOutput('network creation complete');
   return true;
 }
 function _shuffle2(is) {
@@ -5650,7 +5706,7 @@ function _classApplyDescriptorGet(receiver, descriptor) { if (descriptor.get) { 
                                                                                                                                                     * Similar to SRS 3, the repair algorithm searches for an assignment that satisfies itself without reducing the number of satisfactions of its neighbors.
                                                                                                                                                     *
                                                                                                                                                     * @author Takuto Yanagida
-                                                                                                                                                    * @version 2023-04-11
+                                                                                                                                                    * @version 2023-04-16
                                                                                                                                                     */
 var _closedList = /*#__PURE__*/new WeakMap();
 var _openList = /*#__PURE__*/new WeakMap();
@@ -5762,7 +5818,7 @@ function _getNeighborConstraints2(c) {
   return _classPrivateFieldGet(this, _neighborConstraints)[index];
 }
 function _repair2(c0) {
-  if (this._debug) console.log('repair');
+  this._debugOutput('repair');
   var candidates = new _assignmentList.AssignmentList();
   var maxDiff = 0;
   var _iterator5 = _createForOfIteratorHelper(c0),
@@ -5833,7 +5889,7 @@ function _repair2(c0) {
   if (candidates.size() > 0) {
     var e = _classPrivateFieldGet(this, _isRandom) ? candidates.arbitraryAssignment() : candidates.get(0);
     e.apply();
-    if (this._debug) console.log('\t' + e);
+    this._debugOutput('\t' + e);
     return true;
   }
   return false;
@@ -5870,7 +5926,7 @@ function _shrink2(node, c_stars) {
   }
 }
 function _spread2(node) {
-  if (this._debug) console.log('spread');
+  this._debugOutput('spread');
   _classPrivateFieldGet(this, _closedList).add(node);
   var _iterator10 = _createForOfIteratorHelper(_classPrivateMethodGet(this, _getNeighborConstraints, _getNeighborConstraints2).call(this, node.getObject())),
     _step10;
@@ -5892,7 +5948,7 @@ function _spread2(node) {
   }
 }
 function _srs2(c_stars) {
-  if (this._debug) console.log('srs');
+  this._debugOutput('srs');
   var endTime = this._timeLimit === null ? Number.MAX_VALUE : Date.now() + this._timeLimit;
   var iterCount = 0;
   _classPrivateFieldGet(this, _closedList).clear();
@@ -5913,17 +5969,17 @@ function _srs2(c_stars) {
     var _this$_targetDeg;
     if (((_this$_targetDeg = this._targetDeg) !== null && _this$_targetDeg !== void 0 ? _this$_targetDeg : 1) <= this._pro.satisfiedConstraintRate()) {
       // Success if violation rate improves from specified
-      if (this._debug) console.log('stop: current degree is above the target');
+      this._debugOutput('stop: current degree is above the target');
       return true;
     }
     if (this._iterLimit && this._iterLimit < iterCount++) {
       // Failure if repeated a specified number
-      if (this._debug) console.log('stop: number of iterations has reached the limit');
+      this._debugOutput('stop: number of iterations has reached the limit');
       return false;
     }
     if (endTime < Date.now()) {
       // Failure if time limit is exceeded
-      if (this._debug) console.log('stop: time limit has been reached');
+      this._debugOutput('stop: time limit has been reached');
       return false;
     }
     var node = _classPrivateFieldGet(this, _openList).values().next().value;
@@ -6036,7 +6092,11 @@ var _crispSrs = require("../src/solver/crisp/_crisp-srs3.js");
 var COUNT = 1; // Interaction count
 var QUEEN_NUM = 20; // Number of queens
 
-function main() {
+document.addEventListener('DOMContentLoaded', function () {
+  var output = document.getElementById('output');
+  var log = function log(e) {
+    return output.value += "".concat(e, "\n");
+  };
   var sum_time = 0;
   var sum_rate = 0;
   for (var i = 0; i < COUNT; ++i) {
@@ -6053,19 +6113,20 @@ function main() {
     var s = new _crispSrs.CrispSRS3(p);
     // s.setTargetRate(null);
     s.setTimeLimit(10000);
+    s.setDebugOutput(log);
     var res = s.solve();
     var ct = Date.now() - t; // Stop time measurement
     var cr = p.satisfiedConstraintRate();
-    console.log("solver: ".concat(s.name(), "   ").concat(res ? 'success' : 'failure'));
-    console.log("time: ".concat(ct, "   rate: ").concat(cr));
+    log("solver: ".concat(s.name(), "   ").concat(res ? 'success' : 'failure'));
+    log("time: ".concat(ct, "   rate: ").concat(cr));
+    nq.setDebugOutput(log);
     nq.printResult(p);
     sum_time += ct;
     sum_rate += cr;
   }
-  console.log("average time: ".concat(sum_time / COUNT, "   average rate: ").concat(sum_rate / COUNT));
-}
-main();
-},{"../src/problem/_problem-crisp.js":"../src/problem/_problem-crisp.js","../src/model/_n-queens.js":"../src/model/_n-queens.js","../src/solver/crisp/_forward-checking.js":"../src/solver/crisp/_forward-checking.js","../src/solver/crisp/_max-forward-checking.js":"../src/solver/crisp/_max-forward-checking.js","../src/solver/crisp/_local-changes.js":"../src/solver/crisp/_local-changes.js","../src/solver/crisp/_local-changes-ex.js":"../src/solver/crisp/_local-changes-ex.js","../src/solver/crisp/_breakout.js":"../src/solver/crisp/_breakout.js","../src/solver/crisp/_genet.js":"../src/solver/crisp/_genet.js","../src/solver/crisp/_crisp-srs3.js":"../src/solver/crisp/_crisp-srs3.js"}],"../../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+  log("average time: ".concat(sum_time / COUNT, "   average rate: ").concat(sum_rate / COUNT));
+});
+},{"../src/problem/_problem-crisp.js":"../src/problem/_problem-crisp.js","../src/model/_n-queens.js":"../src/model/_n-queens.js","../src/solver/crisp/_forward-checking.js":"../src/solver/crisp/_forward-checking.js","../src/solver/crisp/_max-forward-checking.js":"../src/solver/crisp/_max-forward-checking.js","../src/solver/crisp/_local-changes.js":"../src/solver/crisp/_local-changes.js","../src/solver/crisp/_local-changes-ex.js":"../src/solver/crisp/_local-changes-ex.js","../src/solver/crisp/_breakout.js":"../src/solver/crisp/_breakout.js","../src/solver/crisp/_genet.js":"../src/solver/crisp/_genet.js","../src/solver/crisp/_crisp-srs3.js":"../src/solver/crisp/_crisp-srs3.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -6090,7 +6151,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58195" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63173" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
@@ -6234,5 +6295,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["../../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","n-queens.js"], null)
+},{}]},{},["../node_modules/parcel-bundler/src/builtins/hmr-runtime.js","n-queens.js"], null)
 //# sourceMappingURL=/n-queens.a1d03028.js.map

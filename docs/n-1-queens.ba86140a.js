@@ -2713,30 +2713,35 @@ var Problem = /*#__PURE__*/function () {
   return Problem;
 }();
 exports.Problem = Problem;
-},{"./_variable.js":"../src/problem/_variable.js","./_domain-ranged.js":"../src/problem/_domain-ranged.js","./_domain-arbitrary.js":"../src/problem/_domain-arbitrary.js","./_constraint.js":"../src/problem/_constraint.js","./_constraint-1.js":"../src/problem/_constraint-1.js","./_constraint-2.js":"../src/problem/_constraint-2.js","./_constraint-3.js":"../src/problem/_constraint-3.js"}],"../src/util/_problem-factory.js":[function(require,module,exports) {
+},{"./_variable.js":"../src/problem/_variable.js","./_domain-ranged.js":"../src/problem/_domain-ranged.js","./_domain-arbitrary.js":"../src/problem/_domain-arbitrary.js","./_constraint.js":"../src/problem/_constraint.js","./_constraint-1.js":"../src/problem/_constraint-1.js","./_constraint-2.js":"../src/problem/_constraint-2.js","./_constraint-3.js":"../src/problem/_constraint-3.js"}],"../src/model/_model.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.ProblemFactory = void 0;
+exports.Model = void 0;
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 function _toPropertyKey(arg) { var key = _toPrimitive(arg, "string"); return _typeof(key) === "symbol" ? key : String(key); }
 function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input === null) return input; var prim = input[Symbol.toPrimitive]; if (prim !== undefined) { var res = prim.call(input, hint || "default"); if (_typeof(res) !== "object") return res; throw new TypeError("@@toPrimitive must return a primitive value."); } return (hint === "string" ? String : Number)(input); }
 /**
- * An interface that provides a factory method to generate constraint satisfaction problems.
+ * The class for models that provides a factory method to generate constraint satisfaction problems.
  *
  * @author Takuto Yanagida
- * @version 2023-03-25
+ * @version 2023-04-16
  */
-var ProblemFactory = /*#__PURE__*/function () {
-  function ProblemFactory() {
-    _classCallCheck(this, ProblemFactory);
+var Model = /*#__PURE__*/function () {
+  function Model() {
+    _classCallCheck(this, Model);
+    _defineProperty(this, "_debug", true);
+    _defineProperty(this, "_debugOutput", function (e) {
+      return console.log(e);
+    });
   }
-  _createClass(ProblemFactory, [{
+  _createClass(Model, [{
     key: "createProblem",
     value:
     /**
@@ -2753,10 +2758,37 @@ var ProblemFactory = /*#__PURE__*/function () {
   }, {
     key: "isFuzzy",
     value: function isFuzzy() {}
+
+    // -------------------------------------------------------------------------
+
+    /**
+     * Sets whether to output debug strings.
+     * @param boolean flag Do output if true.
+     */
+  }, {
+    key: "setDebugMode",
+    value: function setDebugMode(flag) {
+      this._debug = flag;
+    }
+
+    /**
+     * Sets a function that used for outputting debug strings.
+     * @param function fn Function called when debug output.
+     */
+  }, {
+    key: "setDebugOutput",
+    value: function setDebugOutput(fn) {
+      this._debugOutput = fn;
+    }
+  }, {
+    key: "_debugOutput",
+    value: function _debugOutput(str) {
+      if (this._debug) this._debugOutput(str);
+    }
   }]);
-  return ProblemFactory;
+  return Model;
 }();
-exports.ProblemFactory = ProblemFactory;
+exports.Model = Model;
 },{}],"../src/model/_n-1-queens.js":[function(require,module,exports) {
 "use strict";
 
@@ -2764,8 +2796,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.N_1_queens = void 0;
-var _problemFactory = require("../util/_problem-factory.js");
 var _relationFuzzy = require("../problem/_relation-fuzzy.js");
+var _model = require("./_model.js");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
@@ -2791,11 +2823,11 @@ function _classApplyDescriptorSet(receiver, descriptor, value) { if (descriptor.
                                                                                                                                                                                                                                                                     * If two queens are in a position to be taken, the farther apart they are, the higher the satisfaction degree.
                                                                                                                                                                                                                                                                     *
                                                                                                                                                                                                                                                                     * @author Takuto Yanagida
-                                                                                                                                                                                                                                                                    * @version 2023-03-31
+                                                                                                                                                                                                                                                                    * @version 2023-04-16
                                                                                                                                                                                                                                                                     */
 var _size = /*#__PURE__*/new WeakMap();
-var N_1_queens = /*#__PURE__*/function (_ProblemFactory) {
-  _inherits(N_1_queens, _ProblemFactory);
+var N_1_queens = /*#__PURE__*/function (_Model) {
+  _inherits(N_1_queens, _Model);
   var _super = _createSuper(N_1_queens);
   function N_1_queens(queenSize) {
     var _this;
@@ -2865,12 +2897,12 @@ var N_1_queens = /*#__PURE__*/function (_ProblemFactory) {
             }
           }
         }
-        console.log(l);
+        this._debugOutput(l);
       }
     }
   }]);
   return N_1_queens;
-}(_problemFactory.ProblemFactory);
+}(_model.Model);
 exports.N_1_queens = N_1_queens;
 var _dist = /*#__PURE__*/new WeakMap();
 var _size2 = /*#__PURE__*/new WeakMap();
@@ -2902,7 +2934,7 @@ var FuzzyQueenRelation = /*#__PURE__*/function (_FuzzyRelation) {
   }]);
   return FuzzyQueenRelation;
 }(_relationFuzzy.FuzzyRelation);
-},{"../util/_problem-factory.js":"../src/util/_problem-factory.js","../problem/_relation-fuzzy.js":"../src/problem/_relation-fuzzy.js"}],"../src/util/_assignment.js":[function(require,module,exports) {
+},{"../problem/_relation-fuzzy.js":"../src/problem/_relation-fuzzy.js","./_model.js":"../src/model/_model.js"}],"../src/util/_assignment.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3328,10 +3360,10 @@ function _classExtractFieldDescriptor(receiver, privateMap, action) { if (!priva
 function _classApplyDescriptorGet(receiver, descriptor) { if (descriptor.get) { return descriptor.get.call(receiver); } return descriptor.value; }
 var _listener = /*#__PURE__*/new WeakMap();
 /**
- * The interface of solvers for finding solutions to constraint satisfaction problems.
+ * The class for solvers for finding solutions to constraint satisfaction problems.
  *
  * @author Takuto Yanagida
- * @version 2023-03-25
+ * @version 2023-04-16
  */
 var Solver = /*#__PURE__*/function () {
   /**
@@ -3341,6 +3373,9 @@ var Solver = /*#__PURE__*/function () {
   function Solver(pro) {
     _classCallCheck(this, Solver);
     _defineProperty(this, "_debug", true);
+    _defineProperty(this, "_debugOutput", function (e) {
+      return console.log(e);
+    });
     /**
      * The crisp/fuzzy constraint satisfaction problem solved by the solver.
      */
@@ -3463,6 +3498,33 @@ var Solver = /*#__PURE__*/function () {
         _iterator.f();
       }
       return finish;
+    }
+
+    // -------------------------------------------------------------------------
+
+    /**
+     * Sets whether to output debug strings.
+     * @param boolean flag Do output if true.
+     */
+  }, {
+    key: "setDebugMode",
+    value: function setDebugMode(flag) {
+      this._debug = flag;
+    }
+
+    /**
+     * Sets a function that used for outputting debug strings.
+     * @param function fn Function called when debug output.
+     */
+  }, {
+    key: "setDebugOutput",
+    value: function setDebugOutput(fn) {
+      this._debugOutput = fn;
+    }
+  }, {
+    key: "_debugOutput",
+    value: function _debugOutput(str) {
+      if (this._debug) this._debugOutput(str);
     }
   }]);
   return Solver;
@@ -3687,20 +3749,18 @@ var FuzzyForwardChecking = /*#__PURE__*/function (_Solver) {
         if (bc === FuzzyForwardChecking.TERMINATE) {
           var _this$iterCount5, _this$iterCount6;
           if (this._iterLimit && this._iterLimit < (_classPrivateFieldSet(this, _iterCount, (_this$iterCount5 = _classPrivateFieldGet(this, _iterCount), _this$iterCount6 = _this$iterCount5++, _this$iterCount5)), _this$iterCount6)) {
-            if (this._debug) console.log('stop: number of iterations has reached the limit');
+            this._debugOutput('stop: number of iterations has reached the limit');
             break;
           }
           if (_classPrivateFieldGet(this, _endTime) < Date.now()) {
-            if (this._debug) console.log('stop: time limit has been reached');
+            this._debugOutput('stop: time limit has been reached');
             break;
           }
         }
         if (_classPrivateFieldGet(this, _sol).isEmpty()) {
           break;
         }
-        if (this._debug) {
-          console.log("\tfound a solution: ".concat(_classPrivateFieldGet(this, _solWorstDeg)));
-        }
+        this._debugOutput("\tfound a solution: ".concat(_classPrivateFieldGet(this, _solWorstDeg)));
         if (this.foundSolution(_classPrivateFieldGet(this, _sol), _classPrivateFieldGet(this, _solWorstDeg))) {
           // Call hook
           success = true;
@@ -3712,7 +3772,7 @@ var FuzzyForwardChecking = /*#__PURE__*/function (_Solver) {
           _classPrivateFieldSet(this, _solWorstDeg, _classPrivateFieldGet(this, _solWorstDeg) + _classPrivateFieldGet(this, _degInc)); // Find the next solution within the limit.
         } else if (this._targetDeg <= _classPrivateFieldGet(this, _solWorstDeg)) {
           // The current degree exceeded the specified degree.
-          if (this._debug) console.log('stop: current degree is above the target');
+          this._debugOutput('stop: current degree is above the target');
           success = true;
           break;
         }
@@ -4375,11 +4435,11 @@ var FuzzyForwardCheckingBc = /*#__PURE__*/function (_Solver) {
         if (bc === FuzzyForwardCheckingBc.TERMINATE) {
           var _this$iterCount5, _this$iterCount6;
           if (this._iterLimit && this._iterLimit < (_classPrivateFieldSet(this, _iterCount, (_this$iterCount5 = _classPrivateFieldGet(this, _iterCount), _this$iterCount6 = _this$iterCount5++, _this$iterCount5)), _this$iterCount6)) {
-            if (this._debug) console.log('stop: number of iterations has reached the limit');
+            this._debugOutput('stop: number of iterations has reached the limit');
             break;
           }
           if (_classPrivateFieldGet(this, _endTime) < Date.now()) {
-            if (this._debug) console.log('stop: time limit has been reached');
+            this._debugOutput('stop: time limit has been reached');
             break;
           }
         }
@@ -4389,9 +4449,7 @@ var FuzzyForwardCheckingBc = /*#__PURE__*/function (_Solver) {
         sol.setAssignmentList(_classPrivateFieldGet(this, _sol));
         _classPrivateFieldGet(this, _sol).clear(); // Clear it so that if the solution is not found in the next search, it will be known.
 
-        if (this._debug) {
-          console.log("\tfound a solution: ".concat(_classPrivateFieldGet(this, _solWorstDeg)));
-        }
+        this._debugOutput("\tfound a solution: ".concat(_classPrivateFieldGet(this, _solWorstDeg)));
         if (this.foundSolution(sol, _classPrivateFieldGet(this, _solWorstDeg))) {
           // Call hook
           success = true;
@@ -4404,7 +4462,7 @@ var FuzzyForwardCheckingBc = /*#__PURE__*/function (_Solver) {
           _classPrivateFieldSet(this, _solWorstDeg, _classPrivateFieldGet(this, _solWorstDeg) + (_classPrivateFieldGet(this, _solWorstDeg) + _classPrivateFieldGet(this, _degInc) > 1 ? 0 : _classPrivateFieldGet(this, _degInc))); // Find the next solution within the limit.
         } else if (this._targetDeg <= _classPrivateFieldGet(this, _solWorstDeg)) {
           // The current degree exceeded the specified degree.
-          if (this._debug) console.log("stop: current degree is above the target");
+          this._debugOutput("stop: current degree is above the target");
           success = true;
           break;
         }
@@ -4688,7 +4746,7 @@ function _classPrivateMethodGet(receiver, privateSet, fn) { if (!privateSet.has(
                                                                                                                                                                                     * A class that implements the flexible local changes method.
                                                                                                                                                                                     *
                                                                                                                                                                                     * @author Takuto Yanagida
-                                                                                                                                                                                    * @version 2023-04-11
+                                                                                                                                                                                    * @version 2023-04-16
                                                                                                                                                                                     */
 var _lt = /*#__PURE__*/new WeakMap();
 var _lb = /*#__PURE__*/new WeakMap();
@@ -4991,24 +5049,22 @@ function _flcVariable2(X1, X2, xi, consX1, consX12, rc) {
 }
 function _flcVariables2(X1, X2, X3, consX1, consX12, rc) {
   var _this$iterCount, _this$iterCount2;
-  if (this._debug) {
-    console.log("X1 ".concat(X1.size, ", X2' ").concat(X2.size, ", X3' ").concat(X3.size));
-  }
+  this._debugOutput("X1 ".concat(X1.size, ", X2' ").concat(X2.size, ", X3' ").concat(X3.size));
   if (this._targetDeg !== null && this._targetDeg <= this._pro.worstSatisfactionDegree()) {
     // Success if the degree improves from specified
-    if (this._debug) console.log('stop: current degree is above the target');
+    this._debugOutput('stop: current degree is above the target');
     _classPrivateFieldSet(this, _globalReturn, 1);
     return consX12;
   }
   if (this._iterLimit && this._iterLimit < (_classPrivateFieldSet(this, _iterCount, (_this$iterCount = _classPrivateFieldGet(this, _iterCount), _this$iterCount2 = _this$iterCount++, _this$iterCount)), _this$iterCount2)) {
     // Failure if repeated a specified number
-    if (this._debug) console.log('stop: number of iterations has reached the limit');
+    this._debugOutput('stop: number of iterations has reached the limit');
     _classPrivateFieldSet(this, _globalReturn, 0);
     return consX12;
   }
   if (_classPrivateFieldGet(this, _endTime) < Date.now()) {
     // Failure if time limit is exceeded
-    if (this._debug) console.log('stop: time limit has been reached');
+    this._debugOutput('stop: time limit has been reached');
     _classPrivateFieldSet(this, _globalReturn, 0);
     return consX12;
   }
@@ -5554,24 +5610,22 @@ function _flcVariables2(X1, X2, X3, consX1, consX12, rc) {
 
   while (true) {
     var _this$iterCount, _this$iterCount2;
-    if (this._debug) {
-      console.log("X1 ".concat(X1.size, ", X2' ").concat(X2.size, ", X3' ").concat(X3.size));
-    }
+    this._debugOutput("X1 ".concat(X1.size, ", X2' ").concat(X2.size, ", X3' ").concat(X3.size));
     if (this._targetDeg !== null && this._targetDeg <= this._pro.worstSatisfactionDegree()) {
       // Success if the degree improves from specified
-      if (this._debug) console.log('stop: current degree is above the target');
+      this._debugOutput('stop: current degree is above the target');
       _classPrivateFieldSet(this, _globalReturn, 1);
       return consX12;
     }
     if (this._iterLimit && this._iterLimit < (_classPrivateFieldSet(this, _iterCount, (_this$iterCount = _classPrivateFieldGet(this, _iterCount), _this$iterCount2 = _this$iterCount++, _this$iterCount)), _this$iterCount2)) {
       // Failure if repeated a specified number
-      if (this._debug) console.log('stop: number of iterations has reached the limit');
+      this._debugOutput('stop: number of iterations has reached the limit');
       _classPrivateFieldSet(this, _globalReturn, 0);
       return consX12;
     }
     if (_classPrivateFieldGet(this, _endTime) < Date.now()) {
       // Failure if time limit is exceeded
-      if (this._debug) console.log('stop: time limit has been reached');
+      this._debugOutput('stop: time limit has been reached');
       _classPrivateFieldSet(this, _globalReturn, 0);
       return consX12;
     }
@@ -5881,20 +5935,20 @@ var FuzzyBreakout = /*#__PURE__*/function (_Solver) {
           wsd = _this$_pro$constraint2[1];
         if (this._targetDeg !== null && this._targetDeg <= wsd) {
           // Success if the degree improves from specified
-          if (this._debug) console.log('stop: current degree is above the target');
+          this._debugOutput('stop: current degree is above the target');
           return true;
         }
         if (this._iterLimit && this._iterLimit < iterCount++) {
           // Failure if repeated a specified number
-          if (this._debug) console.log('stop: number of iterations has reached the limit');
+          this._debugOutput('stop: number of iterations has reached the limit');
           break;
         }
         if (endTime < Date.now()) {
           // Failure if time limit is exceeded
-          if (this._debug) console.log('stop: time limit has been reached');
+          this._debugOutput('stop: time limit has been reached');
           break;
         }
-        if (this._debug) console.log('worst satisfaction degree: ' + wsd);
+        this._debugOutput('worst satisfaction degree: ' + wsd);
         if (_classPrivateFieldGet(this, _lastSolDeg) < wsd) {
           sol.setProblem(this._pro);
           _classPrivateFieldSet(this, _lastSolDeg, wsd);
@@ -5908,7 +5962,7 @@ var FuzzyBreakout = /*#__PURE__*/function (_Solver) {
           var e = _classPrivateFieldGet(this, _isRandom) ? canList.arbitraryAssignment() : canList.get(0);
           e.apply();
           canList.clear();
-          if (this._debug) console.log('\t' + e);
+          this._debugOutput('\t' + e);
         } else {
           var _iterator2 = _createForOfIteratorHelper(vc),
             _step2;
@@ -5922,7 +5976,7 @@ var FuzzyBreakout = /*#__PURE__*/function (_Solver) {
           } finally {
             _iterator2.f();
           }
-          if (this._debug) console.log('breakout');
+          this._debugOutput('breakout');
         }
       }
       if (this._targetDeg === null && deg < this._pro.worstSatisfactionDegree()) return true;
@@ -6082,7 +6136,7 @@ function _classPrivateMethodGet(receiver, privateSet, fn) { if (!privateSet.has(
                                                                                                                                                                                     * CSPs and FCSPs (but only Binary (F)CSPs) is supported.
                                                                                                                                                                                     *
                                                                                                                                                                                     * @author Takuto Yanagida
-                                                                                                                                                                                    * @version 2023-04-10
+                                                                                                                                                                                    * @version 2023-04-16
                                                                                                                                                                                     */
 var _clusters = /*#__PURE__*/new WeakMap();
 var _connections = /*#__PURE__*/new WeakMap();
@@ -6131,12 +6185,12 @@ var FuzzyGENET = /*#__PURE__*/function (_Solver) {
       while (true) {
         if (this._iterLimit && this._iterLimit < iterCount++) {
           // Failure if repeated a specified number
-          if (this._debug) console.log('stop: number of iterations has reached the limit');
+          this._debugOutput('stop: number of iterations has reached the limit');
           break;
         }
         if (endTime < Date.now()) {
           // Failure if time limit is exceeded
-          if (this._debug) console.log('stop: time limit has been reached');
+          this._debugOutput('stop: time limit has been reached');
           break;
         }
         var modified = false;
@@ -6186,7 +6240,7 @@ var FuzzyGENET = /*#__PURE__*/function (_Solver) {
           if (cur < d) {
             // If it's a better assignment than ever, save it.
             cur = d;
-            if (this._debug) console.log("worst satisfaction degree: ".concat(d));
+            this._debugOutput("worst satisfaction degree: ".concat(d));
             sol.setProblem(this._pro);
             if (this.foundSolution(sol, d)) {
               // Call hook
@@ -6198,7 +6252,7 @@ var FuzzyGENET = /*#__PURE__*/function (_Solver) {
               success = true;
             } else if (this._targetDeg <= cur) {
               // Satisfaction degree is specified.
-              if (this._debug) console.log('stop: current degree is above the target');
+              this._debugOutput('stop: current degree is above the target');
               success = true;
               break;
             }
@@ -6218,7 +6272,7 @@ var FuzzyGENET = /*#__PURE__*/function (_Solver) {
 }(_solver.Solver);
 exports.FuzzyGENET = FuzzyGENET;
 function _createNetwork2(worstDeg) {
-  if (this._debug) console.log('network creation start');
+  this._debugOutput('network creation start');
   var cons = [];
   var _iterator7 = _createForOfIteratorHelper(this._pro.variables()),
     _step7;
@@ -6301,7 +6355,7 @@ function _createNetwork2(worstDeg) {
     _iterator9.f();
   }
   _classPrivateFieldSet(this, _connections, cons);
-  if (this._debug) console.log('network creation complete');
+  this._debugOutput('network creation complete');
   return true;
 }
 function _shuffle2(is) {
@@ -6576,7 +6630,7 @@ function _classApplyDescriptorGet(receiver, descriptor) { if (descriptor.get) { 
                                                                                                                                                     * This class implements the SRS algorithm.
                                                                                                                                                     *
                                                                                                                                                     * @author Takuto Yanagida
-                                                                                                                                                    * @version 2023-04-11
+                                                                                                                                                    * @version 2023-04-16
                                                                                                                                                     */
 var _closedList = /*#__PURE__*/new WeakMap();
 var _openList = /*#__PURE__*/new WeakMap();
@@ -6679,9 +6733,7 @@ var SRS3 = /*#__PURE__*/function (_Solver) {
           break;
         }
         var solutionWorstDeg = this._pro.worstSatisfactionDegree();
-        if (this._debug) {
-          console.log("\tfound a solution: ".concat(solutionWorstDeg, "\t").concat(this._targetDeg));
-        }
+        this._debugOutput("\tfound a solution: ".concat(solutionWorstDeg, "\t").concat(this._targetDeg));
         sol.setProblem(this._pro);
         if (this.foundSolution(sol, solutionWorstDeg)) {
           // Call hook
@@ -6693,7 +6745,7 @@ var SRS3 = /*#__PURE__*/function (_Solver) {
           success = true;
         } else if (this._targetDeg <= solutionWorstDeg) {
           // The current degree exceeded the specified degree.
-          if (this._debug) console.log('stop: current degree is above the target');
+          this._debugOutput('stop: current degree is above the target');
           success = true;
           break;
         }
@@ -6723,7 +6775,7 @@ function _getNeighborConstraints2(c) {
   return _classPrivateFieldGet(this, _neighborConstraints)[index];
 }
 function _repair2(c0) {
-  if (this._debug) console.log('repair');
+  this._debugOutput('repair');
   var candidates = new _assignmentList.AssignmentList();
   var minDeg0 = c0.satisfactionDegree(); // Target c0 should certainly be an improvement over this.
   var min = this._pro.worstSatisfactionDegree(); // Lower bound of neighborhood constraints.
@@ -6782,15 +6834,15 @@ function _repair2(c0) {
   }
   if (candidates.size() > 0) {
     var e = _classPrivateFieldGet(this, _isRandom) ? candidates.arbitraryAssignment() : candidates.get(0);
-    console.log(e);
+    this._debugOutput(e);
     e.apply();
-    if (this._debug) console.log('\t' + e);
+    this._debugOutput('\t' + e);
     return true;
   }
   return false;
 }
 function _shrink2(node) {
-  if (this._debug) console.log('shrink');
+  this._debugOutput('shrink');
   var removeCStar = false;
   while (true) {
     node = node.parent();
@@ -6814,7 +6866,7 @@ function _shrink2(node) {
   }
 }
 function _spread2(node) {
-  if (this._debug) console.log('spread');
+  this._debugOutput('spread');
   _classPrivateFieldGet(this, _closedList).add(node);
   var _iterator7 = _createForOfIteratorHelper(_classPrivateMethodGet(this, _getNeighborConstraints, _getNeighborConstraints2).call(this, node.getObject())),
     _step7;
@@ -6835,7 +6887,7 @@ function _spread2(node) {
   }
 }
 function _srs2() {
-  if (this._debug) console.log('srs');
+  this._debugOutput('srs');
   var _this$_pro$constraint = this._pro.constraintsWithWorstSatisfactionDegree(),
     _this$_pro$constraint2 = _slicedToArray(_this$_pro$constraint, 1),
     wsdcs = _this$_pro$constraint2[0];
@@ -6871,12 +6923,12 @@ function _srs2() {
     var _this$iterCount, _this$iterCount2;
     if (this._iterLimit && this._iterLimit < (_classPrivateFieldSet(this, _iterCount, (_this$iterCount = _classPrivateFieldGet(this, _iterCount), _this$iterCount2 = _this$iterCount++, _this$iterCount)), _this$iterCount2)) {
       // Failure if repeated a specified number
-      if (this._debug) console.log('stop: number of iterations has reached the limit');
+      this._debugOutput('stop: number of iterations has reached the limit');
       return false;
     }
     if (_classPrivateFieldGet(this, _endTime) < Date.now()) {
       // Failure if time limit is exceeded
-      if (this._debug) console.log('stop: time limit has been reached');
+      this._debugOutput('stop: time limit has been reached');
       return false;
     }
     var node = _classPrivateFieldGet(this, _openList).values().next().value;
@@ -7001,11 +7053,11 @@ var PostStabilization = /*#__PURE__*/function () {
   _createClass(PostStabilization, null, [{
     key: "apply",
     value: function apply(p, orig) {
-      console.log('start post-stabilization');
+      this._debugOutput('start post-stabilization');
       var stabilized;
       var count = 0;
       do {
-        console.log('post-stabilization: count ' + count++);
+        this._debugOutput('post-stabilization: count ' + count++);
         stabilized = false;
         var C_min = p.worstSatisfactionDegree();
         var vars = p.variables();
@@ -7022,7 +7074,7 @@ var PostStabilization = /*#__PURE__*/function () {
           }
         }
       } while (stabilized);
-      console.log('finish post-stabilization');
+      this._debugOutput('finish post-stabilization');
       return true;
     }
   }]);
@@ -7057,7 +7109,7 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
                                                                                                                                                                                                                       * This class implements the SRS algorithm with PF.
                                                                                                                                                                                                                       *
                                                                                                                                                                                                                       * @author Takuto Yanagida
-                                                                                                                                                                                                                      * @version 2023-04-11
+                                                                                                                                                                                                                      * @version 2023-04-16
                                                                                                                                                                                                                       */
 var SRS3_PF = /*#__PURE__*/function (_SRS) {
   _inherits(SRS3_PF, _SRS);
@@ -7086,11 +7138,9 @@ var SRS3_PF = /*#__PURE__*/function (_SRS) {
       if (res) {
         _postStabilization.PostStabilization.apply(this._pro, at);
       }
-      if (this._debug) {
-        console.log("result: ".concat(res ? 'success' : 'failure'));
-        console.log("satisfaction degree: ".concat(deg, " -> ").concat(this._pro.worstSatisfactionDegree()));
-        console.log("unassigned size: ".concat(uvs, " -> ").concat(this._pro.emptyVariableSize()));
-      }
+      this._debugOutput("result: ".concat(res ? 'success' : 'failure'));
+      this._debugOutput("satisfaction degree: ".concat(deg, " -> ").concat(this._pro.worstSatisfactionDegree()));
+      this._debugOutput("unassigned size: ".concat(uvs, " -> ").concat(this._pro.emptyVariableSize()));
       return res;
     }
   }]);
@@ -7113,7 +7163,11 @@ var _srs3Pf = require("../src/solver/fuzzy/_srs3-pf.js");
 var COUNT = 1; // Interaction count
 var QUEEN_NUM = 20; // Number of queens
 
-function main() {
+document.addEventListener('DOMContentLoaded', function () {
+  var output = document.getElementById('output');
+  var log = function log(e) {
+    return output.value += "".concat(e, "\n");
+  };
   var sum_time = 0;
   var sum_degree = 0;
   for (var i = 0; i < COUNT; ++i) {
@@ -7131,19 +7185,20 @@ function main() {
     // const s = new SRS3_PF(p);
     // s.setTargetRate(null);
     s.setTimeLimit(10000);
+    s.setDebugOutput(log);
     var res = s.solve();
     var ct = Date.now() - t; // Stop time measurement
     var cd = p.worstSatisfactionDegree();
-    console.log("solver: ".concat(s.name(), "   ").concat(res ? 'success' : 'failure'));
-    console.log("trial: ".concat(i + 1, "   time: ").concat(ct, "   degree: ").concat(cd));
+    log("solver: ".concat(s.name(), "   ").concat(res ? 'success' : 'failure'));
+    log("trial: ".concat(i + 1, "   time: ").concat(ct, "   degree: ").concat(cd));
+    nq.setDebugOutput(log);
     nq.printResult(p);
     sum_time += ct;
     sum_degree += cd;
   }
-  console.log("average time: ".concat(sum_time / COUNT, "   average degree: ").concat(sum_degree / COUNT));
-}
-main();
-},{"../src/problem/_problem.js":"../src/problem/_problem.js","../src/model/_n-1-queens.js":"../src/model/_n-1-queens.js","../src/solver/fuzzy/_fuzzy-forward-checking.js":"../src/solver/fuzzy/_fuzzy-forward-checking.js","../src/solver/fuzzy/_fuzzy-forward-checking-bc.js":"../src/solver/fuzzy/_fuzzy-forward-checking-bc.js","../src/solver/fuzzy/_flexible-local-changes.js":"../src/solver/fuzzy/_flexible-local-changes.js","../src/solver/fuzzy/_flexible-local-changes-ex.js":"../src/solver/fuzzy/_flexible-local-changes-ex.js","../src/solver/fuzzy/_fuzzy-breakout.js":"../src/solver/fuzzy/_fuzzy-breakout.js","../src/solver/fuzzy/_fuzzy-genet.js":"../src/solver/fuzzy/_fuzzy-genet.js","../src/solver/fuzzy/_srs3.js":"../src/solver/fuzzy/_srs3.js","../src/solver/fuzzy/_srs3-pf.js":"../src/solver/fuzzy/_srs3-pf.js"}],"../../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+  log("average time: ".concat(sum_time / COUNT, "   average degree: ").concat(sum_degree / COUNT));
+});
+},{"../src/problem/_problem.js":"../src/problem/_problem.js","../src/model/_n-1-queens.js":"../src/model/_n-1-queens.js","../src/solver/fuzzy/_fuzzy-forward-checking.js":"../src/solver/fuzzy/_fuzzy-forward-checking.js","../src/solver/fuzzy/_fuzzy-forward-checking-bc.js":"../src/solver/fuzzy/_fuzzy-forward-checking-bc.js","../src/solver/fuzzy/_flexible-local-changes.js":"../src/solver/fuzzy/_flexible-local-changes.js","../src/solver/fuzzy/_flexible-local-changes-ex.js":"../src/solver/fuzzy/_flexible-local-changes-ex.js","../src/solver/fuzzy/_fuzzy-breakout.js":"../src/solver/fuzzy/_fuzzy-breakout.js","../src/solver/fuzzy/_fuzzy-genet.js":"../src/solver/fuzzy/_fuzzy-genet.js","../src/solver/fuzzy/_srs3.js":"../src/solver/fuzzy/_srs3.js","../src/solver/fuzzy/_srs3-pf.js":"../src/solver/fuzzy/_srs3-pf.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -7168,7 +7223,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "58195" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63173" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
@@ -7312,5 +7367,5 @@ function hmrAcceptRun(bundle, id) {
     return true;
   }
 }
-},{}]},{},["../../../AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js","n-1-queens.js"], null)
+},{}]},{},["../node_modules/parcel-bundler/src/builtins/hmr-runtime.js","n-1-queens.js"], null)
 //# sourceMappingURL=/n-1-queens.ba86140a.js.map
