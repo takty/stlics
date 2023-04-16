@@ -3150,6 +3150,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.AssignmentList = void 0;
 var _assignment = require("./_assignment.js");
+var _Symbol$iterator;
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
@@ -3167,9 +3168,10 @@ function _classApplyDescriptorGet(receiver, descriptor) { if (descriptor.get) { 
                                                                                                                                                     * The class represents multiple variables and their assignments.
                                                                                                                                                     *
                                                                                                                                                     * @author Takuto Yanagida
-                                                                                                                                                    * @version 2023-03-25
+                                                                                                                                                    * @version 2023-04-16
                                                                                                                                                     */
 var _as = /*#__PURE__*/new WeakMap();
+_Symbol$iterator = Symbol.iterator;
 var AssignmentList = /*#__PURE__*/function () {
   function AssignmentList() {
     _classCallCheck(this, AssignmentList);
@@ -3182,21 +3184,7 @@ var AssignmentList = /*#__PURE__*/function () {
     key: "setProblem",
     value: function setProblem(problem) {
       _classPrivateFieldGet(this, _as).length = 0;
-      this.addProblem(problem);
-    }
-  }, {
-    key: "setAssignmentList",
-    value: function setAssignmentList(al) {
-      _classPrivateFieldGet(this, _as).length = 0;
-      for (var i = 0; i < al.size(); ++i) {
-        this.addAssignment(al.get(i));
-      }
-    }
-  }, {
-    key: "setVariables",
-    value: function setVariables(vs) {
-      _classPrivateFieldGet(this, _as).length = 0;
-      var _iterator = _createForOfIteratorHelper(vs),
+      var _iterator = _createForOfIteratorHelper(problem.variables()),
         _step;
       try {
         for (_iterator.s(); !(_step = _iterator.n()).done;) {
@@ -3213,22 +3201,43 @@ var AssignmentList = /*#__PURE__*/function () {
       }
     }
   }, {
-    key: "addProblem",
-    value: function addProblem(problem) {
-      var _iterator2 = _createForOfIteratorHelper(problem.variables()),
+    key: "setAssignmentList",
+    value: function setAssignmentList(al) {
+      _classPrivateFieldGet(this, _as).length = 0;
+      var _iterator2 = _createForOfIteratorHelper(al),
         _step2;
       try {
         for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-          var v = _step2.value;
+          var a = _step2.value;
           _classPrivateFieldGet(this, _as).push(new _assignment.Assignment({
-            variable: v,
-            value: v.value()
+            variable: a.variable(),
+            value: a.value()
           }));
         }
       } catch (err) {
         _iterator2.e(err);
       } finally {
         _iterator2.f();
+      }
+    }
+  }, {
+    key: "setVariables",
+    value: function setVariables(vs) {
+      _classPrivateFieldGet(this, _as).length = 0;
+      var _iterator3 = _createForOfIteratorHelper(vs),
+        _step3;
+      try {
+        for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+          var v = _step3.value;
+          _classPrivateFieldGet(this, _as).push(new _assignment.Assignment({
+            variable: v,
+            value: v.value()
+          }));
+        }
+      } catch (err) {
+        _iterator3.e(err);
+      } finally {
+        _iterator3.f();
       }
     }
   }, {
@@ -3241,76 +3250,98 @@ var AssignmentList = /*#__PURE__*/function () {
       }));
     }
   }, {
-    key: "addAssignment",
-    value: function addAssignment(a) {
-      _classPrivateFieldGet(this, _as).push(new _assignment.Assignment({
-        variable: a.variable(),
-        value: a.value()
-      }));
-    }
-  }, {
     key: "apply",
     value: function apply() {
-      var _iterator3 = _createForOfIteratorHelper(_classPrivateFieldGet(this, _as)),
-        _step3;
-      try {
-        for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
-          var a = _step3.value;
-          a.apply();
-        }
-      } catch (err) {
-        _iterator3.e(err);
-      } finally {
-        _iterator3.f();
-      }
-    }
-  }, {
-    key: "arbitraryAssignment",
-    value: function arbitraryAssignment() {
-      return _classPrivateFieldGet(this, _as)[Math.floor(Math.random() * _classPrivateFieldGet(this, _as).length)];
-    }
-  }, {
-    key: "differenceSize",
-    value: function differenceSize() {
-      var diff = 0;
       var _iterator4 = _createForOfIteratorHelper(_classPrivateFieldGet(this, _as)),
         _step4;
       try {
         for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
           var a = _step4.value;
-          if (a.variable().value() !== a.value()) ++diff;
+          a.apply();
         }
       } catch (err) {
         _iterator4.e(err);
       } finally {
         _iterator4.f();
       }
-      return diff;
     }
+
+    /**
+     * Remove all assignments.
+     */
+  }, {
+    key: "clear",
+    value: function clear() {
+      _classPrivateFieldGet(this, _as).length = 0;
+    }
+
+    /**
+     * Checks whether the list is empty or not.
+     * @return True if empty.
+     */
+  }, {
+    key: "isEmpty",
+    value: function isEmpty() {
+      return _classPrivateFieldGet(this, _as).length === 0;
+    }
+
+    /**
+     * Gets the number of assignments.
+     * @return Number of assignments.
+     */
   }, {
     key: "size",
     value: function size() {
       return _classPrivateFieldGet(this, _as).length;
     }
   }, {
-    key: "clear",
-    value: function clear() {
-      _classPrivateFieldGet(this, _as).length = 0;
+    key: "differenceSize",
+    value: function differenceSize() {
+      var diff = 0;
+      var _iterator5 = _createForOfIteratorHelper(_classPrivateFieldGet(this, _as)),
+        _step5;
+      try {
+        for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
+          var a = _step5.value;
+          if (a.variable().value() !== a.value()) ++diff;
+        }
+      } catch (err) {
+        _iterator5.e(err);
+      } finally {
+        _iterator5.f();
+      }
+      return diff;
     }
+
+    /**
+     * Gets the assignments by specifying their indices.
+     * @param index Index.
+     * @return An assignment.
+     */
   }, {
-    key: "get",
-    value: function get(index) {
+    key: "at",
+    value: function at(index) {
       return _classPrivateFieldGet(this, _as)[index];
     }
+
+    /**
+     * Gets the iterator of the assignments.
+     */
   }, {
-    key: "add",
-    value: function add(a) {
-      _classPrivateFieldGet(this, _as).push(a);
+    key: _Symbol$iterator,
+    value: function value() {
+      return _classPrivateFieldGet(this, _as)[Symbol.iterator]();
     }
+
+    /**
+     * Gets an arbitrary assignment.
+     *
+     * @return An assignment.
+     */
   }, {
-    key: "isEmpty",
-    value: function isEmpty() {
-      return _classPrivateFieldGet(this, _as).length === 0;
+    key: "random",
+    value: function random() {
+      return _classPrivateFieldGet(this, _as)[Math.floor(Math.random() * _classPrivateFieldGet(this, _as).length)];
     }
   }], [{
     key: "fromVariables",
@@ -6076,7 +6107,7 @@ var FuzzyBreakout = /*#__PURE__*/function (_Solver) {
         }
         _classPrivateMethodGet(this, _findCandidates, _findCandidates2).call(this, _classPrivateMethodGet(this, _listWorstVariables, _listWorstVariables2).call(this, vc), canList);
         if (0 < canList.size()) {
-          var e = _classPrivateFieldGet(this, _isRandom) ? canList.arbitraryAssignment() : canList.get(0);
+          var e = _classPrivateFieldGet(this, _isRandom) ? canList.random() : canList.at(0);
           e.apply();
           canList.clear();
           this._debugOutput('\t' + e);
@@ -6243,20 +6274,21 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 function _classPrivateMethodInitSpec(obj, privateSet) { _checkPrivateRedeclaration(obj, privateSet); privateSet.add(obj); }
 function _classPrivateFieldInitSpec(obj, privateMap, value) { _checkPrivateRedeclaration(obj, privateMap); privateMap.set(obj, value); }
 function _checkPrivateRedeclaration(obj, privateCollection) { if (privateCollection.has(obj)) { throw new TypeError("Cannot initialize the same private elements twice on an object"); } }
-function _classPrivateFieldSet(receiver, privateMap, value) { var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "set"); _classApplyDescriptorSet(receiver, descriptor, value); return value; }
-function _classApplyDescriptorSet(receiver, descriptor, value) { if (descriptor.set) { descriptor.set.call(receiver, value); } else { if (!descriptor.writable) { throw new TypeError("attempted to set read only private field"); } descriptor.value = value; } }
+function _classPrivateMethodGet(receiver, privateSet, fn) { if (!privateSet.has(receiver)) { throw new TypeError("attempted to get private field on non-instance"); } return fn; }
 function _classPrivateFieldGet(receiver, privateMap) { var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "get"); return _classApplyDescriptorGet(receiver, descriptor); }
-function _classExtractFieldDescriptor(receiver, privateMap, action) { if (!privateMap.has(receiver)) { throw new TypeError("attempted to " + action + " private field on non-instance"); } return privateMap.get(receiver); }
 function _classApplyDescriptorGet(receiver, descriptor) { if (descriptor.get) { return descriptor.get.call(receiver); } return descriptor.value; }
-function _classPrivateMethodGet(receiver, privateSet, fn) { if (!privateSet.has(receiver)) { throw new TypeError("attempted to get private field on non-instance"); } return fn; } /**
-                                                                                                                                                                                    * This class implements fuzzy GENET.
-                                                                                                                                                                                    * CSPs and FCSPs (but only Binary (F)CSPs) is supported.
-                                                                                                                                                                                    *
-                                                                                                                                                                                    * @author Takuto Yanagida
-                                                                                                                                                                                    * @version 2023-04-16
-                                                                                                                                                                                    */
+function _classPrivateFieldSet(receiver, privateMap, value) { var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "set"); _classApplyDescriptorSet(receiver, descriptor, value); return value; }
+function _classExtractFieldDescriptor(receiver, privateMap, action) { if (!privateMap.has(receiver)) { throw new TypeError("attempted to " + action + " private field on non-instance"); } return privateMap.get(receiver); }
+function _classApplyDescriptorSet(receiver, descriptor, value) { if (descriptor.set) { descriptor.set.call(receiver, value); } else { if (!descriptor.writable) { throw new TypeError("attempted to set read only private field"); } descriptor.value = value; } } /**
+                                                                                                                                                                                                                                                                    * This class implements fuzzy GENET.
+                                                                                                                                                                                                                                                                    * CSPs and FCSPs (but only Binary (F)CSPs) is supported.
+                                                                                                                                                                                                                                                                    *
+                                                                                                                                                                                                                                                                    * @author Takuto Yanagida
+                                                                                                                                                                                                                                                                    * @version 2023-04-16
+                                                                                                                                                                                                                                                                    */
 var _clusters = /*#__PURE__*/new WeakMap();
 var _connections = /*#__PURE__*/new WeakMap();
+var _worstSatisfactionDegree = /*#__PURE__*/new WeakMap();
 var _createNetwork = /*#__PURE__*/new WeakSet();
 var _shuffle = /*#__PURE__*/new WeakSet();
 var FuzzyGENET = /*#__PURE__*/function (_Solver) {
@@ -6277,9 +6309,11 @@ var FuzzyGENET = /*#__PURE__*/function (_Solver) {
       writable: true,
       value: void 0
     });
-    if (!_classPrivateMethodGet(_assertThisInitialized(_this), _createNetwork, _createNetwork2).call(_assertThisInitialized(_this), worstSatisfactionDegree)) {
-      throw new Exception();
-    }
+    _classPrivateFieldInitSpec(_assertThisInitialized(_this), _worstSatisfactionDegree, {
+      writable: true,
+      value: void 0
+    });
+    _classPrivateFieldSet(_assertThisInitialized(_this), _worstSatisfactionDegree, worstSatisfactionDegree);
     return _this;
   }
   _createClass(FuzzyGENET, [{
@@ -6290,6 +6324,9 @@ var FuzzyGENET = /*#__PURE__*/function (_Solver) {
   }, {
     key: "exec",
     value: function exec() {
+      if (!_classPrivateMethodGet(this, _createNetwork, _createNetwork2).call(this, _classPrivateFieldGet(this, _worstSatisfactionDegree))) {
+        throw new Exception();
+      }
       var endTime = this._timeLimit === null ? Number.MAX_VALUE : Date.now() + this._timeLimit;
       var iterCount = 0;
       var sol = new _assignmentList.AssignmentList();
@@ -6893,7 +6930,7 @@ function _getNeighborConstraints2(c) {
 }
 function _repair2(c0) {
   this._debugOutput('repair');
-  var candidates = new _assignmentList.AssignmentList();
+  var canList = new _assignmentList.AssignmentList();
   var minDeg0 = c0.satisfactionDegree(); // Target c0 should certainly be an improvement over this.
   var min = this._pro.worstSatisfactionDegree(); // Lower bound of neighborhood constraints.
   var maxDeg0 = c0.satisfactionDegree(); // Satisfaction degree of target c0 for the most improvement so far.
@@ -6933,9 +6970,9 @@ function _repair2(c0) {
           }
           if (deg0 > maxDeg0) {
             maxDeg0 = deg0;
-            candidates.clear();
+            canList.clear();
           }
-          candidates.addVariable(v, d);
+          canList.addVariable(v, d);
         }
       } catch (err) {
         _iterator5.e(err);
@@ -6949,8 +6986,8 @@ function _repair2(c0) {
   } finally {
     _iterator4.f();
   }
-  if (candidates.size() > 0) {
-    var e = _classPrivateFieldGet(this, _isRandom) ? candidates.arbitraryAssignment() : candidates.get(0);
+  if (canList.size() > 0) {
+    var e = _classPrivateFieldGet(this, _isRandom) ? canList.random() : canList.at(0);
     this._debugOutput(e);
     e.apply();
     this._debugOutput('\t' + e);
@@ -7249,11 +7286,11 @@ var SRS3_PF = /*#__PURE__*/function (_SRS) {
         deg = this._pro.worstSatisfactionDegree();
         uvs = this._pro.emptyVariableSize();
       }
-      var at = new _assignmentList.AssignmentList();
-      at.setProblem(this._pro);
+      var al = new _assignmentList.AssignmentList();
+      al.setProblem(this._pro);
       var res = _get(_getPrototypeOf(SRS3_PF.prototype), "exec", this).call(this);
       if (res) {
-        _postStabilization.PostStabilization.apply(this._pro, at);
+        _postStabilization.PostStabilization.apply(this._pro, al);
       }
       this._debugOutput("result: ".concat(res ? 'success' : 'failure'));
       this._debugOutput("satisfaction degree: ".concat(deg, " -> ").concat(this._pro.worstSatisfactionDegree()));

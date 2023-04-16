@@ -3239,6 +3239,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.AssignmentList = void 0;
 var _assignment = require("./_assignment.js");
+var _Symbol$iterator;
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
 function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
@@ -3256,9 +3257,10 @@ function _classApplyDescriptorGet(receiver, descriptor) { if (descriptor.get) { 
                                                                                                                                                     * The class represents multiple variables and their assignments.
                                                                                                                                                     *
                                                                                                                                                     * @author Takuto Yanagida
-                                                                                                                                                    * @version 2023-03-25
+                                                                                                                                                    * @version 2023-04-16
                                                                                                                                                     */
 var _as = /*#__PURE__*/new WeakMap();
+_Symbol$iterator = Symbol.iterator;
 var AssignmentList = /*#__PURE__*/function () {
   function AssignmentList() {
     _classCallCheck(this, AssignmentList);
@@ -3271,21 +3273,7 @@ var AssignmentList = /*#__PURE__*/function () {
     key: "setProblem",
     value: function setProblem(problem) {
       _classPrivateFieldGet(this, _as).length = 0;
-      this.addProblem(problem);
-    }
-  }, {
-    key: "setAssignmentList",
-    value: function setAssignmentList(al) {
-      _classPrivateFieldGet(this, _as).length = 0;
-      for (var i = 0; i < al.size(); ++i) {
-        this.addAssignment(al.get(i));
-      }
-    }
-  }, {
-    key: "setVariables",
-    value: function setVariables(vs) {
-      _classPrivateFieldGet(this, _as).length = 0;
-      var _iterator = _createForOfIteratorHelper(vs),
+      var _iterator = _createForOfIteratorHelper(problem.variables()),
         _step;
       try {
         for (_iterator.s(); !(_step = _iterator.n()).done;) {
@@ -3302,22 +3290,43 @@ var AssignmentList = /*#__PURE__*/function () {
       }
     }
   }, {
-    key: "addProblem",
-    value: function addProblem(problem) {
-      var _iterator2 = _createForOfIteratorHelper(problem.variables()),
+    key: "setAssignmentList",
+    value: function setAssignmentList(al) {
+      _classPrivateFieldGet(this, _as).length = 0;
+      var _iterator2 = _createForOfIteratorHelper(al),
         _step2;
       try {
         for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-          var v = _step2.value;
+          var a = _step2.value;
           _classPrivateFieldGet(this, _as).push(new _assignment.Assignment({
-            variable: v,
-            value: v.value()
+            variable: a.variable(),
+            value: a.value()
           }));
         }
       } catch (err) {
         _iterator2.e(err);
       } finally {
         _iterator2.f();
+      }
+    }
+  }, {
+    key: "setVariables",
+    value: function setVariables(vs) {
+      _classPrivateFieldGet(this, _as).length = 0;
+      var _iterator3 = _createForOfIteratorHelper(vs),
+        _step3;
+      try {
+        for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+          var v = _step3.value;
+          _classPrivateFieldGet(this, _as).push(new _assignment.Assignment({
+            variable: v,
+            value: v.value()
+          }));
+        }
+      } catch (err) {
+        _iterator3.e(err);
+      } finally {
+        _iterator3.f();
       }
     }
   }, {
@@ -3330,76 +3339,98 @@ var AssignmentList = /*#__PURE__*/function () {
       }));
     }
   }, {
-    key: "addAssignment",
-    value: function addAssignment(a) {
-      _classPrivateFieldGet(this, _as).push(new _assignment.Assignment({
-        variable: a.variable(),
-        value: a.value()
-      }));
-    }
-  }, {
     key: "apply",
     value: function apply() {
-      var _iterator3 = _createForOfIteratorHelper(_classPrivateFieldGet(this, _as)),
-        _step3;
-      try {
-        for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
-          var a = _step3.value;
-          a.apply();
-        }
-      } catch (err) {
-        _iterator3.e(err);
-      } finally {
-        _iterator3.f();
-      }
-    }
-  }, {
-    key: "arbitraryAssignment",
-    value: function arbitraryAssignment() {
-      return _classPrivateFieldGet(this, _as)[Math.floor(Math.random() * _classPrivateFieldGet(this, _as).length)];
-    }
-  }, {
-    key: "differenceSize",
-    value: function differenceSize() {
-      var diff = 0;
       var _iterator4 = _createForOfIteratorHelper(_classPrivateFieldGet(this, _as)),
         _step4;
       try {
         for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
           var a = _step4.value;
-          if (a.variable().value() !== a.value()) ++diff;
+          a.apply();
         }
       } catch (err) {
         _iterator4.e(err);
       } finally {
         _iterator4.f();
       }
-      return diff;
     }
+
+    /**
+     * Remove all assignments.
+     */
+  }, {
+    key: "clear",
+    value: function clear() {
+      _classPrivateFieldGet(this, _as).length = 0;
+    }
+
+    /**
+     * Checks whether the list is empty or not.
+     * @return True if empty.
+     */
+  }, {
+    key: "isEmpty",
+    value: function isEmpty() {
+      return _classPrivateFieldGet(this, _as).length === 0;
+    }
+
+    /**
+     * Gets the number of assignments.
+     * @return Number of assignments.
+     */
   }, {
     key: "size",
     value: function size() {
       return _classPrivateFieldGet(this, _as).length;
     }
   }, {
-    key: "clear",
-    value: function clear() {
-      _classPrivateFieldGet(this, _as).length = 0;
+    key: "differenceSize",
+    value: function differenceSize() {
+      var diff = 0;
+      var _iterator5 = _createForOfIteratorHelper(_classPrivateFieldGet(this, _as)),
+        _step5;
+      try {
+        for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
+          var a = _step5.value;
+          if (a.variable().value() !== a.value()) ++diff;
+        }
+      } catch (err) {
+        _iterator5.e(err);
+      } finally {
+        _iterator5.f();
+      }
+      return diff;
     }
+
+    /**
+     * Gets the assignments by specifying their indices.
+     * @param index Index.
+     * @return An assignment.
+     */
   }, {
-    key: "get",
-    value: function get(index) {
+    key: "at",
+    value: function at(index) {
       return _classPrivateFieldGet(this, _as)[index];
     }
+
+    /**
+     * Gets the iterator of the assignments.
+     */
   }, {
-    key: "add",
-    value: function add(a) {
-      _classPrivateFieldGet(this, _as).push(a);
+    key: _Symbol$iterator,
+    value: function value() {
+      return _classPrivateFieldGet(this, _as)[Symbol.iterator]();
     }
+
+    /**
+     * Gets an arbitrary assignment.
+     *
+     * @return An assignment.
+     */
   }, {
-    key: "isEmpty",
-    value: function isEmpty() {
-      return _classPrivateFieldGet(this, _as).length === 0;
+    key: "random",
+    value: function random() {
+      return _classPrivateFieldGet(this, _as)[Math.floor(Math.random() * _classPrivateFieldGet(this, _as).length)];
     }
   }], [{
     key: "fromVariables",
@@ -3871,10 +3902,18 @@ var ForwardChecking = /*#__PURE__*/function (_Solver) {
       _classPrivateFieldSet(this, _iterCount, 0);
       this._pro.clearAllVariables();
       var r = _classPrivateMethodGet(this, _branch, _branch2).call(this, 0);
-      for (var i = 0; i < _classPrivateFieldGet(this, _sol).size(); ++i) {
-        var a = _classPrivateFieldGet(this, _sol).get(i);
-        a.apply();
-        a.variable().solverObject.revealAll();
+      var _iterator2 = _createForOfIteratorHelper(_classPrivateFieldGet(this, _sol)),
+        _step2;
+      try {
+        for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+          var a = _step2.value;
+          a.apply();
+          a.variable().solverObject.revealAll();
+        }
+      } catch (err) {
+        _iterator2.e(err);
+      } finally {
+        _iterator2.f();
       }
       return r;
     }
@@ -3922,20 +3961,20 @@ function _getConstraintsBetween2(i, j) {
   return _classPrivateFieldGet(this, _relCons)[i][j];
 }
 function _checkForward2(level, currentIndex) {
-  var _iterator2 = _createForOfIteratorHelper(_classPrivateFieldGet(this, _vars)),
-    _step2;
+  var _iterator3 = _createForOfIteratorHelper(_classPrivateFieldGet(this, _vars)),
+    _step3;
   try {
-    for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-      var v_i = _step2.value;
+    for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+      var v_i = _step3.value;
       if (!v_i.isEmpty()) continue; // If it is a past or present variable.
       var d_i = v_i.domain();
       var dc_i = v_i.solverObject;
       var cs = _classPrivateMethodGet(this, _getConstraintsBetween, _getConstraintsBetween2).call(this, currentIndex, v_i.index());
-      var _iterator3 = _createForOfIteratorHelper(cs),
-        _step3;
+      var _iterator4 = _createForOfIteratorHelper(cs),
+        _step4;
       try {
-        for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
-          var c = _step3.value;
+        for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
+          var c = _step4.value;
           if (c.emptyVariableSize() !== 1) continue;
           for (var k = 0, n = d_i.size(); k < n; ++k) {
             if (dc_i.isValueHidden(k)) continue;
@@ -3949,15 +3988,15 @@ function _checkForward2(level, currentIndex) {
           if (dc_i.isEmpty()) return false; // Failure if the domain of one of the future variables is empty.
         }
       } catch (err) {
-        _iterator3.e(err);
+        _iterator4.e(err);
       } finally {
-        _iterator3.f();
+        _iterator4.f();
       }
     }
   } catch (err) {
-    _iterator2.e(err);
+    _iterator3.e(err);
   } finally {
-    _iterator2.f();
+    _iterator3.f();
   }
   return true;
 }
@@ -4000,17 +4039,17 @@ function _branch2(level) {
     if (dc.isValueHidden(i)) continue;
     vc.assign(d.at(i));
     if (_classPrivateMethodGet(this, _checkForward, _checkForward2).call(this, level, vc_index) && _classPrivateMethodGet(this, _branch, _branch2).call(this, level + 1)) return true;
-    var _iterator4 = _createForOfIteratorHelper(_classPrivateFieldGet(this, _vars)),
-      _step4;
+    var _iterator5 = _createForOfIteratorHelper(_classPrivateFieldGet(this, _vars)),
+      _step5;
     try {
-      for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
-        var v = _step4.value;
+      for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
+        var v = _step5.value;
         v.solverObject.reveal(level);
       }
     } catch (err) {
-      _iterator4.e(err);
+      _iterator5.e(err);
     } finally {
-      _iterator4.f();
+      _iterator5.f();
     }
   }
   vc.clear();
@@ -4158,10 +4197,18 @@ var MaxForwardChecking = /*#__PURE__*/function (_Solver) {
           this._debugOutput('stop: time limit has been reached');
         }
       }
-      for (var i = 0; i < _classPrivateFieldGet(this, _sol).size(); ++i) {
-        var a = _classPrivateFieldGet(this, _sol).get(i);
-        a.apply();
-        a.variable().solverObject.revealAll();
+      var _iterator2 = _createForOfIteratorHelper(_classPrivateFieldGet(this, _sol)),
+        _step2;
+      try {
+        for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+          var a = _step2.value;
+          a.apply();
+          a.variable().solverObject.revealAll();
+        }
+      } catch (err) {
+        _iterator2.e(err);
+      } finally {
+        _iterator2.f();
       }
       return r;
     }
@@ -4194,17 +4241,17 @@ function _branch2(level, vioCount) {
     _classPrivateFieldSet(this, _vioCount, vioCount + _classPrivateMethodGet(this, _getAdditionalViolationCount, _getAdditionalViolationCount2).call(this, level, vc)); // for max begin
     if (_classPrivateFieldGet(this, _vioCount) > _classPrivateFieldGet(this, _maxVioCount)) continue; // for max end
     if (_classPrivateMethodGet(this, _checkForward, _checkForward2).call(this, level) && _classPrivateMethodGet(this, _branch, _branch2).call(this, level + 1, _classPrivateFieldGet(this, _vioCount))) return true;
-    var _iterator2 = _createForOfIteratorHelper(_classPrivateFieldGet(this, _vars)),
-      _step2;
+    var _iterator3 = _createForOfIteratorHelper(_classPrivateFieldGet(this, _vars)),
+      _step3;
     try {
-      for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
-        var v = _step2.value;
+      for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
+        var v = _step3.value;
         v.solverObject.reveal(level);
       }
     } catch (err) {
-      _iterator2.e(err);
+      _iterator3.e(err);
     } finally {
-      _iterator2.f();
+      _iterator3.f();
     }
   }
   vc.clear();
@@ -4215,20 +4262,20 @@ function _checkForward2(level) {
   for (var i = level + 1; i < _classPrivateFieldGet(this, _vars).length; ++i) {
     var future = _classPrivateFieldGet(this, _vars)[i];
     _classPrivateFieldSet(this, _cons, this._pro.constraintsBetween(vc, future));
-    var _iterator3 = _createForOfIteratorHelper(_classPrivateFieldGet(this, _cons)),
-      _step3;
+    var _iterator4 = _createForOfIteratorHelper(_classPrivateFieldGet(this, _cons)),
+      _step4;
     try {
-      for (_iterator3.s(); !(_step3 = _iterator3.n()).done;) {
-        var c = _step3.value;
+      for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
+        var c = _step4.value;
         if (c.emptyVariableSize() !== 1) continue;
         if (_classPrivateMethodGet(this, _revise, _revise2).call(this, future, c, level)) {
           if (future.solverObject.isEmpty()) return false; // Failure if the domain of one of the future variables is empty.
         }
       }
     } catch (err) {
-      _iterator3.e(err);
+      _iterator4.e(err);
     } finally {
-      _iterator3.f();
+      _iterator4.f();
     }
   }
   return true;
@@ -4238,19 +4285,19 @@ function _getAdditionalViolationCount2(level, vc) {
   _classPrivateFieldGet(this, _checkedCons).clear(); // Reuse.
   for (var i = 0; i < level; ++i) {
     _classPrivateFieldSet(this, _cons, this._pro.constraintsBetween(vc, _classPrivateFieldGet(this, _vars)[i]));
-    var _iterator4 = _createForOfIteratorHelper(_classPrivateFieldGet(this, _cons)),
-      _step4;
+    var _iterator5 = _createForOfIteratorHelper(_classPrivateFieldGet(this, _cons)),
+      _step5;
     try {
-      for (_iterator4.s(); !(_step4 = _iterator4.n()).done;) {
-        var c = _step4.value;
+      for (_iterator5.s(); !(_step5 = _iterator5.n()).done;) {
+        var c = _step5.value;
         if (_classPrivateFieldGet(this, _checkedCons).has(c)) continue; // Because of the possibility of duplication in polynomial constraints
         if (c.isSatisfied() === 0) ++avc; // Neither satisfied nor undefined.
         _classPrivateFieldGet(this, _checkedCons).add(c);
       }
     } catch (err) {
-      _iterator4.e(err);
+      _iterator5.e(err);
     } finally {
-      _iterator4.f();
+      _iterator5.f();
     }
   }
   return avc;
@@ -5060,7 +5107,7 @@ var Breakout = /*#__PURE__*/function (_Solver) {
         this._debugOutput(vc.length + ' violations');
         _classPrivateMethodGet(this, _findCandidates, _findCandidates2).call(this, _classPrivateMethodGet(this, _listViolatingVariables, _listViolatingVariables2).call(this, vc), canList);
         if (0 < canList.size()) {
-          var e = _classPrivateFieldGet(this, _isRandom) ? canList.arbitraryAssignment() : canList.get(0);
+          var e = _classPrivateFieldGet(this, _isRandom) ? canList.random() : canList.at(0);
           e.apply();
           canList.clear();
           this._debugOutput('\t' + e);
@@ -5225,19 +5272,19 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
 function _classPrivateMethodInitSpec(obj, privateSet) { _checkPrivateRedeclaration(obj, privateSet); privateSet.add(obj); }
 function _classPrivateFieldInitSpec(obj, privateMap, value) { _checkPrivateRedeclaration(obj, privateMap); privateMap.set(obj, value); }
 function _checkPrivateRedeclaration(obj, privateCollection) { if (privateCollection.has(obj)) { throw new TypeError("Cannot initialize the same private elements twice on an object"); } }
+function _classPrivateMethodGet(receiver, privateSet, fn) { if (!privateSet.has(receiver)) { throw new TypeError("attempted to get private field on non-instance"); } return fn; }
 function _classPrivateFieldSet(receiver, privateMap, value) { var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "set"); _classApplyDescriptorSet(receiver, descriptor, value); return value; }
 function _classApplyDescriptorSet(receiver, descriptor, value) { if (descriptor.set) { descriptor.set.call(receiver, value); } else { if (!descriptor.writable) { throw new TypeError("attempted to set read only private field"); } descriptor.value = value; } }
 function _classPrivateFieldGet(receiver, privateMap) { var descriptor = _classExtractFieldDescriptor(receiver, privateMap, "get"); return _classApplyDescriptorGet(receiver, descriptor); }
 function _classExtractFieldDescriptor(receiver, privateMap, action) { if (!privateMap.has(receiver)) { throw new TypeError("attempted to " + action + " private field on non-instance"); } return privateMap.get(receiver); }
-function _classApplyDescriptorGet(receiver, descriptor) { if (descriptor.get) { return descriptor.get.call(receiver); } return descriptor.value; }
-function _classPrivateMethodGet(receiver, privateSet, fn) { if (!privateSet.has(receiver)) { throw new TypeError("attempted to get private field on non-instance"); } return fn; } /**
-                                                                                                                                                                                    * This class implements GENET.
-                                                                                                                                                                                    * CSP (but only Binary CSP) is supported.
-                                                                                                                                                                                    * Find the solution to the problem as the maximum CSP.
-                                                                                                                                                                                    *
-                                                                                                                                                                                    * @author Takuto Yanagida
-                                                                                                                                                                                    * @version 2023-04-16
-                                                                                                                                                                                    */
+function _classApplyDescriptorGet(receiver, descriptor) { if (descriptor.get) { return descriptor.get.call(receiver); } return descriptor.value; } /**
+                                                                                                                                                    * This class implements GENET.
+                                                                                                                                                    * CSP (but only Binary CSP) is supported.
+                                                                                                                                                    * Find the solution to the problem as the maximum CSP.
+                                                                                                                                                    *
+                                                                                                                                                    * @author Takuto Yanagida
+                                                                                                                                                    * @version 2023-04-16
+                                                                                                                                                    */
 var _clusters = /*#__PURE__*/new WeakMap();
 var _connections = /*#__PURE__*/new WeakMap();
 var _createNetwork = /*#__PURE__*/new WeakSet();
@@ -5259,9 +5306,6 @@ var GENET = /*#__PURE__*/function (_Solver) {
       writable: true,
       value: void 0
     });
-    if (!_classPrivateMethodGet(_assertThisInitialized(_this), _createNetwork, _createNetwork2).call(_assertThisInitialized(_this))) {
-      throw new Exception();
-    }
     return _this;
   }
   _createClass(GENET, [{
@@ -5272,6 +5316,9 @@ var GENET = /*#__PURE__*/function (_Solver) {
   }, {
     key: "exec",
     value: function exec() {
+      if (!_classPrivateMethodGet(this, _createNetwork, _createNetwork2).call(this)) {
+        throw new Exception();
+      }
       var endTime = this._timeLimit === null ? Number.MAX_VALUE : Date.now() + this._timeLimit;
       var iterCount = 0;
       var sol = new _assignmentList.AssignmentList();
@@ -5280,6 +5327,7 @@ var GENET = /*#__PURE__*/function (_Solver) {
         order.push(i);
       }
       var cur = this._pro.satisfiedConstraintRate();
+      var success = false;
       while (true) {
         if (this._iterLimit && this._iterLimit < iterCount++) {
           // Failure if repeated a specified number
@@ -5340,17 +5388,22 @@ var GENET = /*#__PURE__*/function (_Solver) {
             cur = d;
             this._debugOutput("satisfied constraint rate: ".concat(d));
             sol.setProblem(this._pro);
+            if (this.foundSolution(sol, d)) {
+              // Call hook
+              success = true;
+              break;
+            }
             if ((_this$_targetDeg = this._targetDeg) !== null && _this$_targetDeg !== void 0 ? _this$_targetDeg : 1 <= cur) {
               // Success if violation rate improves from specified
               this._debugOutput('stop: current degree is above the target');
-              sol.apply();
-              return true;
+              success = true;
+              break;
             }
           }
         }
       }
       sol.apply(); // Despite the failures, the best assignment so far is applied for now.
-      return false;
+      return success;
     }
   }], [{
     key: "nextInt",
@@ -5819,7 +5872,7 @@ function _getNeighborConstraints2(c) {
 }
 function _repair2(c0) {
   this._debugOutput('repair');
-  var candidates = new _assignmentList.AssignmentList();
+  var canList = new _assignmentList.AssignmentList();
   var maxDiff = 0;
   var _iterator5 = _createForOfIteratorHelper(c0),
     _step5;
@@ -5867,11 +5920,11 @@ function _repair2(c0) {
           if (diff > maxDiff) {
             // An assignment that are better than ever before is found.
             maxDiff = diff;
-            candidates.clear();
-            candidates.addVariable(v, d);
+            canList.clear();
+            canList.addVariable(v, d);
           } else if (maxDiff !== 0) {
             // An assignments that can be improved to the same level as before is found.
-            candidates.addVariable(v, d);
+            canList.addVariable(v, d);
           }
         }
       } catch (err) {
@@ -5886,8 +5939,8 @@ function _repair2(c0) {
   } finally {
     _iterator5.f();
   }
-  if (candidates.size() > 0) {
-    var e = _classPrivateFieldGet(this, _isRandom) ? candidates.arbitraryAssignment() : candidates.get(0);
+  if (canList.size() > 0) {
+    var e = _classPrivateFieldGet(this, _isRandom) ? canList.random() : canList.at(0);
     e.apply();
     this._debugOutput('\t' + e);
     return true;
