@@ -17,12 +17,11 @@ export class FuzzyGENET extends Solver {
 
 	#clusters = [];
 	#connections;
+	#worstSatisfactionDegree;
 
 	constructor(p, worstSatisfactionDegree = 1) {
 		super(p);
-		if (!this.#createNetwork(worstSatisfactionDegree)) {
-			throw new Exception();
-		}
+		this.#worstSatisfactionDegree = worstSatisfactionDegree;
 	}
 
 	name() {
@@ -93,6 +92,9 @@ export class FuzzyGENET extends Solver {
 	}
 
 	exec() {
+		if (!this.#createNetwork(this.#worstSatisfactionDegree)) {
+			throw new Exception();
+		}
 		const endTime = (this._timeLimit === null) ? Number.MAX_VALUE : (Date.now() + this._timeLimit);
 		let iterCount = 0;
 

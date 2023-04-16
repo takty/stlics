@@ -26,13 +26,13 @@ export class SRS3_PF extends SRS3 {
 			deg = this._pro.worstSatisfactionDegree();
 			uvs = this._pro.emptyVariableSize();
 		}
-		const at = new AssignmentList();
-		at.setProblem(this._pro);
+		const al = new AssignmentList();
+		al.setProblem(this._pro);
 
 		const res = super.exec();
 
 		if (res) {
-			PostStabilization.apply(this._pro, at);
+			PostStabilization.apply(this._pro, al);
 		}
 		this._debugOutput(`result: ${res ? 'success' : 'failure'}`);
 		this._debugOutput(`satisfaction degree: ${deg} -> ${this._pro.worstSatisfactionDegree()}`);

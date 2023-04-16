@@ -21,9 +21,6 @@ export class GENET extends Solver {
 
 	constructor(p) {
 		super(p);
-		if (!this.#createNetwork()) {
-			throw new Exception();
-		}
 	}
 
 	name() {
@@ -94,6 +91,9 @@ export class GENET extends Solver {
 	}
 
 	exec() {
+		if (!this.#createNetwork()) {
+			throw new Exception();
+		}
 		const endTime = (this._timeLimit === null) ? Number.MAX_VALUE : (Date.now() + this._timeLimit);
 		let iterCount = 0;
 
@@ -103,7 +103,8 @@ export class GENET extends Solver {
 			order.push(i);
 		}
 
-		let cur = this._pro.satisfiedConstraintRate();
+		let cur     = this._pro.satisfiedConstraintRate();
+		let success = false;
 
 		while (true) {
 			if (this._iterLimit && this._iterLimit < iterCount++) {  // Failure if repeated a specified number
@@ -134,16 +135,20 @@ export class GENET extends Solver {
 					cur = d;
 					this._debugOutput(`satisfied constraint rate: ${d}`);
 					sol.setProblem(this._pro);
+					if (this.foundSolution(sol, d)) {  // Call hook
+						success = true;
+						break;
+					}
 					if (this._targetDeg ?? 1 <= cur) {  // Success if violation rate improves from specified
 						this._debugOutput('stop: current degree is above the target');
-						sol.apply();
-						return true;
+						success = true;
+						break;
 					}
 				}
 			}
 		}
 		sol.apply();  // Despite the failures, the best assignment so far is applied for now.
-		return false;
+		return success;
 	}
 
 }

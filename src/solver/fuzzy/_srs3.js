@@ -53,10 +53,10 @@ export class SRS3 extends Solver {
 	#repair(c0) {
 		this._debugOutput('repair');
 
-		const candidates = new AssignmentList();
-		const minDeg0    = c0.satisfactionDegree();  // Target c0 should certainly be an improvement over this.
-		const min        = this._pro.worstSatisfactionDegree();  // Lower bound of neighborhood constraints.
-		let maxDeg0 = c0.satisfactionDegree();  // Satisfaction degree of target c0 for the most improvement so far.
+		const canList = new AssignmentList();
+		const minDeg0 = c0.satisfactionDegree();  // Target c0 should certainly be an improvement over this.
+		const min     = this._pro.worstSatisfactionDegree();  // Lower bound of neighborhood constraints.
+		let maxDeg0   = c0.satisfactionDegree();  // Satisfaction degree of target c0 for the most improvement so far.
 
 		// If a candidate satisfying the condition is stronger than the previous candidates,
 		// it is replaced, and if no candidate is found until the end, it fails.
@@ -78,14 +78,14 @@ export class SRS3 extends Solver {
 				}
 				if (deg0 > maxDeg0) {
 					maxDeg0 = deg0;
-					candidates.clear();
+					canList.clear();
 				}
-				candidates.addVariable(v, d);
+				canList.addVariable(v, d);
 			}
 			v.assign(v_val);  // Restore the value
 		}
-		if (candidates.size() > 0) {
-			const e = this.#isRandom ? candidates.arbitraryAssignment() : candidates.get(0);
+		if (canList.size() > 0) {
+			const e = this.#isRandom ? canList.random() : canList.at(0);
 			this._debugOutput(e);
 			e.apply();
 			this._debugOutput('\t' + e);

@@ -148,8 +148,7 @@ export class ForwardChecking extends Solver {
 		this._pro.clearAllVariables();
 		const r = this.#branch(0);
 
-		for (let i = 0; i < this.#sol.size(); ++i) {
-			const a = this.#sol.get(i);
+		for (const a of this.#sol) {
 			a.apply();
 			a.variable().solverObject.revealAll();
 		}

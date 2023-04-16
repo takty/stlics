@@ -97,7 +97,7 @@ export class Breakout extends Solver {
 			this.#findCandidates(this.#listViolatingVariables(vc), canList);
 
 			if (0 < canList.size()) {
-				const e = this.#isRandom ? canList.arbitraryAssignment() : canList.get(0);
+				const e = this.#isRandom ? canList.random() : canList.at(0);
 				e.apply();
 				canList.clear();
 				this._debugOutput('\t' + e);

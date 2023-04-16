@@ -2,7 +2,7 @@
  * The class represents multiple variables and their assignments.
  *
  * @author Takuto Yanagida
- * @version 2023-03-25
+ * @version 2023-04-16
  */
 
 import { Assignment } from './_assignment.js';
@@ -22,13 +22,15 @@ export class AssignmentList {
 
 	setProblem(problem) {
 		this.#as.length = 0;
-		this.addProblem(problem);
+		for (const v of problem.variables()) {
+			this.#as.push(new Assignment({ variable: v, value: v.value() }));
+		}
 	}
 
 	setAssignmentList(al) {
 		this.#as.length = 0;
-		for (let i = 0; i < al.size(); ++i) {
-			this.addAssignment(al.get(i));
+		for (const a of al) {
+			this.#as.push(new Assignment({ variable: a.variable(), value: a.value() }));
 		}
 	}
 
@@ -39,26 +41,35 @@ export class AssignmentList {
 		}
 	}
 
-	addProblem(problem) {
-		for (const v of problem.variables()) {
-			this.#as.push(new Assignment({ variable: v, value: v.value() }));
-		}
-	}
-
 	addVariable(variable, value = null) {
 		this.#as.push(new Assignment({ variable, value }));
-	}
-
-	addAssignment(a) {
-		this.#as.push(new Assignment({ variable: a.variable(), value: a.value() }));
 	}
 
 	apply() {
 		for (const a of this.#as) a.apply();
 	}
 
-	arbitraryAssignment() {
-		return this.#as[Math.floor(Math.random() * this.#as.length)];
+	/**
+	 * Remove all assignments.
+	 */
+	clear() {
+		this.#as.length = 0;
+	}
+
+	/**
+	 * Checks whether the list is empty or not.
+	 * @return True if empty.
+	 */
+	isEmpty() {
+		return this.#as.length === 0;
+	}
+
+	/**
+	 * Gets the number of assignments.
+	 * @return Number of assignments.
+	 */
+	size() {
+		return this.#as.length;
 	}
 
 	differenceSize() {
@@ -69,24 +80,29 @@ export class AssignmentList {
 		return diff;
 	}
 
-	size() {
-		return this.#as.length;
-	}
-
-	clear() {
-		this.#as.length = 0;
-	}
-
-	get(index) {
+	/**
+	 * Gets the assignments by specifying their indices.
+	 * @param index Index.
+	 * @return An assignment.
+	 */
+	at(index) {
 		return this.#as[index];
 	}
 
-	add(a) {
-		this.#as.push(a);
+	/**
+	 * Gets the iterator of the assignments.
+	 */
+	[Symbol.iterator]() {
+		return this.#as[Symbol.iterator]();
 	}
 
-	isEmpty() {
-		return this.#as.length === 0;
+	/**
+	 * Gets an arbitrary assignment.
+	 *
+	 * @return An assignment.
+	 */
+	random() {
+		return this.#as[Math.floor(Math.random() * this.#as.length)];
 	}
 
 }

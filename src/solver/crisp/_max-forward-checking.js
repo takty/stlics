@@ -139,8 +139,7 @@ export class MaxForwardChecking extends Solver {
 			}
 		}
 
-		for (let i = 0; i < this.#sol.size(); ++i) {
-			const a = this.#sol.get(i);
+		for (const a of this.#sol) {
 			a.apply();
 			a.variable().solverObject.revealAll();
 		}

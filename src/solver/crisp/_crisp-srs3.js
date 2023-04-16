@@ -43,7 +43,7 @@ export class CrispSRS3 extends Solver {
 	#repair(c0) {
 		this._debugOutput('repair');
 
-		const candidates = new AssignmentList();
+		const canList = new AssignmentList();
 		let maxDiff = 0;
 
 		for (const v of c0) {
@@ -65,16 +65,16 @@ export class CrispSRS3 extends Solver {
 				}
 				if (diff > maxDiff) {  // An assignment that are better than ever before is found.
 					maxDiff = diff;
-					candidates.clear();
-					candidates.addVariable(v, d);
+					canList.clear();
+					canList.addVariable(v, d);
 				} else if (maxDiff !== 0) {  // An assignments that can be improved to the same level as before is found.
-					candidates.addVariable(v, d);
+					canList.addVariable(v, d);
 				}
 			}
 			v.assign(v_val);  // Restore the value
 		}
-		if (candidates.size() > 0) {
-			const e = this.#isRandom ? candidates.arbitraryAssignment() : candidates.get(0);
+		if (canList.size() > 0) {
+			const e = this.#isRandom ? canList.random() : canList.at(0);
 			e.apply();
 			this._debugOutput('\t' + e);
 			return true;
