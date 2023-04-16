@@ -81,31 +81,31 @@ export class Breakout extends Solver {
 		while (true) {
 			const vc = this._pro.violatingConstraints();
 			if ((this._targetDeg ?? 1) <= this._pro.satisfiedConstraintRate()) {  // Success if violation rate improves from specified
-				if (this._debug) console.log('stop: current degree is above the target');
+				this._debugOutput('stop: current degree is above the target');
 				return true;
 			}
 			if (this._iterLimit && this._iterLimit < iterCount++) {  // Failure if repeated a specified number
-				if (this._debug) console.log('stop: number of iterations has reached the limit');
+				this._debugOutput('stop: number of iterations has reached the limit');
 				return false;
 			}
 			if (endTime < Date.now()) {  // Failure if time limit is exceeded
-				if (this._debug) console.log('stop: time limit has been reached');
+				this._debugOutput('stop: time limit has been reached');
 				return false;
 			}
 
-			if (this._debug) console.log(vc.length + ' violations');
+			this._debugOutput(vc.length + ' violations');
 			this.#findCandidates(this.#listViolatingVariables(vc), canList);
 
 			if (0 < canList.size()) {
 				const e = this.#isRandom ? canList.arbitraryAssignment() : canList.get(0);
 				e.apply();
 				canList.clear();
-				if (this._debug) console.log('\t' + e);
+				this._debugOutput('\t' + e);
 			} else {
 				for (const c of vc) {
 					this.#weights[c.index()] += 1;
 				}
-				if (this._debug) console.log('breakout');
+				this._debugOutput('breakout');
 			}
 		}
 	}

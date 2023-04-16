@@ -4,7 +4,7 @@
  * Each variable must have its own domain because it hides domain elements as branch pruning.
  *
  * @author Takuto Yanagida
- * @version 2023-03-31
+ * @version 2023-04-16
  */
 
 import { AssignmentList } from '../../util/_assignment-list.js';
@@ -46,7 +46,7 @@ export class MaxForwardChecking extends Solver {
 			if (vcs < this.#maxVioCount) {
 				this.#maxVioCount = vcs;
 				this.#sol.setProblem(this._pro);
-				if (this._debug) console.log(`   refreshed ${this.#maxVioCount}`);
+				this._debugOutput(`   refreshed ${this.#maxVioCount}`);
 				if ((this._targetDeg ?? 1) <= this._pro.satisfiedConstraintRate()) return true;
 			}
 			return false;
@@ -128,16 +128,14 @@ export class MaxForwardChecking extends Solver {
 
 		this._pro.clearAllVariables();
 		const r = this.#branch(0, 0);
-		if (this._debug) {
-			if (r) {
-				console.log('stop: current degree is above the target');
-			} else {
-				if (this._iterLimit && this._iterLimit < this.#iterCount) {
-					console.log('stop: number of iterations has reached the limit');
-				}
-				if (this.#endTime < Date.now()) {
-					console.log('stop: time limit has been reached');
-				}
+		if (r) {
+			this._debugOutput('stop: current degree is above the target');
+		} else {
+			if (this._iterLimit && this._iterLimit < this.#iterCount) {
+				this._debugOutput('stop: number of iterations has reached the limit');
+			}
+			if (this.#endTime < Date.now()) {
+				this._debugOutput('stop: time limit has been reached');
 			}
 		}
 

@@ -86,19 +86,19 @@ export class FuzzyBreakout extends Solver {
 		while (true) {
 			const [vc, wsd] = this._pro.constraintsWithWorstSatisfactionDegree();
 			if (this._targetDeg !== null && this._targetDeg <= wsd) {  // Success if the degree improves from specified
-				if (this._debug) console.log('stop: current degree is above the target');
+				this._debugOutput('stop: current degree is above the target');
 				return true;
 			}
 			if (this._iterLimit && this._iterLimit < iterCount++) {  // Failure if repeated a specified number
-				if (this._debug) console.log('stop: number of iterations has reached the limit');
+				this._debugOutput('stop: number of iterations has reached the limit');
 				break;
 			}
 			if (endTime < Date.now()) {  // Failure if time limit is exceeded
-				if (this._debug) console.log('stop: time limit has been reached');
+				this._debugOutput('stop: time limit has been reached');
 				break;
 			}
 
-			if (this._debug) console.log('worst satisfaction degree: ' + wsd);
+			this._debugOutput('worst satisfaction degree: ' + wsd);
 
 			if (this.#lastSolDeg < wsd) {
 				sol.setProblem(this._pro);
@@ -114,12 +114,12 @@ export class FuzzyBreakout extends Solver {
 				const e = this.#isRandom ? canList.arbitraryAssignment() : canList.get(0);
 				e.apply();
 				canList.clear();
-				if (this._debug) console.log('\t' + e);
+				this._debugOutput('\t' + e);
 			} else {
 				for (const c of vc) {
 					this.#weights[c.index()] += 1;
 				}
-				if (this._debug) console.log('breakout');
+				this._debugOutput('breakout');
 			}
 		}
 		if (this._targetDeg === null && deg < this._pro.worstSatisfactionDegree()) return true;

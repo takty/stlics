@@ -2,14 +2,14 @@
  * Sample implementation of a random binary problem.
  *
  * @author Takuto Yanagida
- * @version 2023-04-10
+ * @version 2023-04-16
  */
 
-import { ProblemFactory } from '../util/_problem-factory.js';
 import { FuzzyRelation } from '../problem/_relation-fuzzy.js';
 import { Beta } from './_beta.js';
+import { Model } from './_model.js';
 
-export class RandomBinary extends ProblemFactory {
+export class RandomBinary extends Model {
 
 	static nextInt(max) {
 		return Math.floor(Math.random() * Math.floor(max));

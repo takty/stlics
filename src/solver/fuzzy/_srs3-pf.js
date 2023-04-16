@@ -2,7 +2,7 @@
  * This class implements the SRS algorithm with PF.
  *
  * @author Takuto Yanagida
- * @version 2023-04-11
+ * @version 2023-04-16
  */
 
 import { AssignmentList } from '../../util/_assignment-list.js';
@@ -34,11 +34,9 @@ export class SRS3_PF extends SRS3 {
 		if (res) {
 			PostStabilization.apply(this._pro, at);
 		}
-		if (this._debug) {
-			console.log(`result: ${res ? 'success' : 'failure'}`);
-			console.log(`satisfaction degree: ${deg} -> ${this._pro.worstSatisfactionDegree()}`);
-			console.log(`unassigned size: ${uvs} -> ${this._pro.emptyVariableSize()}`);
-		}
+		this._debugOutput(`result: ${res ? 'success' : 'failure'}`);
+		this._debugOutput(`satisfaction degree: ${deg} -> ${this._pro.worstSatisfactionDegree()}`);
+		this._debugOutput(`unassigned size: ${uvs} -> ${this._pro.emptyVariableSize()}`);
 		return res;
 	}
 

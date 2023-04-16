@@ -1,13 +1,15 @@
 /**
- * The interface of solvers for finding solutions to constraint satisfaction problems.
+ * The class for solvers for finding solutions to constraint satisfaction problems.
  *
  * @author Takuto Yanagida
- * @version 2023-03-25
+ * @version 2023-04-16
  */
 
 export class Solver {
 
 	_debug = true;
+
+	_debugOutput = e => console.log(e);
 
 	/**
 	 * The crisp/fuzzy constraint satisfaction problem solved by the solver.
@@ -112,6 +114,30 @@ export class Solver {
 			}
 		}
 		return finish;
+	}
+
+
+	// -------------------------------------------------------------------------
+
+
+	/**
+	 * Sets whether to output debug strings.
+	 * @param boolean flag Do output if true.
+	 */
+	setDebugMode(flag) {
+		this._debug = flag;
+	}
+
+	/**
+	 * Sets a function that used for outputting debug strings.
+	 * @param function fn Function called when debug output.
+	 */
+	setDebugOutput(fn) {
+		this._debugOutput = fn;
+	}
+
+	_debugOutput(str) {
+		if (this._debug) this._debugOutput(str);
 	}
 
 }

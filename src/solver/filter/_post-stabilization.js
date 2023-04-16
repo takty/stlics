@@ -8,13 +8,13 @@
 export class PostStabilization {
 
 	static apply(p, orig) {
-		console.log('start post-stabilization');
+		this._debugOutput('start post-stabilization');
 
 		let stabilized;
 		let count = 0;
 
 		do {
-			console.log('post-stabilization: count ' + count++);
+			this._debugOutput('post-stabilization: count ' + count++);
 
 			stabilized = false;
 			let C_min = p.worstSatisfactionDegree();
@@ -36,7 +36,7 @@ export class PostStabilization {
 			}
 		} while (stabilized);
 
-		console.log('finish post-stabilization');
+		this._debugOutput('finish post-stabilization');
 		return true;
 	}
 

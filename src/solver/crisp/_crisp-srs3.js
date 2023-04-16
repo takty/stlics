@@ -4,7 +4,7 @@
  * Similar to SRS 3, the repair algorithm searches for an assignment that satisfies itself without reducing the number of satisfactions of its neighbors.
  *
  * @author Takuto Yanagida
- * @version 2023-04-11
+ * @version 2023-04-16
  */
 
 import { AssignmentList } from '../../util/_assignment-list.js';
@@ -41,7 +41,7 @@ export class CrispSRS3 extends Solver {
 	}
 
 	#repair(c0) {
-		if (this._debug) console.log('repair');
+		this._debugOutput('repair');
 
 		const candidates = new AssignmentList();
 		let maxDiff = 0;
@@ -76,7 +76,7 @@ export class CrispSRS3 extends Solver {
 		if (candidates.size() > 0) {
 			const e = this.#isRandom ? candidates.arbitraryAssignment() : candidates.get(0);
 			e.apply();
-			if (this._debug) console.log('\t' + e);
+			this._debugOutput('\t' + e);
 			return true;
 		}
 		return false;
@@ -108,7 +108,7 @@ export class CrispSRS3 extends Solver {
 	}
 
 	#spread(node) {
-		if (this._debug) console.log('spread');
+		this._debugOutput('spread');
 		this.#closedList.add(node);
 
 		for (const c of this.#getNeighborConstraints(node.getObject())) {
@@ -123,7 +123,7 @@ export class CrispSRS3 extends Solver {
 	}
 
 	#srs(c_stars) {
-		if (this._debug) console.log('srs');
+		this._debugOutput('srs');
 		const endTime = (this._timeLimit === null) ? Number.MAX_VALUE : (Date.now() + this._timeLimit);
 		let iterCount = 0;
 
@@ -135,15 +135,15 @@ export class CrispSRS3 extends Solver {
 
 		while (c_stars.size && this.#openList.size) {
 			if ((this._targetDeg ?? 1) <= this._pro.satisfiedConstraintRate()) {  // Success if violation rate improves from specified
-				if (this._debug) console.log('stop: current degree is above the target');
+				this._debugOutput('stop: current degree is above the target');
 				return true;
 			}
 			if (this._iterLimit && this._iterLimit < iterCount++) {  // Failure if repeated a specified number
-				if (this._debug) console.log('stop: number of iterations has reached the limit');
+				this._debugOutput('stop: number of iterations has reached the limit');
 				return false;
 			}
 			if (endTime < Date.now()) {  // Failure if time limit is exceeded
-				if (this._debug) console.log('stop: time limit has been reached');
+				this._debugOutput('stop: time limit has been reached');
 				return false;
 			}
 

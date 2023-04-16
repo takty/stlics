@@ -3,7 +3,7 @@
  * CSPs and FCSPs (but only Binary (F)CSPs) is supported.
  *
  * @author Takuto Yanagida
- * @version 2023-04-10
+ * @version 2023-04-16
  */
 
 import { AssignmentList } from '../../util/_assignment-list.js';
@@ -30,7 +30,7 @@ export class FuzzyGENET extends Solver {
 	}
 
 	#createNetwork(worstDeg) {
-		if (this._debug) console.log('network creation start');
+		this._debugOutput('network creation start');
 		const cons = [];
 
 		for (const v of this._pro.variables()) {
@@ -78,7 +78,7 @@ export class FuzzyGENET extends Solver {
 			for (const n of cl._neurons) n.lockConnections();
 		}
 		this.#connections = cons;
-		if (this._debug) console.log('network creation complete');
+		this._debugOutput('network creation complete');
 		return true;
 	}
 
@@ -107,11 +107,11 @@ export class FuzzyGENET extends Solver {
 
 		while (true) {
 			if (this._iterLimit && this._iterLimit < iterCount++) {  // Failure if repeated a specified number
-				if (this._debug) console.log('stop: number of iterations has reached the limit');
+				this._debugOutput('stop: number of iterations has reached the limit');
 				break;
 			}
 			if (endTime < Date.now()) {  // Failure if time limit is exceeded
-				if (this._debug) console.log('stop: time limit has been reached');
+				this._debugOutput('stop: time limit has been reached');
 				break;
 			}
 
@@ -133,7 +133,7 @@ export class FuzzyGENET extends Solver {
 				const d = this._pro.worstSatisfactionDegree();
 				if (cur < d) {  // If it's a better assignment than ever, save it.
 					cur = d;
-					if (this._debug) console.log(`worst satisfaction degree: ${d}`);
+					this._debugOutput(`worst satisfaction degree: ${d}`);
 					sol.setProblem(this._pro);
 					if (this.foundSolution(sol, d)) {  // Call hook
 						success = true;
@@ -142,7 +142,7 @@ export class FuzzyGENET extends Solver {
 					if (this._targetDeg === null) {  // Satisfaction degree is not specified.
 						success = true;
 					} else if (this._targetDeg <= cur) {  // Satisfaction degree is specified.
-						if (this._debug) console.log('stop: current degree is above the target');
+						this._debugOutput('stop: current degree is above the target');
 						success = true;
 						break;
 					}

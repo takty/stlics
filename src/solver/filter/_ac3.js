@@ -41,7 +41,7 @@ export class AC3 {
 		if (temp.length !== d_i.size()) {
 			const nd = p.createDomain({ values: temp });
 			v_i.setDomain(nd);
-			console.log(d_i.size() + ' -> ' + nd.size());
+			this._debugOutput(d_i.size() + ' -> ' + nd.size());
 			return true;
 		}
 		return false;

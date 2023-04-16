@@ -2,7 +2,7 @@
  * A class that implements the flexible local changes method.
  *
  * @author Takuto Yanagida
- * @version 2023-04-11
+ * @version 2023-04-16
  */
 
 import { Constraint } from '../../problem/_constraint.js';
@@ -162,21 +162,20 @@ export class FlexibleLocalChanges extends Solver {
 	}
 
 	#flcVariables(X1, X2, X3, consX1, consX12, rc) {
-		if (this._debug) {
-			console.log(`X1 ${X1.size}, X2' ${X2.size}, X3' ${X3.size}`);
-		}
+		this._debugOutput(`X1 ${X1.size}, X2' ${X2.size}, X3' ${X3.size}`);
+
 		if (this._targetDeg !== null && this._targetDeg <= this._pro.worstSatisfactionDegree()) {  // Success if the degree improves from specified
-			if (this._debug) console.log('stop: current degree is above the target');
+			this._debugOutput('stop: current degree is above the target');
 			this.#globalReturn = 1;
 			return consX12;
 		}
 		if (this._iterLimit && this._iterLimit < this.#iterCount++) {  // Failure if repeated a specified number
-			if (this._debug) console.log('stop: number of iterations has reached the limit');
+			this._debugOutput('stop: number of iterations has reached the limit');
 			this.#globalReturn = 0;
 			return consX12;
 		}
 		if (this.#endTime < Date.now()) {  // Failure if time limit is exceeded
-			if (this._debug) console.log('stop: time limit has been reached');
+			this._debugOutput('stop: time limit has been reached');
 			this.#globalReturn = 0;
 			return consX12;
 		}

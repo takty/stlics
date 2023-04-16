@@ -2,7 +2,7 @@
  * Class implements the local changes method.
  *
  * @author Takuto Yanagida
- * @version 2023-04-11
+ * @version 2023-04-16
  */
 
 import { AssignmentList } from '../../util/_assignment-list.js';
@@ -104,7 +104,7 @@ export class LocalChanges extends Solver {
 
 		const T = LocalChanges.#setMinusSet(V1_V2, V3);
 		if (!this.#isConsistent(T, v, val)) {
-			if (this._debug) console.log('bug');
+			this._debugOutput('bug');
 		}
 
 		for (const vv of V3) {
@@ -135,21 +135,20 @@ export class LocalChanges extends Solver {
 	}
 
 	#lcVariables(V1, V2, V3) {
-		if (this._debug) {
-			console.log(`V1 ${V1.size}, V2' ${V2.size}, V3' ${V3.size}`);
-		}
+		this._debugOutput(`V1 ${V1.size}, V2' ${V2.size}, V3' ${V3.size}`);
+
 		if ((this._targetDeg ?? 1) <= this._pro.satisfiedConstraintRate()) {  // Success if violation rate improves from specified
-			if (this._debug) console.log('stop: current degree is above the target');
+			this._debugOutput('stop: current degree is above the target');
 			this.#globalReturn = true;
 			return true;
 		}
 		if (this._iterLimit && this._iterLimit < this.#iterCount++) {  // Failure if repeated a specified number
-			if (this._debug) console.log('stop: number of iterations has reached the limit');
+			this._debugOutput('stop: number of iterations has reached the limit');
 			this.#globalReturn = true;
 			return false;
 		}
 		if (this.#endTime < Date.now()) {  // Failure if time limit is exceeded
-			if (this._debug) console.log('stop: time limit has been reached');
+			this._debugOutput('stop: time limit has been reached');
 			this.#globalReturn = true;
 			return false;
 		}

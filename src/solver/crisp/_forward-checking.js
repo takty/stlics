@@ -6,7 +6,7 @@
  * Forward checking is also performed for problems with polynomial constraints.
  *
  * @author Takuto Yanagida
- * @version 2023-04-10
+ * @version 2023-04-16
  */
 
 import { AssignmentList } from '../../util/_assignment-list.js';
@@ -112,11 +112,11 @@ export class ForwardChecking extends Solver {
 	// Searches for one variable at a time.
 	#branch(level) {
 		if (this._iterLimit && this._iterLimit < this.#iterCount++) {  // Failure if repeated a specified number.
-			if (this._debug) console.log('stop: number of iterations has reached the limit');
+			this._debugOutput('stop: number of iterations has reached the limit');
 			return false;
 		}
 		if (this.#endTime < Date.now()) {  // Failure if time limit is exceeded.
-			if (this._debug) console.log('stop: time limit has been reached');
+			this._debugOutput('stop: time limit has been reached');
 			return false;
 		}
 

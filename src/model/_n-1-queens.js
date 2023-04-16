@@ -4,13 +4,13 @@
  * If two queens are in a position to be taken, the farther apart they are, the higher the satisfaction degree.
  *
  * @author Takuto Yanagida
- * @version 2023-03-31
+ * @version 2023-04-16
  */
 
-import { ProblemFactory } from '../util/_problem-factory.js';
 import { FuzzyRelation } from '../problem/_relation-fuzzy.js';
+import { Model } from './_model.js';
 
-export class N_1_queens extends ProblemFactory {
+export class N_1_queens extends Model {
 
 	#size;
 
@@ -60,7 +60,7 @@ export class N_1_queens extends ProblemFactory {
 					}
 				}
 			}
-			console.log(l);
+			this._debugOutput(l);
 		}
 	}
 

@@ -2,7 +2,7 @@
  * This class implements the SRS algorithm.
  *
  * @author Takuto Yanagida
- * @version 2023-04-11
+ * @version 2023-04-16
  */
 
 import { Constraint } from '../../problem/_constraint.js';
@@ -51,7 +51,7 @@ export class SRS3 extends Solver {
 	}
 
 	#repair(c0) {
-		if (this._debug) console.log('repair');
+		this._debugOutput('repair');
 
 		const candidates = new AssignmentList();
 		const minDeg0    = c0.satisfactionDegree();  // Target c0 should certainly be an improvement over this.
@@ -86,16 +86,16 @@ export class SRS3 extends Solver {
 		}
 		if (candidates.size() > 0) {
 			const e = this.#isRandom ? candidates.arbitraryAssignment() : candidates.get(0);
-			console.log(e);
+			this._debugOutput(e);
 			e.apply();
-			if (this._debug) console.log('\t' + e);
+			this._debugOutput('\t' + e);
 			return true;
 		}
 		return false;
 	}
 
 	#shrink(node) {
-		if (this._debug) console.log('shrink');
+		this._debugOutput('shrink');
 
 		let removeCStar = false;
 		while (true) {
@@ -121,7 +121,7 @@ export class SRS3 extends Solver {
 	}
 
 	#spread(node) {
-		if (this._debug) console.log('spread');
+		this._debugOutput('spread');
 		this.#closedList.add(node);
 
 		for (const c of this.#getNeighborConstraints(node.getObject())) {
@@ -135,7 +135,7 @@ export class SRS3 extends Solver {
 	}
 
 	#srs() {
-		if (this._debug) console.log('srs');
+		this._debugOutput('srs');
 
 		const [wsdcs,] = this._pro.constraintsWithWorstSatisfactionDegree();
 		for (const c of wsdcs) {
@@ -151,11 +151,11 @@ export class SRS3 extends Solver {
 
 		while (this.#c_stars.size && this.#openList.size) {
 			if (this._iterLimit && this._iterLimit < this.#iterCount++) {  // Failure if repeated a specified number
-				if (this._debug) console.log('stop: number of iterations has reached the limit');
+				this._debugOutput('stop: number of iterations has reached the limit');
 				return false;
 			}
 			if (this.#endTime < Date.now()) {  // Failure if time limit is exceeded
-				if (this._debug) console.log('stop: time limit has been reached');
+				this._debugOutput('stop: time limit has been reached');
 				return false;
 			}
 
@@ -189,9 +189,7 @@ export class SRS3 extends Solver {
 				break;
 			}
 			const solutionWorstDeg = this._pro.worstSatisfactionDegree();
-			if (this._debug) {
-				console.log(`\tfound a solution: ${solutionWorstDeg}\t${this._targetDeg}`);
-			}
+			this._debugOutput(`\tfound a solution: ${solutionWorstDeg}\t${this._targetDeg}`);
 			sol.setProblem(this._pro);
 
 			if (this.foundSolution(sol, solutionWorstDeg)) {  // Call hook
@@ -201,7 +199,7 @@ export class SRS3 extends Solver {
 			if (this._targetDeg === null) {  // Satisfaction degree is not specified
 				success = true;
 			} else if (this._targetDeg <= solutionWorstDeg) {  // The current degree exceeded the specified degree.
-				if (this._debug) console.log('stop: current degree is above the target');
+				this._debugOutput('stop: current degree is above the target');
 				success = true;
 				break;
 			}

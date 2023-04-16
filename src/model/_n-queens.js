@@ -2,13 +2,13 @@
  * A sample implementation of the N queens problem.
  *
  * @author Takuto Yanagida
- * @version 2023-03-31
+ * @version 2023-04-16
  */
 
-import { ProblemFactory } from '../util/_problem-factory.js';
 import { CrispRelation } from '../problem/_relation-crisp.js';
+import { Model } from './_model.js';
 
-export class N_queens extends ProblemFactory {
+export class N_queens extends Model {
 
 	#size;
 
@@ -58,7 +58,7 @@ export class N_queens extends ProblemFactory {
 					}
 				}
 			}
-			console.log(l);
+			this._debugOutput(l);
 		}
 	}
 

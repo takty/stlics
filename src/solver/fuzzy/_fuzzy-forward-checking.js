@@ -409,20 +409,18 @@ export class FuzzyForwardChecking extends Solver {
 			const bc = this.#branch(0);
 			if (bc === FuzzyForwardChecking.TERMINATE) {
 				if (this._iterLimit && this._iterLimit < this.#iterCount++) {
-					if (this._debug) console.log('stop: number of iterations has reached the limit');
+					this._debugOutput('stop: number of iterations has reached the limit');
 					break;
 				}
 				if (this.#endTime < Date.now()) {
-					if (this._debug) console.log('stop: time limit has been reached');
+					this._debugOutput('stop: time limit has been reached');
 					break;
 				}
 			}
 			if (this.#sol.isEmpty()) {
 				break;
 			}
-			if (this._debug) {
-				console.log(`\tfound a solution: ${this.#solWorstDeg}`);
-			}
+			this._debugOutput(`\tfound a solution: ${this.#solWorstDeg}`);
 			if (this.foundSolution(this.#sol, this.#solWorstDeg)) {  // Call hook
 				success = true;
 				break;
@@ -431,7 +429,7 @@ export class FuzzyForwardChecking extends Solver {
 				success = true;
 				this.#solWorstDeg += this.#degInc;  // Find the next solution within the limit.
 			} else if (this._targetDeg <= this.#solWorstDeg) {  // The current degree exceeded the specified degree.
-				if (this._debug) console.log('stop: current degree is above the target');
+				this._debugOutput('stop: current degree is above the target');
 				success = true;
 				break;
 			}
