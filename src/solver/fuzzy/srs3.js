@@ -2,7 +2,7 @@
  * This class implements the SRS algorithm.
  *
  * @author Takuto Yanagida
- * @version 2023-04-16
+ * @version 2023-04-17
  */
 
 import { Constraint } from '../../problem/constraint.js';
@@ -86,7 +86,6 @@ export class SRS3 extends Solver {
 		}
 		if (canList.size() > 0) {
 			const e = this.#isRandom ? canList.random() : canList.at(0);
-			this._debugOutput(e);
 			e.apply();
 			this._debugOutput('\t' + e);
 			return true;

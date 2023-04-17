@@ -4,7 +4,7 @@
  * Find the solution to the problem as the maximum CSP.
  *
  * @author Takuto Yanagida
- * @version 2023-04-16
+ * @version 2023-04-17
  */
 
 import { AssignmentList } from '../../util/assignment-list.js';
@@ -153,7 +153,7 @@ export class GENET extends Solver {
 
 }
 
-{
+(() => {
 
 	class Cluster {
 
@@ -161,13 +161,13 @@ export class GENET extends Solver {
 			return Math.floor(Math.random() * Math.floor(max));
 		}
 
-		#var;
+		#v;  // For avoiding a bug(?) of parcel.
 		#index;
 		#maxNeurons = [];
 		_neurons    = [];
 
 		constructor(v) {
-			this.#var = v;
+			this.#v = v;
 
 			for (const val of v.domain()) {
 				this._neurons.push(new Neuron(val));
@@ -184,7 +184,7 @@ export class GENET extends Solver {
 		}
 
 		applyToVariable() {
-			this.#var.assign(this._neurons[this.#index]._value);
+			this.#v.assign(this._neurons[this.#index]._value);
 		}
 
 		get(index) {
@@ -297,4 +297,4 @@ export class GENET extends Solver {
 	}
 	GENET.Neuron = Neuron;
 
-}
+})();
