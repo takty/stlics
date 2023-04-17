@@ -4,7 +4,7 @@
 	"description": "CSP Library",
 	"productName": "Stlics-JS",
 	"scripts": {
-		"start": "parcel sample/*.html -d docs"
+		"start": "parcel sample/*.html --dist-dir docs"
 	},
 	"repository": {
 		"type": "git",
@@ -13,11 +13,14 @@
 	"author": "Takuto Yanagida",
 	"license": "MIT",
 	"homepage": "https://github.com/takty/stlics-js#readme",
-	"dependencies": {
-		"parcel-bundler": "^1.12.5",
-		"typescript": "^5.0.4"
-	},
+	"browserslist": [
+		"> 1%",
+		"last 2 versions",
+		"not ie <= 11",
+		"not dead"
+	],
 	"devDependencies": {
-		"sass": "^1.62.0"
+		"@parcel/transformer-sass": "2.8.3",
+		"parcel": "^2.8.3"
 	}
 }

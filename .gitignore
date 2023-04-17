@@ -2,4 +2,4 @@
 /dist/
 npm-debug.log
 /sample/.*
-/.cache
+/.parcel-cache
