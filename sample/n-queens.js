@@ -1,20 +1,15 @@
 import { CrispProblem } from '../src/problem/problem-crisp.js';
 import { N_queens } from '../src/model/n-queens.js';
+import { SolverFactory } from '../src/solver/solver-factory.js';
 
-import { ForwardChecking } from '../src/solver/crisp/forward-checking.js';
-import { MaxForwardChecking } from '../src/solver/crisp/max-forward-checking.js';
-import { LocalChanges } from '../src/solver/crisp/local-changes.js';
-import { LocalChangesEx } from '../src/solver/crisp/local-changes-ex.js';
-import { Breakout } from '../src/solver/crisp/breakout.js';
-import { GENET } from '../src/solver/crisp/genet.js';
-import { CrispSRS3 } from '../src/solver/crisp/crisp-srs3.js';
-
-const COUNT     = 1;  // Interaction count
+const COUNT     = 1;   // Interaction count
 const QUEEN_NUM = 20;  // Number of queens
 
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', async () => {
 	const output = document.getElementById('output');
 	const log    = e => output.value += `${e}\n`;
+
+	const sn = SolverFactory.crispSolverNames()[6];
 
 	let sum_time = 0;
 	let sum_rate = 0;
@@ -24,13 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		const p  = nq.createProblem(new CrispProblem());
 		const t  = Date.now();  // Start time measurement
 
-		// const s = new ForwardChecking(p);
-		// const s = new MaxForwardChecking(p);
-		// const s = new LocalChanges(p);
-		// const s = new LocalChangesEx(p);
-		// const s = new Breakout(p);
-		// const s = new GENET(p);
-		const s = new CrispSRS3(p);
+		const s = await SolverFactory.createSolver(sn, p);
 		// s.setTargetRate(null);
 		s.setTimeLimit(10000);
 		s.setDebugOutput(log);
@@ -39,7 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
 		const ct = Date.now() - t;  // Stop time measurement
 		const cr = p.satisfiedConstraintRate();
 		log(`solver: ${s.name()}   ${res ? 'success' : 'failure'}`);
-		log(`time: ${ct}   rate: ${cr}`);
+		log(`trial: ${i + 1}   time: ${ct}   rate: ${cr}`);
 		nq.setDebugOutput(log);
 		nq.printResult(p);
 		sum_time += ct;
