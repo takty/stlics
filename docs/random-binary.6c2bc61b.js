@@ -117,7 +117,7 @@ parcelRequire = (function (modules, cache, entry, globalName) {
   }
 
   return newRequire;
-})({"../src/problem/_element.js":[function(require,module,exports) {
+})({"../src/problem/element.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -211,14 +211,14 @@ var Element = /*#__PURE__*/function () {
   return Element;
 }();
 exports.Element = Element;
-},{}],"../src/problem/_variable.js":[function(require,module,exports) {
+},{}],"../src/problem/variable.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.Variable = void 0;
-var _element = require("./_element.js");
+var _element = require("./element.js");
 var _Symbol$iterator;
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
@@ -470,7 +470,7 @@ var _INVALID = {
   writable: true,
   value: Number.MIN_VALUE
 };
-},{"./_element.js":"../src/problem/_element.js"}],"../src/problem/_domain.js":[function(require,module,exports) {
+},{"./element.js":"../src/problem/element.js"}],"../src/problem/domain.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -555,14 +555,14 @@ var Domain = /*#__PURE__*/function (_Symbol$iterator) {
   return Domain;
 }(Symbol.iterator);
 exports.Domain = Domain;
-},{}],"../src/problem/_domain-ranged.js":[function(require,module,exports) {
+},{}],"../src/problem/domain-ranged.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.DomainRanged = void 0;
-var _domain = require("./_domain.js");
+var _domain = require("./domain.js");
 var _Symbol$iterator;
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -671,14 +671,14 @@ var DomainRanged = /*#__PURE__*/function (_Domain) {
   return DomainRanged;
 }(_domain.Domain);
 exports.DomainRanged = DomainRanged;
-},{"./_domain.js":"../src/problem/_domain.js"}],"../src/problem/_domain-arbitrary.js":[function(require,module,exports) {
+},{"./domain.js":"../src/problem/domain.js"}],"../src/problem/domain-arbitrary.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.DomainArbitrary = void 0;
-var _domain = require("./_domain.js");
+var _domain = require("./domain.js");
 var _Symbol$iterator;
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
@@ -776,7 +776,7 @@ var DomainArbitrary = /*#__PURE__*/function (_Domain) {
   return DomainArbitrary;
 }(_domain.Domain);
 exports.DomainArbitrary = DomainArbitrary;
-},{"./_domain.js":"../src/problem/_domain.js"}],"../src/problem/_relation.js":[function(require,module,exports) {
+},{"./domain.js":"../src/problem/domain.js"}],"../src/problem/relation.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -800,14 +800,14 @@ var Relation = /*#__PURE__*/_createClass(function Relation() {
   _classCallCheck(this, Relation);
 });
 exports.Relation = Relation;
-},{}],"../src/problem/_relation-fuzzy.js":[function(require,module,exports) {
+},{}],"../src/problem/relation-fuzzy.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.FuzzyRelation = void 0;
-var _relation = require("./_relation.js");
+var _relation = require("./relation.js");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
@@ -858,15 +858,15 @@ var FuzzyRelation = /*#__PURE__*/function (_Relation) {
   return FuzzyRelation;
 }(_relation.Relation);
 exports.FuzzyRelation = FuzzyRelation;
-},{"./_relation.js":"../src/problem/_relation.js"}],"../src/problem/_constraint.js":[function(require,module,exports) {
+},{"./relation.js":"../src/problem/relation.js"}],"../src/problem/constraint.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.Constraint = void 0;
-var _element = require("./_element.js");
-var _relationFuzzy = require("./_relation-fuzzy.js");
+var _element = require("./element.js");
+var _relationFuzzy = require("./relation-fuzzy.js");
 var _Symbol$iterator;
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1053,14 +1053,14 @@ exports.Constraint = Constraint;
  * The constant indicating that the satisfaction degree is not defined.
  */
 _defineProperty(Constraint, "UNDEFINED", -1);
-},{"./_element.js":"../src/problem/_element.js","./_relation-fuzzy.js":"../src/problem/_relation-fuzzy.js"}],"../src/problem/_constraint-1.js":[function(require,module,exports) {
+},{"./element.js":"../src/problem/element.js","./relation-fuzzy.js":"../src/problem/relation-fuzzy.js"}],"../src/problem/constraint-1.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.Constraint1 = void 0;
-var _constraint = require("./_constraint.js");
+var _constraint = require("./constraint.js");
 var _Symbol$iterator;
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
@@ -1272,14 +1272,14 @@ var Constraint1 = /*#__PURE__*/function (_Constraint) {
   return Constraint1;
 }(_constraint.Constraint);
 exports.Constraint1 = Constraint1;
-},{"./_constraint.js":"../src/problem/_constraint.js"}],"../src/problem/_constraint-2.js":[function(require,module,exports) {
+},{"./constraint.js":"../src/problem/constraint.js"}],"../src/problem/constraint-2.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.Constraint2 = void 0;
-var _constraint = require("./_constraint.js");
+var _constraint = require("./constraint.js");
 var _Symbol$iterator;
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
@@ -1604,14 +1604,14 @@ var Constraint2 = /*#__PURE__*/function (_Constraint) {
   return Constraint2;
 }(_constraint.Constraint);
 exports.Constraint2 = Constraint2;
-},{"./_constraint.js":"../src/problem/_constraint.js"}],"../src/problem/_constraint-3.js":[function(require,module,exports) {
+},{"./constraint.js":"../src/problem/constraint.js"}],"../src/problem/constraint-3.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.Constraint3 = void 0;
-var _constraint = require("./_constraint.js");
+var _constraint = require("./constraint.js");
 var _Symbol$iterator;
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
@@ -2164,20 +2164,20 @@ var Constraint3 = /*#__PURE__*/function (_Constraint) {
   return Constraint3;
 }(_constraint.Constraint);
 exports.Constraint3 = Constraint3;
-},{"./_constraint.js":"../src/problem/_constraint.js"}],"../src/problem/_problem.js":[function(require,module,exports) {
+},{"./constraint.js":"../src/problem/constraint.js"}],"../src/problem/problem.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.Problem = void 0;
-var _variable = require("./_variable.js");
-var _domainRanged = require("./_domain-ranged.js");
-var _domainArbitrary = require("./_domain-arbitrary.js");
-var _constraint = require("./_constraint.js");
-var _constraint2 = require("./_constraint-1.js");
-var _constraint3 = require("./_constraint-2.js");
-var _constraint4 = require("./_constraint-3.js");
+var _variable = require("./variable.js");
+var _domainRanged = require("./domain-ranged.js");
+var _domainArbitrary = require("./domain-arbitrary.js");
+var _constraint = require("./constraint.js");
+var _constraint2 = require("./constraint-1.js");
+var _constraint3 = require("./constraint-2.js");
+var _constraint4 = require("./constraint-3.js");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _construct(Parent, args, Class) { if (_isNativeReflectConstruct()) { _construct = Reflect.construct.bind(); } else { _construct = function _construct(Parent, args, Class) { var a = [null]; a.push.apply(a, args); var Constructor = Function.bind.apply(Parent, a); var instance = new Constructor(); if (Class) _setPrototypeOf(instance, Class.prototype); return instance; }; } return _construct.apply(null, arguments); }
 function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
@@ -2713,7 +2713,7 @@ var Problem = /*#__PURE__*/function () {
   return Problem;
 }();
 exports.Problem = Problem;
-},{"./_variable.js":"../src/problem/_variable.js","./_domain-ranged.js":"../src/problem/_domain-ranged.js","./_domain-arbitrary.js":"../src/problem/_domain-arbitrary.js","./_constraint.js":"../src/problem/_constraint.js","./_constraint-1.js":"../src/problem/_constraint-1.js","./_constraint-2.js":"../src/problem/_constraint-2.js","./_constraint-3.js":"../src/problem/_constraint-3.js"}],"../src/model/_beta.js":[function(require,module,exports) {
+},{"./variable.js":"../src/problem/variable.js","./domain-ranged.js":"../src/problem/domain-ranged.js","./domain-arbitrary.js":"../src/problem/domain-arbitrary.js","./constraint.js":"../src/problem/constraint.js","./constraint-1.js":"../src/problem/constraint-1.js","./constraint-2.js":"../src/problem/constraint-2.js","./constraint-3.js":"../src/problem/constraint-3.js"}],"../src/model/beta.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2783,7 +2783,7 @@ function _gamma(a) {
   }
   return x;
 }
-},{}],"../src/model/_model.js":[function(require,module,exports) {
+},{}],"../src/model/model.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2859,16 +2859,16 @@ var Model = /*#__PURE__*/function () {
   return Model;
 }();
 exports.Model = Model;
-},{}],"../src/model/_random-binary.js":[function(require,module,exports) {
+},{}],"../src/model/random-binary.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.RandomBinary = void 0;
-var _relationFuzzy = require("../problem/_relation-fuzzy.js");
-var _beta = require("./_beta.js");
-var _model = require("./_model.js");
+var _relationFuzzy = require("../problem/relation-fuzzy.js");
+var _beta = require("./beta.js");
+var _model = require("./model.js");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
@@ -3051,7 +3051,7 @@ var TableRelation = /*#__PURE__*/function (_FuzzyRelation) {
   }]);
   return TableRelation;
 }(_relationFuzzy.FuzzyRelation);
-},{"../problem/_relation-fuzzy.js":"../src/problem/_relation-fuzzy.js","./_beta.js":"../src/model/_beta.js","./_model.js":"../src/model/_model.js"}],"../src/util/_assignment.js":[function(require,module,exports) {
+},{"../problem/relation-fuzzy.js":"../src/problem/relation-fuzzy.js","./beta.js":"../src/model/beta.js","./model.js":"../src/model/model.js"}],"../src/util/assignment.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3142,14 +3142,14 @@ var Assignment = /*#__PURE__*/function () {
   return Assignment;
 }();
 exports.Assignment = Assignment;
-},{}],"../src/util/_assignment-list.js":[function(require,module,exports) {
+},{}],"../src/util/assignment-list.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.AssignmentList = void 0;
-var _assignment = require("./_assignment.js");
+var _assignment = require("./assignment.js");
 var _Symbol$iterator;
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
@@ -3354,7 +3354,7 @@ var AssignmentList = /*#__PURE__*/function () {
   return AssignmentList;
 }();
 exports.AssignmentList = AssignmentList;
-},{"./_assignment.js":"../src/util/_assignment.js"}],"../src/util/_domain-pruner.js":[function(require,module,exports) {
+},{"./assignment.js":"../src/util/assignment.js"}],"../src/util/domain-pruner.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3484,7 +3484,7 @@ var _UNHIDDEN = {
   writable: true,
   value: -1
 };
-},{}],"../src/solver/_solver.js":[function(require,module,exports) {
+},{}],"../src/solver/solver.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -3678,17 +3678,17 @@ var Solver = /*#__PURE__*/function () {
   return Solver;
 }();
 exports.Solver = Solver;
-},{}],"../src/solver/fuzzy/_fuzzy-forward-checking.js":[function(require,module,exports) {
+},{}],"../src/solver/fuzzy/fuzzy-forward-checking.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.FuzzyForwardChecking = void 0;
-var _constraint = require("../../problem/_constraint.js");
-var _assignmentList = require("../../util/_assignment-list.js");
-var _domainPruner = require("../../util/_domain-pruner.js");
-var _solver = require("../_solver.js");
+var _constraint = require("../../problem/constraint.js");
+var _assignmentList = require("../../util/assignment-list.js");
+var _domainPruner = require("../../util/domain-pruner.js");
+var _solver = require("../solver.js");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _readOnlyError(name) { throw new TypeError("\"" + name + "\" is read-only"); }
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
@@ -4416,16 +4416,16 @@ function _branchLast2(level) {
 }
 _defineProperty(FuzzyForwardChecking, "CONTINUE", 0);
 _defineProperty(FuzzyForwardChecking, "TERMINATE", 1);
-},{"../../problem/_constraint.js":"../src/problem/_constraint.js","../../util/_assignment-list.js":"../src/util/_assignment-list.js","../../util/_domain-pruner.js":"../src/util/_domain-pruner.js","../_solver.js":"../src/solver/_solver.js"}],"../src/solver/fuzzy/_fuzzy-forward-checking-bc.js":[function(require,module,exports) {
+},{"../../problem/constraint.js":"../src/problem/constraint.js","../../util/assignment-list.js":"../src/util/assignment-list.js","../../util/domain-pruner.js":"../src/util/domain-pruner.js","../solver.js":"../src/solver/solver.js"}],"../src/solver/fuzzy/fuzzy-forward-checking-bc.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.FuzzyForwardCheckingBc = void 0;
-var _assignmentList = require("../../util/_assignment-list.js");
-var _domainPruner = require("../../util/_domain-pruner.js");
-var _solver = require("../_solver.js");
+var _assignmentList = require("../../util/assignment-list.js");
+var _domainPruner = require("../../util/domain-pruner.js");
+var _solver = require("../solver.js");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it.return != null) it.return(); } finally { if (didErr) throw err; } } }; }
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
@@ -4850,16 +4850,16 @@ function _branchLast2(level) {
 }
 _defineProperty(FuzzyForwardCheckingBc, "CONTINUE", 0);
 _defineProperty(FuzzyForwardCheckingBc, "TERMINATE", 1);
-},{"../../util/_assignment-list.js":"../src/util/_assignment-list.js","../../util/_domain-pruner.js":"../src/util/_domain-pruner.js","../_solver.js":"../src/solver/_solver.js"}],"../src/solver/fuzzy/_flexible-local-changes.js":[function(require,module,exports) {
+},{"../../util/assignment-list.js":"../src/util/assignment-list.js","../../util/domain-pruner.js":"../src/util/domain-pruner.js","../solver.js":"../src/solver/solver.js"}],"../src/solver/fuzzy/flexible-local-changes.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.FlexibleLocalChanges = void 0;
-var _constraint = require("../../problem/_constraint.js");
-var _assignmentList = require("../../util/_assignment-list.js");
-var _solver = require("../_solver.js");
+var _constraint = require("../../problem/constraint.js");
+var _assignmentList = require("../../util/assignment-list.js");
+var _solver = require("../solver.js");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -5411,16 +5411,16 @@ function _testX4(X1, X2, xi, consX1xi, consX12, cr) {
   }
   return csd;
 }
-},{"../../problem/_constraint.js":"../src/problem/_constraint.js","../../util/_assignment-list.js":"../src/util/_assignment-list.js","../_solver.js":"../src/solver/_solver.js"}],"../src/solver/fuzzy/_flexible-local-changes-ex.js":[function(require,module,exports) {
+},{"../../problem/constraint.js":"../src/problem/constraint.js","../../util/assignment-list.js":"../src/util/assignment-list.js","../solver.js":"../src/solver/solver.js"}],"../src/solver/fuzzy/flexible-local-changes-ex.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.FlexibleLocalChangesEx = void 0;
-var _constraint = require("../../problem/_constraint.js");
-var _assignmentList = require("../../util/_assignment-list.js");
-var _solver = require("../_solver.js");
+var _constraint = require("../../problem/constraint.js");
+var _assignmentList = require("../../util/assignment-list.js");
+var _solver = require("../solver.js");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -5973,15 +5973,15 @@ function _testX4(X1, X2, xi, consX1xi, consX12, cr) {
   }
   return csd;
 }
-},{"../../problem/_constraint.js":"../src/problem/_constraint.js","../../util/_assignment-list.js":"../src/util/_assignment-list.js","../_solver.js":"../src/solver/_solver.js"}],"../src/solver/fuzzy/_fuzzy-breakout.js":[function(require,module,exports) {
+},{"../../problem/constraint.js":"../src/problem/constraint.js","../../util/assignment-list.js":"../src/util/assignment-list.js","../solver.js":"../src/solver/solver.js"}],"../src/solver/fuzzy/fuzzy-breakout.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.FuzzyBreakout = void 0;
-var _assignmentList = require("../../util/_assignment-list.js");
-var _solver = require("../_solver.js");
+var _assignmentList = require("../../util/assignment-list.js");
+var _solver = require("../solver.js");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -6241,15 +6241,15 @@ function _listWorstVariables2(worstCons) {
   }
   return Array.from(wvs);
 }
-},{"../../util/_assignment-list.js":"../src/util/_assignment-list.js","../_solver.js":"../src/solver/_solver.js"}],"../src/solver/fuzzy/_fuzzy-genet.js":[function(require,module,exports) {
+},{"../../util/assignment-list.js":"../src/util/assignment-list.js","../solver.js":"../src/solver/solver.js"}],"../src/solver/fuzzy/fuzzy-genet.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.FuzzyGENET = void 0;
-var _assignmentList = require("../../util/_assignment-list.js");
-var _solver = require("../_solver.js");
+var _assignmentList = require("../../util/assignment-list.js");
+var _solver = require("../solver.js");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -6741,16 +6741,16 @@ function _shuffle2(is) {
   }();
   FuzzyGENET.Neuron = Neuron;
 }
-},{"../../util/_assignment-list.js":"../src/util/_assignment-list.js","../_solver.js":"../src/solver/_solver.js"}],"../src/solver/fuzzy/_srs3.js":[function(require,module,exports) {
+},{"../../util/assignment-list.js":"../src/util/assignment-list.js","../solver.js":"../src/solver/solver.js"}],"../src/solver/fuzzy/srs3.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.SRS3 = void 0;
-var _constraint = require("../../problem/_constraint.js");
-var _assignmentList = require("../../util/_assignment-list.js");
-var _solver = require("../_solver.js");
+var _constraint = require("../../problem/constraint.js");
+var _assignmentList = require("../../util/assignment-list.js");
+var _solver = require("../solver.js");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
 function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -7181,7 +7181,7 @@ _defineProperty(SRS3, "REPAIR_THRESHOLD", 0);
   }();
   SRS3.TreeNode = TreeNode;
 }
-},{"../../problem/_constraint.js":"../src/problem/_constraint.js","../../util/_assignment-list.js":"../src/util/_assignment-list.js","../_solver.js":"../src/solver/_solver.js"}],"../src/solver/filter/_post-stabilization.js":[function(require,module,exports) {
+},{"../../problem/constraint.js":"../src/problem/constraint.js","../../util/assignment-list.js":"../src/util/assignment-list.js","../solver.js":"../src/solver/solver.js"}],"../src/solver/filter/post-stabilization.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -7235,16 +7235,16 @@ var PostStabilization = /*#__PURE__*/function () {
   return PostStabilization;
 }();
 exports.PostStabilization = PostStabilization;
-},{}],"../src/solver/fuzzy/_srs3-pf.js":[function(require,module,exports) {
+},{}],"../src/solver/fuzzy/srs3-pf.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.SRS3_PF = void 0;
-var _assignmentList = require("../../util/_assignment-list.js");
-var _postStabilization = require("../filter/_post-stabilization.js");
-var _srs = require("./_srs3.js");
+var _assignmentList = require("../../util/assignment-list.js");
+var _postStabilization = require("../filter/post-stabilization.js");
+var _srs = require("./srs3.js");
 function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor); } }
@@ -7301,19 +7301,19 @@ var SRS3_PF = /*#__PURE__*/function (_SRS) {
   return SRS3_PF;
 }(_srs.SRS3);
 exports.SRS3_PF = SRS3_PF;
-},{"../../util/_assignment-list.js":"../src/util/_assignment-list.js","../filter/_post-stabilization.js":"../src/solver/filter/_post-stabilization.js","./_srs3.js":"../src/solver/fuzzy/_srs3.js"}],"random-binary.js":[function(require,module,exports) {
+},{"../../util/assignment-list.js":"../src/util/assignment-list.js","../filter/post-stabilization.js":"../src/solver/filter/post-stabilization.js","./srs3.js":"../src/solver/fuzzy/srs3.js"}],"random-binary.js":[function(require,module,exports) {
 "use strict";
 
-var _problem = require("../src/problem/_problem.js");
-var _randomBinary = require("../src/model/_random-binary.js");
-var _fuzzyForwardChecking = require("../src/solver/fuzzy/_fuzzy-forward-checking.js");
-var _fuzzyForwardCheckingBc = require("../src/solver/fuzzy/_fuzzy-forward-checking-bc.js");
-var _flexibleLocalChanges = require("../src/solver/fuzzy/_flexible-local-changes.js");
-var _flexibleLocalChangesEx = require("../src/solver/fuzzy/_flexible-local-changes-ex.js");
-var _fuzzyBreakout = require("../src/solver/fuzzy/_fuzzy-breakout.js");
-var _fuzzyGenet = require("../src/solver/fuzzy/_fuzzy-genet.js");
-var _srs = require("../src/solver/fuzzy/_srs3.js");
-var _srs3Pf = require("../src/solver/fuzzy/_srs3-pf.js");
+var _problem = require("../src/problem/problem.js");
+var _randomBinary = require("../src/model/random-binary.js");
+var _fuzzyForwardChecking = require("../src/solver/fuzzy/fuzzy-forward-checking.js");
+var _fuzzyForwardCheckingBc = require("../src/solver/fuzzy/fuzzy-forward-checking-bc.js");
+var _flexibleLocalChanges = require("../src/solver/fuzzy/flexible-local-changes.js");
+var _flexibleLocalChangesEx = require("../src/solver/fuzzy/flexible-local-changes-ex.js");
+var _fuzzyBreakout = require("../src/solver/fuzzy/fuzzy-breakout.js");
+var _fuzzyGenet = require("../src/solver/fuzzy/fuzzy-genet.js");
+var _srs = require("../src/solver/fuzzy/srs3.js");
+var _srs3Pf = require("../src/solver/fuzzy/srs3-pf.js");
 var COUNT = 1; // Interaction count
 var VAR_NUM = 10; // Number of variables
 var DENSITY = 0.5;
@@ -7351,7 +7351,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
   log("average time: ".concat(sum_time / COUNT, "   average degree: ").concat(sum_degree / COUNT));
 });
-},{"../src/problem/_problem.js":"../src/problem/_problem.js","../src/model/_random-binary.js":"../src/model/_random-binary.js","../src/solver/fuzzy/_fuzzy-forward-checking.js":"../src/solver/fuzzy/_fuzzy-forward-checking.js","../src/solver/fuzzy/_fuzzy-forward-checking-bc.js":"../src/solver/fuzzy/_fuzzy-forward-checking-bc.js","../src/solver/fuzzy/_flexible-local-changes.js":"../src/solver/fuzzy/_flexible-local-changes.js","../src/solver/fuzzy/_flexible-local-changes-ex.js":"../src/solver/fuzzy/_flexible-local-changes-ex.js","../src/solver/fuzzy/_fuzzy-breakout.js":"../src/solver/fuzzy/_fuzzy-breakout.js","../src/solver/fuzzy/_fuzzy-genet.js":"../src/solver/fuzzy/_fuzzy-genet.js","../src/solver/fuzzy/_srs3.js":"../src/solver/fuzzy/_srs3.js","../src/solver/fuzzy/_srs3-pf.js":"../src/solver/fuzzy/_srs3-pf.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+},{"../src/problem/problem.js":"../src/problem/problem.js","../src/model/random-binary.js":"../src/model/random-binary.js","../src/solver/fuzzy/fuzzy-forward-checking.js":"../src/solver/fuzzy/fuzzy-forward-checking.js","../src/solver/fuzzy/fuzzy-forward-checking-bc.js":"../src/solver/fuzzy/fuzzy-forward-checking-bc.js","../src/solver/fuzzy/flexible-local-changes.js":"../src/solver/fuzzy/flexible-local-changes.js","../src/solver/fuzzy/flexible-local-changes-ex.js":"../src/solver/fuzzy/flexible-local-changes-ex.js","../src/solver/fuzzy/fuzzy-breakout.js":"../src/solver/fuzzy/fuzzy-breakout.js","../src/solver/fuzzy/fuzzy-genet.js":"../src/solver/fuzzy/fuzzy-genet.js","../src/solver/fuzzy/srs3.js":"../src/solver/fuzzy/srs3.js","../src/solver/fuzzy/srs3-pf.js":"../src/solver/fuzzy/srs3-pf.js"}],"../node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
@@ -7376,7 +7376,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63173" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "63598" + '/');
   ws.onmessage = function (event) {
     checkedAssets = {};
     assetsToAccept = [];
