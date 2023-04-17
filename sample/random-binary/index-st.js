@@ -1,22 +1,24 @@
-import { Problem } from '../src/problem/problem.js';
-import { N_1_queens } from '../src/model/n-1-queens.js';
-import { SolverFactory } from '../src/solver/solver-factory.js';
+import { Problem }       from '../../src/problem/problem.js';
+import { RandomBinary }  from '../../src/model/random-binary.js';
+import { SolverFactory } from '../../src/solver/solver-factory.js';
 
-const COUNT     = 1;   // Interaction count
-const QUEEN_NUM = 20;  // Number of queens
+const COUNT         = 1;  // Interaction count
+const VAR_NUM       = 10;  // Number of variables
+const DENSITY       = 0.5;
+const AVE_TIGHTNESS = 0.5;
 
 document.addEventListener('DOMContentLoaded', async () => {
 	const output = document.getElementById('output');
 	const log    = e => output.value += `${e}\n`;
 
-	const sn = SolverFactory.fuzzySolverNames()[0];
+	const sn = SolverFactory.fuzzySolverNames()[1];
 
 	let sum_time = 0;
 	let sum_deg  = 0;
 
 	for (let i = 0; i < COUNT; ++i) {
-		const nq = new N_1_queens(QUEEN_NUM);
-		const p  = nq.createProblem(new Problem());
+		const rp = new RandomBinary(VAR_NUM, DENSITY, AVE_TIGHTNESS);
+		const p  = rp.createProblem(new Problem());
 		const t  = Date.now();  // Start time measurement
 
 		const s = await SolverFactory.createSolver(sn, p);
@@ -29,8 +31,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 		const cd = p.worstSatisfactionDegree();
 		log(`solver: ${s.name()}   ${res ? 'success' : 'failure'}`);
 		log(`trial: ${i + 1}   time: ${ct}   degree: ${cd}`);
-		nq.setDebugOutput(log);
-		nq.printResult(p);
 		sum_time += ct;
 		sum_deg  += cd;
 	}
