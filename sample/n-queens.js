@@ -1,13 +1,13 @@
-import { CrispProblem } from '../src/problem/_problem-crisp.js';
-import { N_queens } from '../src/model/_n-queens.js';
+import { CrispProblem } from '../src/problem/problem-crisp.js';
+import { N_queens } from '../src/model/n-queens.js';
 
-import { ForwardChecking } from '../src/solver/crisp/_forward-checking.js';
-import { MaxForwardChecking } from '../src/solver/crisp/_max-forward-checking.js';
-import { LocalChanges } from '../src/solver/crisp/_local-changes.js';
-import { LocalChangesEx } from '../src/solver/crisp/_local-changes-ex.js';
-import { Breakout } from '../src/solver/crisp/_breakout.js';
-import { GENET } from '../src/solver/crisp/_genet.js';
-import { CrispSRS3 } from '../src/solver/crisp/_crisp-srs3.js';
+import { ForwardChecking } from '../src/solver/crisp/forward-checking.js';
+import { MaxForwardChecking } from '../src/solver/crisp/max-forward-checking.js';
+import { LocalChanges } from '../src/solver/crisp/local-changes.js';
+import { LocalChangesEx } from '../src/solver/crisp/local-changes-ex.js';
+import { Breakout } from '../src/solver/crisp/breakout.js';
+import { GENET } from '../src/solver/crisp/genet.js';
+import { CrispSRS3 } from '../src/solver/crisp/crisp-srs3.js';
 
 const COUNT     = 1;  // Interaction count
 const QUEEN_NUM = 20;  // Number of queens

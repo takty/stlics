@@ -1,14 +1,14 @@
-import { Problem } from '../src/problem/_problem.js';
-import { RandomBinary } from '../src/model/_random-binary.js';
+import { Problem } from '../src/problem/problem.js';
+import { RandomBinary } from '../src/model/random-binary.js';
 
-import { FuzzyForwardChecking } from '../src/solver/fuzzy/_fuzzy-forward-checking.js';
-import { FuzzyForwardCheckingBc } from '../src/solver/fuzzy/_fuzzy-forward-checking-bc.js';
-import { FlexibleLocalChanges } from '../src/solver/fuzzy/_flexible-local-changes.js';
-import { FlexibleLocalChangesEx } from '../src/solver/fuzzy/_flexible-local-changes-ex.js';
-import { FuzzyBreakout } from '../src/solver/fuzzy/_fuzzy-breakout.js';
-import { FuzzyGENET } from '../src/solver/fuzzy/_fuzzy-genet.js';
-import { SRS3 } from '../src/solver/fuzzy/_srs3.js';
-import { SRS3_PF } from '../src/solver/fuzzy/_srs3-pf.js';
+import { FuzzyForwardChecking } from '../src/solver/fuzzy/fuzzy-forward-checking.js';
+import { FuzzyForwardCheckingBc } from '../src/solver/fuzzy/fuzzy-forward-checking-bc.js';
+import { FlexibleLocalChanges } from '../src/solver/fuzzy/flexible-local-changes.js';
+import { FlexibleLocalChangesEx } from '../src/solver/fuzzy/flexible-local-changes-ex.js';
+import { FuzzyBreakout } from '../src/solver/fuzzy/fuzzy-breakout.js';
+import { FuzzyGENET } from '../src/solver/fuzzy/fuzzy-genet.js';
+import { SRS3 } from '../src/solver/fuzzy/srs3.js';
+import { SRS3_PF } from '../src/solver/fuzzy/srs3-pf.js';
 
 const COUNT         = 1;  // Interaction count
 const VAR_NUM       = 10;  // Number of variables
