@@ -4,7 +4,7 @@
 	"description": "Library of Fuzzy constraint satisfaction problems",
 	"productName": "Stlics",
 	"scripts": {
-		"docs": "parcel sample/*.html --dist-dir docs  --public-url ./",
+		"docs": "parcel sample/*.html --dist-dir docs  --public-url /stlics/",
 		"dev": "parcel watch",
 		"build": "parcel build"
 	},
