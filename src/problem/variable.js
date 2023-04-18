@@ -2,7 +2,7 @@
  * Class that represents a variable.
  *
  * @author Takuto Yanagida
- * @version 2023-04-16
+ * @version 2023-04-18
  */
 
 import { Element } from './element.js';
@@ -44,7 +44,7 @@ export class Variable extends Element {
 	 * @param value Value.
 	 */
 	assign(value) {
-		this.#val = value;  // Do not change val_ except here.
+		this.#val = value;  // Do not change #val except here.
 	}
 
 	/**
