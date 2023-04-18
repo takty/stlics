@@ -1,4 +1,4 @@
-importScripts("./worker.a45c2f4c.js");
+importScripts("./worker.7eace182.js");
 // modules are defined as an array
 // [ module function, map of requires ]
 //
@@ -558,10 +558,8 @@ function hmrAccept(bundle, id) {
 }
 
 },{}],"dbZx1":[function(require,module,exports) {
-var _problemCrispJs = require("../../src/problem/problem-crisp.js");
+var _stlicsEsmJs = require("../../dist/stlics.esm.js");
 var _nQueensJs = require("../../src/model/n-queens.js");
-var _solverFactoryJs = require("../../src/solver/solver-factory.js");
-var _observableVariableJs = require("../../src/problem/observable-variable.js");
 onmessage = async (e)=>{
     const { task , args  } = e.data;
     switch(task){
@@ -579,14 +577,14 @@ function create(num) {
     m = new (0, _nQueensJs.N_queens)(num);
     m.setDebugOutput(log);
     const obs = (v, val)=>board(val - 1, v.index());
-    p = new (0, _problemCrispJs.CrispProblem)();
-    p.setVariableFactory((o, d)=>new (0, _observableVariableJs.ObservableVariable)(o, d, obs));
+    p = new (0, _stlicsEsmJs.CrispProblem)();
+    p.setVariableFactory((o, d)=>new (0, _stlicsEsmJs.ObservableVariable)(o, d, obs));
     p = m.createProblem(p);
 }
 async function solve(type, targetRate) {
     const t = Date.now(); // Start time measurement
-    const sn = (0, _solverFactoryJs.SolverFactory).crispSolverNames()[type];
-    const s = await (0, _solverFactoryJs.SolverFactory).createSolver(sn, p);
+    const sn = (0, _stlicsEsmJs.SolverFactory).crispSolverNames()[type];
+    const s = await (0, _stlicsEsmJs.SolverFactory).createSolver(sn, p);
     s.setTargetRate(targetRate);
     s.setDebugOutput(log);
     const result = s.solve();
@@ -614,141 +612,7 @@ function board(x, y) {
     });
 }
 
-},{"../../src/problem/problem-crisp.js":"hKPhc","../../src/model/n-queens.js":"8fQJ7","../../src/solver/solver-factory.js":"hWLkb","../../src/problem/observable-variable.js":"5UJtK"}],"hKPhc":[function(require,module,exports) {
-/**
- * The class represents a crisp constraint satisfaction problem.
- *
- * @author Takuto Yanagida
- * @version 2023-04-16
- */ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "CrispProblem", ()=>CrispProblem);
-var _problemJs = require("./problem.js");
-var _relationFuzzyJs = require("./relation-fuzzy.js");
-class CrispProblem extends (0, _problemJs.Problem) {
-    /**
-	 * Generates a crisp constraint.
-	 * @param Array args {
-	 *   @type string   'name'      Display name.
-	 *   @type Array    'variables' Variables.
-	 *   @type Relation 'relation'  A relation.
-	 * }
-	 * @return A constraint.
-	 */ createConstraint(args) {
-        if (args.relation instanceof (0, _relationFuzzyJs.FuzzyRelation)) throw new Error();
-        return super.createConstraint(args);
-    }
-    /**
-	 * Returns whether the problem is a fuzzy constraint satisfaction problem, i.e., whether it contains fuzzy constraints.
-	 * @return Always returns false.
-	 */ isFuzzy() {
-        return false;
-    }
-    /**
-	 * Returns the rate of constraints that are satisfied out of all constraints.
-	 * @return Rate of satisfied constraints.
-	 */ satisfiedConstraintRate() {
-        return this.satisfiedConstraintSize() / this._cons.length;
-    }
-    /**
-	 * Returns the number of satisfied constraints.
-	 * Undefined constraints are ignored.
-	 * @return Number of satisfied constraints.
-	 */ satisfiedConstraintSize() {
-        let count = 0;
-        for (const c of this._cons)if (c.isSatisfied() === 1) ++count;
-        return count;
-    }
-    /**
-	 * Returns a list of violating constraints.
-	 * Undefined constraints are ignored.
-	 * @return Array of constraints.
-	 */ violatingConstraints() {
-        const cs = [];
-        for (const c of this._cons)if (c.isSatisfied() === 0) cs.push(c);
-        return cs;
-    }
-    /**
-	 * Returns the number of violating constraints.
-	 * Undefined constraints are ignored.
-	 * @return Number of violating constraints.
-	 */ violatingConstraintSize() {
-        let count = 0;
-        for (const c of this._cons)if (c.isSatisfied() === 0) ++count;
-        return count;
-    }
-}
-
-},{"./problem.js":"eeGnE","./relation-fuzzy.js":"fQtZw","@parcel/transformer-js/src/esmodule-helpers.js":"fn8Fk"}],"fQtZw":[function(require,module,exports) {
-/**
- * The class represents fuzzy relationships between variables.
- *
- * @author Takuto Yanagida
- * @version 2023-03-25
- */ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "FuzzyRelation", ()=>FuzzyRelation);
-var _relationJs = require("./relation.js");
-class FuzzyRelation extends (0, _relationJs.Relation) {
-    /**
-	 * Gets the satisfaction degree in this fuzzy relation.
-	 * @param vals Values of each variable
-	 * @return A satisfaction degree d (0 <= d <= 1).
-	 */ satisfactionDegree(...vals) {
-        throw new Exception();
-    }
-    /**
-	 * Returns a view as a crisp relation.
-	 * @return A crisp relation.
-	 */ asCrispRelation() {
-        return new CrispRelationView(this);
-    }
-}
-
-},{"./relation.js":"hQbVJ","@parcel/transformer-js/src/esmodule-helpers.js":"fn8Fk"}],"hQbVJ":[function(require,module,exports) {
-/**
- * An interface that represents the relationship between variables.
- * Use CrispRelation or FuzzyRelation class that implement this interface.
- *
- * @author Takuto Yanagida
- * @version 2023-03-25
- */ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "Relation", ()=>Relation);
-class Relation {
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"fn8Fk"}],"fn8Fk":[function(require,module,exports) {
-exports.interopDefault = function(a) {
-    return a && a.__esModule ? a : {
-        default: a
-    };
-};
-exports.defineInteropFlag = function(a) {
-    Object.defineProperty(a, "__esModule", {
-        value: true
-    });
-};
-exports.exportAll = function(source, dest) {
-    Object.keys(source).forEach(function(key) {
-        if (key === "default" || key === "__esModule" || dest.hasOwnProperty(key)) return;
-        Object.defineProperty(dest, key, {
-            enumerable: true,
-            get: function() {
-                return source[key];
-            }
-        });
-    });
-    return dest;
-};
-exports.export = function(dest, destName, get) {
-    Object.defineProperty(dest, destName, {
-        enumerable: true,
-        get: get
-    });
-};
-
-},{}],"8fQJ7":[function(require,module,exports) {
+},{"../../src/model/n-queens.js":"8fQJ7","../../dist/stlics.esm.js":"c85su"}],"8fQJ7":[function(require,module,exports) {
 /**
  * A sample implementation of the N queens problem.
  *
@@ -818,7 +682,7 @@ class CrispQueenRelation extends (0, _relationCrispJs.CrispRelation) {
     }
 }
 
-},{"../problem/relation-crisp.js":"f8lMf","./model.js":"bErLg","@parcel/transformer-js/src/esmodule-helpers.js":"fn8Fk"}],"f8lMf":[function(require,module,exports) {
+},{"./model.js":"bErLg","@parcel/transformer-js/src/esmodule-helpers.js":"fn8Fk","../problem/relation-crisp.js":"f8lMf"}],"f8lMf":[function(require,module,exports) {
 /**
  * The class represents crisp relationships between variables.
  *
@@ -844,182 +708,6 @@ class CrispRelation extends (0, _relationJs.Relation) {
     }
 }
 
-},{"./relation.js":"hQbVJ","@parcel/transformer-js/src/esmodule-helpers.js":"fn8Fk"}],"5UJtK":[function(require,module,exports) {
-/**
- * Class that represents an observable variable.
- *
- * @author Takuto Yanagida
- * @version 2023-04-18
- */ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "ObservableVariable", ()=>ObservableVariable);
-var _variableJs = require("./variable.js");
-class ObservableVariable extends (0, _variableJs.Variable) {
-    #observer;
-    // Called only from Problem.
-    constructor(owner, d, observer){
-        super(owner, d);
-        this.#observer = observer;
-    }
-    /**
-	 * Assign a value.
-	 * @param value Value.
-	 */ assign(value) {
-        super.assign(value);
-        if (this.#observer) this.#observer(this, value);
-    }
-}
-
-},{"./variable.js":"UvkEa","@parcel/transformer-js/src/esmodule-helpers.js":"fn8Fk"}],"hEgcc":[function(require,module,exports) {
-/**
- * The common class of variables and constraints.
- *
- * @author Takuto Yanagida
- * @version 2022-08-15
- */ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "Element", ()=>Element);
-class Element {
-    #index = -1;
-    #name = "";
-    /**
-	 * It is used when the user wishes to associate an arbitrary object with each element.
-	 */ userObject = null;
-    /**
-	 * Used when the solver wants to associate an arbitrary object with each element.
-	 */ solverObject = null;
-    // Called only from Problem.
-    setIndex(index) {
-        this.#index = index;
-    }
-    /**
-	 * Sets the name.
-	 *
-	 * @param name String representing the name.
-	 */ setName(name) {
-        this.#name = name;
-    }
-    /**
-	 * Get the index on the owned problem.
-	 * Each variable and constraint is assigned a serial number as an index, which is used to access it through the problem.
-	 *
-	 * @return Integer value representing the index.
-	 */ index() {
-        return this.#index;
-    }
-    /**
-	 * Gets the name.
-	 *
-	 * @return String representing the name.
-	 */ name() {
-        return this.#name;
-    }
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"fn8Fk"}],"6Rq7S":[function(require,module,exports) {
-/**
- * The class represents a constraint.
- *
- * @author Takuto Yanagida
- * @version 2023-04-11
- */ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "Constraint", ()=>Constraint);
-var _elementJs = require("./element.js");
-var _relationFuzzyJs = require("./relation-fuzzy.js");
-class Constraint extends (0, _elementJs.Element) {
-    /**
-	 * The constant indicating that the satisfaction degree is not defined.
-	 */ static UNDEFINED = -1;
-    rel;
-    // Called only from Problem.
-    constructor(r){
-        super();
-        this.rel = r;
-    }
-    /**
-	 * Returns the crisp relation between variables.
-	 * @return Relation.
-	 */ crispRelation() {
-        return this.rel;
-    }
-    /**
-	 * Returns the fuzzy relation between variables.
-	 * @return Relation.
-	 */ fuzzyRelation() {
-        return this.rel;
-    }
-    /**
-	 * Returns whether this is a fuzzy constraint.
-	 * @return True if it is fuzzy constraint.
-	 */ isFuzzy() {
-        return this.rel instanceof (0, _relationFuzzyJs.FuzzyRelation);
-    }
-    /**
-	 * Returns a string representation.
-	 * @return A string representation.
-	 */ toString() {
-        const s = this.satisfactionDegree();
-        return `c${this.index()}${this.name() === "" ? "" : `(${this.name()})`} = ${s === Constraint.UNDEFINED ? "UNDEFINED" : s}`;
-    }
-    /**
-	 * Returns the order of the constraint, i.e., the number of (associated) variables in the scope.
-	 * @return Order.
-	 */ size() {}
-    /**
-	 * Gets the associated variable by specifying its index.
-	 * @param index Index.
-	 * @return A variable.
-	 */ at(index) {}
-    /**
-	 * Gets the iterator of the associated variables.
-	 */ [Symbol.iterator]() {}
-    /**
-	 * Returns whether the specified variable is associated or not.
-	 * @param v A variable.
-	 * @return True if it is associated.
-	 */ has(v) {}
-    /**
-	 * Gets the index of a specified variable.
-	 * If not found, returns -1.
-	 * @param v A variable.
-	 * @return Index.
-	 */ indexOf(v) {}
-    /**
-	 * Returns the number of scope variables that have not been assigned a value.
-	 * @return Number of variables
-	 */ emptyVariableSize() {}
-    /**
-	 * Returns whether or not the satisfaction (degree) is defined.
-	 * Satisfaction (degree) is defined when all associated variables have values assigned to them.
-	 * @return True if it is defined.
-	 */ isDefined() {}
-    /**
-	 * Returns whether or not this constraint is satisfied.
-	 * @return 1 if satisfied, 0 if not, UNDEFINED if undefined
-	 */ isSatisfied() {}
-    /**
-	 * Gets the current satisfaction degree.
-	 * @return Degree 0 - 1, UNDEFINED if undefined.
-	 */ satisfactionDegree() {}
-    /**
-	 * Returns the set of constraints connected via the associated variables.
-	 * @return A set of constraints.
-	 */ neighbors() {}
-    /**
-	 * Calculates the highest consistency degree.
-	 * That is, it seeks the highest satisfaction degree of the possible combinations of variable assignments for a given constraint.
-	 * When all associated variables have been assigned values, it returns the same value as getSatisfactionDegree().
-	 * @return The highest consistency degree.
-	 */ highestConsistencyDegree() {}
-    /**
-	 * Calculates the lowest consistency degree.
-	 * That is, it seeks the lowest satisfaction degree of the possible combinations of variable assignments for a given constraint.
-	 * When all associated variables have been assigned values, it returns the same value as getSatisfactionDegree().
-	 * @return The lowest consistency degree.
-	 */ lowestConsistencyDegree() {}
-}
-
-},{"./element.js":"hEgcc","./relation-fuzzy.js":"fQtZw","@parcel/transformer-js/src/esmodule-helpers.js":"fn8Fk"}]},["eVEWG","dbZx1"], "dbZx1", "parcelRequire7885")
+},{"./relation.js":"hQbVJ","@parcel/transformer-js/src/esmodule-helpers.js":"fn8Fk"}]},["eVEWG","dbZx1"], "dbZx1", "parcelRequire95bc")
 
 //# sourceMappingURL=worker.ce64f1ae.js.map

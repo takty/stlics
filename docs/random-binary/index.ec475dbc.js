@@ -557,7 +557,7 @@ function hmrAccept(bundle, id) {
 }
 
 },{}],"2RR0N":[function(require,module,exports) {
-var _solverFactoryJs = require("../../src/solver/solver-factory.js");
+var _stlicsEsmJs = require("../../dist/stlics.esm.js");
 var _utilJs = require("../util.js");
 const COUNT = 1; // Interaction count
 const SOLVER_TYPE = 4;
@@ -567,7 +567,7 @@ const DENSITY = 0.5;
 const AVE_TIGHTNESS = 0.5;
 document.addEventListener("DOMContentLoaded", async ()=>{
     const solTypeSel = document.getElementById("solver-type");
-    (0, _solverFactoryJs.SolverFactory).fuzzySolverNames().forEach((sn, i)=>{
+    (0, _stlicsEsmJs.SolverFactory).fuzzySolverNames().forEach((sn, i)=>{
         const o = document.createElement("option");
         o.textContent = sn;
         o.value = i;
@@ -646,185 +646,27 @@ document.addEventListener("DOMContentLoaded", async ()=>{
     }
 });
 
-},{"../../src/solver/solver-factory.js":"5rSZm","../util.js":"cakah","9a83d44b1c7d6351":"bXzUe"}],"5rSZm":[function(require,module,exports) {
-/**
- * Solver factory class.
- *
- * @author Takuto Yanagida
- * @version 2023-04-17
- */ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "SolverFactory", ()=>SolverFactory);
-class SolverFactory {
-    static crispSolverNames() {
-        return [
-            /* 0 */ "Forward Checking",
-            /* 1 */ "Max Forward Checking",
-            /* 2 */ "Local Changes",
-            /* 3 */ "Local Changes Ex",
-            /* 4 */ "Breakout",
-            /* 5 */ "GENET",
-            /* 6 */ "Crisp SRS 3"
-        ];
-    }
-    static fuzzySolverNames() {
-        return [
-            /* 0 */ "Fuzzy Forward Checking",
-            /* 1 */ "Fuzzy Forward Checking Bc",
-            /* 2 */ "Flexible Local Changes",
-            /* 3 */ "Flexible Local Changes Ex",
-            /* 4 */ "Fuzzy Breakout",
-            /* 5 */ "Fuzzy GENET",
-            /* 6 */ "SRS 3",
-            /* 7 */ "SRS 3 PF"
-        ];
-    }
-    static async createSolver(type, p) {
-        const cs = await SolverFactory.createCrispSolver(type, p);
-        if (cs) return cs;
-        const fs = await SolverFactory.createFuzzySolver(type, p);
-        if (fs) return fs;
-        return null;
-    }
-    static async createCrispSolver(type, p) {
-        switch(type.replaceAll(" ", "")){
-            case "ForwardChecking":
-            case "forward-checking":
-                const { ForwardChecking  } = await require("d4e4973b39ce930b");
-                return new ForwardChecking(p);
-            case "MaxForwardChecking":
-            case "max-forward-checking":
-                const { MaxForwardChecking  } = await require("34ebdab28e1c5bd9");
-                return new MaxForwardChecking(p);
-            case "LocalChanges":
-            case "local-changes":
-                const { LocalChanges  } = await require("9fa70884b15f38");
-                return new LocalChanges(p);
-            case "LocalChangesEx":
-            case "local-changes-ex":
-                const { LocalChangesEx  } = await require("da79c45d91b71482");
-                return new LocalChangesEx(p);
-            case "Breakout":
-            case "breakout":
-                const { Breakout  } = await require("78a7ec70795b6a8c");
-                return new Breakout(p);
-            case "GENET":
-            case "genet":
-                const { GENET  } = await require("311a61112f100960");
-                return new GENET(p);
-            case "CrispSRS3":
-            case "crisp-srs3":
-                const { CrispSRS3  } = await require("939ff44749742ac");
-                return new CrispSRS3(p);
-        }
-        return null;
-    }
-    static async createFuzzySolver(type, p) {
-        switch(type.replaceAll(" ", "")){
-            case "FuzzyForwardChecking":
-            case "fuzzy-forward-checking":
-                const { FuzzyForwardChecking  } = await require("19ad2ccf0416e2ab");
-                return new FuzzyForwardChecking(p);
-            case "FuzzyForwardCheckingBc":
-            case "fuzzy-forward-checking-bc":
-                const { FuzzyForwardCheckingBc  } = await require("64ed0109718e119d");
-                return new FuzzyForwardCheckingBc(p);
-            case "FlexibleLocalChanges":
-            case "flexible-local-changes":
-                const { FlexibleLocalChanges  } = await require("6d83d6eabc1f411");
-                return new FlexibleLocalChanges(p);
-            case "FlexibleLocalChangesEx":
-            case "flexible-local-changes-ex":
-                const { FlexibleLocalChangesEx  } = await require("d824c24762972a6c");
-                return new FlexibleLocalChangesEx(p);
-            case "FuzzyBreakout":
-            case "fuzzy-breakout":
-                const { FuzzyBreakout  } = await require("3879f5adfa9382f3");
-                return new FuzzyBreakout(p);
-            case "FuzzyGENET":
-            case "fuzzy-genet":
-                const { FuzzyGENET  } = await require("bebe2f699b21cd00");
-                return new FuzzyGENET(p);
-            case "SRS3":
-            case "srs3":
-                const { SRS3  } = await require("b72340a0f3a85ad2");
-                return new SRS3(p);
-            case "SRS3PF":
-            case "SRS3_PF":
-            case "srs3-pf":
-                const { SRS3_PF  } = await require("8de2615fc285a512");
-                return new SRS3_PF(p);
-        }
-        return null;
-    }
-}
+},{"../../dist/stlics.esm.js":"3s2i8","../util.js":"cakah","9a83d44b1c7d6351":"bXzUe"}],"bXzUe":[function(require,module,exports) {
+let workerURL = require("1e6e5254e5bf994d");
+let bundleURL = require("e8f6ea6478404105");
+let url = bundleURL.getBundleURL("5Bozu") + "../worker.04a3b279.js" + "?" + Date.now();
+module.exports = workerURL(url, bundleURL.getOrigin(url), false);
 
-},{"d4e4973b39ce930b":"fsuVO","34ebdab28e1c5bd9":"7ICfG","9fa70884b15f38":"cKQon","da79c45d91b71482":"anpxG","78a7ec70795b6a8c":"8xyup","311a61112f100960":"2hN5Y","939ff44749742ac":"agwbX","19ad2ccf0416e2ab":"kCoga","64ed0109718e119d":"3nPqT","6d83d6eabc1f411":"84J4r","d824c24762972a6c":"e7gim","3879f5adfa9382f3":"gP9aj","bebe2f699b21cd00":"iNNhE","b72340a0f3a85ad2":"hsevu","8de2615fc285a512":"7jhxU","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"fsuVO":[function(require,module,exports) {
-module.exports = require("e01221e175421aec")(require("8258e536e6fb39bc").getBundleURL("5Bozu") + "../forward-checking.2840558e.js" + "?" + Date.now()).catch((err)=>{
-    delete module.bundle.cache[module.id];
-    throw err;
-}).then(()=>module.bundle.root("iWzoF"));
-
-},{"e01221e175421aec":"61B45","8258e536e6fb39bc":"lgJ39"}],"61B45":[function(require,module,exports) {
+},{"1e6e5254e5bf994d":"cn2gM","e8f6ea6478404105":"lgJ39"}],"cn2gM":[function(require,module,exports) {
 "use strict";
-var cacheLoader = require("ceaf3802b3207d01");
-module.exports = cacheLoader(function(bundle) {
-    return new Promise(function(resolve, reject) {
-        // Don't insert the same script twice (e.g. if it was already in the HTML)
-        var existingScripts = document.getElementsByTagName("script");
-        if ([].concat(existingScripts).some(function isCurrentBundle(script) {
-            return script.src === bundle;
-        })) {
-            resolve();
-            return;
-        }
-        var preloadLink = document.createElement("link");
-        preloadLink.href = bundle;
-        preloadLink.rel = "preload";
-        preloadLink.as = "script";
-        document.head.appendChild(preloadLink);
-        var script = document.createElement("script");
-        script.async = true;
-        script.type = "text/javascript";
-        script.src = bundle;
-        script.onerror = function(e) {
-            var error = new TypeError("Failed to fetch dynamically imported module: ".concat(bundle, ". Error: ").concat(e.message));
-            script.onerror = script.onload = null;
-            script.remove();
-            reject(error);
-        };
-        script.onload = function() {
-            script.onerror = script.onload = null;
-            resolve();
-        };
-        document.getElementsByTagName("head")[0].appendChild(script);
-    });
-});
-
-},{"ceaf3802b3207d01":"j49pS"}],"j49pS":[function(require,module,exports) {
-"use strict";
-var cachedBundles = {};
-var cachedPreloads = {};
-var cachedPrefetches = {};
-function getCache(type) {
-    switch(type){
-        case "preload":
-            return cachedPreloads;
-        case "prefetch":
-            return cachedPrefetches;
-        default:
-            return cachedBundles;
+module.exports = function(workerUrl, origin, isESM) {
+    if (origin === self.location.origin) // If the worker bundle's url is on the same origin as the document,
+    // use the worker bundle's own url.
+    return workerUrl;
+    else {
+        // Otherwise, create a blob URL which loads the worker bundle with `importScripts`.
+        var source = isESM ? "import " + JSON.stringify(workerUrl) + ";" : "importScripts(" + JSON.stringify(workerUrl) + ");";
+        return URL.createObjectURL(new Blob([
+            source
+        ], {
+            type: "application/javascript"
+        }));
     }
-}
-module.exports = function(loader, type) {
-    return function(bundle) {
-        var cache = getCache(type);
-        if (cache[bundle]) return cache[bundle];
-        return cache[bundle] = loader.apply(null, arguments).catch(function(e) {
-            delete cache[bundle];
-            throw e;
-        });
-    };
 };
 
 },{}],"lgJ39":[function(require,module,exports) {
@@ -861,172 +703,6 @@ exports.getBundleURL = getBundleURLCached;
 exports.getBaseURL = getBaseURL;
 exports.getOrigin = getOrigin;
 
-},{}],"7ICfG":[function(require,module,exports) {
-module.exports = require("efc508c69c14e1db")(require("81e497f92473ab65").getBundleURL("5Bozu") + "../max-forward-checking.b59f6425.js" + "?" + Date.now()).catch((err)=>{
-    delete module.bundle.cache[module.id];
-    throw err;
-}).then(()=>module.bundle.root("ewFsV"));
-
-},{"efc508c69c14e1db":"61B45","81e497f92473ab65":"lgJ39"}],"cKQon":[function(require,module,exports) {
-module.exports = require("a54f9d395c300913")(require("189d7f0b8546f66c").getBundleURL("5Bozu") + "../local-changes.5642719f.js" + "?" + Date.now()).catch((err)=>{
-    delete module.bundle.cache[module.id];
-    throw err;
-}).then(()=>module.bundle.root("528lF"));
-
-},{"a54f9d395c300913":"61B45","189d7f0b8546f66c":"lgJ39"}],"anpxG":[function(require,module,exports) {
-module.exports = require("486f67d68dddf81a")(require("c10c4a25963112e8").getBundleURL("5Bozu") + "../local-changes-ex.11e26c59.js" + "?" + Date.now()).catch((err)=>{
-    delete module.bundle.cache[module.id];
-    throw err;
-}).then(()=>module.bundle.root("5SbDF"));
-
-},{"486f67d68dddf81a":"61B45","c10c4a25963112e8":"lgJ39"}],"8xyup":[function(require,module,exports) {
-module.exports = require("d51f21916456e9c6")(require("21fb68d66e0d14ad").getBundleURL("5Bozu") + "../breakout.1fd609ad.js" + "?" + Date.now()).catch((err)=>{
-    delete module.bundle.cache[module.id];
-    throw err;
-}).then(()=>module.bundle.root("3Vsrl"));
-
-},{"d51f21916456e9c6":"61B45","21fb68d66e0d14ad":"lgJ39"}],"2hN5Y":[function(require,module,exports) {
-module.exports = require("651715962d8e344e")(require("44d30d3a6f7f61aa").getBundleURL("5Bozu") + "../genet.bb06b38d.js" + "?" + Date.now()).catch((err)=>{
-    delete module.bundle.cache[module.id];
-    throw err;
-}).then(()=>module.bundle.root("frS8r"));
-
-},{"651715962d8e344e":"61B45","44d30d3a6f7f61aa":"lgJ39"}],"agwbX":[function(require,module,exports) {
-module.exports = require("523d5162126af2d4")(require("95b855962f1d6421").getBundleURL("5Bozu") + "../crisp-srs3.3bc686d5.js" + "?" + Date.now()).catch((err)=>{
-    delete module.bundle.cache[module.id];
-    throw err;
-}).then(()=>module.bundle.root("g1oP2"));
-
-},{"523d5162126af2d4":"61B45","95b855962f1d6421":"lgJ39"}],"kCoga":[function(require,module,exports) {
-module.exports = require("a8e4ff1f30f22cd7")(require("8ae3690236f62640").getBundleURL("5Bozu") + "../fuzzy-forward-checking.c2f2e495.js" + "?" + Date.now()).catch((err)=>{
-    delete module.bundle.cache[module.id];
-    throw err;
-}).then(()=>module.bundle.root("lj0XW"));
-
-},{"a8e4ff1f30f22cd7":"61B45","8ae3690236f62640":"lgJ39"}],"3nPqT":[function(require,module,exports) {
-module.exports = require("367a61733171f486")(require("a11566a420c8a2d3").getBundleURL("5Bozu") + "../fuzzy-forward-checking-bc.4420e29e.js" + "?" + Date.now()).catch((err)=>{
-    delete module.bundle.cache[module.id];
-    throw err;
-}).then(()=>module.bundle.root("6LVDA"));
-
-},{"367a61733171f486":"61B45","a11566a420c8a2d3":"lgJ39"}],"84J4r":[function(require,module,exports) {
-module.exports = require("52f6ef1f5076765d")(require("89ff83dd61b2b168").getBundleURL("5Bozu") + "../flexible-local-changes.d7da5770.js" + "?" + Date.now()).catch((err)=>{
-    delete module.bundle.cache[module.id];
-    throw err;
-}).then(()=>module.bundle.root("5SKYb"));
-
-},{"52f6ef1f5076765d":"61B45","89ff83dd61b2b168":"lgJ39"}],"e7gim":[function(require,module,exports) {
-module.exports = require("5c79e52f3b192ed7")(require("da4438b83d47a505").getBundleURL("5Bozu") + "../flexible-local-changes-ex.98b6ceed.js" + "?" + Date.now()).catch((err)=>{
-    delete module.bundle.cache[module.id];
-    throw err;
-}).then(()=>module.bundle.root("gFjSJ"));
-
-},{"5c79e52f3b192ed7":"61B45","da4438b83d47a505":"lgJ39"}],"gP9aj":[function(require,module,exports) {
-module.exports = require("11d1a5482ccbc6e3")(require("c9ca591ee5c3a80b").getBundleURL("5Bozu") + "../fuzzy-breakout.587009ca.js" + "?" + Date.now()).catch((err)=>{
-    delete module.bundle.cache[module.id];
-    throw err;
-}).then(()=>module.bundle.root("ana3Z"));
-
-},{"11d1a5482ccbc6e3":"61B45","c9ca591ee5c3a80b":"lgJ39"}],"iNNhE":[function(require,module,exports) {
-module.exports = require("764ce59b4c69292")(require("2838ce5dcd8f9849").getBundleURL("5Bozu") + "../fuzzy-genet.435b2c8e.js" + "?" + Date.now()).catch((err)=>{
-    delete module.bundle.cache[module.id];
-    throw err;
-}).then(()=>module.bundle.root("86Xxw"));
-
-},{"764ce59b4c69292":"61B45","2838ce5dcd8f9849":"lgJ39"}],"hsevu":[function(require,module,exports) {
-module.exports = require("f2a2fd0d638df3b5")(require("af60884014127468").getBundleURL("5Bozu") + "../srs3.e2a6d0d8.js" + "?" + Date.now()).catch((err)=>{
-    delete module.bundle.cache[module.id];
-    throw err;
-}).then(()=>module.bundle.root("gaaWt"));
-
-},{"f2a2fd0d638df3b5":"61B45","af60884014127468":"lgJ39"}],"7jhxU":[function(require,module,exports) {
-module.exports = Promise.all([
-    require("ce67845b80117096")(require("2121c980d523c87").getBundleURL("5Bozu") + "../srs3.e2a6d0d8.js" + "?" + Date.now()).catch((err)=>{
-        delete module.bundle.cache[module.id];
-        throw err;
-    }),
-    require("ce67845b80117096")(require("2121c980d523c87").getBundleURL("5Bozu") + "../srs3-pf.2bb3b9a2.js" + "?" + Date.now()).catch((err)=>{
-        delete module.bundle.cache[module.id];
-        throw err;
-    })
-]).then(()=>module.bundle.root("2ksoK"));
-
-},{"ce67845b80117096":"61B45","2121c980d523c87":"lgJ39"}],"gkKU3":[function(require,module,exports) {
-exports.interopDefault = function(a) {
-    return a && a.__esModule ? a : {
-        default: a
-    };
-};
-exports.defineInteropFlag = function(a) {
-    Object.defineProperty(a, "__esModule", {
-        value: true
-    });
-};
-exports.exportAll = function(source, dest) {
-    Object.keys(source).forEach(function(key) {
-        if (key === "default" || key === "__esModule" || dest.hasOwnProperty(key)) return;
-        Object.defineProperty(dest, key, {
-            enumerable: true,
-            get: function() {
-                return source[key];
-            }
-        });
-    });
-    return dest;
-};
-exports.export = function(dest, destName, get) {
-    Object.defineProperty(dest, destName, {
-        enumerable: true,
-        get: get
-    });
-};
-
-},{}],"cakah":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "waitFor", ()=>waitFor);
-parcelHelpers.export(exports, "createLogOutput", ()=>createLogOutput);
-function waitFor(fn) {
-    return new Promise((r)=>{
-        const si = setInterval(()=>{
-            if (fn()) {
-                clearInterval(si);
-                r();
-            }
-        }, 100);
-    });
-}
-function createLogOutput(id = "output") {
-    const output = document.getElementById(id);
-    return (e)=>{
-        output.value += `${e}\n`;
-        setTimeout(()=>output.scrollTo(0, output.scrollHeight), 100);
-    };
-}
-
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"bXzUe":[function(require,module,exports) {
-let workerURL = require("1e6e5254e5bf994d");
-let bundleURL = require("e8f6ea6478404105");
-let url = bundleURL.getBundleURL("5Bozu") + "../worker.04a3b279.js" + "?" + Date.now();
-module.exports = workerURL(url, bundleURL.getOrigin(url), false);
-
-},{"1e6e5254e5bf994d":"cn2gM","e8f6ea6478404105":"lgJ39"}],"cn2gM":[function(require,module,exports) {
-"use strict";
-module.exports = function(workerUrl, origin, isESM) {
-    if (origin === self.location.origin) // If the worker bundle's url is on the same origin as the document,
-    // use the worker bundle's own url.
-    return workerUrl;
-    else {
-        // Otherwise, create a blob URL which loads the worker bundle with `importScripts`.
-        var source = isESM ? "import " + JSON.stringify(workerUrl) + ";" : "importScripts(" + JSON.stringify(workerUrl) + ");";
-        return URL.createObjectURL(new Blob([
-            source
-        ], {
-            type: "application/javascript"
-        }));
-    }
-};
-
-},{}]},["61CIU","2RR0N"], "2RR0N", "parcelRequire7885")
+},{}]},["61CIU","2RR0N"], "2RR0N", "parcelRequire95bc")
 
 //# sourceMappingURL=index.ec475dbc.js.map
