@@ -1,1 +1,1 @@
-# Stlics-JS
+# Stlics
