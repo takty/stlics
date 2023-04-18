@@ -1,24 +1,29 @@
 {
-	"name": "stlics-js",
+	"name": "stlics",
 	"version": "1.0.0",
-	"description": "CSP Library",
-	"productName": "Stlics-JS",
+	"description": "Library of Fuzzy constraint satisfaction problems",
+	"productName": "Stlics",
 	"scripts": {
-		"start": "parcel sample/*.html --dist-dir docs"
+		"docs": "parcel sample/*.html --dist-dir docs",
+		"dev": "parcel watch",
+		"build": "parcel build"
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/takty/stlics-js.git"
+		"url": "git+https://github.com/takty/stlics.git"
 	},
 	"author": "Takuto Yanagida",
 	"license": "MIT",
-	"homepage": "https://github.com/takty/stlics-js#readme",
+	"homepage": "https://github.com/takty/stlics#readme",
 	"browserslist": [
 		"> 1%",
 		"last 2 versions",
 		"not ie <= 11",
 		"not dead"
 	],
+	"source": "src/index.js",
+	"main": "dist/stlics.js",
+	"module": "dist/stlics.esm.js",
 	"devDependencies": {
 		"@parcel/transformer-sass": "2.8.3",
 		"parcel": "^2.8.3"
