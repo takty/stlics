@@ -1,4 +1,4 @@
-importScripts("./worker.413b5a37.js");
+importScripts("./worker.a45c2f4c.js");
 // modules are defined as an array
 // [ module function, map of requires ]
 //
@@ -561,6 +561,7 @@ function hmrAccept(bundle, id) {
 var _problemJs = require("../../src/problem/problem.js");
 var _n1QueensJs = require("../../src/model/n-1-queens.js");
 var _solverFactoryJs = require("../../src/solver/solver-factory.js");
+var _observableVariableJs = require("../../src/problem/observable-variable.js");
 onmessage = async (e)=>{
     const { task , args  } = e.data;
     switch(task){
@@ -577,7 +578,10 @@ let p = null;
 function create(num) {
     m = new (0, _n1QueensJs.N_1_queens)(num);
     m.setDebugOutput(log);
-    p = m.createProblem(new (0, _problemJs.Problem)());
+    const obs = (v, val)=>board(val - 1, v.index());
+    p = new (0, _problemJs.Problem)();
+    p.setVariableFactory((o, d)=>new (0, _observableVariableJs.ObservableVariable)(o, d, obs));
+    p = m.createProblem(p);
 }
 async function solve(type, targetRate) {
     const t = Date.now(); // Start time measurement
@@ -601,8 +605,16 @@ function log(e) {
         log: e
     });
 }
+function board(x, y) {
+    postMessage({
+        board: {
+            x,
+            y
+        }
+    });
+}
 
-},{"../../src/problem/problem.js":"eeGnE","../../src/model/n-1-queens.js":"l3hx0","../../src/solver/solver-factory.js":"hWLkb"}],"l3hx0":[function(require,module,exports) {
+},{"../../src/problem/problem.js":"eeGnE","../../src/model/n-1-queens.js":"l3hx0","../../src/solver/solver-factory.js":"hWLkb","../../src/problem/observable-variable.js":"5UJtK"}],"l3hx0":[function(require,module,exports) {
 /**
  * A sample implementation of the N-1 Queen Problem.
  * The problem is to place N queens on a board of N vertical squares and N-1 horizontal squares in such a way that as few queens as possible are taken from each other.
@@ -744,7 +756,33 @@ exports.export = function(dest, destName, get) {
     });
 };
 
-},{}],"hEgcc":[function(require,module,exports) {
+},{}],"5UJtK":[function(require,module,exports) {
+/**
+ * Class that represents an observable variable.
+ *
+ * @author Takuto Yanagida
+ * @version 2023-04-18
+ */ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "ObservableVariable", ()=>ObservableVariable);
+var _variableJs = require("./variable.js");
+class ObservableVariable extends (0, _variableJs.Variable) {
+    #observer;
+    // Called only from Problem.
+    constructor(owner, d, observer){
+        super(owner, d);
+        this.#observer = observer;
+    }
+    /**
+	 * Assign a value.
+	 * @param value Value.
+	 */ assign(value) {
+        super.assign(value);
+        if (this.#observer) this.#observer(this, value);
+    }
+}
+
+},{"./variable.js":"UvkEa","@parcel/transformer-js/src/esmodule-helpers.js":"fn8Fk"}],"hEgcc":[function(require,module,exports) {
 /**
  * The common class of variables and constraints.
  *

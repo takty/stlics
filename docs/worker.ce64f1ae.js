@@ -1,4 +1,4 @@
-importScripts("./worker.413b5a37.js");
+importScripts("./worker.a45c2f4c.js");
 // modules are defined as an array
 // [ module function, map of requires ]
 //
@@ -561,6 +561,7 @@ function hmrAccept(bundle, id) {
 var _problemCrispJs = require("../../src/problem/problem-crisp.js");
 var _nQueensJs = require("../../src/model/n-queens.js");
 var _solverFactoryJs = require("../../src/solver/solver-factory.js");
+var _observableVariableJs = require("../../src/problem/observable-variable.js");
 onmessage = async (e)=>{
     const { task , args  } = e.data;
     switch(task){
@@ -577,7 +578,10 @@ let p = null;
 function create(num) {
     m = new (0, _nQueensJs.N_queens)(num);
     m.setDebugOutput(log);
-    p = m.createProblem(new (0, _problemCrispJs.CrispProblem)());
+    const obs = (v, val)=>board(val - 1, v.index());
+    p = new (0, _problemCrispJs.CrispProblem)();
+    p.setVariableFactory((o, d)=>new (0, _observableVariableJs.ObservableVariable)(o, d, obs));
+    p = m.createProblem(p);
 }
 async function solve(type, targetRate) {
     const t = Date.now(); // Start time measurement
@@ -601,8 +605,16 @@ function log(e) {
         log: e
     });
 }
+function board(x, y) {
+    postMessage({
+        board: {
+            x,
+            y
+        }
+    });
+}
 
-},{"../../src/problem/problem-crisp.js":"hKPhc","../../src/model/n-queens.js":"8fQJ7","../../src/solver/solver-factory.js":"hWLkb"}],"hKPhc":[function(require,module,exports) {
+},{"../../src/problem/problem-crisp.js":"hKPhc","../../src/model/n-queens.js":"8fQJ7","../../src/solver/solver-factory.js":"hWLkb","../../src/problem/observable-variable.js":"5UJtK"}],"hKPhc":[function(require,module,exports) {
 /**
  * The class represents a crisp constraint satisfaction problem.
  *
@@ -832,7 +844,33 @@ class CrispRelation extends (0, _relationJs.Relation) {
     }
 }
 
-},{"./relation.js":"hQbVJ","@parcel/transformer-js/src/esmodule-helpers.js":"fn8Fk"}],"hEgcc":[function(require,module,exports) {
+},{"./relation.js":"hQbVJ","@parcel/transformer-js/src/esmodule-helpers.js":"fn8Fk"}],"5UJtK":[function(require,module,exports) {
+/**
+ * Class that represents an observable variable.
+ *
+ * @author Takuto Yanagida
+ * @version 2023-04-18
+ */ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "ObservableVariable", ()=>ObservableVariable);
+var _variableJs = require("./variable.js");
+class ObservableVariable extends (0, _variableJs.Variable) {
+    #observer;
+    // Called only from Problem.
+    constructor(owner, d, observer){
+        super(owner, d);
+        this.#observer = observer;
+    }
+    /**
+	 * Assign a value.
+	 * @param value Value.
+	 */ assign(value) {
+        super.assign(value);
+        if (this.#observer) this.#observer(this, value);
+    }
+}
+
+},{"./variable.js":"UvkEa","@parcel/transformer-js/src/esmodule-helpers.js":"fn8Fk"}],"hEgcc":[function(require,module,exports) {
 /**
  * The common class of variables and constraints.
  *
