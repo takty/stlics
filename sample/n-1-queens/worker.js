@@ -1,6 +1,7 @@
-import { Problem }       from '../../src/problem/problem.js';
-import { N_1_queens }    from '../../src/model/n-1-queens.js';
-import { SolverFactory } from '../../src/solver/solver-factory.js';
+import { Problem }            from '../../src/problem/problem.js';
+import { N_1_queens }         from '../../src/model/n-1-queens.js';
+import { SolverFactory }      from '../../src/solver/solver-factory.js';
+import { ObservableVariable } from '../../src/problem/observable-variable.js';
 
 onmessage = async e => {
 	const { task, args } = e.data;
@@ -20,7 +21,12 @@ let p = null;
 function create(num) {
 	m = new N_1_queens(num);
 	m.setDebugOutput(log);
-	p = m.createProblem(new Problem());
+
+	const obs = (v, val) => board(val - 1, v.index());
+
+	p = new Problem();
+	p.setVariableFactory((o, d) => new ObservableVariable(o, d, obs));
+	p = m.createProblem(p);
 }
 
 async function solve(type, targetRate) {
@@ -41,4 +47,8 @@ async function solve(type, targetRate) {
 
 function log(e) {
 	postMessage({ log: e });
+}
+
+function board(x, y) {
+	postMessage({ board: { x, y } });
 }

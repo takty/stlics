@@ -12,12 +12,37 @@ import { Constraint } from './constraint.js';
 import { Constraint1 } from './constraint-1.js';
 import { Constraint2 } from './constraint-2.js';
 import { Constraint3 } from './constraint-3.js';
+import { ConstraintN } from './constraint-n.js';
 
 export class Problem {
+
+	#fv = (o, d) => new Variable(o, d);
+	#fc = (r, vs) => {
+		if (vs.length === 1) return new Constraint1(r, ...vs);
+		if (vs.length === 2) return new Constraint2(r, ...vs);
+		if (vs.length === 3) return new Constraint3(r, ...vs);
+		return new ConstraintN(r, vs);
+	}
 
 	_isFuzzy = false;
 	_vars    = [];
 	_cons    = [];
+
+	// Methods for Modifying Factories --------
+
+	/**
+	 * Sets a variable factory.
+	 */
+	setVariableFactory(fn) {
+		this.#fv = fn;
+	}
+
+	/**
+	 * Sets a variable factory.
+	 */
+	setConstraintFactory(fn) {
+		this.#fc = fn;
+	}
 
 	// Generation Methods --------
 
@@ -62,7 +87,7 @@ export class Problem {
 		if (args.value && !args.domain.contains(args.value)) {
 			throw new Error();
 		}
-		const v = new Variable(this, args.domain);
+		const v = this.#fv(this, args.domain);
 		this.addVariable(v);
 		if (args.name) v.setName(args.name);
 		if (args.value) v.assign(args.value);
@@ -82,11 +107,7 @@ export class Problem {
 		for (const v of args.variables) {
 			if (v.owner() !== this) return null;
 		}
-		let c;
-		if (args.variables.length === 1)      c = new Constraint1(args.relation, ...args.variables);
-		else if (args.variables.length === 2) c = new Constraint2(args.relation, ...args.variables);
-		else if (args.variables.length === 3) c = new Constraint3(args.relation, ...args.variables);
-		else c = new ConstraintN(args.relation, args.variables);
+		const c = this.#fc(args.relation, args.variables);
 		c.setIndex(this._cons.length);
 		this._cons.push(c);
 		for (const v of args.variables) v.connect(c);

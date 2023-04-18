@@ -21,9 +21,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 	const queenNum = document.getElementById('queen-num');
 	queenNum.value = QUEEN_NUM;
 
+	const board  = document.getElementById('board');
 	const output = document.getElementById('output');
 	const log    = createLogOutput();
 
+	let trs    = null;
 	let worker = null;
 
 	const solStartBtn = document.getElementById('solver-start');
@@ -31,15 +33,39 @@ document.addEventListener('DOMContentLoaded', async () => {
 	solStartBtn.addEventListener('click', () => {
 		solStartBtn.disabled = true;
 		solStopBtn.disabled  = false;
+
+		trs = makeBoard(board, parseInt(queenNum.value));
 		output.value = '';
+
 		worker = initialize(() => solStopBtn.click());
 		start(worker, parseInt(solTypeSel.value), parseFloat(targetRate.value), parseInt(queenNum.value));
 	});
 	solStopBtn.addEventListener('click', () => {
 		solStartBtn.disabled = false;
 		solStopBtn.disabled  = true;
+
 		worker.terminate();
 	});
+
+
+	// -------------------------------------------------------------------------
+
+
+	function makeBoard(board, size) {
+		const trs = [];
+		board.innerHTML = '';
+		for (let i = 0; i < size; ++i) {
+			const tr = document.createElement('tr');
+			board.appendChild(tr);
+			trs.push(tr);
+
+			for (let j = 0; j < size; ++j) {
+				const td = document.createElement('td');
+				tr.appendChild(td);
+			}
+		}
+		return trs;
+	}
 
 
 	// -------------------------------------------------------------------------
@@ -56,6 +82,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 			const { data } = e;
 			if ('log' in data) {
 				log(data.log);
+			} else if ('board' in data) {
+				const { x, y } = data.board;
+				trs[y].className = 'p' + x;
 			} else if ('result' in data) {
 				const { result, solver, time, rate } = data;
 				sumTime += time;

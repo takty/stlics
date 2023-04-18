@@ -1,3 +1,19 @@
-main textarea {
+textarea#output {
 	width: 100%;
+}
+
+table#board {
+	td {
+		width : 0.85rem;
+		height: 0.85rem;
+		border: 1px solid #aaa;
+	}
+
+	@for $i from 0 through 99 {
+		tr.p#{$i} {
+			td:nth-child(#{$i + 1}) {
+				background-color: #aaa;
+			}
+		}
+	}
 }
