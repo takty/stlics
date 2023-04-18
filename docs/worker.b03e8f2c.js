@@ -1,4 +1,4 @@
-importScripts("./worker.61b8db35.js");
+importScripts("./worker.413b5a37.js");
 // modules are defined as an array
 // [ module function, map of requires ]
 //
@@ -579,11 +579,11 @@ function create(num) {
     m.setDebugOutput(log);
     p = m.createProblem(new (0, _problemJs.Problem)());
 }
-async function solve(type) {
+async function solve(type, targetRate) {
     const t = Date.now(); // Start time measurement
     const sn = (0, _solverFactoryJs.SolverFactory).fuzzySolverNames()[type];
     const s = await (0, _solverFactoryJs.SolverFactory).createSolver(sn, p);
-    s.setTargetRate(0.8);
+    s.setTargetRate(targetRate);
     s.setDebugOutput(log);
     const result = s.solve();
     const time = Date.now() - t; // Stop time measurement

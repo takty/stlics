@@ -557,48 +557,88 @@ function hmrAccept(bundle, id) {
 }
 
 },{}],"6dFCg":[function(require,module,exports) {
+var _solverFactoryJs = require("../../src/solver/solver-factory.js");
 var _utilJs = require("../util.js");
 const COUNT = 1; // Interaction count
-const QUEEN_NUM = 20; // Number of queens
 const SOLVER_TYPE = 4;
+const TARGET_RATE = 0.8;
+const QUEEN_NUM = 20;
 document.addEventListener("DOMContentLoaded", async ()=>{
+    const solTypeSel = document.getElementById("solver-type");
+    (0, _solverFactoryJs.SolverFactory).fuzzySolverNames().forEach((sn, i)=>{
+        const o = document.createElement("option");
+        o.textContent = sn;
+        o.value = i;
+        solTypeSel.appendChild(o);
+    });
+    solTypeSel.value = SOLVER_TYPE;
+    const targetRate = document.getElementById("target-rate");
+    targetRate.value = TARGET_RATE;
+    const queenNum = document.getElementById("queen-num");
+    queenNum.value = QUEEN_NUM;
+    const output = document.getElementById("output");
     const log = (0, _utilJs.createLogOutput)();
-    let sum_time = 0;
-    let sum_deg = 0;
+    let worker = null;
+    const solStartBtn = document.getElementById("solver-start");
+    const solStopBtn = document.getElementById("solver-stop");
+    solStartBtn.addEventListener("click", ()=>{
+        solStartBtn.disabled = true;
+        solStopBtn.disabled = false;
+        output.value = "";
+        worker = initialize(()=>solStopBtn.click());
+        start(worker, parseInt(solTypeSel.value), parseFloat(targetRate.value), parseInt(queenNum.value));
+    });
+    solStopBtn.addEventListener("click", ()=>{
+        solStartBtn.disabled = false;
+        solStopBtn.disabled = true;
+        worker.terminate();
+    });
+    // -------------------------------------------------------------------------
     let count = 0;
-    const ww = new Worker(require("5904b745bcd140dc"));
-    ww.onmessage = (e)=>{
-        const { data  } = e;
-        if ("log" in data) log(data.log);
-        else if ("result" in data) {
-            const { result , solver , time , deg  } = data;
-            sum_time += time;
-            sum_deg += deg;
-            count += 1;
-            log(`solver: ${solver}   ${result ? "success" : "failure"}`);
-            log(`trial: ${count}   time: ${time}   degree: ${deg}`);
-            if (COUNT <= count) log(`average time: ${sum_time / COUNT}   average rate: ${sum_deg / COUNT}`);
+    function initialize(onFinish) {
+        let sumTime = 0;
+        let sumDeg = 0;
+        const ww = new Worker(require("5904b745bcd140dc"));
+        ww.onmessage = (e)=>{
+            const { data  } = e;
+            if ("log" in data) log(data.log);
+            else if ("result" in data) {
+                const { result , solver , time , deg  } = data;
+                sumTime += time;
+                sumDeg += deg;
+                count += 1;
+                log(`solver: ${solver}   ${result ? "success" : "failure"}`);
+                log(`trial: ${count}   time: ${time}   degree: ${deg}`);
+                if (COUNT <= count) {
+                    log(`average time: ${sumTime / COUNT}   average rate: ${sumDeg / COUNT}`);
+                    onFinish();
+                }
+            }
+        };
+        return ww;
+    }
+    async function start(ww, solverType, targetRate, queenNum) {
+        for(let i = 0; i < COUNT; ++i){
+            const now = count;
+            ww.postMessage({
+                task: "create",
+                args: [
+                    queenNum
+                ]
+            });
+            ww.postMessage({
+                task: "solve",
+                args: [
+                    solverType,
+                    targetRate
+                ]
+            });
+            await (0, _utilJs.waitFor)(()=>count !== now);
         }
-    };
-    for(let i = 0; i < COUNT; ++i){
-        const now = count;
-        ww.postMessage({
-            task: "create",
-            args: [
-                QUEEN_NUM
-            ]
-        });
-        ww.postMessage({
-            task: "solve",
-            args: [
-                SOLVER_TYPE
-            ]
-        });
-        await (0, _utilJs.waitFor)(()=>count !== now);
     }
 });
 
-},{"../util.js":"cakah","5904b745bcd140dc":"jR5kZ"}],"cakah":[function(require,module,exports) {
+},{"../util.js":"cakah","5904b745bcd140dc":"jR5kZ","../../src/solver/solver-factory.js":"5rSZm"}],"cakah":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "waitFor", ()=>waitFor);
@@ -708,6 +748,277 @@ exports.getBundleURL = getBundleURLCached;
 exports.getBaseURL = getBaseURL;
 exports.getOrigin = getOrigin;
 
-},{}]},["gE9RI","6dFCg"], "6dFCg", "parcelRequire7885")
+},{}],"5rSZm":[function(require,module,exports) {
+/**
+ * Solver factory class.
+ *
+ * @author Takuto Yanagida
+ * @version 2023-04-17
+ */ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "SolverFactory", ()=>SolverFactory);
+class SolverFactory {
+    static crispSolverNames() {
+        return [
+            /* 0 */ "Forward Checking",
+            /* 1 */ "Max Forward Checking",
+            /* 2 */ "Local Changes",
+            /* 3 */ "Local Changes Ex",
+            /* 4 */ "Breakout",
+            /* 5 */ "GENET",
+            /* 6 */ "Crisp SRS 3"
+        ];
+    }
+    static fuzzySolverNames() {
+        return [
+            /* 0 */ "Fuzzy Forward Checking",
+            /* 1 */ "Fuzzy Forward Checking Bc",
+            /* 2 */ "Flexible Local Changes",
+            /* 3 */ "Flexible Local Changes Ex",
+            /* 4 */ "Fuzzy Breakout",
+            /* 5 */ "Fuzzy GENET",
+            /* 6 */ "SRS 3",
+            /* 7 */ "SRS 3 PF"
+        ];
+    }
+    static async createSolver(type, p) {
+        const cs = await SolverFactory.createCrispSolver(type, p);
+        if (cs) return cs;
+        const fs = await SolverFactory.createFuzzySolver(type, p);
+        if (fs) return fs;
+        return null;
+    }
+    static async createCrispSolver(type, p) {
+        switch(type.replaceAll(" ", "")){
+            case "ForwardChecking":
+            case "forward-checking":
+                const { ForwardChecking  } = await require("d4e4973b39ce930b");
+                return new ForwardChecking(p);
+            case "MaxForwardChecking":
+            case "max-forward-checking":
+                const { MaxForwardChecking  } = await require("34ebdab28e1c5bd9");
+                return new MaxForwardChecking(p);
+            case "LocalChanges":
+            case "local-changes":
+                const { LocalChanges  } = await require("9fa70884b15f38");
+                return new LocalChanges(p);
+            case "LocalChangesEx":
+            case "local-changes-ex":
+                const { LocalChangesEx  } = await require("da79c45d91b71482");
+                return new LocalChangesEx(p);
+            case "Breakout":
+            case "breakout":
+                const { Breakout  } = await require("78a7ec70795b6a8c");
+                return new Breakout(p);
+            case "GENET":
+            case "genet":
+                const { GENET  } = await require("311a61112f100960");
+                return new GENET(p);
+            case "CrispSRS3":
+            case "crisp-srs3":
+                const { CrispSRS3  } = await require("939ff44749742ac");
+                return new CrispSRS3(p);
+        }
+        return null;
+    }
+    static async createFuzzySolver(type, p) {
+        switch(type.replaceAll(" ", "")){
+            case "FuzzyForwardChecking":
+            case "fuzzy-forward-checking":
+                const { FuzzyForwardChecking  } = await require("19ad2ccf0416e2ab");
+                return new FuzzyForwardChecking(p);
+            case "FuzzyForwardCheckingBc":
+            case "fuzzy-forward-checking-bc":
+                const { FuzzyForwardCheckingBc  } = await require("64ed0109718e119d");
+                return new FuzzyForwardCheckingBc(p);
+            case "FlexibleLocalChanges":
+            case "flexible-local-changes":
+                const { FlexibleLocalChanges  } = await require("6d83d6eabc1f411");
+                return new FlexibleLocalChanges(p);
+            case "FlexibleLocalChangesEx":
+            case "flexible-local-changes-ex":
+                const { FlexibleLocalChangesEx  } = await require("d824c24762972a6c");
+                return new FlexibleLocalChangesEx(p);
+            case "FuzzyBreakout":
+            case "fuzzy-breakout":
+                const { FuzzyBreakout  } = await require("3879f5adfa9382f3");
+                return new FuzzyBreakout(p);
+            case "FuzzyGENET":
+            case "fuzzy-genet":
+                const { FuzzyGENET  } = await require("bebe2f699b21cd00");
+                return new FuzzyGENET(p);
+            case "SRS3":
+            case "srs3":
+                const { SRS3  } = await require("b72340a0f3a85ad2");
+                return new SRS3(p);
+            case "SRS3PF":
+            case "SRS3_PF":
+            case "srs3-pf":
+                const { SRS3_PF  } = await require("8de2615fc285a512");
+                return new SRS3_PF(p);
+        }
+        return null;
+    }
+}
+
+},{"d4e4973b39ce930b":"bbhc2","34ebdab28e1c5bd9":"3wXkT","9fa70884b15f38":"c6tZ2","da79c45d91b71482":"8CpxM","78a7ec70795b6a8c":"6HFcM","311a61112f100960":"4ALoM","939ff44749742ac":"12ljp","19ad2ccf0416e2ab":"l0FWf","64ed0109718e119d":"hg5ED","6d83d6eabc1f411":"lTU9t","d824c24762972a6c":"37CTc","3879f5adfa9382f3":"9k9YW","bebe2f699b21cd00":"jBwz2","b72340a0f3a85ad2":"gfdQv","8de2615fc285a512":"gGwi0","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"bbhc2":[function(require,module,exports) {
+module.exports = require("8a285ca31e6161b9")(require("1605f3f861c30b6").getBundleURL("1CU6Q") + "../forward-checking.2840558e.js" + "?" + Date.now()).catch((err)=>{
+    delete module.bundle.cache[module.id];
+    throw err;
+}).then(()=>module.bundle.root("iWzoF"));
+
+},{"8a285ca31e6161b9":"61B45","1605f3f861c30b6":"lgJ39"}],"61B45":[function(require,module,exports) {
+"use strict";
+var cacheLoader = require("ceaf3802b3207d01");
+module.exports = cacheLoader(function(bundle) {
+    return new Promise(function(resolve, reject) {
+        // Don't insert the same script twice (e.g. if it was already in the HTML)
+        var existingScripts = document.getElementsByTagName("script");
+        if ([].concat(existingScripts).some(function isCurrentBundle(script) {
+            return script.src === bundle;
+        })) {
+            resolve();
+            return;
+        }
+        var preloadLink = document.createElement("link");
+        preloadLink.href = bundle;
+        preloadLink.rel = "preload";
+        preloadLink.as = "script";
+        document.head.appendChild(preloadLink);
+        var script = document.createElement("script");
+        script.async = true;
+        script.type = "text/javascript";
+        script.src = bundle;
+        script.onerror = function(e) {
+            var error = new TypeError("Failed to fetch dynamically imported module: ".concat(bundle, ". Error: ").concat(e.message));
+            script.onerror = script.onload = null;
+            script.remove();
+            reject(error);
+        };
+        script.onload = function() {
+            script.onerror = script.onload = null;
+            resolve();
+        };
+        document.getElementsByTagName("head")[0].appendChild(script);
+    });
+});
+
+},{"ceaf3802b3207d01":"j49pS"}],"j49pS":[function(require,module,exports) {
+"use strict";
+var cachedBundles = {};
+var cachedPreloads = {};
+var cachedPrefetches = {};
+function getCache(type) {
+    switch(type){
+        case "preload":
+            return cachedPreloads;
+        case "prefetch":
+            return cachedPrefetches;
+        default:
+            return cachedBundles;
+    }
+}
+module.exports = function(loader, type) {
+    return function(bundle) {
+        var cache = getCache(type);
+        if (cache[bundle]) return cache[bundle];
+        return cache[bundle] = loader.apply(null, arguments).catch(function(e) {
+            delete cache[bundle];
+            throw e;
+        });
+    };
+};
+
+},{}],"3wXkT":[function(require,module,exports) {
+module.exports = require("c9153e16996c29d4")(require("d1feba1c35382c2f").getBundleURL("1CU6Q") + "../max-forward-checking.b59f6425.js" + "?" + Date.now()).catch((err)=>{
+    delete module.bundle.cache[module.id];
+    throw err;
+}).then(()=>module.bundle.root("ewFsV"));
+
+},{"c9153e16996c29d4":"61B45","d1feba1c35382c2f":"lgJ39"}],"c6tZ2":[function(require,module,exports) {
+module.exports = require("83d26fbf2edffd72")(require("726d1fc998c3ee8e").getBundleURL("1CU6Q") + "../local-changes.5642719f.js" + "?" + Date.now()).catch((err)=>{
+    delete module.bundle.cache[module.id];
+    throw err;
+}).then(()=>module.bundle.root("528lF"));
+
+},{"83d26fbf2edffd72":"61B45","726d1fc998c3ee8e":"lgJ39"}],"8CpxM":[function(require,module,exports) {
+module.exports = require("19c69b00d722e70c")(require("b6f21b5919835720").getBundleURL("1CU6Q") + "../local-changes-ex.11e26c59.js" + "?" + Date.now()).catch((err)=>{
+    delete module.bundle.cache[module.id];
+    throw err;
+}).then(()=>module.bundle.root("5SbDF"));
+
+},{"19c69b00d722e70c":"61B45","b6f21b5919835720":"lgJ39"}],"6HFcM":[function(require,module,exports) {
+module.exports = require("911e606f485d464e")(require("4a5689d377d37a06").getBundleURL("1CU6Q") + "../breakout.1fd609ad.js" + "?" + Date.now()).catch((err)=>{
+    delete module.bundle.cache[module.id];
+    throw err;
+}).then(()=>module.bundle.root("3Vsrl"));
+
+},{"911e606f485d464e":"61B45","4a5689d377d37a06":"lgJ39"}],"4ALoM":[function(require,module,exports) {
+module.exports = require("7f9eaa1f2f002967")(require("6768ce3edc40bd05").getBundleURL("1CU6Q") + "../genet.bb06b38d.js" + "?" + Date.now()).catch((err)=>{
+    delete module.bundle.cache[module.id];
+    throw err;
+}).then(()=>module.bundle.root("frS8r"));
+
+},{"7f9eaa1f2f002967":"61B45","6768ce3edc40bd05":"lgJ39"}],"12ljp":[function(require,module,exports) {
+module.exports = require("fff0656edca899e5")(require("93f67ef92690860c").getBundleURL("1CU6Q") + "../crisp-srs3.3bc686d5.js" + "?" + Date.now()).catch((err)=>{
+    delete module.bundle.cache[module.id];
+    throw err;
+}).then(()=>module.bundle.root("g1oP2"));
+
+},{"fff0656edca899e5":"61B45","93f67ef92690860c":"lgJ39"}],"l0FWf":[function(require,module,exports) {
+module.exports = require("ab24776011c9fbb6")(require("7facc73882e79e58").getBundleURL("1CU6Q") + "../fuzzy-forward-checking.c2f2e495.js" + "?" + Date.now()).catch((err)=>{
+    delete module.bundle.cache[module.id];
+    throw err;
+}).then(()=>module.bundle.root("lj0XW"));
+
+},{"ab24776011c9fbb6":"61B45","7facc73882e79e58":"lgJ39"}],"hg5ED":[function(require,module,exports) {
+module.exports = require("38c90b164c677115")(require("88467a5afff417de").getBundleURL("1CU6Q") + "../fuzzy-forward-checking-bc.4420e29e.js" + "?" + Date.now()).catch((err)=>{
+    delete module.bundle.cache[module.id];
+    throw err;
+}).then(()=>module.bundle.root("6LVDA"));
+
+},{"38c90b164c677115":"61B45","88467a5afff417de":"lgJ39"}],"lTU9t":[function(require,module,exports) {
+module.exports = require("81789aa41b1a0afc")(require("8fc8f4a2b94fc8d9").getBundleURL("1CU6Q") + "../flexible-local-changes.d7da5770.js" + "?" + Date.now()).catch((err)=>{
+    delete module.bundle.cache[module.id];
+    throw err;
+}).then(()=>module.bundle.root("5SKYb"));
+
+},{"81789aa41b1a0afc":"61B45","8fc8f4a2b94fc8d9":"lgJ39"}],"37CTc":[function(require,module,exports) {
+module.exports = require("daa6e68fd56a1b4c")(require("bd313d4a955995e1").getBundleURL("1CU6Q") + "../flexible-local-changes-ex.98b6ceed.js" + "?" + Date.now()).catch((err)=>{
+    delete module.bundle.cache[module.id];
+    throw err;
+}).then(()=>module.bundle.root("gFjSJ"));
+
+},{"daa6e68fd56a1b4c":"61B45","bd313d4a955995e1":"lgJ39"}],"9k9YW":[function(require,module,exports) {
+module.exports = require("7c75f97b5a74805f")(require("2dcec6bbb7dc7cc2").getBundleURL("1CU6Q") + "../fuzzy-breakout.587009ca.js" + "?" + Date.now()).catch((err)=>{
+    delete module.bundle.cache[module.id];
+    throw err;
+}).then(()=>module.bundle.root("ana3Z"));
+
+},{"7c75f97b5a74805f":"61B45","2dcec6bbb7dc7cc2":"lgJ39"}],"jBwz2":[function(require,module,exports) {
+module.exports = require("93b35145fa815f10")(require("b87866d82bac4c55").getBundleURL("1CU6Q") + "../fuzzy-genet.435b2c8e.js" + "?" + Date.now()).catch((err)=>{
+    delete module.bundle.cache[module.id];
+    throw err;
+}).then(()=>module.bundle.root("86Xxw"));
+
+},{"93b35145fa815f10":"61B45","b87866d82bac4c55":"lgJ39"}],"gfdQv":[function(require,module,exports) {
+module.exports = require("8f06f41166b6658e")(require("e50ab33048f31fed").getBundleURL("1CU6Q") + "../srs3.e2a6d0d8.js" + "?" + Date.now()).catch((err)=>{
+    delete module.bundle.cache[module.id];
+    throw err;
+}).then(()=>module.bundle.root("gaaWt"));
+
+},{"8f06f41166b6658e":"61B45","e50ab33048f31fed":"lgJ39"}],"gGwi0":[function(require,module,exports) {
+module.exports = Promise.all([
+    require("6538d96e84de8724")(require("d36e5f8166d0e388").getBundleURL("1CU6Q") + "../srs3.e2a6d0d8.js" + "?" + Date.now()).catch((err)=>{
+        delete module.bundle.cache[module.id];
+        throw err;
+    }),
+    require("6538d96e84de8724")(require("d36e5f8166d0e388").getBundleURL("1CU6Q") + "../srs3-pf.2bb3b9a2.js" + "?" + Date.now()).catch((err)=>{
+        delete module.bundle.cache[module.id];
+        throw err;
+    })
+]).then(()=>module.bundle.root("2ksoK"));
+
+},{"6538d96e84de8724":"61B45","d36e5f8166d0e388":"lgJ39"}]},["gE9RI","6dFCg"], "6dFCg", "parcelRequire7885")
 
 //# sourceMappingURL=index.3540d680.js.map
