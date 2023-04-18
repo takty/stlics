@@ -29,7 +29,7 @@ export * from './problem/relation-view.js';
 // -----------------------------------------------------------------------------
 
 export * from './solver/solver.js';
-export * from './solver/solver-factory.js';
+export * from './solver/solver-factory-static.js';
 
 export * from './solver/fuzzy/flexible-local-changes.js';
 export * from './solver/fuzzy/flexible-local-changes-ex.js';
