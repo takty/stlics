@@ -604,7 +604,7 @@ document.addEventListener("DOMContentLoaded", async ()=>{
     function initialize(onFinish) {
         let sumTime = 0;
         let sumDeg = 0;
-        const ww = new Worker(require("9a83d44b1c7d6351"));
+        const ww = new Worker(require("b6070aff6475140d"));
         ww.onmessage = (e)=>{
             const { data  } = e;
             if ("log" in data) log(data.log);
@@ -646,13 +646,13 @@ document.addEventListener("DOMContentLoaded", async ()=>{
     }
 });
 
-},{"../../dist/stlics.esm.js":"3s2i8","../util.js":"cakah","9a83d44b1c7d6351":"bXzUe"}],"bXzUe":[function(require,module,exports) {
-let workerURL = require("1e6e5254e5bf994d");
-let bundleURL = require("e8f6ea6478404105");
+},{"../../dist/stlics.esm.js":"3s2i8","../util.js":"cakah","b6070aff6475140d":"bXzUe"}],"bXzUe":[function(require,module,exports) {
+let workerURL = require("3c69e06ca9bb5f82");
+let bundleURL = require("bd1620ee7648ca94");
 let url = bundleURL.getBundleURL("5Bozu") + "../worker.04a3b279.js" + "?" + Date.now();
 module.exports = workerURL(url, bundleURL.getOrigin(url), false);
 
-},{"1e6e5254e5bf994d":"cn2gM","e8f6ea6478404105":"lgJ39"}],"cn2gM":[function(require,module,exports) {
+},{"3c69e06ca9bb5f82":"cn2gM","bd1620ee7648ca94":"lgJ39"}],"cn2gM":[function(require,module,exports) {
 "use strict";
 module.exports = function(workerUrl, origin, isESM) {
     if (origin === self.location.origin) // If the worker bundle's url is on the same origin as the document,

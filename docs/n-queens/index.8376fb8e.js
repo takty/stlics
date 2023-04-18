@@ -557,7 +557,6 @@ function hmrAccept(bundle, id) {
 }
 
 },{}],"kNFX4":[function(require,module,exports) {
-// import { SolverFactory } from '../../src/solver/solver-factory.js';
 var _stlicsEsmJs = require("../../dist/stlics.esm.js");
 var _utilJs = require("../util.js");
 const COUNT = 1; // Interaction count
@@ -617,7 +616,7 @@ document.addEventListener("DOMContentLoaded", async ()=>{
     function initialize(onFinish) {
         let sumTime = 0;
         let sumRate = 0;
-        const ww = new Worker(require("ffb9578bbe3046cf"));
+        const ww = new Worker(require("848480cc92364e2b"));
         ww.onmessage = (e)=>{
             const { data  } = e;
             if ("log" in data) log(data.log);
@@ -660,13 +659,13 @@ document.addEventListener("DOMContentLoaded", async ()=>{
     }
 });
 
-},{"../util.js":"cakah","ffb9578bbe3046cf":"gsAyn","../../dist/stlics.esm.js":"3s2i8"}],"gsAyn":[function(require,module,exports) {
-let workerURL = require("99b440824ca56a84");
-let bundleURL = require("45c7edad226cb20f");
+},{"../../dist/stlics.esm.js":"3s2i8","../util.js":"cakah","848480cc92364e2b":"gsAyn"}],"gsAyn":[function(require,module,exports) {
+let workerURL = require("8e9e391d1d302df3");
+let bundleURL = require("bd22e35f865d2c59");
 let url = bundleURL.getBundleURL("dsIzq") + "../worker.ce64f1ae.js" + "?" + Date.now();
 module.exports = workerURL(url, bundleURL.getOrigin(url), false);
 
-},{"99b440824ca56a84":"cn2gM","45c7edad226cb20f":"lgJ39"}],"cn2gM":[function(require,module,exports) {
+},{"8e9e391d1d302df3":"cn2gM","bd22e35f865d2c59":"lgJ39"}],"cn2gM":[function(require,module,exports) {
 "use strict";
 module.exports = function(workerUrl, origin, isESM) {
     if (origin === self.location.origin) // If the worker bundle's url is on the same origin as the document,

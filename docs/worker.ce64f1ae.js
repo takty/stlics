@@ -1,4 +1,4 @@
-importScripts("./worker.7eace182.js");
+importScripts("./worker.a3722741.js");
 // modules are defined as an array
 // [ module function, map of requires ]
 //
@@ -612,7 +612,7 @@ function board(x, y) {
     });
 }
 
-},{"../../src/model/n-queens.js":"8fQJ7","../../dist/stlics.esm.js":"c85su"}],"8fQJ7":[function(require,module,exports) {
+},{"../../dist/stlics.esm.js":"c85su","../../src/model/n-queens.js":"8fQJ7"}],"8fQJ7":[function(require,module,exports) {
 /**
  * A sample implementation of the N queens problem.
  *
@@ -682,7 +682,7 @@ class CrispQueenRelation extends (0, _relationCrispJs.CrispRelation) {
     }
 }
 
-},{"./model.js":"bErLg","@parcel/transformer-js/src/esmodule-helpers.js":"fn8Fk","../problem/relation-crisp.js":"f8lMf"}],"f8lMf":[function(require,module,exports) {
+},{"../problem/relation-crisp.js":"f8lMf","./model.js":"bErLg","@parcel/transformer-js/src/esmodule-helpers.js":"fn8Fk"}],"f8lMf":[function(require,module,exports) {
 /**
  * The class represents crisp relationships between variables.
  *
