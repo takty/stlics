@@ -1,7 +1,7 @@
 import { CrispProblem }       from '../../src/problem/problem-crisp.js';
-import { N_queens }           from '../../src/model/n-queens.js';
-import { SolverFactory }      from '../../src/solver/solver-factory.js';
 import { ObservableVariable } from '../../src/problem/observable-variable.js';
+import { SolverFactory }      from '../../src/solver/solver-factory.js';
+import { N_queens }           from '../../src/model/n-queens.js';
 
 onmessage = async e => {
 	const { task, args } = e.data;

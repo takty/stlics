@@ -1,6 +1,6 @@
 import { Problem }       from '../../src/problem/problem.js';
-import { RandomBinary }  from '../../src/model/random-binary.js';
 import { SolverFactory } from '../../src/solver/solver-factory.js';
+import { RandomBinary }  from '../../src/model/random-binary.js';
 
 onmessage = async e => {
 	const { task, args } = e.data;

@@ -1,7 +1,7 @@
 import { Problem }            from '../../src/problem/problem.js';
-import { N_1_queens }         from '../../src/model/n-1-queens.js';
-import { SolverFactory }      from '../../src/solver/solver-factory.js';
 import { ObservableVariable } from '../../src/problem/observable-variable.js';
+import { SolverFactory }      from '../../src/solver/solver-factory.js';
+import { N_1_queens }         from '../../src/model/n-1-queens.js';
 
 onmessage = async e => {
 	const { task, args } = e.data;
