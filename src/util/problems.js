@@ -2,10 +2,12 @@
  * Utility class for constraint satisfaction problems.
  *
  * @author Takuto Yanagida
- * @version 2023-04-11
+ * @version 2023-04-18
  */
 
-import { CrispProblem } from '../problem/problem-crisp.js';
+import { CrispProblem }  from '../problem/problem-crisp.js';
+import { Variable }      from '../problem/variable.js';
+import { CrispRelation } from '../problem/relation-crisp.js';
 
 export class Problems {
 
