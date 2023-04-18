@@ -23,12 +23,12 @@ function create(num) {
 	p = m.createProblem(new CrispProblem());
 }
 
-async function solve(type) {
+async function solve(type, targetRate) {
 	const t  = Date.now();  // Start time measurement
 	const sn = SolverFactory.crispSolverNames()[type];
 
 	const s = await SolverFactory.createSolver(sn, p);
-	s.setTargetRate(1);
+	s.setTargetRate(targetRate);
 	s.setDebugOutput(log);
 
 	const result = s.solve();

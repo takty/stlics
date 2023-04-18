@@ -1,40 +1,85 @@
+import { SolverFactory } from '../../src/solver/solver-factory.js';
 import { waitFor, createLogOutput } from '../util.js';
 
-const COUNT       = 1;   // Interaction count
-const QUEEN_NUM   = 20;  // Number of queens
+const COUNT       = 1;  // Interaction count
 const SOLVER_TYPE = 4;
+const TARGET_RATE = 0.8;
+const QUEEN_NUM   = 20;
 
 document.addEventListener('DOMContentLoaded', async () => {
-	const log = createLogOutput();
+	const solTypeSel = document.getElementById('solver-type');
+	SolverFactory.fuzzySolverNames().forEach((sn, i) => {
+		const o = document.createElement('option');
+		o.textContent = sn;
+		o.value       = i;
+		solTypeSel.appendChild(o);
+	});
+	solTypeSel.value = SOLVER_TYPE;
+	const targetRate = document.getElementById('target-rate');
+	targetRate.value = TARGET_RATE;
 
-	let sum_time = 0;
-	let sum_deg  = 0;
-	let count    = 0;
+	const queenNum = document.getElementById('queen-num');
+	queenNum.value = QUEEN_NUM;
 
-	const ww = new Worker(new URL('worker.js', import.meta.url), { type: 'module' });
-	ww.onmessage = e => {
-		const { data } = e;
-		if ('log' in data) {
-			log(data.log);
-		} else if ('result' in data) {
-			const { result, solver, time, deg } = data;
-			sum_time += time;
-			sum_deg  += deg;
-			count    += 1;
+	const output = document.getElementById('output');
+	const log    = createLogOutput();
 
-			log(`solver: ${solver}   ${result ? 'success' : 'failure'}`);
-			log(`trial: ${count}   time: ${time}   degree: ${deg}`);
+	let worker = null;
 
-			if (COUNT <= count) {
-				log(`average time: ${sum_time / COUNT}   average rate: ${sum_deg / COUNT}`);
+	const solStartBtn = document.getElementById('solver-start');
+	const solStopBtn  = document.getElementById('solver-stop');
+	solStartBtn.addEventListener('click', () => {
+		solStartBtn.disabled = true;
+		solStopBtn.disabled  = false;
+		output.value = '';
+		worker = initialize(() => solStopBtn.click());
+		start(worker, parseInt(solTypeSel.value), parseFloat(targetRate.value), parseInt(queenNum.value));
+	});
+	solStopBtn.addEventListener('click', () => {
+		solStartBtn.disabled = false;
+		solStopBtn.disabled  = true;
+		worker.terminate();
+	});
+
+
+	// -------------------------------------------------------------------------
+
+
+	let count = 0;
+
+	function initialize(onFinish) {
+		let sumTime = 0;
+		let sumDeg  = 0;
+
+		const ww = new Worker(new URL('worker.js', import.meta.url), { type: 'module' });
+		ww.onmessage = e => {
+			const { data } = e;
+			if ('log' in data) {
+				log(data.log);
+			} else if ('result' in data) {
+				const { result, solver, time, deg } = data;
+				sumTime += time;
+				sumDeg  += deg;
+				count   += 1;
+
+				log(`solver: ${solver}   ${result ? 'success' : 'failure'}`);
+				log(`trial: ${count}   time: ${time}   degree: ${deg}`);
+
+				if (COUNT <= count) {
+					log(`average time: ${sumTime / COUNT}   average rate: ${sumDeg / COUNT}`);
+					onFinish();
+				}
 			}
-		}
-	};
+		};
+		return ww;
+	}
 
-	for (let i = 0; i < COUNT; ++i) {
-		const now = count;
-		ww.postMessage({ task: 'create', args: [QUEEN_NUM] });
-		ww.postMessage({ task: 'solve', args: [SOLVER_TYPE] });
-		await waitFor(() => (count !== now));
+	async function start(ww, solverType, targetRate, queenNum) {
+		for (let i = 0; i < COUNT; ++i) {
+			const now = count;
+			ww.postMessage({ task: 'create', args: [queenNum] });
+			ww.postMessage({ task: 'solve', args: [solverType, targetRate] });
+			await waitFor(() => (count !== now));
+		}
 	}
 });
