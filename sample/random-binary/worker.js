@@ -1,5 +1,4 @@
-import { Problem }       from '../../src/problem/problem.js';
-import { SolverFactory } from '../../src/solver/solver-factory.js';
+import { Problem, SolverFactory } from '../../dist/stlics.esm.js';
 import { RandomBinary }  from '../../src/model/random-binary.js';
 
 onmessage = async e => {
