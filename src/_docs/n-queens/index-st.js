@@ -1,6 +1,6 @@
-import { CrispProblem }  from '../../src/problem/problem-crisp.js';
-import { N_queens }      from '../../src/model/n-queens.js';
-import { SolverFactory } from '../../src/solver/solver-factory.js';
+import { CrispProblem }  from '../../problem/problem-crisp.js';
+import { SolverFactory } from '../../solver/solver-factory.js';
+import { N_queens }      from '../../_model/n-queens.js';
 
 import { createLogOutput } from './util.js';
 

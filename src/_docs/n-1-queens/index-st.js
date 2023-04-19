@@ -1,6 +1,6 @@
-import { Problem }       from '../../src/problem/problem.js';
-import { N_1_queens }    from '../../src/model/n-1-queens.js';
-import { SolverFactory } from '../../src/solver/solver-factory.js';
+import { Problem }       from '../../problem/problem.js';
+import { SolverFactory } from '../../solver/solver-factory.js';
+import { N_1_queens }    from '../../_model/n-1-queens.js';
 
 import { createLogOutput } from './util.js';
 

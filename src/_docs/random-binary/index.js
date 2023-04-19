@@ -1,10 +1,12 @@
-import { SolverFactory } from '../../dist/stlics.esm.js';
+import { SolverFactory } from '../../../dist/stlics.esm.js';
 import { waitFor, createLogOutput } from '../util.js';
 
-const COUNT       = 1;  // Interaction count
-const SOLVER_TYPE = 4;
-const TARGET_RATE = 0.8;
-const QUEEN_NUM   = 20;
+const COUNT         = 1;  // Interaction count
+const SOLVER_TYPE   = 4;
+const TARGET_RATE   = 0.8;
+const VAR_NUM       = 10;
+const DENSITY       = 0.5;
+const AVE_TIGHTNESS = 0.5;
 
 document.addEventListener('DOMContentLoaded', async () => {
 	const solTypeSel = document.getElementById('solver-type');
@@ -18,14 +20,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 	const targetRate = document.getElementById('target-rate');
 	targetRate.value = TARGET_RATE;
 
-	const queenNum = document.getElementById('queen-num');
-	queenNum.value = QUEEN_NUM;
+	const varNum       = document.getElementById('var-num');
+	varNum.value       = VAR_NUM;
+	const density      = document.getElementById('density');
+	density.value      = DENSITY;
+	const aveTightness = document.getElementById('ave-tightness');
+	aveTightness.value = AVE_TIGHTNESS;
 
-	const board  = document.getElementById('board');
 	const output = document.getElementById('output');
 	const log    = createLogOutput();
 
-	let trs    = null;
 	let worker = null;
 
 	const solStartBtn = document.getElementById('solver-start');
@@ -33,39 +37,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 	solStartBtn.addEventListener('click', () => {
 		solStartBtn.disabled = true;
 		solStopBtn.disabled  = false;
-
-		trs = makeBoard(board, parseInt(queenNum.value));
 		output.value = '';
-
 		worker = initialize(() => solStopBtn.click());
-		start(worker, parseInt(solTypeSel.value), parseFloat(targetRate.value), parseInt(queenNum.value));
+		start(worker, parseInt(solTypeSel.value), parseFloat(targetRate.value), parseFloat(varNum.value), parseFloat(density.value), parseFloat(aveTightness.value));
 	});
 	solStopBtn.addEventListener('click', () => {
 		solStartBtn.disabled = false;
 		solStopBtn.disabled  = true;
-
 		worker.terminate();
 	});
-
-
-	// -------------------------------------------------------------------------
-
-
-	function makeBoard(board, size) {
-		const trs = [];
-		board.innerHTML = '';
-		for (let i = 0; i < size; ++i) {
-			const tr = document.createElement('tr');
-			board.appendChild(tr);
-			trs.push(tr);
-
-			for (let j = 0; j < size - 1; ++j) {
-				const td = document.createElement('td');
-				tr.appendChild(td);
-			}
-		}
-		return trs;
-	}
 
 
 	// -------------------------------------------------------------------------
@@ -82,9 +62,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 			const { data } = e;
 			if ('log' in data) {
 				log(data.log);
-			} else if ('board' in data) {
-				const { x, y } = data.board;
-				trs[y].className = 'p' + x;
 			} else if ('result' in data) {
 				const { result, solver, time, deg } = data;
 				sumTime += time;
@@ -103,10 +80,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 		return ww;
 	}
 
-	async function start(ww, solverType, targetRate, queenNum) {
+	async function start(ww, solverType, targetRate, varNum, density, aveTightness) {
 		for (let i = 0; i < COUNT; ++i) {
 			const now = count;
-			ww.postMessage({ task: 'create', args: [queenNum] });
+			ww.postMessage({ task: 'create', args: [varNum, density, aveTightness] });
 			ww.postMessage({ task: 'solve', args: [solverType, targetRate] });
 			await waitFor(() => (count !== now));
 		}

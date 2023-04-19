@@ -1,4 +1,4 @@
-import { SolverFactory } from '../../dist/stlics.esm.js';
+import { SolverFactory } from '../../../dist/stlics.esm.js';
 import { waitFor, createLogOutput } from '../util.js';
 
 const COUNT       = 1;  // Interaction count

@@ -1,6 +1,6 @@
-import { Problem }       from '../../src/problem/problem.js';
-import { RandomBinary }  from '../../src/model/random-binary.js';
-import { SolverFactory } from '../../src/solver/solver-factory.js';
+import { Problem }       from '../../problem/problem.js';
+import { SolverFactory } from '../../solver/solver-factory.js';
+import { RandomBinary }  from '../../_model/random-binary.js';
 
 const COUNT         = 1;  // Interaction count
 const VAR_NUM       = 10;  // Number of variables

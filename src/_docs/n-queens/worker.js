@@ -1,5 +1,5 @@
-import { CrispProblem, ObservableVariable, SolverFactory } from '../../dist/stlics.esm.js';
-import { N_queens } from '../../src/model/n-queens.js';
+import { CrispProblem, ObservableVariable, SolverFactory } from '../../../dist/stlics.esm.js';
+import { N_queens } from '../../_model/n-queens.js';
 
 onmessage = async e => {
 	const { task, args } = e.data;
