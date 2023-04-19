@@ -1,4 +1,4 @@
-importScripts("./worker.a3722741.js");
+importScripts("./worker.269dcb98.js");
 // modules are defined as an array
 // [ module function, map of requires ]
 //
@@ -143,13 +143,13 @@ importScripts("./worker.a3722741.js");
       this[globalName] = mainExports;
     }
   }
-})({"funR9":[function(require,module,exports) {
+})({"gUSQL":[function(require,module,exports) {
 var global = arguments[3];
 var HMR_HOST = null;
 var HMR_PORT = null;
 var HMR_SECURE = false;
 var HMR_ENV_HASH = "a8fb9c35fdafe466";
-module.bundle.HMR_BUNDLE_ID = "3a1e5d70b03e8f2c";
+module.bundle.HMR_BUNDLE_ID = "4744c4774809ccdc";
 "use strict";
 /* global HMR_HOST, HMR_PORT, HMR_ENV_HASH, HMR_SECURE, chrome, browser, globalThis, __parcel__import__, __parcel__importScripts__, ServiceWorkerGlobalScope */ /*::
 import type {
@@ -557,9 +557,9 @@ function hmrAccept(bundle, id) {
     });
 }
 
-},{}],"imRfH":[function(require,module,exports) {
-var _stlicsEsmJs = require("../../dist/stlics.esm.js");
-var _n1QueensJs = require("../../src/model/n-1-queens.js");
+},{}],"b4g0e":[function(require,module,exports) {
+var _stlicsEsmJs = require("../../../dist/stlics.esm.js");
+var _n1QueensJs = require("../../_model/n-1-queens.js");
 onmessage = async (e)=>{
     const { task , args  } = e.data;
     switch(task){
@@ -612,7 +612,7 @@ function board(x, y) {
     });
 }
 
-},{"../../dist/stlics.esm.js":"c85su","../../src/model/n-1-queens.js":"l3hx0"}],"l3hx0":[function(require,module,exports) {
+},{"../../../dist/stlics.esm.js":"c85su","../../_model/n-1-queens.js":"2QDaJ"}],"2QDaJ":[function(require,module,exports) {
 /**
  * A sample implementation of the N-1 Queen Problem.
  * The problem is to place N queens on a board of N vertical squares and N-1 horizontal squares in such a way that as few queens as possible are taken from each other.
@@ -685,7 +685,7 @@ class FuzzyQueenRelation extends (0, _relationFuzzyJs.FuzzyRelation) {
     }
 }
 
-},{"../problem/relation-fuzzy.js":"fQtZw","./model.js":"bErLg","@parcel/transformer-js/src/esmodule-helpers.js":"fn8Fk"}],"fQtZw":[function(require,module,exports) {
+},{"../problem/relation-fuzzy.js":"fQtZw","./model.js":"2sE23","@parcel/transformer-js/src/esmodule-helpers.js":"fn8Fk"}],"fQtZw":[function(require,module,exports) {
 /**
  * The class represents fuzzy relationships between variables.
  *
@@ -711,6 +711,6 @@ class FuzzyRelation extends (0, _relationJs.Relation) {
     }
 }
 
-},{"./relation.js":"hQbVJ","@parcel/transformer-js/src/esmodule-helpers.js":"fn8Fk"}]},["funR9","imRfH"], "imRfH", "parcelRequire95bc")
+},{"./relation.js":"hQbVJ","@parcel/transformer-js/src/esmodule-helpers.js":"fn8Fk"}]},["gUSQL","b4g0e"], "b4g0e", "parcelRequire95bc")
 
-//# sourceMappingURL=worker.b03e8f2c.js.map
+//# sourceMappingURL=worker.4809ccdc.js.map

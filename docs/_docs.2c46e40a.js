@@ -142,13 +142,13 @@
       this[globalName] = mainExports;
     }
   }
-})({"gE9RI":[function(require,module,exports) {
+})({"3esBY":[function(require,module,exports) {
 var global = arguments[3];
 var HMR_HOST = null;
 var HMR_PORT = null;
 var HMR_SECURE = false;
 var HMR_ENV_HASH = "d6ea1d42532a7575";
-module.bundle.HMR_BUNDLE_ID = "12f4dd343540d680";
+module.bundle.HMR_BUNDLE_ID = "c24d00c32c46e40a";
 "use strict";
 /* global HMR_HOST, HMR_PORT, HMR_ENV_HASH, HMR_SECURE, chrome, browser, globalThis, __parcel__import__, __parcel__importScripts__, ServiceWorkerGlobalScope */ /*::
 import type {
@@ -556,166 +556,8 @@ function hmrAccept(bundle, id) {
     });
 }
 
-},{}],"6dFCg":[function(require,module,exports) {
-var _stlicsEsmJs = require("../../dist/stlics.esm.js");
-var _utilJs = require("../util.js");
-const COUNT = 1; // Interaction count
-const SOLVER_TYPE = 4;
-const TARGET_RATE = 0.8;
-const QUEEN_NUM = 20;
-document.addEventListener("DOMContentLoaded", async ()=>{
-    const solTypeSel = document.getElementById("solver-type");
-    (0, _stlicsEsmJs.SolverFactory).fuzzySolverNames().forEach((sn, i)=>{
-        const o = document.createElement("option");
-        o.textContent = sn;
-        o.value = i;
-        solTypeSel.appendChild(o);
-    });
-    solTypeSel.value = SOLVER_TYPE;
-    const targetRate = document.getElementById("target-rate");
-    targetRate.value = TARGET_RATE;
-    const queenNum = document.getElementById("queen-num");
-    queenNum.value = QUEEN_NUM;
-    const board = document.getElementById("board");
-    const output = document.getElementById("output");
-    const log = (0, _utilJs.createLogOutput)();
-    let trs = null;
-    let worker = null;
-    const solStartBtn = document.getElementById("solver-start");
-    const solStopBtn = document.getElementById("solver-stop");
-    solStartBtn.addEventListener("click", ()=>{
-        solStartBtn.disabled = true;
-        solStopBtn.disabled = false;
-        trs = makeBoard(board, parseInt(queenNum.value));
-        output.value = "";
-        worker = initialize(()=>solStopBtn.click());
-        start(worker, parseInt(solTypeSel.value), parseFloat(targetRate.value), parseInt(queenNum.value));
-    });
-    solStopBtn.addEventListener("click", ()=>{
-        solStartBtn.disabled = false;
-        solStopBtn.disabled = true;
-        worker.terminate();
-    });
-    // -------------------------------------------------------------------------
-    function makeBoard(board, size) {
-        const trs = [];
-        board.innerHTML = "";
-        for(let i = 0; i < size; ++i){
-            const tr = document.createElement("tr");
-            board.appendChild(tr);
-            trs.push(tr);
-            for(let j = 0; j < size - 1; ++j){
-                const td = document.createElement("td");
-                tr.appendChild(td);
-            }
-        }
-        return trs;
-    }
-    // -------------------------------------------------------------------------
-    let count = 0;
-    function initialize(onFinish) {
-        let sumTime = 0;
-        let sumDeg = 0;
-        const ww = new Worker(require("f1f28bec43a346b9"));
-        ww.onmessage = (e)=>{
-            const { data  } = e;
-            if ("log" in data) log(data.log);
-            else if ("board" in data) {
-                const { x , y  } = data.board;
-                trs[y].className = "p" + x;
-            } else if ("result" in data) {
-                const { result , solver , time , deg  } = data;
-                sumTime += time;
-                sumDeg += deg;
-                count += 1;
-                log(`solver: ${solver}   ${result ? "success" : "failure"}`);
-                log(`trial: ${count}   time: ${time}   degree: ${deg}`);
-                if (COUNT <= count) {
-                    log(`average time: ${sumTime / COUNT}   average rate: ${sumDeg / COUNT}`);
-                    onFinish();
-                }
-            }
-        };
-        return ww;
-    }
-    async function start(ww, solverType, targetRate, queenNum) {
-        for(let i = 0; i < COUNT; ++i){
-            const now = count;
-            ww.postMessage({
-                task: "create",
-                args: [
-                    queenNum
-                ]
-            });
-            ww.postMessage({
-                task: "solve",
-                args: [
-                    solverType,
-                    targetRate
-                ]
-            });
-            await (0, _utilJs.waitFor)(()=>count !== now);
-        }
-    }
-});
+},{}],"b8tqT":[function(require,module,exports) {
 
-},{"../../dist/stlics.esm.js":"3s2i8","../util.js":"cakah","f1f28bec43a346b9":"jR5kZ"}],"jR5kZ":[function(require,module,exports) {
-let workerURL = require("38a37acd5791b6e");
-let bundleURL = require("c73904badb894f2f");
-let url = bundleURL.getBundleURL("1CU6Q") + "../worker.b03e8f2c.js" + "?" + Date.now();
-module.exports = workerURL(url, bundleURL.getOrigin(url), false);
+},{}]},["3esBY","b8tqT"], "b8tqT", "parcelRequire95bc")
 
-},{"38a37acd5791b6e":"cn2gM","c73904badb894f2f":"lgJ39"}],"cn2gM":[function(require,module,exports) {
-"use strict";
-module.exports = function(workerUrl, origin, isESM) {
-    if (origin === self.location.origin) // If the worker bundle's url is on the same origin as the document,
-    // use the worker bundle's own url.
-    return workerUrl;
-    else {
-        // Otherwise, create a blob URL which loads the worker bundle with `importScripts`.
-        var source = isESM ? "import " + JSON.stringify(workerUrl) + ";" : "importScripts(" + JSON.stringify(workerUrl) + ");";
-        return URL.createObjectURL(new Blob([
-            source
-        ], {
-            type: "application/javascript"
-        }));
-    }
-};
-
-},{}],"lgJ39":[function(require,module,exports) {
-"use strict";
-var bundleURL = {};
-function getBundleURLCached(id) {
-    var value = bundleURL[id];
-    if (!value) {
-        value = getBundleURL();
-        bundleURL[id] = value;
-    }
-    return value;
-}
-function getBundleURL() {
-    try {
-        throw new Error();
-    } catch (err) {
-        var matches = ("" + err.stack).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^)\n]+/g);
-        if (matches) // The first two stack frames will be this function and getBundleURLCached.
-        // Use the 3rd one, which will be a runtime in the original bundle.
-        return getBaseURL(matches[2]);
-    }
-    return "/";
-}
-function getBaseURL(url) {
-    return ("" + url).replace(/^((?:https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/.+)\/[^/]+$/, "$1") + "/";
-} // TODO: Replace uses with `new URL(url).origin` when ie11 is no longer supported.
-function getOrigin(url) {
-    var matches = ("" + url).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^/]+/);
-    if (!matches) throw new Error("Origin not found");
-    return matches[0];
-}
-exports.getBundleURL = getBundleURLCached;
-exports.getBaseURL = getBaseURL;
-exports.getOrigin = getOrigin;
-
-},{}]},["gE9RI","6dFCg"], "6dFCg", "parcelRequire95bc")
-
-//# sourceMappingURL=index.3540d680.js.map
+//# sourceMappingURL=_docs.2c46e40a.js.map

@@ -1,4 +1,4 @@
-importScripts("./worker.a3722741.js");
+importScripts("./worker.269dcb98.js");
 // modules are defined as an array
 // [ module function, map of requires ]
 //
@@ -143,13 +143,13 @@ importScripts("./worker.a3722741.js");
       this[globalName] = mainExports;
     }
   }
-})({"eVEWG":[function(require,module,exports) {
+})({"l6gKU":[function(require,module,exports) {
 var global = arguments[3];
 var HMR_HOST = null;
 var HMR_PORT = null;
 var HMR_SECURE = false;
 var HMR_ENV_HASH = "a8fb9c35fdafe466";
-module.bundle.HMR_BUNDLE_ID = "a5c52b3fce64f1ae";
+module.bundle.HMR_BUNDLE_ID = "2a3e30982dcc95cd";
 "use strict";
 /* global HMR_HOST, HMR_PORT, HMR_ENV_HASH, HMR_SECURE, chrome, browser, globalThis, __parcel__import__, __parcel__importScripts__, ServiceWorkerGlobalScope */ /*::
 import type {
@@ -557,9 +557,9 @@ function hmrAccept(bundle, id) {
     });
 }
 
-},{}],"dbZx1":[function(require,module,exports) {
-var _stlicsEsmJs = require("../../dist/stlics.esm.js");
-var _nQueensJs = require("../../src/model/n-queens.js");
+},{}],"bhX7R":[function(require,module,exports) {
+var _stlicsEsmJs = require("../../../dist/stlics.esm.js");
+var _randomBinaryJs = require("../../_model/random-binary.js");
 onmessage = async (e)=>{
     const { task , args  } = e.data;
     switch(task){
@@ -573,28 +573,24 @@ onmessage = async (e)=>{
 };
 let m = null;
 let p = null;
-function create(num) {
-    m = new (0, _nQueensJs.N_queens)(num);
+function create(varNum, density, aveTightness) {
+    m = new (0, _randomBinaryJs.RandomBinary)(varNum, density, aveTightness);
     m.setDebugOutput(log);
-    const obs = (v, val)=>board(val - 1, v.index());
-    p = new (0, _stlicsEsmJs.CrispProblem)();
-    p.setVariableFactory((o, d)=>new (0, _stlicsEsmJs.ObservableVariable)(o, d, obs));
-    p = m.createProblem(p);
+    p = m.createProblem(new (0, _stlicsEsmJs.Problem)());
 }
 async function solve(type, targetRate) {
     const t = Date.now(); // Start time measurement
-    const sn = (0, _stlicsEsmJs.SolverFactory).crispSolverNames()[type];
+    const sn = (0, _stlicsEsmJs.SolverFactory).fuzzySolverNames()[type];
     const s = await (0, _stlicsEsmJs.SolverFactory).createSolver(sn, p);
     s.setTargetRate(targetRate);
     s.setDebugOutput(log);
     const result = s.solve();
     const time = Date.now() - t; // Stop time measurement
-    const rate = p.satisfiedConstraintRate();
-    m.printResult(p);
+    const deg = p.worstSatisfactionDegree();
     postMessage({
         result,
         time,
-        rate,
+        deg,
         solver: s.name()
     });
 }
@@ -603,111 +599,184 @@ function log(e) {
         log: e
     });
 }
-function board(x, y) {
-    postMessage({
-        board: {
-            x,
-            y
-        }
-    });
-}
 
-},{"../../dist/stlics.esm.js":"c85su","../../src/model/n-queens.js":"8fQJ7"}],"8fQJ7":[function(require,module,exports) {
+},{"../../../dist/stlics.esm.js":"c85su","../../_model/random-binary.js":"8dQ2A"}],"8dQ2A":[function(require,module,exports) {
 /**
- * A sample implementation of the N queens problem.
+ * Sample implementation of a random binary problem.
  *
  * @author Takuto Yanagida
  * @version 2023-04-16
  */ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "N_queens", ()=>N_queens);
-var _relationCrispJs = require("../problem/relation-crisp.js");
+parcelHelpers.export(exports, "RandomBinary", ()=>RandomBinary);
+var _relationFuzzyJs = require("../problem/relation-fuzzy.js");
+var _betaJs = require("./beta.js");
 var _modelJs = require("./model.js");
-class N_queens extends (0, _modelJs.Model) {
-    #size;
-    constructor(queenSize){
-        super();
-        this.#size = queenSize;
+class RandomBinary extends (0, _modelJs.Model) {
+    static nextInt(max) {
+        return Math.floor(Math.random() * Math.floor(max));
     }
-    getQueenSize() {
+    #size;
+    #den;
+    #t;
+    #sig;
+    constructor(varCount, density, aveTightness, domainSize = null){
+        super();
+        this.#size = varCount;
+        this.#den = density;
+        this.#t = aveTightness;
+        this.#sig = domainSize ?? varCount;
+    }
+    getVariableCount() {
         return this.#size;
     }
-    setQueenSize(size) {
-        this.#size = size;
+    setVariableCount(count) {
+        this.#size = count;
+    }
+    getDensity() {
+        return this.#den;
+    }
+    setDensity(density) {
+        this.#den = density;
+    }
+    getAverageTightness() {
+        return this.#t;
+    }
+    setAverageTightness(tightness) {
+        this.#t = tightness;
+    }
+    getDomainSize() {
+        return this.#sig;
+    }
+    setDomainSize(size) {
+        this.#sig = size;
     }
     isFuzzy() {
-        return false;
+        return true;
     }
     createProblem(p) {
-        const v = [];
-        for(let i = 0; i < this.#size; ++i)v.push(p.createVariable({
-            name: `Queen ${i}`,
+        const r = this.#den * ((this.#size * this.#size - this.#size) / 2) | 0;
+        const vs = [];
+        for(let i = 0; i < this.#size; ++i)vs.push(p.createVariable({
             domain: p.createDomain({
-                min: 1,
-                max: this.#size
+                min: 0,
+                max: this.#sig - 1
             }),
-            value: 1
+            value: 0
         }));
-        for(let i = 0; i < this.#size; ++i)for(let j = i + 1; j < this.#size; ++j)p.createConstraint({
-            relation: new CrispQueenRelation(i, j),
-            variables: [
-                v[i],
-                v[j]
-            ]
-        });
+        while(p.constraintSize() < r){
+            const i = RandomBinary.nextInt(this.#size);
+            const j = RandomBinary.nextInt(this.#size);
+            if (i !== j) {
+                const temp = p.constraintsBetween(vs[i], vs[j]);
+                if (0 === temp.length) p.createConstraint({
+                    relation: new TableRelation(this.#getRelationTable()),
+                    variables: [
+                        vs[i],
+                        vs[j]
+                    ]
+                });
+            }
+        }
         return p;
     }
-    printResult(p) {
-        for(let y = 0; y < this.#size; ++y){
-            let l = "";
-            if (p.variableAt(y).isEmpty()) for(let x = 0; x < this.#size; ++x)l += "- ";
-            else {
-                for(let x = 0; x < this.#size; ++x)if (p.variableAt(y).value() - 1 === x) l += "o ";
-                else l += "- ";
-            }
-            this._debugOutput(l);
+    #getRelationTable() {
+        const table = [];
+        for(let i = 0; i < this.#sig; ++i)table.push(new Array(this.#sig));
+        for(let i = 0; i < this.#sig; ++i)for(let j = 0; j < this.#sig; ++j){
+            const q = this.#t === 0 ? Number.MAX_VALUE : (1 - this.#t) / this.#t;
+            table[i][j] = (0, _betaJs.Beta).random(1, q);
         }
+        return table;
     }
 }
-class CrispQueenRelation extends (0, _relationCrispJs.CrispRelation) {
-    #dist;
-    constructor(i, j){
+class TableRelation extends (0, _relationFuzzyJs.FuzzyRelation) {
+    #table;
+    constructor(table){
         super();
-        this.#dist = j - i;
+        this.#table = table;
     }
-    isSatisfied(...vs) {
-        const [v1, v2] = vs;
-        if (v1 !== v2 && v1 !== v2 + this.#dist && v1 !== v2 - this.#dist) return true;
-        return false;
+    satisfactionDegree(value1, value2) {
+        return this.#table[value1][value2];
     }
 }
 
-},{"../problem/relation-crisp.js":"f8lMf","./model.js":"bErLg","@parcel/transformer-js/src/esmodule-helpers.js":"fn8Fk"}],"f8lMf":[function(require,module,exports) {
+},{"../problem/relation-fuzzy.js":"fQtZw","./beta.js":"4XU3u","./model.js":"2sE23","@parcel/transformer-js/src/esmodule-helpers.js":"fn8Fk"}],"fQtZw":[function(require,module,exports) {
 /**
- * The class represents crisp relationships between variables.
+ * The class represents fuzzy relationships between variables.
  *
  * @author Takuto Yanagida
  * @version 2023-03-25
  */ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "CrispRelation", ()=>CrispRelation);
+parcelHelpers.export(exports, "FuzzyRelation", ()=>FuzzyRelation);
 var _relationJs = require("./relation.js");
-class CrispRelation extends (0, _relationJs.Relation) {
+class FuzzyRelation extends (0, _relationJs.Relation) {
     /**
-	 * Gets whether or not the relation is satisfied in this crisp relation.
+	 * Gets the satisfaction degree in this fuzzy relation.
 	 * @param vals Values of each variable
-	 * @return Whether or not it is satisfied.
-	 */ isSatisfied(...vals) {
+	 * @return A satisfaction degree d (0 <= d <= 1).
+	 */ satisfactionDegree(...vals) {
         throw new Exception();
     }
     /**
-	 * Returns a view as a fuzzy relation.
-	 * @return A fuzzy relation.
-	 */ asFuzzyRelation() {
-        return new FuzzyRelationView(this);
+	 * Returns a view as a crisp relation.
+	 * @return A crisp relation.
+	 */ asCrispRelation() {
+        return new CrispRelationView(this);
     }
 }
 
-},{"./relation.js":"hQbVJ","@parcel/transformer-js/src/esmodule-helpers.js":"fn8Fk"}]},["eVEWG","dbZx1"], "dbZx1", "parcelRequire95bc")
+},{"./relation.js":"hQbVJ","@parcel/transformer-js/src/esmodule-helpers.js":"fn8Fk"}],"4XU3u":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Beta", ()=>Beta);
+class Beta {
+    static #gamma(a) {
+        let t, x, y, u, r;
+        if (a > 1) {
+            t = Math.sqrt(2 * a - 1);
+            do do {
+                do {
+                    do {
+                        x = Math.random();
+                        y = 2 * Math.random() - 1;
+                    }while (x * x + y * y >= 1 || x === 0);
+                    y = y / x;
+                    x = t * y + a - 1;
+                }while (x <= 0);
+                u = (a - 1) * Math.log(x / (a - 1)) - t * y;
+            }while (u <= -50);
+            while ((1 + y * y) * Math.exp(u) <= Math.random());
+        } else {
+            t = Math.E / (a + Math.E);
+            do if (Math.random() < t) {
+                x = 0;
+                y = 1;
+                r = Math.random();
+                if (r > 0) {
+                    x = Math.exp(Math.log(r) / a);
+                    y = Math.exp(-x);
+                }
+            } else {
+                r = Math.random();
+                x = 1;
+                y = 0;
+                if (r > 0) {
+                    x = 1 - Math.log(r);
+                    y = Math.exp((a - 1) * Math.log(x));
+                }
+            }
+            while (Math.random() >= y);
+        }
+        return x;
+    }
+    static random(a, b) {
+        const T = Beta.#gamma(a);
+        return T / (T + Beta.#gamma(b));
+    }
+}
 
-//# sourceMappingURL=worker.ce64f1ae.js.map
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"fn8Fk"}]},["l6gKU","bhX7R"], "bhX7R", "parcelRequire95bc")
+
+//# sourceMappingURL=worker.2dcc95cd.js.map

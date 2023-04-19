@@ -142,13 +142,13 @@
       this[globalName] = mainExports;
     }
   }
-})({"iwRgb":[function(require,module,exports) {
+})({"k5bBa":[function(require,module,exports) {
 var global = arguments[3];
 var HMR_HOST = null;
 var HMR_PORT = null;
 var HMR_SECURE = false;
 var HMR_ENV_HASH = "d6ea1d42532a7575";
-module.bundle.HMR_BUNDLE_ID = "0413b346cabfb7bd";
+module.bundle.HMR_BUNDLE_ID = "5568eaaa4e731d32";
 "use strict";
 /* global HMR_HOST, HMR_PORT, HMR_ENV_HASH, HMR_SECURE, chrome, browser, globalThis, __parcel__import__, __parcel__importScripts__, ServiceWorkerGlobalScope */ /*::
 import type {
@@ -556,8 +556,166 @@ function hmrAccept(bundle, id) {
     });
 }
 
-},{}],"dExnx":[function(require,module,exports) {
+},{}],"cUEci":[function(require,module,exports) {
+var _stlicsEsmJs = require("../../../dist/stlics.esm.js");
+var _utilJs = require("../util.js");
+const COUNT = 1; // Interaction count
+const SOLVER_TYPE = 4;
+const TARGET_RATE = 1;
+const QUEEN_NUM = 20;
+document.addEventListener("DOMContentLoaded", async ()=>{
+    const solTypeSel = document.getElementById("solver-type");
+    (0, _stlicsEsmJs.SolverFactory).crispSolverNames().forEach((sn, i)=>{
+        const o = document.createElement("option");
+        o.textContent = sn;
+        o.value = i;
+        solTypeSel.appendChild(o);
+    });
+    solTypeSel.value = SOLVER_TYPE;
+    const targetRate = document.getElementById("target-rate");
+    targetRate.value = TARGET_RATE;
+    const queenNum = document.getElementById("queen-num");
+    queenNum.value = QUEEN_NUM;
+    const board = document.getElementById("board");
+    const output = document.getElementById("output");
+    const log = (0, _utilJs.createLogOutput)();
+    let trs = null;
+    let worker = null;
+    const solStartBtn = document.getElementById("solver-start");
+    const solStopBtn = document.getElementById("solver-stop");
+    solStartBtn.addEventListener("click", ()=>{
+        solStartBtn.disabled = true;
+        solStopBtn.disabled = false;
+        trs = makeBoard(board, parseInt(queenNum.value));
+        output.value = "";
+        worker = initialize(()=>solStopBtn.click());
+        start(worker, parseInt(solTypeSel.value), parseFloat(targetRate.value), parseInt(queenNum.value));
+    });
+    solStopBtn.addEventListener("click", ()=>{
+        solStartBtn.disabled = false;
+        solStopBtn.disabled = true;
+        worker.terminate();
+    });
+    // -------------------------------------------------------------------------
+    function makeBoard(board, size) {
+        const trs = [];
+        board.innerHTML = "";
+        for(let i = 0; i < size; ++i){
+            const tr = document.createElement("tr");
+            board.appendChild(tr);
+            trs.push(tr);
+            for(let j = 0; j < size; ++j){
+                const td = document.createElement("td");
+                tr.appendChild(td);
+            }
+        }
+        return trs;
+    }
+    // -------------------------------------------------------------------------
+    let count = 0;
+    function initialize(onFinish) {
+        let sumTime = 0;
+        let sumRate = 0;
+        const ww = new Worker(require("6a1d716c72a594ba"));
+        ww.onmessage = (e)=>{
+            const { data  } = e;
+            if ("log" in data) log(data.log);
+            else if ("board" in data) {
+                const { x , y  } = data.board;
+                trs[y].className = "p" + x;
+            } else if ("result" in data) {
+                const { result , solver , time , rate  } = data;
+                sumTime += time;
+                sumRate += rate;
+                count += 1;
+                log(`solver: ${solver}   ${result ? "success" : "failure"}`);
+                log(`trial: ${count}   time: ${time}   rate: ${rate}`);
+                if (COUNT <= count) {
+                    log(`average time: ${sumTime / COUNT}   average rate: ${sumRate / COUNT}`);
+                    onFinish();
+                }
+            }
+        };
+        return ww;
+    }
+    async function start(ww, solverType, targetRate, queenNum) {
+        for(let i = 0; i < COUNT; ++i){
+            const now = count;
+            ww.postMessage({
+                task: "create",
+                args: [
+                    queenNum
+                ]
+            });
+            ww.postMessage({
+                task: "solve",
+                args: [
+                    solverType,
+                    targetRate
+                ]
+            });
+            await (0, _utilJs.waitFor)(()=>count !== now);
+        }
+    }
+});
 
-},{}]},["iwRgb","dExnx"], "dExnx", "parcelRequire95bc")
+},{"../../../dist/stlics.esm.js":"3s2i8","../util.js":"4C3LP","6a1d716c72a594ba":"5j9Ob"}],"5j9Ob":[function(require,module,exports) {
+let workerURL = require("71ccfd4fcf30d19a");
+let bundleURL = require("644c5f774b3e7774");
+let url = bundleURL.getBundleURL("7kDl7") + "../worker.65edb019.js" + "?" + Date.now();
+module.exports = workerURL(url, bundleURL.getOrigin(url), false);
 
-//# sourceMappingURL=sample.cabfb7bd.js.map
+},{"71ccfd4fcf30d19a":"cn2gM","644c5f774b3e7774":"lgJ39"}],"cn2gM":[function(require,module,exports) {
+"use strict";
+module.exports = function(workerUrl, origin, isESM) {
+    if (origin === self.location.origin) // If the worker bundle's url is on the same origin as the document,
+    // use the worker bundle's own url.
+    return workerUrl;
+    else {
+        // Otherwise, create a blob URL which loads the worker bundle with `importScripts`.
+        var source = isESM ? "import " + JSON.stringify(workerUrl) + ";" : "importScripts(" + JSON.stringify(workerUrl) + ");";
+        return URL.createObjectURL(new Blob([
+            source
+        ], {
+            type: "application/javascript"
+        }));
+    }
+};
+
+},{}],"lgJ39":[function(require,module,exports) {
+"use strict";
+var bundleURL = {};
+function getBundleURLCached(id) {
+    var value = bundleURL[id];
+    if (!value) {
+        value = getBundleURL();
+        bundleURL[id] = value;
+    }
+    return value;
+}
+function getBundleURL() {
+    try {
+        throw new Error();
+    } catch (err) {
+        var matches = ("" + err.stack).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^)\n]+/g);
+        if (matches) // The first two stack frames will be this function and getBundleURLCached.
+        // Use the 3rd one, which will be a runtime in the original bundle.
+        return getBaseURL(matches[2]);
+    }
+    return "/";
+}
+function getBaseURL(url) {
+    return ("" + url).replace(/^((?:https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/.+)\/[^/]+$/, "$1") + "/";
+} // TODO: Replace uses with `new URL(url).origin` when ie11 is no longer supported.
+function getOrigin(url) {
+    var matches = ("" + url).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^/]+/);
+    if (!matches) throw new Error("Origin not found");
+    return matches[0];
+}
+exports.getBundleURL = getBundleURLCached;
+exports.getBaseURL = getBaseURL;
+exports.getOrigin = getOrigin;
+
+},{}]},["k5bBa","cUEci"], "cUEci", "parcelRequire95bc")
+
+//# sourceMappingURL=index.4e731d32.js.map

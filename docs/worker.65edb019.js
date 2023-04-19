@@ -1,3 +1,4 @@
+importScripts("./worker.269dcb98.js");
 // modules are defined as an array
 // [ module function, map of requires ]
 //
@@ -142,13 +143,13 @@
       this[globalName] = mainExports;
     }
   }
-})({"61CIU":[function(require,module,exports) {
+})({"4Dsin":[function(require,module,exports) {
 var global = arguments[3];
 var HMR_HOST = null;
 var HMR_PORT = null;
 var HMR_SECURE = false;
-var HMR_ENV_HASH = "d6ea1d42532a7575";
-module.bundle.HMR_BUNDLE_ID = "414377d5ec475dbc";
+var HMR_ENV_HASH = "a8fb9c35fdafe466";
+module.bundle.HMR_BUNDLE_ID = "459be53065edb019";
 "use strict";
 /* global HMR_HOST, HMR_PORT, HMR_ENV_HASH, HMR_SECURE, chrome, browser, globalThis, __parcel__import__, __parcel__importScripts__, ServiceWorkerGlobalScope */ /*::
 import type {
@@ -556,153 +557,157 @@ function hmrAccept(bundle, id) {
     });
 }
 
-},{}],"2RR0N":[function(require,module,exports) {
-var _stlicsEsmJs = require("../../dist/stlics.esm.js");
-var _utilJs = require("../util.js");
-const COUNT = 1; // Interaction count
-const SOLVER_TYPE = 4;
-const TARGET_RATE = 0.8;
-const VAR_NUM = 10;
-const DENSITY = 0.5;
-const AVE_TIGHTNESS = 0.5;
-document.addEventListener("DOMContentLoaded", async ()=>{
-    const solTypeSel = document.getElementById("solver-type");
-    (0, _stlicsEsmJs.SolverFactory).fuzzySolverNames().forEach((sn, i)=>{
-        const o = document.createElement("option");
-        o.textContent = sn;
-        o.value = i;
-        solTypeSel.appendChild(o);
-    });
-    solTypeSel.value = SOLVER_TYPE;
-    const targetRate = document.getElementById("target-rate");
-    targetRate.value = TARGET_RATE;
-    const varNum = document.getElementById("var-num");
-    varNum.value = VAR_NUM;
-    const density = document.getElementById("density");
-    density.value = DENSITY;
-    const aveTightness = document.getElementById("ave-tightness");
-    aveTightness.value = AVE_TIGHTNESS;
-    const output = document.getElementById("output");
-    const log = (0, _utilJs.createLogOutput)();
-    let worker = null;
-    const solStartBtn = document.getElementById("solver-start");
-    const solStopBtn = document.getElementById("solver-stop");
-    solStartBtn.addEventListener("click", ()=>{
-        solStartBtn.disabled = true;
-        solStopBtn.disabled = false;
-        output.value = "";
-        worker = initialize(()=>solStopBtn.click());
-        start(worker, parseInt(solTypeSel.value), parseFloat(targetRate.value), parseFloat(varNum.value), parseFloat(density.value), parseFloat(aveTightness.value));
-    });
-    solStopBtn.addEventListener("click", ()=>{
-        solStartBtn.disabled = false;
-        solStopBtn.disabled = true;
-        worker.terminate();
-    });
-    // -------------------------------------------------------------------------
-    let count = 0;
-    function initialize(onFinish) {
-        let sumTime = 0;
-        let sumDeg = 0;
-        const ww = new Worker(require("b6070aff6475140d"));
-        ww.onmessage = (e)=>{
-            const { data  } = e;
-            if ("log" in data) log(data.log);
-            else if ("result" in data) {
-                const { result , solver , time , deg  } = data;
-                sumTime += time;
-                sumDeg += deg;
-                count += 1;
-                log(`solver: ${solver}   ${result ? "success" : "failure"}`);
-                log(`trial: ${count}   time: ${time}   degree: ${deg}`);
-                if (COUNT <= count) {
-                    log(`average time: ${sumTime / COUNT}   average rate: ${sumDeg / COUNT}`);
-                    onFinish();
-                }
-            }
-        };
-        return ww;
-    }
-    async function start(ww, solverType, targetRate, varNum, density, aveTightness) {
-        for(let i = 0; i < COUNT; ++i){
-            const now = count;
-            ww.postMessage({
-                task: "create",
-                args: [
-                    varNum,
-                    density,
-                    aveTightness
-                ]
-            });
-            ww.postMessage({
-                task: "solve",
-                args: [
-                    solverType,
-                    targetRate
-                ]
-            });
-            await (0, _utilJs.waitFor)(()=>count !== now);
-        }
-    }
-});
-
-},{"../../dist/stlics.esm.js":"3s2i8","../util.js":"cakah","b6070aff6475140d":"bXzUe"}],"bXzUe":[function(require,module,exports) {
-let workerURL = require("3c69e06ca9bb5f82");
-let bundleURL = require("bd1620ee7648ca94");
-let url = bundleURL.getBundleURL("5Bozu") + "../worker.04a3b279.js" + "?" + Date.now();
-module.exports = workerURL(url, bundleURL.getOrigin(url), false);
-
-},{"3c69e06ca9bb5f82":"cn2gM","bd1620ee7648ca94":"lgJ39"}],"cn2gM":[function(require,module,exports) {
-"use strict";
-module.exports = function(workerUrl, origin, isESM) {
-    if (origin === self.location.origin) // If the worker bundle's url is on the same origin as the document,
-    // use the worker bundle's own url.
-    return workerUrl;
-    else {
-        // Otherwise, create a blob URL which loads the worker bundle with `importScripts`.
-        var source = isESM ? "import " + JSON.stringify(workerUrl) + ";" : "importScripts(" + JSON.stringify(workerUrl) + ");";
-        return URL.createObjectURL(new Blob([
-            source
-        ], {
-            type: "application/javascript"
-        }));
+},{}],"85NFs":[function(require,module,exports) {
+var _stlicsEsmJs = require("../../../dist/stlics.esm.js");
+var _nQueensJs = require("../../_model/n-queens.js");
+onmessage = async (e)=>{
+    const { task , args  } = e.data;
+    switch(task){
+        case "create":
+            create(...args);
+            break;
+        case "solve":
+            solve(...args);
+            break;
     }
 };
+let m = null;
+let p = null;
+function create(num) {
+    m = new (0, _nQueensJs.N_queens)(num);
+    m.setDebugOutput(log);
+    const obs = (v, val)=>board(val - 1, v.index());
+    p = new (0, _stlicsEsmJs.CrispProblem)();
+    p.setVariableFactory((o, d)=>new (0, _stlicsEsmJs.ObservableVariable)(o, d, obs));
+    p = m.createProblem(p);
+}
+async function solve(type, targetRate) {
+    const t = Date.now(); // Start time measurement
+    const sn = (0, _stlicsEsmJs.SolverFactory).crispSolverNames()[type];
+    const s = await (0, _stlicsEsmJs.SolverFactory).createSolver(sn, p);
+    s.setTargetRate(targetRate);
+    s.setDebugOutput(log);
+    const result = s.solve();
+    const time = Date.now() - t; // Stop time measurement
+    const rate = p.satisfiedConstraintRate();
+    m.printResult(p);
+    postMessage({
+        result,
+        time,
+        rate,
+        solver: s.name()
+    });
+}
+function log(e) {
+    postMessage({
+        log: e
+    });
+}
+function board(x, y) {
+    postMessage({
+        board: {
+            x,
+            y
+        }
+    });
+}
 
-},{}],"lgJ39":[function(require,module,exports) {
-"use strict";
-var bundleURL = {};
-function getBundleURLCached(id) {
-    var value = bundleURL[id];
-    if (!value) {
-        value = getBundleURL();
-        bundleURL[id] = value;
+},{"../../../dist/stlics.esm.js":"c85su","../../_model/n-queens.js":"29Jhx"}],"29Jhx":[function(require,module,exports) {
+/**
+ * A sample implementation of the N queens problem.
+ *
+ * @author Takuto Yanagida
+ * @version 2023-04-16
+ */ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "N_queens", ()=>N_queens);
+var _relationCrispJs = require("../problem/relation-crisp.js");
+var _modelJs = require("./model.js");
+class N_queens extends (0, _modelJs.Model) {
+    #size;
+    constructor(queenSize){
+        super();
+        this.#size = queenSize;
     }
-    return value;
-}
-function getBundleURL() {
-    try {
-        throw new Error();
-    } catch (err) {
-        var matches = ("" + err.stack).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^)\n]+/g);
-        if (matches) // The first two stack frames will be this function and getBundleURLCached.
-        // Use the 3rd one, which will be a runtime in the original bundle.
-        return getBaseURL(matches[2]);
+    getQueenSize() {
+        return this.#size;
     }
-    return "/";
+    setQueenSize(size) {
+        this.#size = size;
+    }
+    isFuzzy() {
+        return false;
+    }
+    createProblem(p) {
+        const v = [];
+        for(let i = 0; i < this.#size; ++i)v.push(p.createVariable({
+            name: `Queen ${i}`,
+            domain: p.createDomain({
+                min: 1,
+                max: this.#size
+            }),
+            value: 1
+        }));
+        for(let i = 0; i < this.#size; ++i)for(let j = i + 1; j < this.#size; ++j)p.createConstraint({
+            relation: new CrispQueenRelation(i, j),
+            variables: [
+                v[i],
+                v[j]
+            ]
+        });
+        return p;
+    }
+    printResult(p) {
+        for(let y = 0; y < this.#size; ++y){
+            let l = "";
+            if (p.variableAt(y).isEmpty()) for(let x = 0; x < this.#size; ++x)l += "- ";
+            else {
+                for(let x = 0; x < this.#size; ++x)if (p.variableAt(y).value() - 1 === x) l += "o ";
+                else l += "- ";
+            }
+            this._debugOutput(l);
+        }
+    }
 }
-function getBaseURL(url) {
-    return ("" + url).replace(/^((?:https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/.+)\/[^/]+$/, "$1") + "/";
-} // TODO: Replace uses with `new URL(url).origin` when ie11 is no longer supported.
-function getOrigin(url) {
-    var matches = ("" + url).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^/]+/);
-    if (!matches) throw new Error("Origin not found");
-    return matches[0];
+class CrispQueenRelation extends (0, _relationCrispJs.CrispRelation) {
+    #dist;
+    constructor(i, j){
+        super();
+        this.#dist = j - i;
+    }
+    isSatisfied(...vs) {
+        const [v1, v2] = vs;
+        if (v1 !== v2 && v1 !== v2 + this.#dist && v1 !== v2 - this.#dist) return true;
+        return false;
+    }
 }
-exports.getBundleURL = getBundleURLCached;
-exports.getBaseURL = getBaseURL;
-exports.getOrigin = getOrigin;
 
-},{}]},["61CIU","2RR0N"], "2RR0N", "parcelRequire95bc")
+},{"../problem/relation-crisp.js":"f8lMf","./model.js":"2sE23","@parcel/transformer-js/src/esmodule-helpers.js":"fn8Fk"}],"f8lMf":[function(require,module,exports) {
+/**
+ * The class represents crisp relationships between variables.
+ *
+ * @author Takuto Yanagida
+ * @version 2023-03-25
+ */ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "CrispRelation", ()=>CrispRelation);
+var _relationJs = require("./relation.js");
+class CrispRelation extends (0, _relationJs.Relation) {
+    /**
+	 * Gets whether or not the relation is satisfied in this crisp relation.
+	 * @param vals Values of each variable
+	 * @return Whether or not it is satisfied.
+	 */ isSatisfied(...vals) {
+        throw new Exception();
+    }
+    /**
+	 * Returns a view as a fuzzy relation.
+	 * @return A fuzzy relation.
+	 */ asFuzzyRelation() {
+        return new FuzzyRelationView(this);
+    }
+}
 
-//# sourceMappingURL=index.ec475dbc.js.map
+},{"./relation.js":"hQbVJ","@parcel/transformer-js/src/esmodule-helpers.js":"fn8Fk"}]},["4Dsin","85NFs"], "85NFs", "parcelRequire95bc")
+
+//# sourceMappingURL=worker.65edb019.js.map

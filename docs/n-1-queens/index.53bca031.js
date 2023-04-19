@@ -142,13 +142,13 @@
       this[globalName] = mainExports;
     }
   }
-})({"eFlPc":[function(require,module,exports) {
+})({"kB4lk":[function(require,module,exports) {
 var global = arguments[3];
 var HMR_HOST = null;
 var HMR_PORT = null;
 var HMR_SECURE = false;
 var HMR_ENV_HASH = "d6ea1d42532a7575";
-module.bundle.HMR_BUNDLE_ID = "9cd0769d8376fb8e";
+module.bundle.HMR_BUNDLE_ID = "fddd96dd53bca031";
 "use strict";
 /* global HMR_HOST, HMR_PORT, HMR_ENV_HASH, HMR_SECURE, chrome, browser, globalThis, __parcel__import__, __parcel__importScripts__, ServiceWorkerGlobalScope */ /*::
 import type {
@@ -556,16 +556,16 @@ function hmrAccept(bundle, id) {
     });
 }
 
-},{}],"kNFX4":[function(require,module,exports) {
-var _stlicsEsmJs = require("../../dist/stlics.esm.js");
+},{}],"eg3Jd":[function(require,module,exports) {
+var _stlicsEsmJs = require("../../../dist/stlics.esm.js");
 var _utilJs = require("../util.js");
 const COUNT = 1; // Interaction count
 const SOLVER_TYPE = 4;
-const TARGET_RATE = 1;
+const TARGET_RATE = 0.8;
 const QUEEN_NUM = 20;
 document.addEventListener("DOMContentLoaded", async ()=>{
     const solTypeSel = document.getElementById("solver-type");
-    (0, _stlicsEsmJs.SolverFactory).crispSolverNames().forEach((sn, i)=>{
+    (0, _stlicsEsmJs.SolverFactory).fuzzySolverNames().forEach((sn, i)=>{
         const o = document.createElement("option");
         o.textContent = sn;
         o.value = i;
@@ -604,7 +604,7 @@ document.addEventListener("DOMContentLoaded", async ()=>{
             const tr = document.createElement("tr");
             board.appendChild(tr);
             trs.push(tr);
-            for(let j = 0; j < size; ++j){
+            for(let j = 0; j < size - 1; ++j){
                 const td = document.createElement("td");
                 tr.appendChild(td);
             }
@@ -615,8 +615,8 @@ document.addEventListener("DOMContentLoaded", async ()=>{
     let count = 0;
     function initialize(onFinish) {
         let sumTime = 0;
-        let sumRate = 0;
-        const ww = new Worker(require("848480cc92364e2b"));
+        let sumDeg = 0;
+        const ww = new Worker(require("13ebd291bf4bbb81"));
         ww.onmessage = (e)=>{
             const { data  } = e;
             if ("log" in data) log(data.log);
@@ -624,14 +624,14 @@ document.addEventListener("DOMContentLoaded", async ()=>{
                 const { x , y  } = data.board;
                 trs[y].className = "p" + x;
             } else if ("result" in data) {
-                const { result , solver , time , rate  } = data;
+                const { result , solver , time , deg  } = data;
                 sumTime += time;
-                sumRate += rate;
+                sumDeg += deg;
                 count += 1;
                 log(`solver: ${solver}   ${result ? "success" : "failure"}`);
-                log(`trial: ${count}   time: ${time}   rate: ${rate}`);
+                log(`trial: ${count}   time: ${time}   degree: ${deg}`);
                 if (COUNT <= count) {
-                    log(`average time: ${sumTime / COUNT}   average rate: ${sumRate / COUNT}`);
+                    log(`average time: ${sumTime / COUNT}   average rate: ${sumDeg / COUNT}`);
                     onFinish();
                 }
             }
@@ -659,13 +659,13 @@ document.addEventListener("DOMContentLoaded", async ()=>{
     }
 });
 
-},{"../../dist/stlics.esm.js":"3s2i8","../util.js":"cakah","848480cc92364e2b":"gsAyn"}],"gsAyn":[function(require,module,exports) {
-let workerURL = require("8e9e391d1d302df3");
-let bundleURL = require("bd22e35f865d2c59");
-let url = bundleURL.getBundleURL("dsIzq") + "../worker.ce64f1ae.js" + "?" + Date.now();
+},{"../../../dist/stlics.esm.js":"3s2i8","../util.js":"4C3LP","13ebd291bf4bbb81":"bcTbp"}],"bcTbp":[function(require,module,exports) {
+let workerURL = require("b8e7374f3e1c0b89");
+let bundleURL = require("6588d269e6e63ab4");
+let url = bundleURL.getBundleURL("lNjSa") + "../worker.4809ccdc.js" + "?" + Date.now();
 module.exports = workerURL(url, bundleURL.getOrigin(url), false);
 
-},{"8e9e391d1d302df3":"cn2gM","bd22e35f865d2c59":"lgJ39"}],"cn2gM":[function(require,module,exports) {
+},{"b8e7374f3e1c0b89":"cn2gM","6588d269e6e63ab4":"lgJ39"}],"cn2gM":[function(require,module,exports) {
 "use strict";
 module.exports = function(workerUrl, origin, isESM) {
     if (origin === self.location.origin) // If the worker bundle's url is on the same origin as the document,
@@ -716,6 +716,6 @@ exports.getBundleURL = getBundleURLCached;
 exports.getBaseURL = getBaseURL;
 exports.getOrigin = getOrigin;
 
-},{}]},["eFlPc","kNFX4"], "kNFX4", "parcelRequire95bc")
+},{}]},["kB4lk","eg3Jd"], "eg3Jd", "parcelRequire95bc")
 
-//# sourceMappingURL=index.8376fb8e.js.map
+//# sourceMappingURL=index.53bca031.js.map

@@ -1,4 +1,3 @@
-importScripts("./worker.a3722741.js");
 // modules are defined as an array
 // [ module function, map of requires ]
 //
@@ -143,13 +142,13 @@ importScripts("./worker.a3722741.js");
       this[globalName] = mainExports;
     }
   }
-})({"4fBwk":[function(require,module,exports) {
+})({"1FzgT":[function(require,module,exports) {
 var global = arguments[3];
 var HMR_HOST = null;
 var HMR_PORT = null;
 var HMR_SECURE = false;
-var HMR_ENV_HASH = "a8fb9c35fdafe466";
-module.bundle.HMR_BUNDLE_ID = "a21e71a504a3b279";
+var HMR_ENV_HASH = "d6ea1d42532a7575";
+module.bundle.HMR_BUNDLE_ID = "f7efbf2c3513fdf0";
 "use strict";
 /* global HMR_HOST, HMR_PORT, HMR_ENV_HASH, HMR_SECURE, chrome, browser, globalThis, __parcel__import__, __parcel__importScripts__, ServiceWorkerGlobalScope */ /*::
 import type {
@@ -557,226 +556,153 @@ function hmrAccept(bundle, id) {
     });
 }
 
-},{}],"4ymtY":[function(require,module,exports) {
-var _stlicsEsmJs = require("../../dist/stlics.esm.js");
-var _randomBinaryJs = require("../../src/model/random-binary.js");
-onmessage = async (e)=>{
-    const { task , args  } = e.data;
-    switch(task){
-        case "create":
-            create(...args);
-            break;
-        case "solve":
-            solve(...args);
-            break;
+},{}],"3LfAa":[function(require,module,exports) {
+var _stlicsEsmJs = require("../../../dist/stlics.esm.js");
+var _utilJs = require("../util.js");
+const COUNT = 1; // Interaction count
+const SOLVER_TYPE = 4;
+const TARGET_RATE = 0.8;
+const VAR_NUM = 10;
+const DENSITY = 0.5;
+const AVE_TIGHTNESS = 0.5;
+document.addEventListener("DOMContentLoaded", async ()=>{
+    const solTypeSel = document.getElementById("solver-type");
+    (0, _stlicsEsmJs.SolverFactory).fuzzySolverNames().forEach((sn, i)=>{
+        const o = document.createElement("option");
+        o.textContent = sn;
+        o.value = i;
+        solTypeSel.appendChild(o);
+    });
+    solTypeSel.value = SOLVER_TYPE;
+    const targetRate = document.getElementById("target-rate");
+    targetRate.value = TARGET_RATE;
+    const varNum = document.getElementById("var-num");
+    varNum.value = VAR_NUM;
+    const density = document.getElementById("density");
+    density.value = DENSITY;
+    const aveTightness = document.getElementById("ave-tightness");
+    aveTightness.value = AVE_TIGHTNESS;
+    const output = document.getElementById("output");
+    const log = (0, _utilJs.createLogOutput)();
+    let worker = null;
+    const solStartBtn = document.getElementById("solver-start");
+    const solStopBtn = document.getElementById("solver-stop");
+    solStartBtn.addEventListener("click", ()=>{
+        solStartBtn.disabled = true;
+        solStopBtn.disabled = false;
+        output.value = "";
+        worker = initialize(()=>solStopBtn.click());
+        start(worker, parseInt(solTypeSel.value), parseFloat(targetRate.value), parseFloat(varNum.value), parseFloat(density.value), parseFloat(aveTightness.value));
+    });
+    solStopBtn.addEventListener("click", ()=>{
+        solStartBtn.disabled = false;
+        solStopBtn.disabled = true;
+        worker.terminate();
+    });
+    // -------------------------------------------------------------------------
+    let count = 0;
+    function initialize(onFinish) {
+        let sumTime = 0;
+        let sumDeg = 0;
+        const ww = new Worker(require("f85fcccef4c0aa8d"));
+        ww.onmessage = (e)=>{
+            const { data  } = e;
+            if ("log" in data) log(data.log);
+            else if ("result" in data) {
+                const { result , solver , time , deg  } = data;
+                sumTime += time;
+                sumDeg += deg;
+                count += 1;
+                log(`solver: ${solver}   ${result ? "success" : "failure"}`);
+                log(`trial: ${count}   time: ${time}   degree: ${deg}`);
+                if (COUNT <= count) {
+                    log(`average time: ${sumTime / COUNT}   average rate: ${sumDeg / COUNT}`);
+                    onFinish();
+                }
+            }
+        };
+        return ww;
+    }
+    async function start(ww, solverType, targetRate, varNum, density, aveTightness) {
+        for(let i = 0; i < COUNT; ++i){
+            const now = count;
+            ww.postMessage({
+                task: "create",
+                args: [
+                    varNum,
+                    density,
+                    aveTightness
+                ]
+            });
+            ww.postMessage({
+                task: "solve",
+                args: [
+                    solverType,
+                    targetRate
+                ]
+            });
+            await (0, _utilJs.waitFor)(()=>count !== now);
+        }
+    }
+});
+
+},{"../../../dist/stlics.esm.js":"3s2i8","../util.js":"4C3LP","f85fcccef4c0aa8d":"37wXQ"}],"37wXQ":[function(require,module,exports) {
+let workerURL = require("7e86463856923447");
+let bundleURL = require("d08ffd5f7adbf147");
+let url = bundleURL.getBundleURL("lhL8j") + "../worker.2dcc95cd.js" + "?" + Date.now();
+module.exports = workerURL(url, bundleURL.getOrigin(url), false);
+
+},{"7e86463856923447":"cn2gM","d08ffd5f7adbf147":"lgJ39"}],"cn2gM":[function(require,module,exports) {
+"use strict";
+module.exports = function(workerUrl, origin, isESM) {
+    if (origin === self.location.origin) // If the worker bundle's url is on the same origin as the document,
+    // use the worker bundle's own url.
+    return workerUrl;
+    else {
+        // Otherwise, create a blob URL which loads the worker bundle with `importScripts`.
+        var source = isESM ? "import " + JSON.stringify(workerUrl) + ";" : "importScripts(" + JSON.stringify(workerUrl) + ");";
+        return URL.createObjectURL(new Blob([
+            source
+        ], {
+            type: "application/javascript"
+        }));
     }
 };
-let m = null;
-let p = null;
-function create(varNum, density, aveTightness) {
-    m = new (0, _randomBinaryJs.RandomBinary)(varNum, density, aveTightness);
-    m.setDebugOutput(log);
-    p = m.createProblem(new (0, _stlicsEsmJs.Problem)());
-}
-async function solve(type, targetRate) {
-    const t = Date.now(); // Start time measurement
-    const sn = (0, _stlicsEsmJs.SolverFactory).fuzzySolverNames()[type];
-    const s = await (0, _stlicsEsmJs.SolverFactory).createSolver(sn, p);
-    s.setTargetRate(targetRate);
-    s.setDebugOutput(log);
-    const result = s.solve();
-    const time = Date.now() - t; // Stop time measurement
-    const deg = p.worstSatisfactionDegree();
-    postMessage({
-        result,
-        time,
-        deg,
-        solver: s.name()
-    });
-}
-function log(e) {
-    postMessage({
-        log: e
-    });
-}
 
-},{"../../dist/stlics.esm.js":"c85su","../../src/model/random-binary.js":"fCFwT"}],"fCFwT":[function(require,module,exports) {
-/**
- * Sample implementation of a random binary problem.
- *
- * @author Takuto Yanagida
- * @version 2023-04-16
- */ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "RandomBinary", ()=>RandomBinary);
-var _relationFuzzyJs = require("../problem/relation-fuzzy.js");
-var _betaJs = require("./beta.js");
-var _modelJs = require("./model.js");
-class RandomBinary extends (0, _modelJs.Model) {
-    static nextInt(max) {
-        return Math.floor(Math.random() * Math.floor(max));
+},{}],"lgJ39":[function(require,module,exports) {
+"use strict";
+var bundleURL = {};
+function getBundleURLCached(id) {
+    var value = bundleURL[id];
+    if (!value) {
+        value = getBundleURL();
+        bundleURL[id] = value;
     }
-    #size;
-    #den;
-    #t;
-    #sig;
-    constructor(varCount, density, aveTightness, domainSize = null){
-        super();
-        this.#size = varCount;
-        this.#den = density;
-        this.#t = aveTightness;
-        this.#sig = domainSize ?? varCount;
-    }
-    getVariableCount() {
-        return this.#size;
-    }
-    setVariableCount(count) {
-        this.#size = count;
-    }
-    getDensity() {
-        return this.#den;
-    }
-    setDensity(density) {
-        this.#den = density;
-    }
-    getAverageTightness() {
-        return this.#t;
-    }
-    setAverageTightness(tightness) {
-        this.#t = tightness;
-    }
-    getDomainSize() {
-        return this.#sig;
-    }
-    setDomainSize(size) {
-        this.#sig = size;
-    }
-    isFuzzy() {
-        return true;
-    }
-    createProblem(p) {
-        const r = this.#den * ((this.#size * this.#size - this.#size) / 2) | 0;
-        const vs = [];
-        for(let i = 0; i < this.#size; ++i)vs.push(p.createVariable({
-            domain: p.createDomain({
-                min: 0,
-                max: this.#sig - 1
-            }),
-            value: 0
-        }));
-        while(p.constraintSize() < r){
-            const i = RandomBinary.nextInt(this.#size);
-            const j = RandomBinary.nextInt(this.#size);
-            if (i !== j) {
-                const temp = p.constraintsBetween(vs[i], vs[j]);
-                if (0 === temp.length) p.createConstraint({
-                    relation: new TableRelation(this.#getRelationTable()),
-                    variables: [
-                        vs[i],
-                        vs[j]
-                    ]
-                });
-            }
-        }
-        return p;
-    }
-    #getRelationTable() {
-        const table = [];
-        for(let i = 0; i < this.#sig; ++i)table.push(new Array(this.#sig));
-        for(let i = 0; i < this.#sig; ++i)for(let j = 0; j < this.#sig; ++j){
-            const q = this.#t === 0 ? Number.MAX_VALUE : (1 - this.#t) / this.#t;
-            table[i][j] = (0, _betaJs.Beta).random(1, q);
-        }
-        return table;
-    }
+    return value;
 }
-class TableRelation extends (0, _relationFuzzyJs.FuzzyRelation) {
-    #table;
-    constructor(table){
-        super();
-        this.#table = table;
+function getBundleURL() {
+    try {
+        throw new Error();
+    } catch (err) {
+        var matches = ("" + err.stack).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^)\n]+/g);
+        if (matches) // The first two stack frames will be this function and getBundleURLCached.
+        // Use the 3rd one, which will be a runtime in the original bundle.
+        return getBaseURL(matches[2]);
     }
-    satisfactionDegree(value1, value2) {
-        return this.#table[value1][value2];
-    }
+    return "/";
 }
-
-},{"../problem/relation-fuzzy.js":"fQtZw","./beta.js":"5ulWQ","./model.js":"bErLg","@parcel/transformer-js/src/esmodule-helpers.js":"fn8Fk"}],"fQtZw":[function(require,module,exports) {
-/**
- * The class represents fuzzy relationships between variables.
- *
- * @author Takuto Yanagida
- * @version 2023-03-25
- */ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "FuzzyRelation", ()=>FuzzyRelation);
-var _relationJs = require("./relation.js");
-class FuzzyRelation extends (0, _relationJs.Relation) {
-    /**
-	 * Gets the satisfaction degree in this fuzzy relation.
-	 * @param vals Values of each variable
-	 * @return A satisfaction degree d (0 <= d <= 1).
-	 */ satisfactionDegree(...vals) {
-        throw new Exception();
-    }
-    /**
-	 * Returns a view as a crisp relation.
-	 * @return A crisp relation.
-	 */ asCrispRelation() {
-        return new CrispRelationView(this);
-    }
+function getBaseURL(url) {
+    return ("" + url).replace(/^((?:https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/.+)\/[^/]+$/, "$1") + "/";
+} // TODO: Replace uses with `new URL(url).origin` when ie11 is no longer supported.
+function getOrigin(url) {
+    var matches = ("" + url).match(/(https?|file|ftp|(chrome|moz|safari-web)-extension):\/\/[^/]+/);
+    if (!matches) throw new Error("Origin not found");
+    return matches[0];
 }
+exports.getBundleURL = getBundleURLCached;
+exports.getBaseURL = getBaseURL;
+exports.getOrigin = getOrigin;
 
-},{"./relation.js":"hQbVJ","@parcel/transformer-js/src/esmodule-helpers.js":"fn8Fk"}],"5ulWQ":[function(require,module,exports) {
-var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
-parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "Beta", ()=>Beta);
-class Beta {
-    static #gamma(a) {
-        let t, x, y, u, r;
-        if (a > 1) {
-            t = Math.sqrt(2 * a - 1);
-            do do {
-                do {
-                    do {
-                        x = Math.random();
-                        y = 2 * Math.random() - 1;
-                    }while (x * x + y * y >= 1 || x === 0);
-                    y = y / x;
-                    x = t * y + a - 1;
-                }while (x <= 0);
-                u = (a - 1) * Math.log(x / (a - 1)) - t * y;
-            }while (u <= -50);
-            while ((1 + y * y) * Math.exp(u) <= Math.random());
-        } else {
-            t = Math.E / (a + Math.E);
-            do if (Math.random() < t) {
-                x = 0;
-                y = 1;
-                r = Math.random();
-                if (r > 0) {
-                    x = Math.exp(Math.log(r) / a);
-                    y = Math.exp(-x);
-                }
-            } else {
-                r = Math.random();
-                x = 1;
-                y = 0;
-                if (r > 0) {
-                    x = 1 - Math.log(r);
-                    y = Math.exp((a - 1) * Math.log(x));
-                }
-            }
-            while (Math.random() >= y);
-        }
-        return x;
-    }
-    static random(a, b) {
-        const T = Beta.#gamma(a);
-        return T / (T + Beta.#gamma(b));
-    }
-}
+},{}]},["1FzgT","3LfAa"], "3LfAa", "parcelRequire95bc")
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"fn8Fk"}]},["4fBwk","4ymtY"], "4ymtY", "parcelRequire95bc")
-
-//# sourceMappingURL=worker.04a3b279.js.map
+//# sourceMappingURL=index.3513fdf0.js.map
