@@ -1,8 +1,29 @@
 {
 	"name": "stlics",
-	"description": "Library of Fuzzy constraint satisfaction problems",
 	"version": "1.0.0",
+	"description": "Library of Fuzzy constraint satisfaction problems",
+	"license": "MIT",
 	"author": "Takuto Yanagida",
+	"homepage": "https://github.com/takty/stlics#readme",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/takty/stlics.git"
+	},
+	"bugs": {
+		"url": "https://github.com/takty/stlics/issues"
+	},
+	"source": "src/index.js",
+	"main": "dist/stlics.js",
+	"module": "dist/stlics.esm.js",
+	"files": [
+		"dist",
+		"src/[^_].*"
+	],
+	"scripts": {
+		"build": "parcel build",
+		"dev": "parcel watch",
+		"docs": "parcel src/_docs/*.html --dist-dir docs  --public-url /stlics/"
+	},
 	"browserslist": [
 		"> 1%",
 		"last 2 versions",
@@ -12,24 +33,5 @@
 	"devDependencies": {
 		"@parcel/transformer-sass": "2.8.3",
 		"parcel": "^2.8.3"
-	},
-	"files": [
-		"dist",
-		"src/[^_].*"
-	],
-	"homepage": "https://github.com/takty/stlics#readme",
-	"license": "MIT",
-	"main": "dist/stlics.js",
-	"module": "dist/stlics.esm.js",
-	"productName": "Stlics",
-	"repository": {
-		"type": "git",
-		"url": "git+https://github.com/takty/stlics.git"
-	},
-	"scripts": {
-		"build": "parcel build",
-		"dev": "parcel watch",
-		"docs": "parcel src/_docs/*.html --dist-dir docs  --public-url /stlics/"
-	},
-	"source": "src/index.js"
+	}
 }
