@@ -559,53 +559,53 @@ function hmrAccept(bundle, id) {
 },{}],"3s2i8":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
-parcelHelpers.export(exports, "Problem", ()=>$b3946af8d0a4f6b3$export$559d26475d35ac1e);
-parcelHelpers.export(exports, "CrispProblem", ()=>$2101e22eb3ae726f$export$2d7b2a6964dca148);
-parcelHelpers.export(exports, "Element", ()=>$a6d4d56491033d44$export$db77ccec0bb4ccac);
-parcelHelpers.export(exports, "Variable", ()=>$d579165ed6156fef$export$c867a5c9595a1350);
-parcelHelpers.export(exports, "ObservableVariable", ()=>$34d613011f471732$export$a14c1bd8f74377e);
-parcelHelpers.export(exports, "Domain", ()=>$508208a6b2bd191f$export$f102e87ccfb079d0);
-parcelHelpers.export(exports, "DomainArbitrary", ()=>$db2d13503f6020b2$export$62fe53be9d2bcdd3);
-parcelHelpers.export(exports, "DomainRanged", ()=>$ee9c9e9065869300$export$681548042801f21c);
-parcelHelpers.export(exports, "Constraint", ()=>$5108df96f96301e5$export$aec1359a0a40a615);
-parcelHelpers.export(exports, "Constraint1", ()=>$b0a9d1b63859ae83$export$42d7bbd8a43e587d);
-parcelHelpers.export(exports, "Constraint2", ()=>$7ca5368ccef10d69$export$18305a9eb79647d6);
-parcelHelpers.export(exports, "Constraint3", ()=>$56ac6fbf2c694e12$export$7dc34a7e74bc57bb);
-parcelHelpers.export(exports, "ConstraintN", ()=>$05a57f57159fb878$export$fd9d2e5591a15c9a);
-parcelHelpers.export(exports, "Relation", ()=>$3ad6598cfee2c4f1$export$b57c6722681faed7);
-parcelHelpers.export(exports, "FuzzyRelation", ()=>$a3e6c3477395ea27$export$3b3c4a6f6988f9e8);
-parcelHelpers.export(exports, "FuzzyTabledRelation", ()=>$156a3c65876fbe62$export$9af92f8a5a1bfd9d);
-parcelHelpers.export(exports, "FuzzyRelationFunction", ()=>$1f9eaa8675325d70$export$292ff2b1fb710ade);
-parcelHelpers.export(exports, "CrispRelation", ()=>$48d470acfc59c60d$export$182ea39d269dda05);
-parcelHelpers.export(exports, "CrispTabledRelation", ()=>$f89acf0bacbb6f88$export$14031e4758dfc3cf);
-parcelHelpers.export(exports, "CrispRelationFunction", ()=>$566faa83320be882$export$a1cc6d3c2a0259e4);
-parcelHelpers.export(exports, "CrispRelationView", ()=>$1a2fe3a3e431eeba$export$f47c6ef1c1dceb7d);
-parcelHelpers.export(exports, "FuzzyRelationView", ()=>$1a2fe3a3e431eeba$export$105e23542a0b280f);
-parcelHelpers.export(exports, "Solver", ()=>$c4f5921582438a32$export$cca492cadf45c096);
-parcelHelpers.export(exports, "SolverFactory", ()=>$bc75b5b8eb656b55$export$4e442516b8f577ee);
-parcelHelpers.export(exports, "FlexibleLocalChanges", ()=>$8d58e5e35735c7ec$export$c15ba88cf158f3d6);
-parcelHelpers.export(exports, "FlexibleLocalChangesEx", ()=>$0ed82bb4e6966b5c$export$f3429dcb0286bfee);
-parcelHelpers.export(exports, "FuzzyBreakout", ()=>$b222557a012b5259$export$151ca5d788220218);
-parcelHelpers.export(exports, "FuzzyForwardChecking", ()=>$d149e5ad62c58307$export$2d94cf9ddb103458);
-parcelHelpers.export(exports, "FuzzyForwardCheckingBc", ()=>$a7583aef89e9a883$export$532d5536583284b8);
-parcelHelpers.export(exports, "FuzzyGENET", ()=>$1ccf339c7def6c57$export$6a3df005617df82a);
-parcelHelpers.export(exports, "SRS3", ()=>$2b8a116c9a37397b$export$4bfabca73d1ccb59);
-parcelHelpers.export(exports, "SRS3_PF", ()=>$5e4f7d48ff32a2ed$export$281ed65cbb041503);
-parcelHelpers.export(exports, "Breakout", ()=>$2c8e786ab4db97cd$export$44de86bc32e07644);
-parcelHelpers.export(exports, "CrispSRS3", ()=>$621e09da02c15793$export$193930056f923a8);
-parcelHelpers.export(exports, "ForwardChecking", ()=>$753cae771624653d$export$8570b7b487498488);
-parcelHelpers.export(exports, "GENET", ()=>$0cb6792a4a1b293a$export$d94917317b4f74cb);
-parcelHelpers.export(exports, "LocalChanges", ()=>$62da18818fc7efc1$export$8153937ab18ca581);
-parcelHelpers.export(exports, "LocalChangesEx", ()=>$7f4ecc5acb283d86$export$e577c7182ffc977b);
-parcelHelpers.export(exports, "MaxForwardChecking", ()=>$5da71a10526e78a7$export$2a32484f7cb0d846);
-parcelHelpers.export(exports, "AC3", ()=>$1d9f94f1b65cd2b2$export$ac824f187e852f5a);
-parcelHelpers.export(exports, "NodeConsistency", ()=>$ca17a2e259f989db$export$975ddbe83e2b310a);
-parcelHelpers.export(exports, "PostStabilization", ()=>$b0cf4fb82eab32dc$export$52631f16ca582d39);
-parcelHelpers.export(exports, "Problems", ()=>$9270f99178eaf6e6$export$32fae9b8f93405d0);
-parcelHelpers.export(exports, "Assignment", ()=>$5c2079e5752e4879$export$e6b39d88cc0d636);
-parcelHelpers.export(exports, "AssignmentList", ()=>$a7e2f7128ad72da7$export$1d4e454bcd46f18f);
-parcelHelpers.export(exports, "DomainPruner", ()=>$173b03f492df9c2c$export$f307752a90139b0e);
-parcelHelpers.export(exports, "LoopDetector", ()=>$d588427b879288b9$export$136021658ac30d9);
+parcelHelpers.export(exports, "Problem", ()=>$1f9c7ae011a64571$export$559d26475d35ac1e);
+parcelHelpers.export(exports, "CrispProblem", ()=>$c624e9db75d26c9f$export$2d7b2a6964dca148);
+parcelHelpers.export(exports, "Element", ()=>$ae754937ccaa65b0$export$db77ccec0bb4ccac);
+parcelHelpers.export(exports, "Variable", ()=>$8a169d84b9853138$export$c867a5c9595a1350);
+parcelHelpers.export(exports, "ObservableVariable", ()=>$b465f27e32fe405d$export$a14c1bd8f74377e);
+parcelHelpers.export(exports, "Domain", ()=>$79a8d1b9a9fc74d0$export$f102e87ccfb079d0);
+parcelHelpers.export(exports, "DomainArbitrary", ()=>$c390ec7dca5ac321$export$62fe53be9d2bcdd3);
+parcelHelpers.export(exports, "DomainRanged", ()=>$aa858a2a93fead82$export$681548042801f21c);
+parcelHelpers.export(exports, "Constraint", ()=>$e67c82024f87a841$export$aec1359a0a40a615);
+parcelHelpers.export(exports, "Constraint1", ()=>$cefcd65bf0a494eb$export$42d7bbd8a43e587d);
+parcelHelpers.export(exports, "Constraint2", ()=>$7e7c1b07812da051$export$18305a9eb79647d6);
+parcelHelpers.export(exports, "Constraint3", ()=>$e15e0d8061a1d3e1$export$7dc34a7e74bc57bb);
+parcelHelpers.export(exports, "ConstraintN", ()=>$f7435b989104b6d0$export$fd9d2e5591a15c9a);
+parcelHelpers.export(exports, "Relation", ()=>$f4fccc65260d093d$export$b57c6722681faed7);
+parcelHelpers.export(exports, "FuzzyRelation", ()=>$971b718aea973f33$export$3b3c4a6f6988f9e8);
+parcelHelpers.export(exports, "FuzzyTabledRelation", ()=>$c141b9b955cfd62e$export$9af92f8a5a1bfd9d);
+parcelHelpers.export(exports, "FuzzyRelationFunction", ()=>$8954958cf0b6696d$export$292ff2b1fb710ade);
+parcelHelpers.export(exports, "CrispRelation", ()=>$9098286a4d3ce42f$export$182ea39d269dda05);
+parcelHelpers.export(exports, "CrispTabledRelation", ()=>$f7617c3ac8e6cd4a$export$14031e4758dfc3cf);
+parcelHelpers.export(exports, "CrispRelationFunction", ()=>$1772f50825805f1c$export$a1cc6d3c2a0259e4);
+parcelHelpers.export(exports, "CrispRelationView", ()=>$388f571dc59ac25d$export$f47c6ef1c1dceb7d);
+parcelHelpers.export(exports, "FuzzyRelationView", ()=>$388f571dc59ac25d$export$105e23542a0b280f);
+parcelHelpers.export(exports, "Solver", ()=>$e5625d8b51be59c8$export$cca492cadf45c096);
+parcelHelpers.export(exports, "SolverFactory", ()=>$720d3cc47e3bd21f$export$4e442516b8f577ee);
+parcelHelpers.export(exports, "FlexibleLocalChanges", ()=>$3e67a3bbb2d0cdae$export$c15ba88cf158f3d6);
+parcelHelpers.export(exports, "FlexibleLocalChangesEx", ()=>$a2b0456b598cdc15$export$f3429dcb0286bfee);
+parcelHelpers.export(exports, "FuzzyBreakout", ()=>$d7c197e6a4ef7b17$export$151ca5d788220218);
+parcelHelpers.export(exports, "FuzzyForwardChecking", ()=>$8d126dc1fb260d00$export$2d94cf9ddb103458);
+parcelHelpers.export(exports, "FuzzyForwardCheckingBc", ()=>$bbd1d315bf8940be$export$532d5536583284b8);
+parcelHelpers.export(exports, "FuzzyGENET", ()=>$fb3cfe453725e4b3$export$6a3df005617df82a);
+parcelHelpers.export(exports, "SRS3", ()=>$e39b34bae78c1c37$export$4bfabca73d1ccb59);
+parcelHelpers.export(exports, "SRS3_PF", ()=>$56dbbcaaa927a4a2$export$281ed65cbb041503);
+parcelHelpers.export(exports, "Breakout", ()=>$368b031b41e29330$export$44de86bc32e07644);
+parcelHelpers.export(exports, "CrispSRS3", ()=>$6a494cae60277c44$export$193930056f923a8);
+parcelHelpers.export(exports, "ForwardChecking", ()=>$6537b0e1551710d4$export$8570b7b487498488);
+parcelHelpers.export(exports, "GENET", ()=>$59ba6be2773f89c9$export$d94917317b4f74cb);
+parcelHelpers.export(exports, "LocalChanges", ()=>$18724c3268ec037c$export$8153937ab18ca581);
+parcelHelpers.export(exports, "LocalChangesEx", ()=>$16be001e34914685$export$e577c7182ffc977b);
+parcelHelpers.export(exports, "MaxForwardChecking", ()=>$0c5cdff78dc8648d$export$2a32484f7cb0d846);
+parcelHelpers.export(exports, "AC3", ()=>$d10fdff0b3f22a66$export$ac824f187e852f5a);
+parcelHelpers.export(exports, "NodeConsistency", ()=>$a8cdbbce0cfe8aee$export$975ddbe83e2b310a);
+parcelHelpers.export(exports, "PostStabilization", ()=>$c5e681ea32920ad2$export$52631f16ca582d39);
+parcelHelpers.export(exports, "Problems", ()=>$e26450ba7c736240$export$32fae9b8f93405d0);
+parcelHelpers.export(exports, "Assignment", ()=>$9bc6df20db8be0bf$export$e6b39d88cc0d636);
+parcelHelpers.export(exports, "AssignmentList", ()=>$d7051a715721e7ce$export$1d4e454bcd46f18f);
+parcelHelpers.export(exports, "DomainPruner", ()=>$f7b05997b0c3179b$export$f307752a90139b0e);
+parcelHelpers.export(exports, "LoopDetector", ()=>$ef2881bbdac82876$export$136021658ac30d9);
 function $parcel$export(e, n, v, s) {
     Object.defineProperty(e, n, {
         get: v,
@@ -614,34 +614,28 @@ function $parcel$export(e, n, v, s) {
         configurable: true
     });
 }
-var $b3946af8d0a4f6b3$exports = {};
-$parcel$export($b3946af8d0a4f6b3$exports, "Problem", function() {
-    return $b3946af8d0a4f6b3$export$559d26475d35ac1e;
-});
+var $1f9c7ae011a64571$exports = {};
+$parcel$export($1f9c7ae011a64571$exports, "Problem", ()=>$1f9c7ae011a64571$export$559d26475d35ac1e);
 /**
  * The class represents a constraint satisfaction problem.
  *
  * @author Takuto Yanagida
  * @version 2023-04-16
- */ var $d579165ed6156fef$exports = {};
-$parcel$export($d579165ed6156fef$exports, "Variable", function() {
-    return $d579165ed6156fef$export$c867a5c9595a1350;
-});
+ */ var $8a169d84b9853138$exports = {};
+$parcel$export($8a169d84b9853138$exports, "Variable", ()=>$8a169d84b9853138$export$c867a5c9595a1350);
 /**
  * Class that represents a variable.
  *
  * @author Takuto Yanagida
  * @version 2023-04-18
- */ var $a6d4d56491033d44$exports = {};
-$parcel$export($a6d4d56491033d44$exports, "Element", function() {
-    return $a6d4d56491033d44$export$db77ccec0bb4ccac;
-});
+ */ var $ae754937ccaa65b0$exports = {};
+$parcel$export($ae754937ccaa65b0$exports, "Element", ()=>$ae754937ccaa65b0$export$db77ccec0bb4ccac);
 /**
  * The common class of variables and constraints.
  *
  * @author Takuto Yanagida
  * @version 2022-08-15
- */ class $a6d4d56491033d44$export$db77ccec0bb4ccac {
+ */ class $ae754937ccaa65b0$export$db77ccec0bb4ccac {
     #index = -1;
     #name = "";
     /**
@@ -677,11 +671,11 @@ $parcel$export($a6d4d56491033d44$exports, "Element", function() {
         return this.#name;
     }
 }
-class $d579165ed6156fef$export$c867a5c9595a1350 extends $a6d4d56491033d44$export$db77ccec0bb4ccac {
+class $8a169d84b9853138$export$c867a5c9595a1350 extends $ae754937ccaa65b0$export$db77ccec0bb4ccac {
     static #INVALID = Number.MIN_VALUE;
     #owner;
     #dom;
-    #val = $d579165ed6156fef$export$c867a5c9595a1350.#INVALID;
+    #val = $8a169d84b9853138$export$c867a5c9595a1350.#INVALID;
     #cons = [];
     // Called only from Problem.
     constructor(owner, d){
@@ -708,13 +702,13 @@ class $d579165ed6156fef$export$c867a5c9595a1350 extends $a6d4d56491033d44$export
     /**
 	 * Sets the state of the variable to unassigned.
 	 */ clear() {
-        this.assign($d579165ed6156fef$export$c867a5c9595a1350.#INVALID); // Do not use the invalid value except here and below (isEmpty).
+        this.assign($8a169d84b9853138$export$c867a5c9595a1350.#INVALID); // Do not use the invalid value except here and below (isEmpty).
     }
     /**
 	 * Checks whether the value is unassigned or not.
 	 * @return True if unassigned.
 	 */ isEmpty() {
-        return this.value() === $d579165ed6156fef$export$c867a5c9595a1350.#INVALID;
+        return this.value() === $8a169d84b9853138$export$c867a5c9595a1350.#INVALID;
     }
     /**
 	 * Assign the domain.
@@ -784,26 +778,22 @@ class $d579165ed6156fef$export$c867a5c9595a1350 extends $a6d4d56491033d44$export
         return vs;
     }
 }
-var $ee9c9e9065869300$exports = {};
-$parcel$export($ee9c9e9065869300$exports, "DomainRanged", function() {
-    return $ee9c9e9065869300$export$681548042801f21c;
-});
+var $aa858a2a93fead82$exports = {};
+$parcel$export($aa858a2a93fead82$exports, "DomainRanged", ()=>$aa858a2a93fead82$export$681548042801f21c);
 /**
  * A variable domain with contiguous integer elements.
  *
  * @author Takuto Yanagida
  * @version 2023-04-10
- */ var $508208a6b2bd191f$exports = {};
-$parcel$export($508208a6b2bd191f$exports, "Domain", function() {
-    return $508208a6b2bd191f$export$f102e87ccfb079d0;
-});
+ */ var $79a8d1b9a9fc74d0$exports = {};
+$parcel$export($79a8d1b9a9fc74d0$exports, "Domain", ()=>$79a8d1b9a9fc74d0$export$f102e87ccfb079d0);
 /**
  * An abstract class that represents a variable domain.
  * The domain is immutable.
  *
  * @author Takuto Yanagida
  * @version 2023-04-10
- */ class $508208a6b2bd191f$export$f102e87ccfb079d0 {
+ */ class $79a8d1b9a9fc74d0$export$f102e87ccfb079d0 {
     /**
 	 * Checks whether the specified value is included as an element of the domain.
 	 *
@@ -838,7 +828,7 @@ $parcel$export($508208a6b2bd191f$exports, "Domain", function() {
         return this.at(Math.floor(Math.random() * this.size()));
     }
 }
-class $ee9c9e9065869300$export$681548042801f21c extends $508208a6b2bd191f$export$f102e87ccfb079d0 {
+class $aa858a2a93fead82$export$681548042801f21c extends $79a8d1b9a9fc74d0$export$f102e87ccfb079d0 {
     #min;
     #max;
     constructor(min, max){
@@ -880,16 +870,14 @@ class $ee9c9e9065869300$export$681548042801f21c extends $508208a6b2bd191f$export
         };
     }
 }
-var $db2d13503f6020b2$exports = {};
-$parcel$export($db2d13503f6020b2$exports, "DomainArbitrary", function() {
-    return $db2d13503f6020b2$export$62fe53be9d2bcdd3;
-});
+var $c390ec7dca5ac321$exports = {};
+$parcel$export($c390ec7dca5ac321$exports, "DomainArbitrary", ()=>$c390ec7dca5ac321$export$62fe53be9d2bcdd3);
 /**
  * A variable domain with arbitrary elements.
  *
  * @author Takuto Yanagida
  * @version 2023-04-10
- */ class $db2d13503f6020b2$export$62fe53be9d2bcdd3 extends $508208a6b2bd191f$export$f102e87ccfb079d0 {
+ */ class $c390ec7dca5ac321$export$62fe53be9d2bcdd3 extends $79a8d1b9a9fc74d0$export$f102e87ccfb079d0 {
     #vals;
     constructor(vals){
         super();
@@ -923,37 +911,31 @@ $parcel$export($db2d13503f6020b2$exports, "DomainArbitrary", function() {
         return this.#vals[Symbol.iterator]();
     }
 }
-var $5108df96f96301e5$exports = {};
-$parcel$export($5108df96f96301e5$exports, "Constraint", function() {
-    return $5108df96f96301e5$export$aec1359a0a40a615;
-});
+var $e67c82024f87a841$exports = {};
+$parcel$export($e67c82024f87a841$exports, "Constraint", ()=>$e67c82024f87a841$export$aec1359a0a40a615);
 /**
  * The class represents a constraint.
  *
  * @author Takuto Yanagida
  * @version 2023-04-11
- */ var $a3e6c3477395ea27$exports = {};
-$parcel$export($a3e6c3477395ea27$exports, "FuzzyRelation", function() {
-    return $a3e6c3477395ea27$export$3b3c4a6f6988f9e8;
-});
+ */ var $971b718aea973f33$exports = {};
+$parcel$export($971b718aea973f33$exports, "FuzzyRelation", ()=>$971b718aea973f33$export$3b3c4a6f6988f9e8);
 /**
  * The class represents fuzzy relationships between variables.
  *
  * @author Takuto Yanagida
  * @version 2023-03-25
- */ var $3ad6598cfee2c4f1$exports = {};
-$parcel$export($3ad6598cfee2c4f1$exports, "Relation", function() {
-    return $3ad6598cfee2c4f1$export$b57c6722681faed7;
-});
+ */ var $f4fccc65260d093d$exports = {};
+$parcel$export($f4fccc65260d093d$exports, "Relation", ()=>$f4fccc65260d093d$export$b57c6722681faed7);
 /**
  * An interface that represents the relationship between variables.
  * Use CrispRelation or FuzzyRelation class that implement this interface.
  *
  * @author Takuto Yanagida
  * @version 2023-03-25
- */ class $3ad6598cfee2c4f1$export$b57c6722681faed7 {
+ */ class $f4fccc65260d093d$export$b57c6722681faed7 {
 }
-class $a3e6c3477395ea27$export$3b3c4a6f6988f9e8 extends $3ad6598cfee2c4f1$export$b57c6722681faed7 {
+class $971b718aea973f33$export$3b3c4a6f6988f9e8 extends $f4fccc65260d093d$export$b57c6722681faed7 {
     /**
 	 * Gets the satisfaction degree in this fuzzy relation.
 	 * @param vals Values of each variable
@@ -968,7 +950,7 @@ class $a3e6c3477395ea27$export$3b3c4a6f6988f9e8 extends $3ad6598cfee2c4f1$export
         return new CrispRelationView(this);
     }
 }
-class $5108df96f96301e5$export$aec1359a0a40a615 extends $a6d4d56491033d44$export$db77ccec0bb4ccac {
+class $e67c82024f87a841$export$aec1359a0a40a615 extends $ae754937ccaa65b0$export$db77ccec0bb4ccac {
     /**
 	 * The constant indicating that the satisfaction degree is not defined.
 	 */ static UNDEFINED = -1;
@@ -994,14 +976,14 @@ class $5108df96f96301e5$export$aec1359a0a40a615 extends $a6d4d56491033d44$export
 	 * Returns whether this is a fuzzy constraint.
 	 * @return True if it is fuzzy constraint.
 	 */ isFuzzy() {
-        return this.rel instanceof $a3e6c3477395ea27$export$3b3c4a6f6988f9e8;
+        return this.rel instanceof $971b718aea973f33$export$3b3c4a6f6988f9e8;
     }
     /**
 	 * Returns a string representation.
 	 * @return A string representation.
 	 */ toString() {
         const s = this.satisfactionDegree();
-        return `c${this.index()}${this.name() === "" ? "" : `(${this.name()})`} = ${s === $5108df96f96301e5$export$aec1359a0a40a615.UNDEFINED ? "UNDEFINED" : s}`;
+        return `c${this.index()}${this.name() === "" ? "" : `(${this.name()})`} = ${s === $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED ? "UNDEFINED" : s}`;
     }
     /**
 	 * Returns the order of the constraint, i.e., the number of (associated) variables in the scope.
@@ -1060,17 +1042,15 @@ class $5108df96f96301e5$export$aec1359a0a40a615 extends $a6d4d56491033d44$export
 	 * @return The lowest consistency degree.
 	 */ lowestConsistencyDegree() {}
 }
-var $b0a9d1b63859ae83$exports = {};
-$parcel$export($b0a9d1b63859ae83$exports, "Constraint1", function() {
-    return $b0a9d1b63859ae83$export$42d7bbd8a43e587d;
-});
+var $cefcd65bf0a494eb$exports = {};
+$parcel$export($cefcd65bf0a494eb$exports, "Constraint1", ()=>$cefcd65bf0a494eb$export$42d7bbd8a43e587d);
 /**
  * The class represents an unary constraint.
  * The constructor is not called directly, since it is created by the Problem.
  *
  * @author Takuto Yanagida
  * @version 2023-04-11
- */ class $b0a9d1b63859ae83$export$42d7bbd8a43e587d extends $5108df96f96301e5$export$aec1359a0a40a615 {
+ */ class $cefcd65bf0a494eb$export$42d7bbd8a43e587d extends $e67c82024f87a841$export$aec1359a0a40a615 {
     #vars = [
         null
     ];
@@ -1118,13 +1098,13 @@ $parcel$export($b0a9d1b63859ae83$exports, "Constraint1", function() {
     /**
 	 * {@inheritDoc}
 	 */ isSatisfied() {
-        if (this.#vars[0].isEmpty()) return $5108df96f96301e5$export$aec1359a0a40a615.UNDEFINED;
+        if (this.#vars[0].isEmpty()) return $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED;
         return this.crispRelation().isSatisfied(this.#vars[0].value()) ? 1 : 0;
     }
     /**
 	 * {@inheritDoc}
 	 */ satisfactionDegree() {
-        if (this.#vars[0].isEmpty()) return $5108df96f96301e5$export$aec1359a0a40a615.UNDEFINED;
+        if (this.#vars[0].isEmpty()) return $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED;
         return this.fuzzyRelation().satisfactionDegree(this.#vars[0].value());
     }
     /**
@@ -1138,7 +1118,7 @@ $parcel$export($b0a9d1b63859ae83$exports, "Constraint1", function() {
 	 * {@inheritDoc}
 	 */ highestConsistencyDegree() {
         const sd = this.satisfactionDegree();
-        if (sd !== $5108df96f96301e5$export$aec1359a0a40a615.UNDEFINED) return sd;
+        if (sd !== $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED) return sd;
         let cd = 0;
         for (const val of this.#vars[0].domain()){
             const s = this.fuzzyRelation().satisfactionDegree(val);
@@ -1151,7 +1131,7 @@ $parcel$export($b0a9d1b63859ae83$exports, "Constraint1", function() {
 	 * {@inheritDoc}
 	 */ lowestConsistencyDegree() {
         const sd = this.satisfactionDegree();
-        if (sd !== $5108df96f96301e5$export$aec1359a0a40a615.UNDEFINED) return sd;
+        if (sd !== $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED) return sd;
         let cd = 1;
         for (const val of this.#vars[0].domain()){
             const s = this.fuzzyRelation().satisfactionDegree(val);
@@ -1161,17 +1141,15 @@ $parcel$export($b0a9d1b63859ae83$exports, "Constraint1", function() {
         return cd;
     }
 }
-var $7ca5368ccef10d69$exports = {};
-$parcel$export($7ca5368ccef10d69$exports, "Constraint2", function() {
-    return $7ca5368ccef10d69$export$18305a9eb79647d6;
-});
+var $7e7c1b07812da051$exports = {};
+$parcel$export($7e7c1b07812da051$exports, "Constraint2", ()=>$7e7c1b07812da051$export$18305a9eb79647d6);
 /**
  * The class represents an binary constraint.
  * The constructor is not called directly, since it is created by the Problem.
  *
  * @author Takuto Yanagida
  * @version 2023-04-16
- */ class $7ca5368ccef10d69$export$18305a9eb79647d6 extends $5108df96f96301e5$export$aec1359a0a40a615 {
+ */ class $7e7c1b07812da051$export$18305a9eb79647d6 extends $e67c82024f87a841$export$aec1359a0a40a615 {
     #vars = [
         null,
         null
@@ -1227,13 +1205,13 @@ $parcel$export($7ca5368ccef10d69$exports, "Constraint2", function() {
     /**
 	 * {@inheritDoc}
 	 */ isSatisfied() {
-        if (this.#vars[0].isEmpty() || this.#vars[1].isEmpty()) return $5108df96f96301e5$export$aec1359a0a40a615.UNDEFINED;
+        if (this.#vars[0].isEmpty() || this.#vars[1].isEmpty()) return $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED;
         return this.crispRelation().isSatisfied(this.#vars[0].value(), this.#vars[1].value()) ? 1 : 0;
     }
     /**
 	 * {@inheritDoc}
 	 */ satisfactionDegree() {
-        if (this.#vars[0].isEmpty() || this.#vars[1].isEmpty()) return $5108df96f96301e5$export$aec1359a0a40a615.UNDEFINED;
+        if (this.#vars[0].isEmpty() || this.#vars[1].isEmpty()) return $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED;
         return this.fuzzyRelation().satisfactionDegree(this.#vars[0].value(), this.#vars[1].value());
     }
     /**
@@ -1248,7 +1226,7 @@ $parcel$export($7ca5368ccef10d69$exports, "Constraint2", function() {
 	 * {@inheritDoc}
 	 */ highestConsistencyDegree() {
         const sd = this.satisfactionDegree();
-        if (sd !== $5108df96f96301e5$export$aec1359a0a40a615.UNDEFINED) return sd;
+        if (sd !== $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED) return sd;
         let cd = 0;
         const val1 = this.#vars[0].value();
         const val2 = this.#vars[1].value();
@@ -1277,7 +1255,7 @@ $parcel$export($7ca5368ccef10d69$exports, "Constraint2", function() {
 	 * {@inheritDoc}
 	 */ lowestConsistencyDegree() {
         const sd = this.satisfactionDegree();
-        if (sd !== $5108df96f96301e5$export$aec1359a0a40a615.UNDEFINED) return sd;
+        if (sd !== $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED) return sd;
         let cd = 1;
         const val1 = this.#vars[0].value();
         const val2 = this.#vars[1].value();
@@ -1303,17 +1281,15 @@ $parcel$export($7ca5368ccef10d69$exports, "Constraint2", function() {
         return cd;
     }
 }
-var $56ac6fbf2c694e12$exports = {};
-$parcel$export($56ac6fbf2c694e12$exports, "Constraint3", function() {
-    return $56ac6fbf2c694e12$export$7dc34a7e74bc57bb;
-});
+var $e15e0d8061a1d3e1$exports = {};
+$parcel$export($e15e0d8061a1d3e1$exports, "Constraint3", ()=>$e15e0d8061a1d3e1$export$7dc34a7e74bc57bb);
 /**
  * The class represents an 3-ary constraint.
  * The constructor is not called directly, since it is created by the Problem.
  *
  * @author Takuto Yanagida
  * @version 2023-04-11
- */ class $56ac6fbf2c694e12$export$7dc34a7e74bc57bb extends $5108df96f96301e5$export$aec1359a0a40a615 {
+ */ class $e15e0d8061a1d3e1$export$7dc34a7e74bc57bb extends $e67c82024f87a841$export$aec1359a0a40a615 {
     #vars = [
         null,
         null,
@@ -1380,7 +1356,7 @@ $parcel$export($56ac6fbf2c694e12$exports, "Constraint3", function() {
     /**
 	 * {@inheritDoc}
 	 */ satisfactionDegree() {
-        if (this.#vars[0].isEmpty() || this.#vars[1].isEmpty() || this.#vars[2].isEmpty()) return $5108df96f96301e5$export$aec1359a0a40a615.UNDEFINED;
+        if (this.#vars[0].isEmpty() || this.#vars[1].isEmpty() || this.#vars[2].isEmpty()) return $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED;
         return this.fuzzyRelation().satisfactionDegree(this.#vars[0].value(), this.#vars[1].value(), this.#vars[2].value());
     }
     /**
@@ -1396,7 +1372,7 @@ $parcel$export($56ac6fbf2c694e12$exports, "Constraint3", function() {
 	 * {@inheritDoc}
 	 */ highestConsistencyDegree() {
         const sd = this.satisfactionDegree();
-        if (sd !== $5108df96f96301e5$export$aec1359a0a40a615.UNDEFINED) return sd;
+        if (sd !== $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED) return sd;
         let cd = 1;
         const val1 = this.#vars[0].value();
         const val2 = this.#vars[1].value();
@@ -1450,7 +1426,7 @@ $parcel$export($56ac6fbf2c694e12$exports, "Constraint3", function() {
 	 * {@inheritDoc}
 	 */ lowestConsistencyDegree() {
         const sd = this.satisfactionDegree();
-        if (sd !== $5108df96f96301e5$export$aec1359a0a40a615.UNDEFINED) return sd;
+        if (sd !== $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED) return sd;
         let cd = 1;
         const val1 = this.#vars[0].value();
         const val2 = this.#vars[1].value();
@@ -1501,17 +1477,15 @@ $parcel$export($56ac6fbf2c694e12$exports, "Constraint3", function() {
         return cd;
     }
 }
-var $05a57f57159fb878$exports = {};
-$parcel$export($05a57f57159fb878$exports, "ConstraintN", function() {
-    return $05a57f57159fb878$export$fd9d2e5591a15c9a;
-});
+var $f7435b989104b6d0$exports = {};
+$parcel$export($f7435b989104b6d0$exports, "ConstraintN", ()=>$f7435b989104b6d0$export$fd9d2e5591a15c9a);
 /**
  * The class represents an n-ary constraint.
  * The constructor is not called directly, since it is created by the Problem.
  *
  * @author Takuto Yanagida
  * @version 2023-04-11
- */ class $05a57f57159fb878$export$fd9d2e5591a15c9a extends $5108df96f96301e5$export$aec1359a0a40a615 {
+ */ class $f7435b989104b6d0$export$fd9d2e5591a15c9a extends $e67c82024f87a841$export$aec1359a0a40a615 {
     #vars;
     #vals;
     // Called only from Problem.
@@ -1576,7 +1550,7 @@ $parcel$export($05a57f57159fb878$exports, "ConstraintN", function() {
 	 */ satisfactionDegree() {
         for(let i = 0; i < this.#vars.length; ++i){
             const v = this.#vars[i];
-            if (v.isEmpty()) return $5108df96f96301e5$export$aec1359a0a40a615.UNDEFINED;
+            if (v.isEmpty()) return $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED;
             this.#vals[i] = v.value();
         }
         return this.fuzzyRelation().satisfactionDegree(...this.#vals);
@@ -1594,7 +1568,7 @@ $parcel$export($05a57f57159fb878$exports, "ConstraintN", function() {
 	 * {@inheritDoc}
 	 */ highestConsistencyDegree() {
         const sd = this.satisfactionDegree();
-        if (sd !== $5108df96f96301e5$export$aec1359a0a40a615.UNDEFINED) return sd;
+        if (sd !== $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED) return sd;
         const emptyIndices = new Array(this.emptyVariableSize());
         let c1 = 0;
         for(let i = 0; i < this.#vars.length; ++i)if (this.#vars[i].isEmpty()) emptyIndices[c1++] = i;
@@ -1605,7 +1579,7 @@ $parcel$export($05a57f57159fb878$exports, "ConstraintN", function() {
 	 * {@inheritDoc}
 	 */ lowestConsistencyDegree() {
         const sd = this.satisfactionDegree();
-        if (sd !== $5108df96f96301e5$export$aec1359a0a40a615.UNDEFINED) return sd;
+        if (sd !== $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED) return sd;
         const emptyIndices = new Array(this.emptyVariableSize());
         let c1 = 0;
         for(let i = 0; i < this.#vars.length; ++i)if (this.#vars[i].isEmpty()) emptyIndices[c1++] = i;
@@ -1643,13 +1617,13 @@ $parcel$export($05a57f57159fb878$exports, "ConstraintN", function() {
         return cd;
     }
 }
-class $b3946af8d0a4f6b3$export$559d26475d35ac1e {
-    #fv = (o, d)=>new $d579165ed6156fef$export$c867a5c9595a1350(o, d);
+class $1f9c7ae011a64571$export$559d26475d35ac1e {
+    #fv = (o, d)=>new $8a169d84b9853138$export$c867a5c9595a1350(o, d);
     #fc = (r, vs)=>{
-        if (vs.length === 1) return new $b0a9d1b63859ae83$export$42d7bbd8a43e587d(r, ...vs);
-        if (vs.length === 2) return new $7ca5368ccef10d69$export$18305a9eb79647d6(r, ...vs);
-        if (vs.length === 3) return new $56ac6fbf2c694e12$export$7dc34a7e74bc57bb(r, ...vs);
-        return new $05a57f57159fb878$export$fd9d2e5591a15c9a(r, vs);
+        if (vs.length === 1) return new $cefcd65bf0a494eb$export$42d7bbd8a43e587d(r, ...vs);
+        if (vs.length === 2) return new $7e7c1b07812da051$export$18305a9eb79647d6(r, ...vs);
+        if (vs.length === 3) return new $e15e0d8061a1d3e1$export$7dc34a7e74bc57bb(r, ...vs);
+        return new $f7435b989104b6d0$export$fd9d2e5591a15c9a(r, vs);
     };
     _isFuzzy = false;
     _vars = [];
@@ -1683,8 +1657,8 @@ class $b3946af8d0a4f6b3$export$559d26475d35ac1e {
 	 * }
 	 * @return A domain.
 	 */ createDomain(args) {
-        if (args.values) return new $db2d13503f6020b2$export$62fe53be9d2bcdd3(args.values);
-        else if ("min" in args && "max" in args) return new $ee9c9e9065869300$export$681548042801f21c(args.min, args.max);
+        if (args.values) return new $c390ec7dca5ac321$export$62fe53be9d2bcdd3(args.values);
+        else if ("min" in args && "max" in args) return new $aa858a2a93fead82$export$681548042801f21c(args.min, args.max);
         return null;
     }
     /**
@@ -1874,7 +1848,7 @@ class $b3946af8d0a4f6b3$export$559d26475d35ac1e {
         let cs = 1;
         for (const c1 of this._cons){
             const s = c1.satisfactionDegree();
-            if (s === $5108df96f96301e5$export$aec1359a0a40a615.UNDEFINED) return $5108df96f96301e5$export$aec1359a0a40a615.UNDEFINED;
+            if (s === $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED) return $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED;
             if (s < cs) cs = s;
         }
         return cs;
@@ -1918,16 +1892,14 @@ class $b3946af8d0a4f6b3$export$559d26475d35ac1e {
         return this._isFuzzy;
     }
 }
-var $2101e22eb3ae726f$exports = {};
-$parcel$export($2101e22eb3ae726f$exports, "CrispProblem", function() {
-    return $2101e22eb3ae726f$export$2d7b2a6964dca148;
-});
+var $c624e9db75d26c9f$exports = {};
+$parcel$export($c624e9db75d26c9f$exports, "CrispProblem", ()=>$c624e9db75d26c9f$export$2d7b2a6964dca148);
 /**
  * The class represents a crisp constraint satisfaction problem.
  *
  * @author Takuto Yanagida
  * @version 2023-04-16
- */ class $2101e22eb3ae726f$export$2d7b2a6964dca148 extends $b3946af8d0a4f6b3$export$559d26475d35ac1e {
+ */ class $c624e9db75d26c9f$export$2d7b2a6964dca148 extends $1f9c7ae011a64571$export$559d26475d35ac1e {
     /**
 	 * Generates a crisp constraint.
 	 * @param Array args {
@@ -1937,7 +1909,7 @@ $parcel$export($2101e22eb3ae726f$exports, "CrispProblem", function() {
 	 * }
 	 * @return A constraint.
 	 */ createConstraint(args) {
-        if (args.relation instanceof $a3e6c3477395ea27$export$3b3c4a6f6988f9e8) throw new Error();
+        if (args.relation instanceof $971b718aea973f33$export$3b3c4a6f6988f9e8) throw new Error();
         return super.createConstraint(args);
     }
     /**
@@ -1980,16 +1952,14 @@ $parcel$export($2101e22eb3ae726f$exports, "CrispProblem", function() {
         return count;
     }
 }
-var $34d613011f471732$exports = {};
-$parcel$export($34d613011f471732$exports, "ObservableVariable", function() {
-    return $34d613011f471732$export$a14c1bd8f74377e;
-});
+var $b465f27e32fe405d$exports = {};
+$parcel$export($b465f27e32fe405d$exports, "ObservableVariable", ()=>$b465f27e32fe405d$export$a14c1bd8f74377e);
 /**
  * Class that represents an observable variable.
  *
  * @author Takuto Yanagida
  * @version 2023-04-18
- */ class $34d613011f471732$export$a14c1bd8f74377e extends $d579165ed6156fef$export$c867a5c9595a1350 {
+ */ class $b465f27e32fe405d$export$a14c1bd8f74377e extends $8a169d84b9853138$export$c867a5c9595a1350 {
     #observer;
     // Called only from Problem.
     constructor(owner, d, observer){
@@ -2004,16 +1974,14 @@ $parcel$export($34d613011f471732$exports, "ObservableVariable", function() {
         if (this.#observer) this.#observer(this, value);
     }
 }
-var $156a3c65876fbe62$exports = {};
-$parcel$export($156a3c65876fbe62$exports, "FuzzyTabledRelation", function() {
-    return $156a3c65876fbe62$export$9af92f8a5a1bfd9d;
-});
+var $c141b9b955cfd62e$exports = {};
+$parcel$export($c141b9b955cfd62e$exports, "FuzzyTabledRelation", ()=>$c141b9b955cfd62e$export$9af92f8a5a1bfd9d);
 /**
  * This class represents fuzzy relationships by table.
  *
  * @author Takuto YANAGIDA
  * @version 2023-03-26
- */ class $156a3c65876fbe62$export$9af92f8a5a1bfd9d extends $a3e6c3477395ea27$export$3b3c4a6f6988f9e8 {
+ */ class $c141b9b955cfd62e$export$9af92f8a5a1bfd9d extends $971b718aea973f33$export$3b3c4a6f6988f9e8 {
     #elms;
     #doms;
     #mul;
@@ -2042,16 +2010,14 @@ $parcel$export($156a3c65876fbe62$exports, "FuzzyTabledRelation", function() {
         return this.#elms[index];
     }
 }
-var $1f9eaa8675325d70$exports = {};
-$parcel$export($1f9eaa8675325d70$exports, "FuzzyRelationFunction", function() {
-    return $1f9eaa8675325d70$export$292ff2b1fb710ade;
-});
+var $8954958cf0b6696d$exports = {};
+$parcel$export($8954958cf0b6696d$exports, "FuzzyRelationFunction", ()=>$8954958cf0b6696d$export$292ff2b1fb710ade);
 /**
  * Fuzzy relations defined by functions.
  *
  * @author Takuto Yanagida
  * @version 2023-04-04
- */ class $1f9eaa8675325d70$export$292ff2b1fb710ade extends $a3e6c3477395ea27$export$3b3c4a6f6988f9e8 {
+ */ class $8954958cf0b6696d$export$292ff2b1fb710ade extends $971b718aea973f33$export$3b3c4a6f6988f9e8 {
     #fn;
     constructor(fn){
         super();
@@ -2065,16 +2031,14 @@ $parcel$export($1f9eaa8675325d70$exports, "FuzzyRelationFunction", function() {
         return this.#fn(...vals);
     }
 }
-var $48d470acfc59c60d$exports = {};
-$parcel$export($48d470acfc59c60d$exports, "CrispRelation", function() {
-    return $48d470acfc59c60d$export$182ea39d269dda05;
-});
+var $9098286a4d3ce42f$exports = {};
+$parcel$export($9098286a4d3ce42f$exports, "CrispRelation", ()=>$9098286a4d3ce42f$export$182ea39d269dda05);
 /**
  * The class represents crisp relationships between variables.
  *
  * @author Takuto Yanagida
  * @version 2023-03-25
- */ class $48d470acfc59c60d$export$182ea39d269dda05 extends $3ad6598cfee2c4f1$export$b57c6722681faed7 {
+ */ class $9098286a4d3ce42f$export$182ea39d269dda05 extends $f4fccc65260d093d$export$b57c6722681faed7 {
     /**
 	 * Gets whether or not the relation is satisfied in this crisp relation.
 	 * @param vals Values of each variable
@@ -2089,16 +2053,14 @@ $parcel$export($48d470acfc59c60d$exports, "CrispRelation", function() {
         return new FuzzyRelationView(this);
     }
 }
-var $f89acf0bacbb6f88$exports = {};
-$parcel$export($f89acf0bacbb6f88$exports, "CrispTabledRelation", function() {
-    return $f89acf0bacbb6f88$export$14031e4758dfc3cf;
-});
+var $f7617c3ac8e6cd4a$exports = {};
+$parcel$export($f7617c3ac8e6cd4a$exports, "CrispTabledRelation", ()=>$f7617c3ac8e6cd4a$export$14031e4758dfc3cf);
 /**
  * This class represents crisp relationships by table.
  *
  * @author Takuto YANAGIDA
  * @version 2023-03-26
- */ class $f89acf0bacbb6f88$export$14031e4758dfc3cf extends $48d470acfc59c60d$export$182ea39d269dda05 {
+ */ class $f7617c3ac8e6cd4a$export$14031e4758dfc3cf extends $9098286a4d3ce42f$export$182ea39d269dda05 {
     #elms;
     #doms;
     #mul;
@@ -2127,16 +2089,14 @@ $parcel$export($f89acf0bacbb6f88$exports, "CrispTabledRelation", function() {
         return this.#elms[index];
     }
 }
-var $566faa83320be882$exports = {};
-$parcel$export($566faa83320be882$exports, "CrispRelationFunction", function() {
-    return $566faa83320be882$export$a1cc6d3c2a0259e4;
-});
+var $1772f50825805f1c$exports = {};
+$parcel$export($1772f50825805f1c$exports, "CrispRelationFunction", ()=>$1772f50825805f1c$export$a1cc6d3c2a0259e4);
 /**
  * Crisp relations defined by functions.
  *
  * @author Takuto Yanagida
  * @version 2023-04-04
- */ class $566faa83320be882$export$a1cc6d3c2a0259e4 extends $48d470acfc59c60d$export$182ea39d269dda05 {
+ */ class $1772f50825805f1c$export$a1cc6d3c2a0259e4 extends $9098286a4d3ce42f$export$182ea39d269dda05 {
     #fn;
     constructor(fn){
         super();
@@ -2150,19 +2110,15 @@ $parcel$export($566faa83320be882$exports, "CrispRelationFunction", function() {
         return this.#fn(...vals);
     }
 }
-var $1a2fe3a3e431eeba$exports = {};
-$parcel$export($1a2fe3a3e431eeba$exports, "CrispRelationView", function() {
-    return $1a2fe3a3e431eeba$export$f47c6ef1c1dceb7d;
-});
-$parcel$export($1a2fe3a3e431eeba$exports, "FuzzyRelationView", function() {
-    return $1a2fe3a3e431eeba$export$105e23542a0b280f;
-});
+var $388f571dc59ac25d$exports = {};
+$parcel$export($388f571dc59ac25d$exports, "CrispRelationView", ()=>$388f571dc59ac25d$export$f47c6ef1c1dceb7d);
+$parcel$export($388f571dc59ac25d$exports, "FuzzyRelationView", ()=>$388f571dc59ac25d$export$105e23542a0b280f);
 /**
  * View of relations.
  *
  * @author Takuto Yanagida
  * @version 2023-04-12
- */ class $1a2fe3a3e431eeba$export$f47c6ef1c1dceb7d extends $48d470acfc59c60d$export$182ea39d269dda05 {
+ */ class $388f571dc59ac25d$export$f47c6ef1c1dceb7d extends $9098286a4d3ce42f$export$182ea39d269dda05 {
     constructor(that){
         this.that = that;
     }
@@ -2170,7 +2126,7 @@ $parcel$export($1a2fe3a3e431eeba$exports, "FuzzyRelationView", function() {
         return this.that.satisfactionDegree(vals) === 1;
     }
 }
-class $1a2fe3a3e431eeba$export$105e23542a0b280f extends $a3e6c3477395ea27$export$3b3c4a6f6988f9e8 {
+class $388f571dc59ac25d$export$105e23542a0b280f extends $971b718aea973f33$export$3b3c4a6f6988f9e8 {
     constructor(that){
         this.that = that;
     }
@@ -2178,16 +2134,14 @@ class $1a2fe3a3e431eeba$export$105e23542a0b280f extends $a3e6c3477395ea27$export
         return this.that.isSatisfied(vals) ? 1 : 0;
     }
 }
-var $c4f5921582438a32$exports = {};
-$parcel$export($c4f5921582438a32$exports, "Solver", function() {
-    return $c4f5921582438a32$export$cca492cadf45c096;
-});
+var $e5625d8b51be59c8$exports = {};
+$parcel$export($e5625d8b51be59c8$exports, "Solver", ()=>$e5625d8b51be59c8$export$cca492cadf45c096);
 /**
  * The class for solvers for finding solutions to constraint satisfaction problems.
  *
  * @author Takuto Yanagida
  * @version 2023-04-16
- */ class $c4f5921582438a32$export$cca492cadf45c096 {
+ */ class $e5625d8b51be59c8$export$cca492cadf45c096 {
     _debug = true;
     _debugOutput = (e)=>console.log(e);
     /**
@@ -2280,19 +2234,15 @@ $parcel$export($c4f5921582438a32$exports, "Solver", function() {
         if (this._debug) this._debugOutput(str);
     }
 }
-var $bc75b5b8eb656b55$exports = {};
-$parcel$export($bc75b5b8eb656b55$exports, "SolverFactory", function() {
-    return $bc75b5b8eb656b55$export$4e442516b8f577ee;
-});
+var $720d3cc47e3bd21f$exports = {};
+$parcel$export($720d3cc47e3bd21f$exports, "SolverFactory", ()=>$720d3cc47e3bd21f$export$4e442516b8f577ee);
 /**
  * Solver factory class.
  *
  * @author Takuto Yanagida
  * @version 2023-04-17
- */ var $753cae771624653d$exports = {};
-$parcel$export($753cae771624653d$exports, "ForwardChecking", function() {
-    return $753cae771624653d$export$8570b7b487498488;
-});
+ */ var $6537b0e1551710d4$exports = {};
+$parcel$export($6537b0e1551710d4$exports, "ForwardChecking", ()=>$6537b0e1551710d4$export$8570b7b487498488);
 /**
  * This class that implements the forward checking method.
  * The minimum-remaining-values (MRV) heuristic can also be used by specifying the option.
@@ -2302,25 +2252,21 @@ $parcel$export($753cae771624653d$exports, "ForwardChecking", function() {
  *
  * @author Takuto Yanagida
  * @version 2023-04-16
- */ var $a7e2f7128ad72da7$exports = {};
-$parcel$export($a7e2f7128ad72da7$exports, "AssignmentList", function() {
-    return $a7e2f7128ad72da7$export$1d4e454bcd46f18f;
-});
+ */ var $d7051a715721e7ce$exports = {};
+$parcel$export($d7051a715721e7ce$exports, "AssignmentList", ()=>$d7051a715721e7ce$export$1d4e454bcd46f18f);
 /**
  * The class represents multiple variables and their assignments.
  *
  * @author Takuto Yanagida
  * @version 2023-04-16
- */ var $5c2079e5752e4879$exports = {};
-$parcel$export($5c2079e5752e4879$exports, "Assignment", function() {
-    return $5c2079e5752e4879$export$e6b39d88cc0d636;
-});
+ */ var $9bc6df20db8be0bf$exports = {};
+$parcel$export($9bc6df20db8be0bf$exports, "Assignment", ()=>$9bc6df20db8be0bf$export$e6b39d88cc0d636);
 /**
  * The class represents a pair of variables and the values to be assigned to them.
  *
  * @author Takuto Yanagida
  * @version 2023-03-25
- */ class $5c2079e5752e4879$export$e6b39d88cc0d636 {
+ */ class $9bc6df20db8be0bf$export$e6b39d88cc0d636 {
     #variable;
     #value;
     constructor(args){
@@ -2356,9 +2302,9 @@ $parcel$export($5c2079e5752e4879$exports, "Assignment", function() {
         return this.#variable;
     }
 }
-class $a7e2f7128ad72da7$export$1d4e454bcd46f18f {
+class $d7051a715721e7ce$export$1d4e454bcd46f18f {
     static fromVariables(vs) {
-        const al = new $a7e2f7128ad72da7$export$1d4e454bcd46f18f();
+        const al = new $d7051a715721e7ce$export$1d4e454bcd46f18f();
         al.setVariables(vs);
         return al;
     }
@@ -2366,27 +2312,27 @@ class $a7e2f7128ad72da7$export$1d4e454bcd46f18f {
     constructor(){}
     setProblem(problem) {
         this.#as.length = 0;
-        for (const v of problem.variables())this.#as.push(new $5c2079e5752e4879$export$e6b39d88cc0d636({
+        for (const v of problem.variables())this.#as.push(new $9bc6df20db8be0bf$export$e6b39d88cc0d636({
             variable: v,
             value: v.value()
         }));
     }
     setAssignmentList(al) {
         this.#as.length = 0;
-        for (const a of al)this.#as.push(new $5c2079e5752e4879$export$e6b39d88cc0d636({
+        for (const a of al)this.#as.push(new $9bc6df20db8be0bf$export$e6b39d88cc0d636({
             variable: a.variable(),
             value: a.value()
         }));
     }
     setVariables(vs) {
         this.#as.length = 0;
-        for (const v of vs)this.#as.push(new $5c2079e5752e4879$export$e6b39d88cc0d636({
+        for (const v of vs)this.#as.push(new $9bc6df20db8be0bf$export$e6b39d88cc0d636({
             variable: v,
             value: v.value()
         }));
     }
     addVariable(variable, value = null) {
-        this.#as.push(new $5c2079e5752e4879$export$e6b39d88cc0d636({
+        this.#as.push(new $9bc6df20db8be0bf$export$e6b39d88cc0d636({
             variable: variable,
             value: value
         }));
@@ -2436,16 +2382,14 @@ class $a7e2f7128ad72da7$export$1d4e454bcd46f18f {
         return this.#as[Math.floor(Math.random() * this.#as.length)];
     }
 }
-var $173b03f492df9c2c$exports = {};
-$parcel$export($173b03f492df9c2c$exports, "DomainPruner", function() {
-    return $173b03f492df9c2c$export$f307752a90139b0e;
-});
+var $f7b05997b0c3179b$exports = {};
+$parcel$export($f7b05997b0c3179b$exports, "DomainPruner", ()=>$f7b05997b0c3179b$export$f307752a90139b0e);
 /**
  * This class holds the branch pruning states for a domain.
  *
  * @author Takuto Yanagida
  * @version 2023-03-25
- */ class $173b03f492df9c2c$export$f307752a90139b0e {
+ */ class $f7b05997b0c3179b$export$f307752a90139b0e {
     static #UNHIDDEN = -1;
     #hiddenLevels;
     #hiddenSize = 0;
@@ -2454,7 +2398,7 @@ $parcel$export($173b03f492df9c2c$exports, "DomainPruner", function() {
 	 * @param size Size of the corresponding domain
 	 */ constructor(size){
         this.#hiddenLevels = new Array(size);
-        this.#hiddenLevels.fill($173b03f492df9c2c$export$f307752a90139b0e.#UNHIDDEN);
+        this.#hiddenLevels.fill($f7b05997b0c3179b$export$f307752a90139b0e.#UNHIDDEN);
     }
     /**
 	 * Returns the size of the erased element.
@@ -2467,7 +2411,7 @@ $parcel$export($173b03f492df9c2c$exports, "DomainPruner", function() {
 	 * @param index Index.
 	 * @param level Level.
 	 */ hide(index, level) {
-        if (this.#hiddenLevels[index] === $173b03f492df9c2c$export$f307752a90139b0e.#UNHIDDEN) ++this.#hiddenSize;
+        if (this.#hiddenLevels[index] === $f7b05997b0c3179b$export$f307752a90139b0e.#UNHIDDEN) ++this.#hiddenSize;
         this.#hiddenLevels[index] = level;
     }
     /**
@@ -2482,27 +2426,27 @@ $parcel$export($173b03f492df9c2c$exports, "DomainPruner", function() {
 	 * @param index Index.
 	 * @return True if erased.
 	 */ isValueHidden(index) {
-        return this.#hiddenLevels[index] !== $173b03f492df9c2c$export$f307752a90139b0e.#UNHIDDEN;
+        return this.#hiddenLevels[index] !== $f7b05997b0c3179b$export$f307752a90139b0e.#UNHIDDEN;
     }
     /**
 	 * Restores the value that had been erased, by specifying a level.
 	 * @param level Level
 	 */ reveal(level) {
         for(let i = 0; i < this.#hiddenLevels.length; ++i)if (this.#hiddenLevels[i] === level) {
-            this.#hiddenLevels[i] = $173b03f492df9c2c$export$f307752a90139b0e.#UNHIDDEN;
+            this.#hiddenLevels[i] = $f7b05997b0c3179b$export$f307752a90139b0e.#UNHIDDEN;
             --this.#hiddenSize;
         }
     }
     /**
 	 * Restores all erased values.
 	 */ revealAll() {
-        this.#hiddenLevels.fill($173b03f492df9c2c$export$f307752a90139b0e.#UNHIDDEN);
+        this.#hiddenLevels.fill($f7b05997b0c3179b$export$f307752a90139b0e.#UNHIDDEN);
         this.#hiddenSize = 0;
     }
 }
-class $753cae771624653d$export$8570b7b487498488 extends $c4f5921582438a32$export$cca492cadf45c096 {
+class $6537b0e1551710d4$export$8570b7b487498488 extends $e5625d8b51be59c8$export$cca492cadf45c096 {
     #vars;
-    #sol = new $a7e2f7128ad72da7$export$1d4e454bcd46f18f();
+    #sol = new $d7051a715721e7ce$export$1d4e454bcd46f18f();
     #relCons;
     #useMRV = false;
     #iterCount;
@@ -2515,7 +2459,7 @@ class $753cae771624653d$export$8570b7b487498488 extends $c4f5921582438a32$export
         this.#vars = [
             ...this._pro.variables()
         ];
-        for (const v of this.#vars)v.solverObject = new $173b03f492df9c2c$export$f307752a90139b0e(v.domain().size());
+        for (const v of this.#vars)v.solverObject = new $f7b05997b0c3179b$export$f307752a90139b0e(v.domain().size());
         this.#initializeRelatedConstraintTable();
     }
     name() {
@@ -2624,10 +2568,8 @@ class $753cae771624653d$export$8570b7b487498488 extends $c4f5921582438a32$export
         this.#useMRV = flag;
     }
 }
-var $5da71a10526e78a7$exports = {};
-$parcel$export($5da71a10526e78a7$exports, "MaxForwardChecking", function() {
-    return $5da71a10526e78a7$export$2a32484f7cb0d846;
-});
+var $0c5cdff78dc8648d$exports = {};
+$parcel$export($0c5cdff78dc8648d$exports, "MaxForwardChecking", ()=>$0c5cdff78dc8648d$export$2a32484f7cb0d846);
 /**
  * This class that implements the forward checking method.
  * Find the solution to the problem as the maximum CSP.
@@ -2635,9 +2577,9 @@ $parcel$export($5da71a10526e78a7$exports, "MaxForwardChecking", function() {
  *
  * @author Takuto Yanagida
  * @version 2023-04-16
- */ class $5da71a10526e78a7$export$2a32484f7cb0d846 extends $c4f5921582438a32$export$cca492cadf45c096 {
+ */ class $0c5cdff78dc8648d$export$2a32484f7cb0d846 extends $e5625d8b51be59c8$export$cca492cadf45c096 {
     #vars;
-    #sol = new $a7e2f7128ad72da7$export$1d4e454bcd46f18f();
+    #sol = new $d7051a715721e7ce$export$1d4e454bcd46f18f();
     #maxVioCount;
     #vioCount;
     #checkedCons = new Set();
@@ -2649,7 +2591,7 @@ $parcel$export($5da71a10526e78a7$exports, "MaxForwardChecking", function() {
         this.#vars = [
             ...this._pro.variables()
         ];
-        for (const v of this.#vars)v.solverObject = new $173b03f492df9c2c$export$f307752a90139b0e(v.domain().size());
+        for (const v of this.#vars)v.solverObject = new $f7b05997b0c3179b$export$f307752a90139b0e(v.domain().size());
         this.#maxVioCount = this._pro.constraintSize();
     }
     name() {
@@ -2743,16 +2685,14 @@ $parcel$export($5da71a10526e78a7$exports, "MaxForwardChecking", function() {
         return r;
     }
 }
-var $62da18818fc7efc1$exports = {};
-$parcel$export($62da18818fc7efc1$exports, "LocalChanges", function() {
-    return $62da18818fc7efc1$export$8153937ab18ca581;
-});
+var $18724c3268ec037c$exports = {};
+$parcel$export($18724c3268ec037c$exports, "LocalChanges", ()=>$18724c3268ec037c$export$8153937ab18ca581);
 /**
  * Class implements the local changes method.
  *
  * @author Takuto Yanagida
  * @version 2023-04-16
- */ class $62da18818fc7efc1$export$8153937ab18ca581 extends $c4f5921582438a32$export$cca492cadf45c096 {
+ */ class $18724c3268ec037c$export$8153937ab18ca581 extends $e5625d8b51be59c8$export$cca492cadf45c096 {
     static #setPlusSet(s1, s2) {
         const sn = new Set(s1);
         for (const v of s2)sn.add(v);
@@ -2816,26 +2756,26 @@ $parcel$export($62da18818fc7efc1$exports, "LocalChanges", function() {
     }
     #lcValue(V1, V2, v2, val2) {
         if (!this.#isConsistent(V1, v2, val2)) return false;
-        const V1_V2 = $62da18818fc7efc1$export$8153937ab18ca581.#setPlusSet(V1, V2);
+        const V1_V2 = $18724c3268ec037c$export$8153937ab18ca581.#setPlusSet(V1, V2);
         if (this.#isConsistent(V1_V2, v2, val2)) return true;
         const V3 = this.#createNewV3(V1_V2, v2, val2);
-        const T = $62da18818fc7efc1$export$8153937ab18ca581.#setMinusSet(V1_V2, V3);
+        const T = $18724c3268ec037c$export$8153937ab18ca581.#setMinusSet(V1_V2, V3);
         if (!this.#isConsistent(T, v2, val2)) this._debugOutput("bug");
         for (const vv of V3)vv.clear();
-        V1 = $62da18818fc7efc1$export$8153937ab18ca581.#setPlusElement(V1, v2);
-        V2 = $62da18818fc7efc1$export$8153937ab18ca581.#setMinusSet(V2, V3);
+        V1 = $18724c3268ec037c$export$8153937ab18ca581.#setPlusElement(V1, v2);
+        V2 = $18724c3268ec037c$export$8153937ab18ca581.#setMinusSet(V2, V3);
         return this.#lcVariables(V1, V2, V3);
     }
     #lcVariable(V11, V21, v3, d) {
         if (d.size === 0) return false;
         const val = d.values().next().value;
-        const al = $a7e2f7128ad72da7$export$1d4e454bcd46f18f.fromVariables(V21);
+        const al = $d7051a715721e7ce$export$1d4e454bcd46f18f.fromVariables(V21);
         v3.assign(val);
         const ret = this.#lcValue(V11, V21, v3, val);
         if (ret || this.#globalReturn) return ret;
         v3.clear();
         al.apply();
-        return this.#lcVariable(V11, V21, v3, $62da18818fc7efc1$export$8153937ab18ca581.#setMinusElement(d, val));
+        return this.#lcVariable(V11, V21, v3, $18724c3268ec037c$export$8153937ab18ca581.#setMinusElement(d, val));
     }
     #lcVariables(V12, V22, V3) {
         this._debugOutput(`V1 ${V12.size}, V2' ${V22.size}, V3' ${V3.size}`);
@@ -2860,8 +2800,8 @@ $parcel$export($62da18818fc7efc1$exports, "LocalChanges", function() {
         for (const val of v.domain())d.add(val);
         const ret = this.#lcVariable(V12, V22, v, d);
         if (!ret || this.#globalReturn) return ret;
-        V22 = $62da18818fc7efc1$export$8153937ab18ca581.#setPlusElement(V22, v);
-        V3 = $62da18818fc7efc1$export$8153937ab18ca581.#setMinusElement(V3, v);
+        V22 = $18724c3268ec037c$export$8153937ab18ca581.#setPlusElement(V22, v);
+        V3 = $18724c3268ec037c$export$8153937ab18ca581.#setMinusElement(V3, v);
         return this.#lcVariables(V12, V22, V3);
     }
     exec() {
@@ -2875,17 +2815,15 @@ $parcel$export($62da18818fc7efc1$exports, "LocalChanges", function() {
         return this.#lcVariables(new Set(), notFixed, unassigned);
     }
 }
-var $7f4ecc5acb283d86$exports = {};
-$parcel$export($7f4ecc5acb283d86$exports, "LocalChangesEx", function() {
-    return $7f4ecc5acb283d86$export$e577c7182ffc977b;
-});
+var $16be001e34914685$exports = {};
+$parcel$export($16be001e34914685$exports, "LocalChangesEx", ()=>$16be001e34914685$export$e577c7182ffc977b);
 /**
  * Class implements the local changes method.
  * The implementation is optimized by converting recursive calls to loops.
  *
  * @author Takuto Yanagida
  * @version 2023-04-16
- */ class $7f4ecc5acb283d86$export$e577c7182ffc977b extends $c4f5921582438a32$export$cca492cadf45c096 {
+ */ class $16be001e34914685$export$e577c7182ffc977b extends $e5625d8b51be59c8$export$cca492cadf45c096 {
     static #setPlusSet(s12, s22) {
         const sn = new Set(s12);
         for (const v of s22)sn.add(v);
@@ -2949,16 +2887,16 @@ $parcel$export($7f4ecc5acb283d86$exports, "LocalChangesEx", function() {
     }
     #lcValue(V13, V23, v21) {
         if (!this.#isConsistent(V13, v21, v21.value())) return false;
-        const V1_V2 = $7f4ecc5acb283d86$export$e577c7182ffc977b.#setPlusSet(V13, V23);
+        const V1_V2 = $16be001e34914685$export$e577c7182ffc977b.#setPlusSet(V13, V23);
         if (this.#isConsistent(V1_V2, v21, v21.value())) return true;
         const V3 = this.#createNewV3(V1_V2, v21, v21.value());
-        V23 = $7f4ecc5acb283d86$export$e577c7182ffc977b.#setMinusSet(V23, V3);
-        V13 = $7f4ecc5acb283d86$export$e577c7182ffc977b.#setPlusElement(V13, v21);
+        V23 = $16be001e34914685$export$e577c7182ffc977b.#setMinusSet(V23, V3);
+        V13 = $16be001e34914685$export$e577c7182ffc977b.#setPlusElement(V13, v21);
         return this.#lcVariables(V13, V23, V3);
     }
     #lcVariable(V111, V211, v31) {
         for (const val of v31.domain()){
-            const s = $a7e2f7128ad72da7$export$1d4e454bcd46f18f.fromVariables(V211);
+            const s = $d7051a715721e7ce$export$1d4e454bcd46f18f.fromVariables(V211);
             v31.assign(val);
             const ret = this.#lcValue(V111, V211, v31);
             if (ret || this.#globalReturn) return ret;
@@ -3006,17 +2944,15 @@ $parcel$export($7f4ecc5acb283d86$exports, "LocalChangesEx", function() {
         return this.#lcVariables(new Set(), notFixed, unassigned);
     }
 }
-var $2c8e786ab4db97cd$exports = {};
-$parcel$export($2c8e786ab4db97cd$exports, "Breakout", function() {
-    return $2c8e786ab4db97cd$export$44de86bc32e07644;
-});
+var $368b031b41e29330$exports = {};
+$parcel$export($368b031b41e29330$exports, "Breakout", ()=>$368b031b41e29330$export$44de86bc32e07644);
 /**
  * Class implements a solver using the breakout method.
  * Solves a problem as a maximum CSP.
  *
  * @author Takuto Yanagida
  * @version 2023-04-16
- */ class $2c8e786ab4db97cd$export$44de86bc32e07644 extends $c4f5921582438a32$export$cca492cadf45c096 {
+ */ class $368b031b41e29330$export$44de86bc32e07644 extends $e5625d8b51be59c8$export$cca492cadf45c096 {
     #weights;
     #isRandom = true;
     constructor(p){
@@ -3060,7 +2996,7 @@ $parcel$export($2c8e786ab4db97cd$exports, "Breakout", function() {
         const endTime = this._timeLimit === null ? Number.MAX_VALUE : Date.now() + this._timeLimit;
         let iterCount = 0;
         for (const v of this._pro.variables())if (v.isEmpty()) v.assign(v.domain().at(0));
-        const canList = new $a7e2f7128ad72da7$export$1d4e454bcd46f18f();
+        const canList = new $d7051a715721e7ce$export$1d4e454bcd46f18f();
         while(true){
             const vc = this._pro.violatingConstraints();
             if ((this._targetDeg ?? 1) <= this._pro.satisfiedConstraintRate()) {
@@ -3096,10 +3032,8 @@ $parcel$export($2c8e786ab4db97cd$exports, "Breakout", function() {
         this.#isRandom = flag;
     }
 }
-var $0cb6792a4a1b293a$exports = {};
-$parcel$export($0cb6792a4a1b293a$exports, "GENET", function() {
-    return $0cb6792a4a1b293a$export$d94917317b4f74cb;
-});
+var $59ba6be2773f89c9$exports = {};
+$parcel$export($59ba6be2773f89c9$exports, "GENET", ()=>$59ba6be2773f89c9$export$d94917317b4f74cb);
 /**
  * This class implements GENET.
  * CSP (but only Binary CSP) is supported.
@@ -3107,7 +3041,7 @@ $parcel$export($0cb6792a4a1b293a$exports, "GENET", function() {
  *
  * @author Takuto Yanagida
  * @version 2023-04-17
- */ class $0cb6792a4a1b293a$export$d94917317b4f74cb extends $c4f5921582438a32$export$cca492cadf45c096 {
+ */ class $59ba6be2773f89c9$export$d94917317b4f74cb extends $e5625d8b51be59c8$export$cca492cadf45c096 {
     static nextInt(max) {
         return Math.floor(Math.random() * Math.floor(max));
     }
@@ -3124,7 +3058,7 @@ $parcel$export($0cb6792a4a1b293a$exports, "GENET", function() {
         const cons = [];
         for (const v of this._pro.variables()){
             if (v.domain().size() === 0) return false;
-            this.#clusters.push(new $0cb6792a4a1b293a$export$d94917317b4f74cb.Cluster(v));
+            this.#clusters.push(new $59ba6be2773f89c9$export$d94917317b4f74cb.Cluster(v));
         }
         for (const c1 of this._pro.constraints())if (c1.size() === 1) {
             const v = c1.at(0);
@@ -3132,7 +3066,7 @@ $parcel$export($0cb6792a4a1b293a$exports, "GENET", function() {
             for(let i = 0; i < cl.size(); ++i){
                 const origVal = v.value(); // Save the value.
                 v.assign(cl.get(i)._value);
-                if (c1.isSatisfied() === 0) cons.push(new $0cb6792a4a1b293a$export$d94917317b4f74cb.Connection(cl.get(i)));
+                if (c1.isSatisfied() === 0) cons.push(new $59ba6be2773f89c9$export$d94917317b4f74cb.Connection(cl.get(i)));
                 v.assign(origVal); // Restore the value.
             }
         } else {
@@ -3146,7 +3080,7 @@ $parcel$export($0cb6792a4a1b293a$exports, "GENET", function() {
                 for(let j = 0; j < cl_s.size(); ++j){
                     const origVal2 = v2.value(); // Save the value.
                     v2.assign(cl_s.get(j)._value);
-                    if (c1.isSatisfied() === 0) cons.push(new $0cb6792a4a1b293a$export$d94917317b4f74cb.Connection(cl_f.get(i), cl_s.get(j)));
+                    if (c1.isSatisfied() === 0) cons.push(new $59ba6be2773f89c9$export$d94917317b4f74cb.Connection(cl_f.get(i), cl_s.get(j)));
                     v2.assign(origVal2); // Restore the value.
                 }
                 v1.assign(origVal1); // Restore the value.
@@ -3159,7 +3093,7 @@ $parcel$export($0cb6792a4a1b293a$exports, "GENET", function() {
     }
     #shuffle(is) {
         for(let i = is.length; i > 1; --i){
-            const j = $0cb6792a4a1b293a$export$d94917317b4f74cb.nextInt(i);
+            const j = $59ba6be2773f89c9$export$d94917317b4f74cb.nextInt(i);
             const temp = is[i - 1];
             is[i - 1] = is[j];
             is[j] = temp;
@@ -3170,7 +3104,7 @@ $parcel$export($0cb6792a4a1b293a$exports, "GENET", function() {
         if (!this.#createNetwork()) throw new Exception();
         const endTime = this._timeLimit === null ? Number.MAX_VALUE : Date.now() + this._timeLimit;
         let iterCount = 0;
-        const sol = new $a7e2f7128ad72da7$export$1d4e454bcd46f18f();
+        const sol = new $d7051a715721e7ce$export$1d4e454bcd46f18f();
         const order = [];
         for(let i = 0; i < this.#clusters.length; ++i)order.push(i);
         let cur = this._pro.satisfiedConstraintRate();
@@ -3263,7 +3197,7 @@ $parcel$export($0cb6792a4a1b293a$exports, "GENET", function() {
             return this._neurons.length;
         }
     }
-    $0cb6792a4a1b293a$export$d94917317b4f74cb.Cluster = Cluster;
+    $59ba6be2773f89c9$export$d94917317b4f74cb.Cluster = Cluster;
     class Connection {
         #first;
         #second;
@@ -3286,7 +3220,7 @@ $parcel$export($0cb6792a4a1b293a$exports, "GENET", function() {
             this._weight += -1;
         }
     }
-    $0cb6792a4a1b293a$export$d94917317b4f74cb.Connection = Connection;
+    $59ba6be2773f89c9$export$d94917317b4f74cb.Connection = Connection;
     class Neuron {
         #conTemp = [];
         #connections;
@@ -3313,12 +3247,10 @@ $parcel$export($0cb6792a4a1b293a$exports, "GENET", function() {
             return ret;
         }
     }
-    $0cb6792a4a1b293a$export$d94917317b4f74cb.Neuron = Neuron;
+    $59ba6be2773f89c9$export$d94917317b4f74cb.Neuron = Neuron;
 })();
-var $621e09da02c15793$exports = {};
-$parcel$export($621e09da02c15793$exports, "CrispSRS3", function() {
-    return $621e09da02c15793$export$193930056f923a8;
-});
+var $6a494cae60277c44$exports = {};
+$parcel$export($6a494cae60277c44$exports, "CrispSRS3", ()=>$6a494cae60277c44$export$193930056f923a8);
 /**
  * This class implements the SRS algorithm for crisp CSP.
  * The given crisp CSP is treated as the maximum CSP.
@@ -3326,7 +3258,7 @@ $parcel$export($621e09da02c15793$exports, "CrispSRS3", function() {
  *
  * @author Takuto Yanagida
  * @version 2023-04-16
- */ class $621e09da02c15793$export$193930056f923a8 extends $c4f5921582438a32$export$cca492cadf45c096 {
+ */ class $6a494cae60277c44$export$193930056f923a8 extends $e5625d8b51be59c8$export$cca492cadf45c096 {
     #closedList = new Set();
     #openList = new Set();
     #nodes = [];
@@ -3335,7 +3267,7 @@ $parcel$export($621e09da02c15793$exports, "CrispSRS3", function() {
     constructor(p){
         super(p);
         for (const c1 of this._pro.constraints()){
-            this.#nodes.push(new $621e09da02c15793$export$193930056f923a8.TreeNode(c1));
+            this.#nodes.push(new $6a494cae60277c44$export$193930056f923a8.TreeNode(c1));
             this.#neighborConstraints.push(null);
         }
     }
@@ -3349,7 +3281,7 @@ $parcel$export($621e09da02c15793$exports, "CrispSRS3", function() {
     }
     #repair(c0) {
         this._debugOutput("repair");
-        const canList = new $a7e2f7128ad72da7$export$1d4e454bcd46f18f();
+        const canList = new $d7051a715721e7ce$export$1d4e454bcd46f18f();
         let maxDiff = 0;
         for (const v of c0){
             const v_val = v.value(); // Save the value
@@ -3485,11 +3417,9 @@ $parcel$export($621e09da02c15793$exports, "CrispSRS3", function() {
             return this.#parent;
         }
     }
-    $621e09da02c15793$export$193930056f923a8.TreeNode = TreeNode;
-}var $d149e5ad62c58307$exports = {};
-$parcel$export($d149e5ad62c58307$exports, "FuzzyForwardChecking", function() {
-    return $d149e5ad62c58307$export$2d94cf9ddb103458;
-});
+    $6a494cae60277c44$export$193930056f923a8.TreeNode = TreeNode;
+}var $8d126dc1fb260d00$exports = {};
+$parcel$export($8d126dc1fb260d00$exports, "FuzzyForwardChecking", ()=>$8d126dc1fb260d00$export$2d94cf9ddb103458);
 /**
  * This class implements the forward checking method for fuzzy CSP.
  * The minimum-remaining-values (MRV) heuristic can also be used by specifying the option.
@@ -3498,11 +3428,11 @@ $parcel$export($d149e5ad62c58307$exports, "FuzzyForwardChecking", function() {
  *
  * @author Takuto Yanagida
  * @version 2023-04-16
- */ class $d149e5ad62c58307$export$2d94cf9ddb103458 extends $c4f5921582438a32$export$cca492cadf45c096 {
+ */ class $8d126dc1fb260d00$export$2d94cf9ddb103458 extends $e5625d8b51be59c8$export$cca492cadf45c096 {
     static CONTINUE = 0;
     static TERMINATE = 1;
     #vars;
-    #sol = new $a7e2f7128ad72da7$export$1d4e454bcd46f18f();
+    #sol = new $d7051a715721e7ce$export$1d4e454bcd46f18f();
     #relCons;
     #solWorstDeg = 0;
     #iterCount;
@@ -3711,7 +3641,7 @@ $parcel$export($d149e5ad62c58307$exports, "FuzzyForwardChecking", function() {
             for (const c1 of cs){
                 if (this.#checkedCons[c1.index()]) continue; // Because of the possibility of duplication in polynomial constraints
                 const s = c1.satisfactionDegree();
-                if (s !== $5108df96f96301e5$export$aec1359a0a40a615.UNDEFINED && s <= this.#solWorstDeg) return false;
+                if (s !== $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED && s <= this.#solWorstDeg) return false;
                 this.#checkedCons[c1.index()] = true;
             }
         }
@@ -3755,7 +3685,7 @@ $parcel$export($d149e5ad62c58307$exports, "FuzzyForwardChecking", function() {
     }
     // Performs search one variable at a time.
     #branch(level5) {
-        let bc = $d149e5ad62c58307$export$2d94cf9ddb103458.CONTINUE;
+        let bc = $8d126dc1fb260d00$export$2d94cf9ddb103458.CONTINUE;
         const vc_index = this.#useMRV ? this.#indexOfVariableWithMRV() : level5;
         const vc = this.#vars[vc_index];
         const d = vc.domain();
@@ -3764,7 +3694,7 @@ $parcel$export($d149e5ad62c58307$exports, "FuzzyForwardChecking", function() {
         for(let i = 0, n = d.size(); i < n; ++i){
             if (dc.isValueHidden(i)) continue;
             if (this._iterLimit && this._iterLimit < this.#iterCount++ || this.#endTime < Date.now()) {
-                bc = $d149e5ad62c58307$export$2d94cf9ddb103458.TERMINATE; // Search terminated due to restrictions.
+                bc = $8d126dc1fb260d00$export$2d94cf9ddb103458.TERMINATE; // Search terminated due to restrictions.
                 break;
             }
             vc.assign(d.at(i));
@@ -3773,15 +3703,15 @@ $parcel$export($d149e5ad62c58307$exports, "FuzzyForwardChecking", function() {
             if (!this.#checkForward(level5, vc_index)) continue;
             const nextLevel = level5 + 1;
             bc = nextLevel === this.#vars.length - 1 ? this.#branchLast(nextLevel) : this.#branch(nextLevel);
-            if (bc === $d149e5ad62c58307$export$2d94cf9ddb103458.TERMINATE) break;
+            if (bc === $8d126dc1fb260d00$export$2d94cf9ddb103458.TERMINATE) break;
         }
-        if (bc === $d149e5ad62c58307$export$2d94cf9ddb103458.CONTINUE) for (const v of this.#vars)v.solverObject.reveal(level5);
+        if (bc === $8d126dc1fb260d00$export$2d94cf9ddb103458.CONTINUE) for (const v of this.#vars)v.solverObject.reveal(level5);
         vc.clear();
         return bc;
     }
     // Performs search on the last variable.
     #branchLast(level6) {
-        let bc = $d149e5ad62c58307$export$2d94cf9ddb103458.CONTINUE;
+        let bc = $8d126dc1fb260d00$export$2d94cf9ddb103458.CONTINUE;
         const vc = this.#vars[this.#useMRV ? this.#indexOfVariableWithMRV() : level6];
         const d = vc.domain();
         const dc = vc.solverObject;
@@ -3789,7 +3719,7 @@ $parcel$export($d149e5ad62c58307$exports, "FuzzyForwardChecking", function() {
         for(let i = 0, n = d.size(); i < n; ++i){
             if (dc.isValueHidden(i)) continue;
             if (this._iterLimit && this._iterLimit < this.#iterCount++ || this.#endTime < Date.now()) {
-                bc = $d149e5ad62c58307$export$2d94cf9ddb103458.TERMINATE; // Search terminated due to restrictions.
+                bc = $8d126dc1fb260d00$export$2d94cf9ddb103458.TERMINATE; // Search terminated due to restrictions.
                 break;
             }
             vc.assign(d.at(i));
@@ -3797,7 +3727,7 @@ $parcel$export($d149e5ad62c58307$exports, "FuzzyForwardChecking", function() {
             if (deg > this.#solWorstDeg) {
                 this.#solWorstDeg = deg;
                 this.#sol.setProblem(this._pro);
-                bc = $d149e5ad62c58307$export$2d94cf9ddb103458.TERMINATE;
+                bc = $8d126dc1fb260d00$export$2d94cf9ddb103458.TERMINATE;
                 if (this._targetDeg !== null && this._targetDeg <= this.#solWorstDeg) break;
                 this.#pruneUnaryConstraints();
                 this.#refresh();
@@ -3810,13 +3740,13 @@ $parcel$export($d149e5ad62c58307$exports, "FuzzyForwardChecking", function() {
     exec() {
         this.#endTime = this._timeLimit === null ? Number.MAX_VALUE : Date.now() + this._timeLimit;
         this.#iterCount = 0;
-        for (const v of this.#vars)v.solverObject = new $173b03f492df9c2c$export$f307752a90139b0e(v.domain().size()); // Generation of domain pruners.
+        for (const v of this.#vars)v.solverObject = new $f7b05997b0c3179b$export$f307752a90139b0e(v.domain().size()); // Generation of domain pruners.
         this._pro.clearAllVariables();
         if (!this.#pruneUnaryConstraints()) return false; // Since _worstSatisfactionDegree_ has been updated, call this function.
         let success = false;
         while(true){
             const bc = this.#branch(0);
-            if (bc === $d149e5ad62c58307$export$2d94cf9ddb103458.TERMINATE) {
+            if (bc === $8d126dc1fb260d00$export$2d94cf9ddb103458.TERMINATE) {
                 if (this._iterLimit && this._iterLimit < this.#iterCount++) {
                     this._debugOutput("stop: number of iterations has reached the limit");
                     break;
@@ -3887,21 +3817,19 @@ $parcel$export($d149e5ad62c58307$exports, "FuzzyForwardChecking", function() {
         this.#pruneIntensively = flag;
     }
 }
-var $a7583aef89e9a883$exports = {};
-$parcel$export($a7583aef89e9a883$exports, "FuzzyForwardCheckingBc", function() {
-    return $a7583aef89e9a883$export$532d5536583284b8;
-});
+var $bbd1d315bf8940be$exports = {};
+$parcel$export($bbd1d315bf8940be$exports, "FuzzyForwardCheckingBc", ()=>$bbd1d315bf8940be$export$532d5536583284b8);
 /**
  * This class implements the forward checking method for fuzzy CSPs that contain only binary constraints.
  * The minimum-remaining-values (MRV) heuristic can also be used by specifying the option.
  *
  * @author Takuto Yanagida
  * @version 2023-04-16
- */ class $a7583aef89e9a883$export$532d5536583284b8 extends $c4f5921582438a32$export$cca492cadf45c096 {
+ */ class $bbd1d315bf8940be$export$532d5536583284b8 extends $e5625d8b51be59c8$export$cca492cadf45c096 {
     static CONTINUE = 0;
     static TERMINATE = 1;
     #vars;
-    #sol = new $a7e2f7128ad72da7$export$1d4e454bcd46f18f();
+    #sol = new $d7051a715721e7ce$export$1d4e454bcd46f18f();
     #relCons;
     #solWorstDeg = 0;
     #iterCount;
@@ -3981,7 +3909,7 @@ $parcel$export($a7583aef89e9a883$exports, "FuzzyForwardCheckingBc", function() {
     }
     // Performs search one variable at a time.
     #branch(level23) {
-        let bc = $a7583aef89e9a883$export$532d5536583284b8.CONTINUE;
+        let bc = $bbd1d315bf8940be$export$532d5536583284b8.CONTINUE;
         const vc_index = this.#useMRV ? this.#indexOfVariableWithMRV() : level23;
         const vc = this.#vars[vc_index];
         const d = vc.domain();
@@ -3989,7 +3917,7 @@ $parcel$export($a7583aef89e9a883$exports, "FuzzyForwardCheckingBc", function() {
         for(let i = 0, n = d.size(); i < n; ++i){
             if (dc.isValueHidden(i)) continue;
             if (this._iterLimit && this._iterLimit < this.#iterCount++ || this.#endTime < Date.now()) {
-                bc = $a7583aef89e9a883$export$532d5536583284b8.TERMINATE; // Search terminated due to restrictions.
+                bc = $bbd1d315bf8940be$export$532d5536583284b8.TERMINATE; // Search terminated due to restrictions.
                 break;
             }
             vc.assign(d.at(i));
@@ -3997,22 +3925,22 @@ $parcel$export($a7583aef89e9a883$exports, "FuzzyForwardCheckingBc", function() {
             if (!this.#checkForward(level23, vc_index)) continue;
             const nextLevel = level23 + 1;
             bc = nextLevel === this.#vars.length - 1 ? this.#branchLast(nextLevel) : this.#branch(nextLevel);
-            if (bc === $a7583aef89e9a883$export$532d5536583284b8.TERMINATE) break;
+            if (bc === $bbd1d315bf8940be$export$532d5536583284b8.TERMINATE) break;
         }
-        if (bc === $a7583aef89e9a883$export$532d5536583284b8.CONTINUE) for (const v of this.#vars)v.solverObject.reveal(level23);
+        if (bc === $bbd1d315bf8940be$export$532d5536583284b8.CONTINUE) for (const v of this.#vars)v.solverObject.reveal(level23);
         vc.clear();
         return bc;
     }
     // Performs search on the last variable.
     #branchLast(level32) {
-        let bc = $a7583aef89e9a883$export$532d5536583284b8.CONTINUE;
+        let bc = $bbd1d315bf8940be$export$532d5536583284b8.CONTINUE;
         const vc = this.#vars[this.#useMRV ? this.#indexOfVariableWithMRV() : level32];
         const d = vc.domain();
         const dc = vc.solverObject;
         for(let i = 0, n = d.size(); i < n; ++i){
             if (dc.isValueHidden(i)) continue;
             if (this._iterLimit && this._iterLimit < this.#iterCount++ || this.#endTime < Date.now()) {
-                bc = $a7583aef89e9a883$export$532d5536583284b8.TERMINATE; // Search terminated due to restrictions.
+                bc = $bbd1d315bf8940be$export$532d5536583284b8.TERMINATE; // Search terminated due to restrictions.
                 break;
             }
             vc.assign(d.at(i));
@@ -4020,7 +3948,7 @@ $parcel$export($a7583aef89e9a883$exports, "FuzzyForwardCheckingBc", function() {
             if (deg > this.#solWorstDeg) {
                 this.#solWorstDeg = deg;
                 this.#sol.setProblem(this._pro);
-                bc = $a7583aef89e9a883$export$532d5536583284b8.TERMINATE; // Search terminated due to restrictions.
+                bc = $bbd1d315bf8940be$export$532d5536583284b8.TERMINATE; // Search terminated due to restrictions.
                 if (this._targetDeg !== null && this._targetDeg <= this.#solWorstDeg) break;
             }
         }
@@ -4031,13 +3959,13 @@ $parcel$export($a7583aef89e9a883$exports, "FuzzyForwardCheckingBc", function() {
     exec() {
         this.#endTime = this._timeLimit === null ? Number.MAX_VALUE : Date.now() + this._timeLimit;
         this.#iterCount = 0;
-        for (const v of this.#vars)v.solverObject = new $173b03f492df9c2c$export$f307752a90139b0e(v.domain().size()); // Generation of domain pruners.
+        for (const v of this.#vars)v.solverObject = new $f7b05997b0c3179b$export$f307752a90139b0e(v.domain().size()); // Generation of domain pruners.
         this._pro.clearAllVariables();
-        const sol = new $a7e2f7128ad72da7$export$1d4e454bcd46f18f();
+        const sol = new $d7051a715721e7ce$export$1d4e454bcd46f18f();
         let success = false;
         while(true){
             const bc = this.#branch(0);
-            if (bc === $a7583aef89e9a883$export$532d5536583284b8.TERMINATE) {
+            if (bc === $bbd1d315bf8940be$export$532d5536583284b8.TERMINATE) {
                 if (this._iterLimit && this._iterLimit < this.#iterCount++) {
                     this._debugOutput("stop: number of iterations has reached the limit");
                     break;
@@ -4103,16 +4031,14 @@ $parcel$export($a7583aef89e9a883$exports, "FuzzyForwardCheckingBc", function() {
         this.#degInc = degree;
     }
 }
-var $8d58e5e35735c7ec$exports = {};
-$parcel$export($8d58e5e35735c7ec$exports, "FlexibleLocalChanges", function() {
-    return $8d58e5e35735c7ec$export$c15ba88cf158f3d6;
-});
+var $3e67a3bbb2d0cdae$exports = {};
+$parcel$export($3e67a3bbb2d0cdae$exports, "FlexibleLocalChanges", ()=>$3e67a3bbb2d0cdae$export$c15ba88cf158f3d6);
 /**
  * A class that implements the flexible local changes method.
  *
  * @author Takuto Yanagida
  * @version 2023-04-16
- */ class $8d58e5e35735c7ec$export$c15ba88cf158f3d6 extends $c4f5921582438a32$export$cca492cadf45c096 {
+ */ class $3e67a3bbb2d0cdae$export$c15ba88cf158f3d6 extends $e5625d8b51be59c8$export$cca492cadf45c096 {
     static #setPlusSet(s13, s23) {
         const sn = new Set(s13);
         for (const v of s23)sn.add(v);
@@ -4191,16 +4117,16 @@ $parcel$export($8d58e5e35735c7ec$exports, "FlexibleLocalChanges", function() {
     }
     #flcRepair(X1, X2, xi, consX1xi, consX12, cr1, rc) {
         const X3p = this.#choose(X2, cr1);
-        const X1p = $8d58e5e35735c7ec$export$c15ba88cf158f3d6.#setPlusElement(X1, xi);
-        const X2p = $8d58e5e35735c7ec$export$c15ba88cf158f3d6.#setMinusSet(X2, X3p);
+        const X1p = $3e67a3bbb2d0cdae$export$c15ba88cf158f3d6.#setPlusElement(X1, xi);
+        const X2p = $3e67a3bbb2d0cdae$export$c15ba88cf158f3d6.#setMinusSet(X2, X3p);
         return this.#flcVariables(X1p, X2p, X3p, consX1xi, Math.min(consX12, consX1xi), rc);
     }
     #flcVariable(X11, X21, xi1, consX1, consX121, rc1) {
         let bestCons = this.#lb;
         if (xi1.domain().size() === 0) return bestCons;
-        let bestX2 = $a7e2f7128ad72da7$export$1d4e454bcd46f18f.fromVariables(X21);
+        let bestX2 = $d7051a715721e7ce$export$1d4e454bcd46f18f.fromVariables(X21);
         let bestDij = xi1.domain().at(0);
-        const x2Store = $a7e2f7128ad72da7$export$1d4e454bcd46f18f.fromVariables(X21);
+        const x2Store = $d7051a715721e7ce$export$1d4e454bcd46f18f.fromVariables(X21);
         for(let j = 0; j < xi1.domain().size() && bestCons < consX121; ++j){
             const dij = xi1.domain().at(j);
             xi1.assign(dij);
@@ -4211,7 +4137,7 @@ $parcel$export($8d58e5e35735c7ec$exports, "FlexibleLocalChanges", function() {
                 if (consX12_xi > bestCons) {
                     bestCons = consX12_xi;
                     bestDij = dij;
-                    bestX2 = $a7e2f7128ad72da7$export$1d4e454bcd46f18f.fromVariables(X21);
+                    bestX2 = $d7051a715721e7ce$export$1d4e454bcd46f18f.fromVariables(X21);
                 }
                 if (crNew.size) {
                     const repairCons = this.#flcRepair(X11, X21, xi1, consX1_xi, consX121, crNew, Math.max(rc1, bestCons));
@@ -4219,7 +4145,7 @@ $parcel$export($8d58e5e35735c7ec$exports, "FlexibleLocalChanges", function() {
                     if (repairCons > bestCons) {
                         bestCons = repairCons;
                         bestDij = dij;
-                        bestX2 = $a7e2f7128ad72da7$export$1d4e454bcd46f18f.fromVariables(X21);
+                        bestX2 = $d7051a715721e7ce$export$1d4e454bcd46f18f.fromVariables(X21);
                     }
                     x2Store.apply();
                 }
@@ -4251,8 +4177,8 @@ $parcel$export($8d58e5e35735c7ec$exports, "FlexibleLocalChanges", function() {
         const consX12xi = this.#flcVariable(X12, X22, xi, consX11, consX122, rc2);
         if (this.#globalReturn !== -1) return consX122;
         if (consX12xi < rc2) return this.#lb;
-        X22 = $8d58e5e35735c7ec$export$c15ba88cf158f3d6.#setPlusElement(X22, xi);
-        X3 = $8d58e5e35735c7ec$export$c15ba88cf158f3d6.#setMinusElement(X3, xi);
+        X22 = $3e67a3bbb2d0cdae$export$c15ba88cf158f3d6.#setPlusElement(X22, xi);
+        X3 = $3e67a3bbb2d0cdae$export$c15ba88cf158f3d6.#setMinusElement(X3, xi);
         return this.#flcVariables(X12, X22, X3, consX11, consX12xi, rc2);
     }
     #initTest(X, cr2) {
@@ -4261,7 +4187,7 @@ $parcel$export($8d58e5e35735c7ec$exports, "FlexibleLocalChanges", function() {
         let ret = 1;
         for (const c1 of cs){
             const sd = c1.satisfactionDegree();
-            if (sd === $5108df96f96301e5$export$aec1359a0a40a615.UNDEFINED) continue;
+            if (sd === $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED) continue;
             if (sd < ret) ret = sd;
         }
         for (const c1 of this._pro.constraints()){
@@ -4279,7 +4205,7 @@ $parcel$export($8d58e5e35735c7ec$exports, "FlexibleLocalChanges", function() {
         }
         for (const c1 of cs){
             const d = c1.satisfactionDegree();
-            if (d === $5108df96f96301e5$export$aec1359a0a40a615.UNDEFINED) continue;
+            if (d === $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED) continue;
             if (d < cd) cd = d;
             if (cd <= bestCons || cd <= rc3) return cd; // If it is determined that a better solution than the current solution cannot be obtained
         }
@@ -4298,12 +4224,12 @@ $parcel$export($8d58e5e35735c7ec$exports, "FlexibleLocalChanges", function() {
         }
         for (const c1 of cs){
             const sd = c1.satisfactionDegree();
-            if (sd === $5108df96f96301e5$export$aec1359a0a40a615.UNDEFINED) continue;
+            if (sd === $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED) continue;
             if (sd < csd) csd = sd;
         }
         for (const c1 of cs){
             const sd = c1.satisfactionDegree();
-            if (sd === $5108df96f96301e5$export$aec1359a0a40a615.UNDEFINED) continue;
+            if (sd === $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED) continue;
             if (sd < consX1xi1 || sd < consX123) cr3.add(c1);
         }
         return csd;
@@ -4324,10 +4250,10 @@ $parcel$export($8d58e5e35735c7ec$exports, "FlexibleLocalChanges", function() {
         let initSol = null;
         if (X3.size === 0) {
             rc = initCons;
-            initSol = $a7e2f7128ad72da7$export$1d4e454bcd46f18f.fromVariables(X2);
+            initSol = $d7051a715721e7ce$export$1d4e454bcd46f18f.fromVariables(X2);
         } else rc = this.#lb;
-        const X3p = $8d58e5e35735c7ec$export$c15ba88cf158f3d6.#setPlusSet(this.#choose(X2, cr), X3);
-        const X2p = $8d58e5e35735c7ec$export$c15ba88cf158f3d6.#setMinusSet(X2, X3p);
+        const X3p = $3e67a3bbb2d0cdae$export$c15ba88cf158f3d6.#setPlusSet(this.#choose(X2, cr), X3);
+        const X2p = $3e67a3bbb2d0cdae$export$c15ba88cf158f3d6.#setMinusSet(X2, X3p);
         let result = this.#flcVariables(X1, X2p, X3p, this.#lt, this.#lt, rc);
         if (result < rc) {
             if (initSol !== null) initSol.apply();
@@ -4336,17 +4262,15 @@ $parcel$export($8d58e5e35735c7ec$exports, "FlexibleLocalChanges", function() {
         return result > wsd && result > 0 && (this.#globalReturn !== 0 || this._targetDeg === null);
     }
 }
-var $0ed82bb4e6966b5c$exports = {};
-$parcel$export($0ed82bb4e6966b5c$exports, "FlexibleLocalChangesEx", function() {
-    return $0ed82bb4e6966b5c$export$f3429dcb0286bfee;
-});
+var $a2b0456b598cdc15$exports = {};
+$parcel$export($a2b0456b598cdc15$exports, "FlexibleLocalChangesEx", ()=>$a2b0456b598cdc15$export$f3429dcb0286bfee);
 /**
  * A class that implements the flexible local changes method.
  * The implementation is optimized by converting recursive calls to loops.
  *
  * @author Takuto Yanagida
  * @version 2023-04-11
- */ class $0ed82bb4e6966b5c$export$f3429dcb0286bfee extends $c4f5921582438a32$export$cca492cadf45c096 {
+ */ class $a2b0456b598cdc15$export$f3429dcb0286bfee extends $e5625d8b51be59c8$export$cca492cadf45c096 {
     static #setPlusSet(s14, s24) {
         const sn = new Set(s14);
         for (const v of s24)sn.add(v);
@@ -4420,16 +4344,16 @@ $parcel$export($0ed82bb4e6966b5c$exports, "FlexibleLocalChangesEx", function() {
     }
     #flcRepair(X15, X24, xi4, consX1xi2, consX124, cr11, rc4) {
         const X3p = this.#choose(X24, cr11);
-        const X1p = $0ed82bb4e6966b5c$export$f3429dcb0286bfee.#setPlusElement(X15, xi4);
-        const X2p = $0ed82bb4e6966b5c$export$f3429dcb0286bfee.#setMinusSet(X24, X3p);
+        const X1p = $a2b0456b598cdc15$export$f3429dcb0286bfee.#setPlusElement(X15, xi4);
+        const X2p = $a2b0456b598cdc15$export$f3429dcb0286bfee.#setMinusSet(X24, X3p);
         return this.#flcVariables(X1p, X2p, X3p, consX1xi2, Math.min(consX124, consX1xi2), rc4);
     }
     #flcVariable(X111, X211, xi11, consX13, consX1211, rc11) {
         let bestCons = this.#lb;
         if (xi11.domain().size() === 0) return bestCons;
-        let bestX2 = $a7e2f7128ad72da7$export$1d4e454bcd46f18f.fromVariables(X211);
+        let bestX2 = $d7051a715721e7ce$export$1d4e454bcd46f18f.fromVariables(X211);
         let bestDij = xi11.domain().at(0);
-        const x2Store = $a7e2f7128ad72da7$export$1d4e454bcd46f18f.fromVariables(X211);
+        const x2Store = $d7051a715721e7ce$export$1d4e454bcd46f18f.fromVariables(X211);
         for(let j = 0; j < xi11.domain().size() && bestCons < consX1211; ++j){
             const dij = xi11.domain().at(j);
             xi11.assign(dij);
@@ -4440,7 +4364,7 @@ $parcel$export($0ed82bb4e6966b5c$exports, "FlexibleLocalChangesEx", function() {
                 if (consX12_xi > bestCons) {
                     bestCons = consX12_xi;
                     bestDij = dij;
-                    bestX2 = $a7e2f7128ad72da7$export$1d4e454bcd46f18f.fromVariables(X211);
+                    bestX2 = $d7051a715721e7ce$export$1d4e454bcd46f18f.fromVariables(X211);
                 }
                 if (crNew.size) {
                     const repairCons = this.#flcRepair(X111, X211, xi11, consX1_xi, consX1211, crNew, Math.max(rc11, bestCons));
@@ -4448,7 +4372,7 @@ $parcel$export($0ed82bb4e6966b5c$exports, "FlexibleLocalChangesEx", function() {
                     if (repairCons > bestCons) {
                         bestCons = repairCons;
                         bestDij = dij;
-                        bestX2 = $a7e2f7128ad72da7$export$1d4e454bcd46f18f.fromVariables(X211);
+                        bestX2 = $d7051a715721e7ce$export$1d4e454bcd46f18f.fromVariables(X211);
                     }
                     x2Store.apply();
                 }
@@ -4494,7 +4418,7 @@ $parcel$export($0ed82bb4e6966b5c$exports, "FlexibleLocalChangesEx", function() {
         let ret = 1;
         for (const c1 of cs){
             const sd = c1.satisfactionDegree();
-            if (sd === $5108df96f96301e5$export$aec1359a0a40a615.UNDEFINED) continue;
+            if (sd === $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED) continue;
             if (sd < ret) ret = sd;
         }
         for (const c1 of this._pro.constraints()){
@@ -4512,7 +4436,7 @@ $parcel$export($0ed82bb4e6966b5c$exports, "FlexibleLocalChangesEx", function() {
         }
         for (const c1 of cs){
             const d = c1.satisfactionDegree();
-            if (d === $5108df96f96301e5$export$aec1359a0a40a615.UNDEFINED) continue;
+            if (d === $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED) continue;
             if (d < cd) cd = d;
             if (cd <= bestCons1 || cd <= rc31) return cd; // If it is determined that a better solution than the current solution cannot be obtained
         }
@@ -4531,12 +4455,12 @@ $parcel$export($0ed82bb4e6966b5c$exports, "FlexibleLocalChangesEx", function() {
         }
         for (const c1 of cs){
             const sd = c1.satisfactionDegree();
-            if (sd === $5108df96f96301e5$export$aec1359a0a40a615.UNDEFINED) continue;
+            if (sd === $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED) continue;
             if (sd < csd) csd = sd;
         }
         for (const c1 of cs){
             const sd = c1.satisfactionDegree();
-            if (sd === $5108df96f96301e5$export$aec1359a0a40a615.UNDEFINED) continue;
+            if (sd === $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED) continue;
             if (sd < consX1xi11 || sd < consX1231) cr31.add(c1);
         }
         return csd;
@@ -4557,10 +4481,10 @@ $parcel$export($0ed82bb4e6966b5c$exports, "FlexibleLocalChangesEx", function() {
         let initSol = null;
         if (X3.size === 0) {
             rc = initCons;
-            initSol = $a7e2f7128ad72da7$export$1d4e454bcd46f18f.fromVariables(X2);
+            initSol = $d7051a715721e7ce$export$1d4e454bcd46f18f.fromVariables(X2);
         } else rc = this.#lb;
-        const X3p = $0ed82bb4e6966b5c$export$f3429dcb0286bfee.#setPlusSet(this.#choose(X2, cr), X3);
-        const X2p = $0ed82bb4e6966b5c$export$f3429dcb0286bfee.#setMinusSet(X2, X3p);
+        const X3p = $a2b0456b598cdc15$export$f3429dcb0286bfee.#setPlusSet(this.#choose(X2, cr), X3);
+        const X2p = $a2b0456b598cdc15$export$f3429dcb0286bfee.#setMinusSet(X2, X3p);
         let result = this.#flcVariables(X1, X2p, X3p, this.#lt, this.#lt, rc);
         if (result < rc) {
             if (initSol !== null) initSol.apply();
@@ -4569,16 +4493,14 @@ $parcel$export($0ed82bb4e6966b5c$exports, "FlexibleLocalChangesEx", function() {
         return result > wsd && result > 0 && (this.#globalReturn !== 0 || this._targetDeg === null);
     }
 }
-var $b222557a012b5259$exports = {};
-$parcel$export($b222557a012b5259$exports, "FuzzyBreakout", function() {
-    return $b222557a012b5259$export$151ca5d788220218;
-});
+var $d7c197e6a4ef7b17$exports = {};
+$parcel$export($d7c197e6a4ef7b17$exports, "FuzzyBreakout", ()=>$d7c197e6a4ef7b17$export$151ca5d788220218);
 /**
  * Class implements a solver using the breakout method for fuzzy CSP.
  *
  * @author Takuto Yanagida
  * @version 2023-04-16
- */ class $b222557a012b5259$export$151ca5d788220218 extends $c4f5921582438a32$export$cca492cadf45c096 {
+ */ class $d7c197e6a4ef7b17$export$151ca5d788220218 extends $e5625d8b51be59c8$export$cca492cadf45c096 {
     #weights;
     #lastSolDeg;
     #isRandom = true;
@@ -4627,8 +4549,8 @@ $parcel$export($b222557a012b5259$exports, "FuzzyBreakout", function() {
         let iterCount = 0;
         for (const v of this._pro.variables())if (v.isEmpty()) v.assign(v.domain().at(0));
         const deg = this._pro.worstSatisfactionDegree();
-        const canList = new $a7e2f7128ad72da7$export$1d4e454bcd46f18f();
-        const sol = new $a7e2f7128ad72da7$export$1d4e454bcd46f18f();
+        const canList = new $d7051a715721e7ce$export$1d4e454bcd46f18f();
+        const sol = new $d7051a715721e7ce$export$1d4e454bcd46f18f();
         while(true){
             const [vc, wsd] = this._pro.constraintsWithWorstSatisfactionDegree();
             if (this._targetDeg !== null && this._targetDeg <= wsd) {
@@ -4671,17 +4593,15 @@ $parcel$export($b222557a012b5259$exports, "FuzzyBreakout", function() {
         this.#isRandom = flag;
     }
 }
-var $1ccf339c7def6c57$exports = {};
-$parcel$export($1ccf339c7def6c57$exports, "FuzzyGENET", function() {
-    return $1ccf339c7def6c57$export$6a3df005617df82a;
-});
+var $fb3cfe453725e4b3$exports = {};
+$parcel$export($fb3cfe453725e4b3$exports, "FuzzyGENET", ()=>$fb3cfe453725e4b3$export$6a3df005617df82a);
 /**
  * This class implements fuzzy GENET.
  * CSPs and FCSPs (but only Binary (F)CSPs) is supported.
  *
  * @author Takuto Yanagida
  * @version 2023-04-17
- */ class $1ccf339c7def6c57$export$6a3df005617df82a extends $c4f5921582438a32$export$cca492cadf45c096 {
+ */ class $fb3cfe453725e4b3$export$6a3df005617df82a extends $e5625d8b51be59c8$export$cca492cadf45c096 {
     static nextInt(max) {
         return Math.floor(Math.random() * Math.floor(max));
     }
@@ -4700,7 +4620,7 @@ $parcel$export($1ccf339c7def6c57$exports, "FuzzyGENET", function() {
         const cons = [];
         for (const v of this._pro.variables()){
             if (v.domain().size() === 0) return false;
-            this.#clusters.push(new $1ccf339c7def6c57$export$6a3df005617df82a.Cluster(v));
+            this.#clusters.push(new $fb3cfe453725e4b3$export$6a3df005617df82a.Cluster(v));
         }
         for (const c1 of this._pro.constraints())if (c1.size() === 1) {
             const v = c1.at(0);
@@ -4708,7 +4628,7 @@ $parcel$export($1ccf339c7def6c57$exports, "FuzzyGENET", function() {
             for(let i = 0; i < cl.size(); ++i){
                 const origVal = v.value(); // Save the value.
                 v.assign(cl.get(i)._value);
-                if (c1.satisfactionDegree() <= worstDeg) cons.push(new $1ccf339c7def6c57$export$6a3df005617df82a.Connection(c1, cl.get(i)));
+                if (c1.satisfactionDegree() <= worstDeg) cons.push(new $fb3cfe453725e4b3$export$6a3df005617df82a.Connection(c1, cl.get(i)));
                 v.assign(origVal); // Restore the value.
             }
         } else {
@@ -4722,7 +4642,7 @@ $parcel$export($1ccf339c7def6c57$exports, "FuzzyGENET", function() {
                 for(let j = 0; j < cl_s.size(); ++j){
                     const origVal2 = v2.value(); // Save the value.
                     v2.assign(cl_s.get(j)._value);
-                    if (c1.satisfactionDegree() <= worstDeg) cons.push(new $1ccf339c7def6c57$export$6a3df005617df82a.Connection(c1, cl_f.get(i), cl_s.get(j)));
+                    if (c1.satisfactionDegree() <= worstDeg) cons.push(new $fb3cfe453725e4b3$export$6a3df005617df82a.Connection(c1, cl_f.get(i), cl_s.get(j)));
                     v2.assign(origVal2); // Restore the value.
                 }
                 v1.assign(origVal1); // Restore the value.
@@ -4735,7 +4655,7 @@ $parcel$export($1ccf339c7def6c57$exports, "FuzzyGENET", function() {
     }
     #shuffle(is1) {
         for(let i = is1.length; i > 1; --i){
-            const j = $1ccf339c7def6c57$export$6a3df005617df82a.nextInt(i);
+            const j = $fb3cfe453725e4b3$export$6a3df005617df82a.nextInt(i);
             const temp = is1[i - 1];
             is1[i - 1] = is1[j];
             is1[j] = temp;
@@ -4746,7 +4666,7 @@ $parcel$export($1ccf339c7def6c57$exports, "FuzzyGENET", function() {
         if (!this.#createNetwork(this.#worstSatisfactionDegree)) throw new Exception();
         const endTime = this._timeLimit === null ? Number.MAX_VALUE : Date.now() + this._timeLimit;
         let iterCount = 0;
-        const sol = new $a7e2f7128ad72da7$export$1d4e454bcd46f18f();
+        const sol = new $d7051a715721e7ce$export$1d4e454bcd46f18f();
         const order = [];
         for(let i = 0; i < this.#clusters.length; ++i)order.push(i);
         let cur = this._pro.worstSatisfactionDegree();
@@ -4842,7 +4762,7 @@ $parcel$export($1ccf339c7def6c57$exports, "FuzzyGENET", function() {
             return this._neurons.length;
         }
     }
-    $1ccf339c7def6c57$export$6a3df005617df82a.Cluster = Cluster;
+    $fb3cfe453725e4b3$export$6a3df005617df82a.Cluster = Cluster;
     class Connection {
         #c;
         #first;
@@ -4868,7 +4788,7 @@ $parcel$export($1ccf339c7def6c57$exports, "FuzzyGENET", function() {
             else this._weight += this.#c.fuzzyRelation().satisfactionDegree(this.#first._value, this.#second._value) - 1;
         }
     }
-    $1ccf339c7def6c57$export$6a3df005617df82a.Connection = Connection;
+    $fb3cfe453725e4b3$export$6a3df005617df82a.Connection = Connection;
     class Neuron {
         #conTemp = [];
         #connections;
@@ -4895,18 +4815,16 @@ $parcel$export($1ccf339c7def6c57$exports, "FuzzyGENET", function() {
             return ret;
         }
     }
-    $1ccf339c7def6c57$export$6a3df005617df82a.Neuron = Neuron;
+    $fb3cfe453725e4b3$export$6a3df005617df82a.Neuron = Neuron;
 })();
-var $2b8a116c9a37397b$exports = {};
-$parcel$export($2b8a116c9a37397b$exports, "SRS3", function() {
-    return $2b8a116c9a37397b$export$4bfabca73d1ccb59;
-});
+var $e39b34bae78c1c37$exports = {};
+$parcel$export($e39b34bae78c1c37$exports, "SRS3", ()=>$e39b34bae78c1c37$export$4bfabca73d1ccb59);
 /**
  * This class implements the SRS algorithm.
  *
  * @author Takuto Yanagida
  * @version 2023-04-17
- */ class $2b8a116c9a37397b$export$4bfabca73d1ccb59 extends $c4f5921582438a32$export$cca492cadf45c096 {
+ */ class $e39b34bae78c1c37$export$4bfabca73d1ccb59 extends $e5625d8b51be59c8$export$cca492cadf45c096 {
     // Threshold for adopting a candidate assignment at repair time (should be 0 if strictly following SRS 3)
     static REPAIR_THRESHOLD = 0;
     #closedList = new Set();
@@ -4920,7 +4838,7 @@ $parcel$export($2b8a116c9a37397b$exports, "SRS3", function() {
     constructor(p){
         super(p);
         for (const c1 of this._pro.constraints()){
-            this.#nodes.push(new $2b8a116c9a37397b$export$4bfabca73d1ccb59.TreeNode(c1));
+            this.#nodes.push(new $e39b34bae78c1c37$export$4bfabca73d1ccb59.TreeNode(c1));
             this.#neighborConstraints.push(null);
         }
     }
@@ -4937,7 +4855,7 @@ $parcel$export($2b8a116c9a37397b$exports, "SRS3", function() {
     }
     #repair(c01) {
         this._debugOutput("repair");
-        const canList = new $a7e2f7128ad72da7$export$1d4e454bcd46f18f();
+        const canList = new $d7051a715721e7ce$export$1d4e454bcd46f18f();
         const minDeg0 = c01.satisfactionDegree(); // Target c0 should certainly be an improvement over this.
         const min = this._pro.worstSatisfactionDegree(); // Lower bound of neighborhood constraints.
         let maxDeg0 = c01.satisfactionDegree(); // Satisfaction degree of target c0 for the most improvement so far.
@@ -4950,12 +4868,12 @@ $parcel$export($2b8a116c9a37397b$exports, "SRS3", function() {
                 v.assign(d);
                 const deg0 = c01.satisfactionDegree();
                 // If target c0 cannot be improved, the assignment is rejected.
-                if (minDeg0 > deg0 || maxDeg0 - deg0 > $2b8a116c9a37397b$export$4bfabca73d1ccb59.REPAIR_THRESHOLD) continue;
+                if (minDeg0 > deg0 || maxDeg0 - deg0 > $e39b34bae78c1c37$export$4bfabca73d1ccb59.REPAIR_THRESHOLD) continue;
                 for (const c1 of v){
                     if (c1 === c01) continue;
                     const deg = c1.satisfactionDegree();
                     // If one of the neighborhood constraints c is less than or equal to the worst, the assignment is rejected.
-                    if (deg !== $5108df96f96301e5$export$aec1359a0a40a615.UNDEFINED && deg < min) continue out;
+                    if (deg !== $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED && deg < min) continue out;
                 }
                 if (deg0 > maxDeg0) {
                     maxDeg0 = deg0;
@@ -5041,7 +4959,7 @@ $parcel$export($2b8a116c9a37397b$exports, "SRS3", function() {
         this.#endTime = this._timeLimit === null ? Number.MAX_VALUE : Date.now() + this._timeLimit;
         this.#iterCount = 0;
         if (this._targetDeg && this._targetDeg <= this._pro.worstSatisfactionDegree()) return true;
-        const sol = new $a7e2f7128ad72da7$export$1d4e454bcd46f18f();
+        const sol = new $d7051a715721e7ce$export$1d4e454bcd46f18f();
         let success = false;
         while(true){
             const ret = this.#srs();
@@ -5100,26 +5018,22 @@ $parcel$export($2b8a116c9a37397b$exports, "SRS3", function() {
             this.#parent = p;
         }
     }
-    $2b8a116c9a37397b$export$4bfabca73d1ccb59.TreeNode = TreeNode;
-}var $5e4f7d48ff32a2ed$exports = {};
-$parcel$export($5e4f7d48ff32a2ed$exports, "SRS3_PF", function() {
-    return $5e4f7d48ff32a2ed$export$281ed65cbb041503;
-});
+    $e39b34bae78c1c37$export$4bfabca73d1ccb59.TreeNode = TreeNode;
+}var $56dbbcaaa927a4a2$exports = {};
+$parcel$export($56dbbcaaa927a4a2$exports, "SRS3_PF", ()=>$56dbbcaaa927a4a2$export$281ed65cbb041503);
 /**
  * This class implements the SRS algorithm with PF.
  *
  * @author Takuto Yanagida
  * @version 2023-04-16
- */ var $b0cf4fb82eab32dc$exports = {};
-$parcel$export($b0cf4fb82eab32dc$exports, "PostStabilization", function() {
-    return $b0cf4fb82eab32dc$export$52631f16ca582d39;
-});
+ */ var $c5e681ea32920ad2$exports = {};
+$parcel$export($c5e681ea32920ad2$exports, "PostStabilization", ()=>$c5e681ea32920ad2$export$52631f16ca582d39);
 /**
  * Class of post-stabilization.
  *
  * @author Takuto Yanagida
  * @version 2023-04-16
- */ class $b0cf4fb82eab32dc$export$52631f16ca582d39 {
+ */ class $c5e681ea32920ad2$export$52631f16ca582d39 {
     static apply(p, orig) {
         this._debugOutput("start post-stabilization");
         let stabilized;
@@ -5143,7 +5057,7 @@ $parcel$export($b0cf4fb82eab32dc$exports, "PostStabilization", function() {
         return true;
     }
 }
-class $5e4f7d48ff32a2ed$export$281ed65cbb041503 extends $2b8a116c9a37397b$export$4bfabca73d1ccb59 {
+class $56dbbcaaa927a4a2$export$281ed65cbb041503 extends $e39b34bae78c1c37$export$4bfabca73d1ccb59 {
     constructor(p){
         super(p);
     }
@@ -5157,17 +5071,17 @@ class $5e4f7d48ff32a2ed$export$281ed65cbb041503 extends $2b8a116c9a37397b$export
             deg = this._pro.worstSatisfactionDegree();
             uvs = this._pro.emptyVariableSize();
         }
-        const al = new $a7e2f7128ad72da7$export$1d4e454bcd46f18f();
+        const al = new $d7051a715721e7ce$export$1d4e454bcd46f18f();
         al.setProblem(this._pro);
         const res = super.exec();
-        if (res) $b0cf4fb82eab32dc$export$52631f16ca582d39.apply(this._pro, al);
+        if (res) $c5e681ea32920ad2$export$52631f16ca582d39.apply(this._pro, al);
         this._debugOutput(`result: ${res ? "success" : "failure"}`);
         this._debugOutput(`satisfaction degree: ${deg} -> ${this._pro.worstSatisfactionDegree()}`);
         this._debugOutput(`unassigned size: ${uvs} -> ${this._pro.emptyVariableSize()}`);
         return res;
     }
 }
-class $bc75b5b8eb656b55$export$4e442516b8f577ee {
+class $720d3cc47e3bd21f$export$4e442516b8f577ee {
     static crispSolverNames() {
         return [
             /* 0 */ "Forward Checking",
@@ -5192,9 +5106,9 @@ class $bc75b5b8eb656b55$export$4e442516b8f577ee {
         ];
     }
     static async createSolver(type, p) {
-        const cs = await $bc75b5b8eb656b55$export$4e442516b8f577ee.createCrispSolver(type, p);
+        const cs = await $720d3cc47e3bd21f$export$4e442516b8f577ee.createCrispSolver(type, p);
         if (cs) return cs;
-        const fs = await $bc75b5b8eb656b55$export$4e442516b8f577ee.createFuzzySolver(type, p);
+        const fs = await $720d3cc47e3bd21f$export$4e442516b8f577ee.createFuzzySolver(type, p);
         if (fs) return fs;
         return null;
     }
@@ -5202,25 +5116,25 @@ class $bc75b5b8eb656b55$export$4e442516b8f577ee {
         switch(type.replaceAll(" ", "")){
             case "ForwardChecking":
             case "forward-checking":
-                return new $753cae771624653d$export$8570b7b487498488(p);
+                return new $6537b0e1551710d4$export$8570b7b487498488(p);
             case "MaxForwardChecking":
             case "max-forward-checking":
-                return new $5da71a10526e78a7$export$2a32484f7cb0d846(p);
+                return new $0c5cdff78dc8648d$export$2a32484f7cb0d846(p);
             case "LocalChanges":
             case "local-changes":
-                return new $62da18818fc7efc1$export$8153937ab18ca581(p);
+                return new $18724c3268ec037c$export$8153937ab18ca581(p);
             case "LocalChangesEx":
             case "local-changes-ex":
-                return new $7f4ecc5acb283d86$export$e577c7182ffc977b(p);
+                return new $16be001e34914685$export$e577c7182ffc977b(p);
             case "Breakout":
             case "breakout":
-                return new $2c8e786ab4db97cd$export$44de86bc32e07644(p);
+                return new $368b031b41e29330$export$44de86bc32e07644(p);
             case "GENET":
             case "genet":
-                return new $0cb6792a4a1b293a$export$d94917317b4f74cb(p);
+                return new $59ba6be2773f89c9$export$d94917317b4f74cb(p);
             case "CrispSRS3":
             case "crisp-srs3":
-                return new $621e09da02c15793$export$193930056f923a8(p);
+                return new $6a494cae60277c44$export$193930056f923a8(p);
         }
         return null;
     }
@@ -5228,43 +5142,41 @@ class $bc75b5b8eb656b55$export$4e442516b8f577ee {
         switch(type.replaceAll(" ", "")){
             case "FuzzyForwardChecking":
             case "fuzzy-forward-checking":
-                return new $d149e5ad62c58307$export$2d94cf9ddb103458(p);
+                return new $8d126dc1fb260d00$export$2d94cf9ddb103458(p);
             case "FuzzyForwardCheckingBc":
             case "fuzzy-forward-checking-bc":
-                return new $a7583aef89e9a883$export$532d5536583284b8(p);
+                return new $bbd1d315bf8940be$export$532d5536583284b8(p);
             case "FlexibleLocalChanges":
             case "flexible-local-changes":
-                return new $8d58e5e35735c7ec$export$c15ba88cf158f3d6(p);
+                return new $3e67a3bbb2d0cdae$export$c15ba88cf158f3d6(p);
             case "FlexibleLocalChangesEx":
             case "flexible-local-changes-ex":
-                return new $0ed82bb4e6966b5c$export$f3429dcb0286bfee(p);
+                return new $a2b0456b598cdc15$export$f3429dcb0286bfee(p);
             case "FuzzyBreakout":
             case "fuzzy-breakout":
-                return new $b222557a012b5259$export$151ca5d788220218(p);
+                return new $d7c197e6a4ef7b17$export$151ca5d788220218(p);
             case "FuzzyGENET":
             case "fuzzy-genet":
-                return new $1ccf339c7def6c57$export$6a3df005617df82a(p);
+                return new $fb3cfe453725e4b3$export$6a3df005617df82a(p);
             case "SRS3":
             case "srs3":
-                return new $2b8a116c9a37397b$export$4bfabca73d1ccb59(p);
+                return new $e39b34bae78c1c37$export$4bfabca73d1ccb59(p);
             case "SRS3PF":
             case "SRS3_PF":
             case "srs3-pf":
-                return new $5e4f7d48ff32a2ed$export$281ed65cbb041503(p);
+                return new $56dbbcaaa927a4a2$export$281ed65cbb041503(p);
         }
         return null;
     }
 }
-var $1d9f94f1b65cd2b2$exports = {};
-$parcel$export($1d9f94f1b65cd2b2$exports, "AC3", function() {
-    return $1d9f94f1b65cd2b2$export$ac824f187e852f5a;
-});
+var $d10fdff0b3f22a66$exports = {};
+$parcel$export($d10fdff0b3f22a66$exports, "AC3", ()=>$d10fdff0b3f22a66$export$ac824f187e852f5a);
 /**
  * The class implements AC-3, one of the arc consistency algorithms.
  *
  * @author Takuto Yanagida
  * @version 2023-04-10
- */ class $1d9f94f1b65cd2b2$export$ac824f187e852f5a {
+ */ class $d10fdff0b3f22a66$export$ac824f187e852f5a {
     static #checkConsistency(c6, v_j) {
         for (const val of v_j.domain()){
             v_j.assign(val);
@@ -5282,7 +5194,7 @@ $parcel$export($1d9f94f1b65cd2b2$exports, "AC3", function() {
             v_i.assign(val);
             for (const c1 of cs){
                 if (c1.size() !== 2) continue; // Check the next constraint
-                if (!$1d9f94f1b65cd2b2$export$ac824f187e852f5a.#checkConsistency(c1, v_j1)) continue vals; // Since there is no partner satisfying the constraint, check the next value.
+                if (!$d10fdff0b3f22a66$export$ac824f187e852f5a.#checkConsistency(c1, v_j1)) continue vals; // Since there is no partner satisfying the constraint, check the next value.
             }
             temp.push(val);
         }
@@ -5305,22 +5217,20 @@ $parcel$export($1d9f94f1b65cd2b2$exports, "AC3", function() {
             const c1 = cs.remove(cs.size() - 1);
             const v_k = c1.at(0);
             const v_m = c1.at(1);
-            if ($1d9f94f1b65cd2b2$export$ac824f187e852f5a.#reviseDomain(p, v_k, v_m)) {
+            if ($d10fdff0b3f22a66$export$ac824f187e852f5a.#reviseDomain(p, v_k, v_m)) {
                 for (const c1 of p.constraints())if (c1.size() === 2 && c1.at(1) === v_k && c1.at(0) !== v_m) cs.add(0, c1);
             }
         }
     }
 }
-var $ca17a2e259f989db$exports = {};
-$parcel$export($ca17a2e259f989db$exports, "NodeConsistency", function() {
-    return $ca17a2e259f989db$export$975ddbe83e2b310a;
-});
+var $a8cdbbce0cfe8aee$exports = {};
+$parcel$export($a8cdbbce0cfe8aee$exports, "NodeConsistency", ()=>$a8cdbbce0cfe8aee$export$975ddbe83e2b310a);
 /**
  * Utility class that performs node consistency.
  *
  * @author Takuto Yanagida
  * @version 2023-04-11
- */ class $ca17a2e259f989db$export$975ddbe83e2b310a {
+ */ class $a8cdbbce0cfe8aee$export$975ddbe83e2b310a {
     /**
 	 * Guarantees consistency of fuzzy unary constraints. The domain of each variable is replaced as needed.
 	 * Deletes elements from domains that do not meet the specified worst satisfaction degree.
@@ -5375,16 +5285,14 @@ $parcel$export($ca17a2e259f989db$exports, "NodeConsistency", function() {
         return true;
     }
 }
-var $9270f99178eaf6e6$exports = {};
-$parcel$export($9270f99178eaf6e6$exports, "Problems", function() {
-    return $9270f99178eaf6e6$export$32fae9b8f93405d0;
-});
+var $e26450ba7c736240$exports = {};
+$parcel$export($e26450ba7c736240$exports, "Problems", ()=>$e26450ba7c736240$export$32fae9b8f93405d0);
 /**
  * Utility class for constraint satisfaction problems.
  *
  * @author Takuto Yanagida
  * @version 2023-04-18
- */ class $9270f99178eaf6e6$export$32fae9b8f93405d0 {
+ */ class $e26450ba7c736240$export$32fae9b8f93405d0 {
     static #averagePathLength(p1, v5, length, baseLength, vo) {
         const vn = [];
         for (const c1 of v5){
@@ -5394,7 +5302,7 @@ $parcel$export($9270f99178eaf6e6$exports, "Problems", function() {
             }
         }
         for (const vi of vn)vo.add(vi);
-        for (const vi of vn)$9270f99178eaf6e6$export$32fae9b8f93405d0.#averagePathLength(p1, vi, length, baseLength + 1, vo);
+        for (const vi of vn)$e26450ba7c736240$export$32fae9b8f93405d0.#averagePathLength(p1, vi, length, baseLength + 1, vo);
     }
     /**
 	 * Calculates the average path length for a given variable.
@@ -5407,7 +5315,7 @@ $parcel$export($9270f99178eaf6e6$exports, "Problems", function() {
         const vs = new Set();
         vs.add(v);
         ls[v.index()] = 0;
-        $9270f99178eaf6e6$export$32fae9b8f93405d0.#averagePathLength(p, v, ls, 0, vs);
+        $e26450ba7c736240$export$32fae9b8f93405d0.#averagePathLength(p, v, ls, 0, vs);
         let connectedSize = 0;
         let sum = 0;
         for(let i = 0; i < ls.length; ++i)if (ls[i] !== Number.MAX_VALUE && i !== v.index()) {
@@ -5423,7 +5331,7 @@ $parcel$export($9270f99178eaf6e6$exports, "Problems", function() {
 	 * @return Average path length.
 	 */ static averagePathLengths(p) {
         const ls = new Array(p.variableSize());
-        for (const v of p.variables())ls[v.index()] = $9270f99178eaf6e6$export$32fae9b8f93405d0.averagePathLength(p, v);
+        for (const v of p.variables())ls[v.index()] = $e26450ba7c736240$export$32fae9b8f93405d0.averagePathLength(p, v);
         return ls;
     }
     /**
@@ -5468,13 +5376,13 @@ $parcel$export($9270f99178eaf6e6$exports, "Problems", function() {
 	 * @param threshold The threshold of constraint satisfaction degree. A constraint is considered satisfied when the constraint satisfaction degree is greater than or equal to this value.
 	 * @return A crisp constraint satisfaction problem.
 	 */ static toViewAsCrispProblem(p, threshold) {
-        const cp = new $9270f99178eaf6e6$var$CrispFuzzyProblem();
+        const cp = new $e26450ba7c736240$var$CrispFuzzyProblem();
         for (const v of p.variables())cp.createVariable(v);
         for (c of p.constraints()){
             const vs = [];
             for (const v of c)vs.push(cp.variableAt(v.index()));
             const r = c.crispRelation();
-            if (c.isFuzzy()) r = new $9270f99178eaf6e6$var$CrispFuzzyRelation(c.fuzzyRelation(), threshold);
+            if (c.isFuzzy()) r = new $e26450ba7c736240$var$CrispFuzzyRelation(c.fuzzyRelation(), threshold);
             cp.createConstraint({
                 relation: r,
                 variables: vs
@@ -5483,14 +5391,14 @@ $parcel$export($9270f99178eaf6e6$exports, "Problems", function() {
         return cp;
     }
 }
-class $9270f99178eaf6e6$var$CrispFuzzyProblem extends $2101e22eb3ae726f$export$2d7b2a6964dca148 {
+class $e26450ba7c736240$var$CrispFuzzyProblem extends $c624e9db75d26c9f$export$2d7b2a6964dca148 {
     createVariable(v) {
-        const iv = new $9270f99178eaf6e6$var$ImaginaryVariable(v);
+        const iv = new $e26450ba7c736240$var$ImaginaryVariable(v);
         this.addVariable(iv);
         return v;
     }
 }
-class $9270f99178eaf6e6$var$CrispFuzzyRelation extends $48d470acfc59c60d$export$182ea39d269dda05 {
+class $e26450ba7c736240$var$CrispFuzzyRelation extends $9098286a4d3ce42f$export$182ea39d269dda05 {
     #th;
     #fr;
     constructor(fr, th){
@@ -5501,7 +5409,7 @@ class $9270f99178eaf6e6$var$CrispFuzzyRelation extends $48d470acfc59c60d$export$
         return this.#fr.satisfactionDegree(vs) >= this.#th;
     }
 }
-class $9270f99178eaf6e6$var$ImaginaryVariable extends $d579165ed6156fef$export$c867a5c9595a1350 {
+class $e26450ba7c736240$var$ImaginaryVariable extends $8a169d84b9853138$export$c867a5c9595a1350 {
     #orig;
     constructor(v){
         super(v.owner(), v.domain());
@@ -5522,16 +5430,14 @@ class $9270f99178eaf6e6$var$ImaginaryVariable extends $d579165ed6156fef$export$c
         return this.#orig.value();
     }
 }
-var $d588427b879288b9$exports = {};
-$parcel$export($d588427b879288b9$exports, "LoopDetector", function() {
-    return $d588427b879288b9$export$136021658ac30d9;
-});
+var $ef2881bbdac82876$exports = {};
+$parcel$export($ef2881bbdac82876$exports, "LoopDetector", ()=>$ef2881bbdac82876$export$136021658ac30d9);
 /**
  * This class detects that a solver's operation is looping.
  *
  * @author Takuto Yanagida
  * @version 2023-04-16
- */ class $d588427b879288b9$export$136021658ac30d9 {
+ */ class $ef2881bbdac82876$export$136021658ac30d9 {
     #indices = [];
     #values = [];
     #cur = null;

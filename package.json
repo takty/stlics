@@ -24,12 +24,6 @@
 		"dev": "parcel watch",
 		"docs": "parcel src/_docs/*.html --dist-dir docs  --public-url /stlics/"
 	},
-	"browserslist": [
-		"> 1%",
-		"last 2 versions",
-		"not ie <= 11",
-		"not dead"
-	],
 	"devDependencies": {
 		"@parcel/transformer-sass": "2.8.3",
 		"parcel": "^2.8.3"
