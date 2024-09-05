@@ -24,8 +24,9 @@
 		"dev": "parcel watch",
 		"docs": "parcel src/_docs/*.html --dist-dir docs  --public-url /stlics/"
 	},
+	"packageManager": "yarn@1.22.22",
 	"devDependencies": {
-		"@parcel/transformer-sass": "2.8.3",
-		"parcel": "^2.8.3"
+		"@parcel/transformer-sass": "2.12.0",
+		"parcel": "^2.12.0"
 	}
 }
