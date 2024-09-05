@@ -1,6 +1,7 @@
+
 function $parcel$exportWildcard(dest, source) {
   Object.keys(source).forEach(function(key) {
-    if (key === 'default' || key === '__esModule' || dest.hasOwnProperty(key)) {
+    if (key === 'default' || key === '__esModule' || Object.prototype.hasOwnProperty.call(dest, key)) {
       return;
     }
 
@@ -14,6 +15,7 @@ function $parcel$exportWildcard(dest, source) {
 
   return dest;
 }
+
 function $parcel$export(e, n, v, s) {
   Object.defineProperty(e, n, {get: v, set: s, enumerable: true, configurable: true});
 }
@@ -2025,7 +2027,7 @@ class $460b74416845e1dc$export$8570b7b487498488 extends (0, $984029824f982d2d$ex
         return index;
     }
     // Searches for one variable at a time.
-    #branch(level1) {
+    #branch(level) {
         if (this._iterLimit && this._iterLimit < this.#iterCount++) {
             this._debugOutput("stop: number of iterations has reached the limit");
             return false;
@@ -2034,19 +2036,19 @@ class $460b74416845e1dc$export$8570b7b487498488 extends (0, $984029824f982d2d$ex
             this._debugOutput("stop: time limit has been reached");
             return false;
         }
-        if (level1 === this._pro.variableSize()) {
+        if (level === this._pro.variableSize()) {
             this.#sol.setProblem(this._pro);
             return true;
         }
-        const vc_index = this.#useMRV ? this.#indexOfVariableWithMRV() : level1;
+        const vc_index = this.#useMRV ? this.#indexOfVariableWithMRV() : level;
         const vc = this.#vars[vc_index];
         const d = vc.domain();
         const dc = vc.solverObject;
         for(let i = 0, n = d.size(); i < n; ++i){
             if (dc.isValueHidden(i)) continue;
             vc.assign(d.at(i));
-            if (this.#checkForward(level1, vc_index) && this.#branch(level1 + 1)) return true;
-            for (const v of this.#vars)v.solverObject.reveal(level1);
+            if (this.#checkForward(level, vc_index) && this.#branch(level + 1)) return true;
+            for (const v of this.#vars)v.solverObject.reveal(level);
         }
         vc.clear();
         return false;
@@ -2140,14 +2142,14 @@ class $537a4ad5c31eb7a9$export$2a32484f7cb0d846 extends (0, $984029824f982d2d$ex
         return false;
     }
     // Checks for possible assignment to a future variable from the current variable assignment.
-    #checkForward(level1) {
-        const vc = this.#vars[level1];
-        for(let i = level1 + 1; i < this.#vars.length; ++i){
+    #checkForward(level) {
+        const vc = this.#vars[level];
+        for(let i = level + 1; i < this.#vars.length; ++i){
             const future = this.#vars[i];
             this.#cons = this._pro.constraintsBetween(vc, future);
             for (const c of this.#cons){
                 if (c.emptyVariableSize() !== 1) continue;
-                if (this.#revise(future, c, level1)) {
+                if (this.#revise(future, c, level)) {
                     if (future.solverObject.isEmpty()) return false; // Failure if the domain of one of the future variables is empty.
                 }
             }
@@ -2155,10 +2157,10 @@ class $537a4ad5c31eb7a9$export$2a32484f7cb0d846 extends (0, $984029824f982d2d$ex
         return true;
     }
     // Find the number of constraint violations that have increased due to the current value of the variable vc.
-    #getAdditionalViolationCount(level2, vc) {
+    #getAdditionalViolationCount(level, vc) {
         let avc = 0;
         this.#checkedCons.clear(); // Reuse.
-        for(let i = 0; i < level2; ++i){
+        for(let i = 0; i < level; ++i){
             this.#cons = this._pro.constraintsBetween(vc, this.#vars[i]);
             for (const c of this.#cons){
                 if (this.#checkedCons.has(c)) continue; // Because of the possibility of duplication in polynomial constraints
@@ -2169,7 +2171,7 @@ class $537a4ad5c31eb7a9$export$2a32484f7cb0d846 extends (0, $984029824f982d2d$ex
         return avc;
     }
     // Remove values from the domain of v1 that do not correspond to v2. That is, match v1 with v2.
-    #revise(v1, c, level3) {
+    #revise(v1, c, level) {
         let deleted = false;
         const dom = v1.domain();
         const dc = v1.solverObject;
@@ -2177,7 +2179,7 @@ class $537a4ad5c31eb7a9$export$2a32484f7cb0d846 extends (0, $984029824f982d2d$ex
             if (dc.isValueHidden(i)) continue;
             v1.assign(dom.at(i));
             if (c.isSatisfied() === 0 && this.#vioCount + 1 > this.#maxVioCount) {
-                dc.hide(i, level3);
+                dc.hide(i, level);
                 deleted = true;
             }
         }
@@ -2218,9 +2220,9 @@ class $a085d175734c9998$export$8153937ab18ca581 extends (0, $984029824f982d2d$ex
         for (const v of s2)sn.add(v);
         return sn;
     }
-    static #setMinusSet(s11, s21) {
-        const sn = new Set(s11);
-        for (const v of s21)sn.delete(v);
+    static #setMinusSet(s1, s2) {
+        const sn = new Set(s1);
+        for (const v of s2)sn.delete(v);
         return sn;
     }
     static #setPlusElement(s, e) {
@@ -2228,9 +2230,9 @@ class $a085d175734c9998$export$8153937ab18ca581 extends (0, $984029824f982d2d$ex
         sn.add(e);
         return sn;
     }
-    static #setMinusElement(s3, e1) {
-        const sn = new Set(s3);
-        sn.delete(e1);
+    static #setMinusElement(s, e) {
+        const sn = new Set(s);
+        sn.delete(e);
         return sn;
     }
     #iterCount;
@@ -2259,46 +2261,46 @@ class $a085d175734c9998$export$8153937ab18ca581 extends (0, $984029824f982d2d$ex
         newV3.delete(v);
         return newV3;
     }
-    #isConsistent(A, v1, val1) {
+    #isConsistent(A, v, val) {
         const cs = new Set();
         for (const va of A){
-            const temp = this._pro.constraintsBetween(v1, va);
+            const temp = this._pro.constraintsBetween(v, va);
             for (const c of temp)cs.add(c);
         }
-        const origVal = v1.value(); // Save the value.
-        v1.assign(val1);
+        const origVal = v.value(); // Save the value.
+        v.assign(val);
         for (const c of cs)if (c.isSatisfied() === 0) {
-            v1.assign(origVal); // Restore the value.
+            v.assign(origVal); // Restore the value.
             return false;
         }
-        v1.assign(origVal); // Restore the value.
+        v.assign(origVal); // Restore the value.
         return true;
     }
-    #lcValue(V1, V2, v2, val2) {
-        if (!this.#isConsistent(V1, v2, val2)) return false;
+    #lcValue(V1, V2, v, val) {
+        if (!this.#isConsistent(V1, v, val)) return false;
         const V1_V2 = $a085d175734c9998$export$8153937ab18ca581.#setPlusSet(V1, V2);
-        if (this.#isConsistent(V1_V2, v2, val2)) return true;
-        const V3 = this.#createNewV3(V1_V2, v2, val2);
+        if (this.#isConsistent(V1_V2, v, val)) return true;
+        const V3 = this.#createNewV3(V1_V2, v, val);
         const T = $a085d175734c9998$export$8153937ab18ca581.#setMinusSet(V1_V2, V3);
-        if (!this.#isConsistent(T, v2, val2)) this._debugOutput("bug");
+        if (!this.#isConsistent(T, v, val)) this._debugOutput("bug");
         for (const vv of V3)vv.clear();
-        V1 = $a085d175734c9998$export$8153937ab18ca581.#setPlusElement(V1, v2);
+        V1 = $a085d175734c9998$export$8153937ab18ca581.#setPlusElement(V1, v);
         V2 = $a085d175734c9998$export$8153937ab18ca581.#setMinusSet(V2, V3);
         return this.#lcVariables(V1, V2, V3);
     }
-    #lcVariable(V11, V21, v3, d) {
+    #lcVariable(V1, V2, v, d) {
         if (d.size === 0) return false;
         const val = d.values().next().value;
-        const al = (0, $3c32d3431062328c$export$1d4e454bcd46f18f).fromVariables(V21);
-        v3.assign(val);
-        const ret = this.#lcValue(V11, V21, v3, val);
+        const al = (0, $3c32d3431062328c$export$1d4e454bcd46f18f).fromVariables(V2);
+        v.assign(val);
+        const ret = this.#lcValue(V1, V2, v, val);
         if (ret || this.#globalReturn) return ret;
-        v3.clear();
+        v.clear();
         al.apply();
-        return this.#lcVariable(V11, V21, v3, $a085d175734c9998$export$8153937ab18ca581.#setMinusElement(d, val));
+        return this.#lcVariable(V1, V2, v, $a085d175734c9998$export$8153937ab18ca581.#setMinusElement(d, val));
     }
-    #lcVariables(V12, V22, V3) {
-        this._debugOutput(`V1 ${V12.size}, V2' ${V22.size}, V3' ${V3.size}`);
+    #lcVariables(V1, V2, V3) {
+        this._debugOutput(`V1 ${V1.size}, V2' ${V2.size}, V3' ${V3.size}`);
         if ((this._targetDeg ?? 1) <= this._pro.satisfiedConstraintRate()) {
             this._debugOutput("stop: current degree is above the target");
             this.#globalReturn = true;
@@ -2318,11 +2320,11 @@ class $a085d175734c9998$export$8153937ab18ca581 extends (0, $984029824f982d2d$ex
         const v = V3.values().next().value;
         const d = new Set();
         for (const val of v.domain())d.add(val);
-        const ret = this.#lcVariable(V12, V22, v, d);
+        const ret = this.#lcVariable(V1, V2, v, d);
         if (!ret || this.#globalReturn) return ret;
-        V22 = $a085d175734c9998$export$8153937ab18ca581.#setPlusElement(V22, v);
+        V2 = $a085d175734c9998$export$8153937ab18ca581.#setPlusElement(V2, v);
         V3 = $a085d175734c9998$export$8153937ab18ca581.#setMinusElement(V3, v);
-        return this.#lcVariables(V12, V22, V3);
+        return this.#lcVariables(V1, V2, V3);
     }
     exec() {
         this.#endTime = this._timeLimit === null ? Number.MAX_VALUE : Date.now() + this._timeLimit;
@@ -2354,9 +2356,9 @@ class $803eecb8e5ebe45d$export$e577c7182ffc977b extends (0, $984029824f982d2d$ex
         for (const v of s2)sn.add(v);
         return sn;
     }
-    static #setMinusSet(s11, s21) {
-        const sn = new Set(s11);
-        for (const v of s21)sn.delete(v);
+    static #setMinusSet(s1, s2) {
+        const sn = new Set(s1);
+        for (const v of s2)sn.delete(v);
         return sn;
     }
     static #setPlusElement(s, e) {
@@ -2364,9 +2366,9 @@ class $803eecb8e5ebe45d$export$e577c7182ffc977b extends (0, $984029824f982d2d$ex
         sn.add(e);
         return sn;
     }
-    static #setMinusElement(s3, e1) {
-        const sn = new Set(s3);
-        sn.delete(e1);
+    static #setMinusElement(s, e) {
+        const sn = new Set(s);
+        sn.delete(e);
         return sn;
     }
     #iterCount;
@@ -2395,46 +2397,46 @@ class $803eecb8e5ebe45d$export$e577c7182ffc977b extends (0, $984029824f982d2d$ex
         newV3.delete(v);
         return newV3;
     }
-    #isConsistent(A, v1, val1) {
+    #isConsistent(A, v, val) {
         const cs = new Set();
         for (const va of A){
-            const temp = this._pro.constraintsBetween(v1, va);
+            const temp = this._pro.constraintsBetween(v, va);
             for (const c of temp)cs.add(c);
         }
-        const origVal = v1.value(); // Save the value.
-        v1.assign(val1);
+        const origVal = v.value(); // Save the value.
+        v.assign(val);
         for (const c of cs)if (c.isSatisfied() === 0) {
-            v1.assign(origVal); // Restore the value.
+            v.assign(origVal); // Restore the value.
             return false;
         }
-        v1.assign(origVal); // Restore the value.
+        v.assign(origVal); // Restore the value.
         return true;
     }
-    #lcValue(V1, V2, v2) {
-        if (!this.#isConsistent(V1, v2, v2.value())) return false;
+    #lcValue(V1, V2, v) {
+        if (!this.#isConsistent(V1, v, v.value())) return false;
         const V1_V2 = $803eecb8e5ebe45d$export$e577c7182ffc977b.#setPlusSet(V1, V2);
-        if (this.#isConsistent(V1_V2, v2, v2.value())) return true;
-        const V3 = this.#createNewV3(V1_V2, v2, v2.value());
+        if (this.#isConsistent(V1_V2, v, v.value())) return true;
+        const V3 = this.#createNewV3(V1_V2, v, v.value());
         V2 = $803eecb8e5ebe45d$export$e577c7182ffc977b.#setMinusSet(V2, V3);
-        V1 = $803eecb8e5ebe45d$export$e577c7182ffc977b.#setPlusElement(V1, v2);
+        V1 = $803eecb8e5ebe45d$export$e577c7182ffc977b.#setPlusElement(V1, v);
         return this.#lcVariables(V1, V2, V3);
     }
-    #lcVariable(V11, V21, v3) {
-        for (const val of v3.domain()){
-            const s = (0, $3c32d3431062328c$export$1d4e454bcd46f18f).fromVariables(V21);
-            v3.assign(val);
-            const ret = this.#lcValue(V11, V21, v3);
+    #lcVariable(V1, V2, v) {
+        for (const val of v.domain()){
+            const s = (0, $3c32d3431062328c$export$1d4e454bcd46f18f).fromVariables(V2);
+            v.assign(val);
+            const ret = this.#lcValue(V1, V2, v);
             if (ret || this.#globalReturn) return ret;
-            v3.clear();
+            v.clear();
             s.apply();
         }
         return false;
     }
-    #lcVariables(V12, V22, V3) {
-        V22 = new Set(V22); // Clone
+    #lcVariables(V1, V2, V3) {
+        V2 = new Set(V2); // Clone
         V3 = new Set(V3); // Clone
         while(true){
-            this._debugOutput(`V1 ${V12.size}, V2' ${V22.size}, V3' ${V3.size}`);
+            this._debugOutput(`V1 ${V1.size}, V2' ${V2.size}, V3' ${V3.size}`);
             if ((this._targetDeg ?? 1) <= this._pro.satisfiedConstraintRate()) {
                 this._debugOutput("stop: current degree is above the target");
                 this.#globalReturn = true;
@@ -2452,9 +2454,9 @@ class $803eecb8e5ebe45d$export$e577c7182ffc977b extends (0, $984029824f982d2d$ex
             }
             if (V3.size === 0) return true;
             const v = V3.values().next().value;
-            const ret = this.#lcVariable(V12, V22, v);
+            const ret = this.#lcVariable(V1, V2, v);
             if (!ret || this.#globalReturn) return ret;
-            V22.add(v);
+            V2.add(v);
             V3.delete(v);
         }
     }
@@ -2869,26 +2871,26 @@ class $15569dd864fb028a$export$193930056f923a8 extends (0, $984029824f982d2d$exp
             if (cur.parent() !== null && !this.#repair(cur.parent().getObject())) break;
         }
     }
-    #spread(node1) {
+    #spread(node) {
         this._debugOutput("spread");
-        this.#closedList.add(node1);
-        for (const c of this.#getNeighborConstraints(node1.getObject())){
+        this.#closedList.add(node);
+        for (const c of this.#getNeighborConstraints(node.getObject())){
             const tnc = this.#nodes[c.index()];
             if (!this.#closedList.has(tnc) && !this.#openList.has(tnc)) {
                 tnc.clear(); // Because of its reuse, it may have had children when it was used before.
-                node1.add(tnc);
+                node.add(tnc);
                 this.#openList.add(tnc);
             }
         }
     }
-    #srs(c_stars1) {
+    #srs(c_stars) {
         this._debugOutput("srs");
         const endTime = this._timeLimit === null ? Number.MAX_VALUE : Date.now() + this._timeLimit;
         let iterCount = 0;
         this.#closedList.clear();
         this.#openList.clear();
-        for (const n of c_stars1)this.#openList.add(n);
-        while(c_stars1.size && this.#openList.size){
+        for (const n of c_stars)this.#openList.add(n);
+        while(c_stars.size && this.#openList.size){
             if ((this._targetDeg ?? 1) <= this._pro.satisfiedConstraintRate()) {
                 this._debugOutput("stop: current degree is above the target");
                 return true;
@@ -2904,8 +2906,8 @@ class $15569dd864fb028a$export$193930056f923a8 extends (0, $984029824f982d2d$exp
             const node = this.#openList.values().next().value;
             this.#openList.delete(node);
             if (this.#repair(node.getObject())) {
-                if (!c_stars1.delete(node)) {
-                    if (node.parent() !== null && this.#repair(node.parent().getObject())) this.#shrink(node, c_stars1);
+                if (!c_stars.delete(node)) {
+                    if (node.parent() !== null && this.#repair(node.parent().getObject())) this.#shrink(node, c_stars);
                     else this.#spread(node);
                 }
             } else this.#spread(node);
@@ -3054,11 +3056,11 @@ class $9976a133e8ea6612$export$2d94cf9ddb103458 extends (0, $984029824f982d2d$ex
         return !dci.isEmpty(); // Succeeds if the domain di of the future variable vi is not empty.
     }
     // Check for consistency between the current variable and one future variable, and prune elements of the domain that are inconsistent (when there are two unassigned variables in the scope of the constraint).
-    #checkForwardConsistency2(level1, vi1, c1) {
-        const di = vi1.domain();
-        const dci = vi1.solverObject;
+    #checkForwardConsistency2(level, vi, c) {
+        const di = vi.domain();
+        const dci = vi.solverObject;
         const vj = null;
-        for (const v of c1)if (v.isEmpty() && v !== vi1) {
+        for (const v of c)if (v.isEmpty() && v !== vi) {
             vj = v;
             break;
         }
@@ -3066,26 +3068,26 @@ class $9976a133e8ea6612$export$2d94cf9ddb103458 extends (0, $984029824f982d2d$ex
         const dcj = vj.solverObject;
         loop_i: for(let i = 0, ni = di.size(); i < ni; ++i){
             if (dci.isValueHidden(i)) continue;
-            vi1.assign(di.at(i)); // Tentative assignment to vi
+            vi.assign(di.at(i)); // Tentative assignment to vi
             for(let j = 0, nj = dj.size(); j < nj; ++j){
                 if (dcj.isValueHidden(j)) continue;
                 vj.assign(dj.at(j)); // Tentative assignment to vj
-                const s = c1.satisfactionDegree();
+                const s = c.satisfactionDegree();
                 if (s > this.#solWorstDeg) continue loop_i; // Tentative assignment to vi was OK -> next tentative assignment.
             }
-            dci.hide(i, level1); // It is not a solution when it is 'smaller than or equals'.
+            dci.hide(i, level); // It is not a solution when it is 'smaller than or equals'.
         }
         vj.clear();
-        vi1.clear();
+        vi.clear();
         return !dci.isEmpty(); // Succeeds if the domain di of the future variable vi is not empty.
     }
     // Check for consistency between the current variable and one future variable, and prune elements of the domain that are inconsistent (when there are three unassigned variables in the scope of the constraint).
-    #checkForwardConsistency3(level2, vi2, c2) {
-        const di = vi2.domain();
-        const dci = vi2.solverObject;
+    #checkForwardConsistency3(level, vi, c) {
+        const di = vi.domain();
+        const dci = vi.solverObject;
         let vj = null;
         let vk = null;
-        for (const v of c2)if (v.isEmpty() && v !== vi2) {
+        for (const v of c)if (v.isEmpty() && v !== vi) {
             if (vj === null) vj = v;
             else {
                 vk = v;
@@ -3098,35 +3100,35 @@ class $9976a133e8ea6612$export$2d94cf9ddb103458 extends (0, $984029824f982d2d$ex
         const dck = vk.solverObject;
         loop_i: for(let i = 0, ni = di.size(); i < ni; ++i){
             if (dci.isValueHidden(i)) continue;
-            vi2.assign(di.at(i)); // Tentative assignment to vi
+            vi.assign(di.at(i)); // Tentative assignment to vi
             for(let j = 0, nj = dj.size(); j < nj; ++j){
                 if (dcj.isValueHidden(j)) continue;
                 vj.assign(dj.at(j)); // Tentative assignment to vj
                 for(let k = 0, nk = dk.size(); k < nk; ++k){
                     if (dck.isValueHidden(k)) continue;
                     vk.assign(dk.at(k)); // Tentative assignment to vk
-                    const s = c2.satisfactionDegree();
+                    const s = c.satisfactionDegree();
                     if (s > this.#solWorstDeg) continue loop_i; // Tentative assignment to vi was OK -> next tentative assignment.
                 }
             }
-            dci.hide(i, level2); // It is not a solution when it is 'smaller than or equals'.
+            dci.hide(i, level); // It is not a solution when it is 'smaller than or equals'.
         }
         vk.clear();
         vj.clear();
-        vi2.clear();
+        vi.clear();
         return !dci.isEmpty(); // Succeeds if the domain di of the future variable vi is not empty.
     }
     // In the case of polynomial constraints and when there are four or more unassigned variables, all combinations of assignments of unassigned variables are examined and pruned.
-    #checkForwardConsistencyN(level3, vi3, c3, emptySize) {
-        const di = vi3.domain();
-        const dci = vi3.solverObject;
+    #checkForwardConsistencyN(level, vi, c, emptySize) {
+        const di = vi.domain();
+        const dci = vi.solverObject;
         const emp = new Array(emptySize - 1);
         let j = 0;
-        for (const v of c3)if (v.isEmpty() && v !== vi3) emp[j++] = v;
+        for (const v of c)if (v.isEmpty() && v !== vi) emp[j++] = v;
         const indexes = new Array(emp.length);
         loop_i: for(let i = 0, n = di.size(); i < n; ++i){
             if (dci.isValueHidden(i)) continue;
-            vi3.assign(di.at(i)); // Tentative assignment to vi
+            vi.assign(di.at(i)); // Tentative assignment to vi
             indexes.fill(0);
             comLoop: while(true){
                 let hidden = false;
@@ -3140,7 +3142,7 @@ class $9976a133e8ea6612$export$2d94cf9ddb103458 extends (0, $984029824f982d2d$ex
                     emp[k].assign(dk.at(indexes[k]));
                 }
                 if (!hidden) {
-                    const s = c3.satisfactionDegree();
+                    const s = c.satisfactionDegree();
                     if (s > this.#solWorstDeg) continue loop_i; // Tentative assignment to vi was OK -> next tentative assignment.
                 }
                 for(let k = 0; k < emp.length; ++k){
@@ -3150,28 +3152,28 @@ class $9976a133e8ea6612$export$2d94cf9ddb103458 extends (0, $984029824f982d2d$ex
                     if (k === emp.length - 1) break comLoop;
                 }
             }
-            dci.hide(i, level3);
+            dci.hide(i, level);
         }
         for (const v of emp)v.clear();
-        vi3.clear();
+        vi.clear();
         return !dci.isEmpty(); // Succeeds if the domain di of the future variable vi is not empty.
     }
     // Checks for possible assignment to a future variable from the current variable assignment.
-    #checkForward(level4, index) {
+    #checkForward(level, index) {
         for (const v_i of this.#vars){
             if (!v_i.isEmpty()) continue; // If it is a past or present variable.
             const cs = this.#getConstraintsBetween(index, v_i.index());
             for (const c of cs){
                 const emptySize = c.emptyVariableSize();
                 if (emptySize === 1) {
-                    if (!this.#checkForwardConsistency(level4, v_i, c)) return false;
+                    if (!this.#checkForwardConsistency(level, v_i, c)) return false;
                 } else if (this.#pruneIntensively) {
                     if (emptySize === 2) {
-                        if (!this.#checkForwardConsistency2(level4, v_i, c)) return false;
+                        if (!this.#checkForwardConsistency2(level, v_i, c)) return false;
                     } else if (emptySize === 3) {
-                        if (!this.#checkForwardConsistency3(level4, v_i, c)) return false;
+                        if (!this.#checkForwardConsistency3(level, v_i, c)) return false;
                     } else if (emptySize > 3) {
-                        if (!this.#checkForwardConsistencyN(level4, v_i, c, emptySize)) return false;
+                        if (!this.#checkForwardConsistencyN(level, v_i, c, emptySize)) return false;
                     }
                 }
             }
@@ -3231,13 +3233,13 @@ class $9976a133e8ea6612$export$2d94cf9ddb103458 extends (0, $984029824f982d2d$ex
         return index;
     }
     // Performs search one variable at a time.
-    #branch(level5) {
+    #branch(level) {
         let bc = $9976a133e8ea6612$export$2d94cf9ddb103458.CONTINUE;
-        const vc_index = this.#useMRV ? this.#indexOfVariableWithMRV() : level5;
+        const vc_index = this.#useMRV ? this.#indexOfVariableWithMRV() : level;
         const vc = this.#vars[vc_index];
         const d = vc.domain();
         const dc = vc.solverObject;
-        this.#sequence[level5] = vc;
+        this.#sequence[level] = vc;
         for(let i = 0, n = d.size(); i < n; ++i){
             if (dc.isValueHidden(i)) continue;
             if (this._iterLimit && this._iterLimit < this.#iterCount++ || this.#endTime < Date.now()) {
@@ -3245,24 +3247,24 @@ class $9976a133e8ea6612$export$2d94cf9ddb103458 extends (0, $984029824f982d2d$ex
                 break;
             }
             vc.assign(d.at(i));
-            for (const v of this.#vars)v.solverObject.reveal(level5);
+            for (const v of this.#vars)v.solverObject.reveal(level);
             if (!this.#checkBackwardConsistency(vc)) continue;
-            if (!this.#checkForward(level5, vc_index)) continue;
-            const nextLevel = level5 + 1;
+            if (!this.#checkForward(level, vc_index)) continue;
+            const nextLevel = level + 1;
             bc = nextLevel === this.#vars.length - 1 ? this.#branchLast(nextLevel) : this.#branch(nextLevel);
             if (bc === $9976a133e8ea6612$export$2d94cf9ddb103458.TERMINATE) break;
         }
-        if (bc === $9976a133e8ea6612$export$2d94cf9ddb103458.CONTINUE) for (const v of this.#vars)v.solverObject.reveal(level5);
+        if (bc === $9976a133e8ea6612$export$2d94cf9ddb103458.CONTINUE) for (const v of this.#vars)v.solverObject.reveal(level);
         vc.clear();
         return bc;
     }
     // Performs search on the last variable.
-    #branchLast(level6) {
+    #branchLast(level) {
         let bc = $9976a133e8ea6612$export$2d94cf9ddb103458.CONTINUE;
-        const vc = this.#vars[this.#useMRV ? this.#indexOfVariableWithMRV() : level6];
+        const vc = this.#vars[this.#useMRV ? this.#indexOfVariableWithMRV() : level];
         const d = vc.domain();
         const dc = vc.solverObject;
-        this.#sequence[level6] = vc;
+        this.#sequence[level] = vc;
         for(let i = 0, n = d.size(); i < n; ++i){
             if (dc.isValueHidden(i)) continue;
             if (this._iterLimit && this._iterLimit < this.#iterCount++ || this.#endTime < Date.now()) {
@@ -3434,12 +3436,12 @@ class $af826fadc4c608b1$export$532d5536583284b8 extends (0, $984029824f982d2d$ex
         return !dci.isEmpty(); // Succeeds if the domain di of the future variable vi is not empty.
     }
     // Checks for possible assignment to a future variable from the current variable assignment.
-    #checkForward(level1, index) {
+    #checkForward(level, index) {
         for (const v_i of this.#vars){
             if (!v_i.isEmpty()) continue; // If it is a past or present variable.
             const cs = this.#getConstraintsBetween(index, v_i.index());
             for (const c of cs)if (c.size() === 2) {
-                if (!this.#checkForwardConsistency(level1, v_i, c)) return false;
+                if (!this.#checkForwardConsistency(level, v_i, c)) return false;
             }
         }
         return true;
@@ -3461,9 +3463,9 @@ class $af826fadc4c608b1$export$532d5536583284b8 extends (0, $984029824f982d2d$ex
         return index;
     }
     // Performs search one variable at a time.
-    #branch(level2) {
+    #branch(level) {
         let bc = $af826fadc4c608b1$export$532d5536583284b8.CONTINUE;
-        const vc_index = this.#useMRV ? this.#indexOfVariableWithMRV() : level2;
+        const vc_index = this.#useMRV ? this.#indexOfVariableWithMRV() : level;
         const vc = this.#vars[vc_index];
         const d = vc.domain();
         const dc = vc.solverObject;
@@ -3474,20 +3476,20 @@ class $af826fadc4c608b1$export$532d5536583284b8 extends (0, $984029824f982d2d$ex
                 break;
             }
             vc.assign(d.at(i));
-            for (const v of this.#vars)v.solverObject.reveal(level2);
-            if (!this.#checkForward(level2, vc_index)) continue;
-            const nextLevel = level2 + 1;
+            for (const v of this.#vars)v.solverObject.reveal(level);
+            if (!this.#checkForward(level, vc_index)) continue;
+            const nextLevel = level + 1;
             bc = nextLevel === this.#vars.length - 1 ? this.#branchLast(nextLevel) : this.#branch(nextLevel);
             if (bc === $af826fadc4c608b1$export$532d5536583284b8.TERMINATE) break;
         }
-        if (bc === $af826fadc4c608b1$export$532d5536583284b8.CONTINUE) for (const v of this.#vars)v.solverObject.reveal(level2);
+        if (bc === $af826fadc4c608b1$export$532d5536583284b8.CONTINUE) for (const v of this.#vars)v.solverObject.reveal(level);
         vc.clear();
         return bc;
     }
     // Performs search on the last variable.
-    #branchLast(level3) {
+    #branchLast(level) {
         let bc = $af826fadc4c608b1$export$532d5536583284b8.CONTINUE;
-        const vc = this.#vars[this.#useMRV ? this.#indexOfVariableWithMRV() : level3];
+        const vc = this.#vars[this.#useMRV ? this.#indexOfVariableWithMRV() : level];
         const d = vc.domain();
         const dc = vc.solverObject;
         for(let i = 0, n = d.size(); i < n; ++i){
@@ -3603,9 +3605,9 @@ class $ffec0638e655d028$export$c15ba88cf158f3d6 extends (0, $984029824f982d2d$ex
         for (const v of s2)sn.add(v);
         return sn;
     }
-    static #setMinusSet(s11, s21) {
-        const sn = new Set(s11);
-        for (const v of s21)sn.delete(v);
+    static #setMinusSet(s1, s2) {
+        const sn = new Set(s1);
+        for (const v of s2)sn.delete(v);
         return sn;
     }
     static #setPlusElement(s, e) {
@@ -3613,9 +3615,9 @@ class $ffec0638e655d028$export$c15ba88cf158f3d6 extends (0, $984029824f982d2d$ex
         sn.add(e);
         return sn;
     }
-    static #setMinusElement(s3, e1) {
-        const sn = new Set(s3);
-        sn.delete(e1);
+    static #setMinusElement(s, e) {
+        const sn = new Set(s);
+        sn.delete(e);
         return sn;
     }
     #lt;
@@ -3674,73 +3676,73 @@ class $ffec0638e655d028$export$c15ba88cf158f3d6 extends (0, $984029824f982d2d$ex
         this.#lb = low;
         this.#lt = high;
     }
-    #flcRepair(X1, X2, xi, consX1xi, consX12, cr1, rc) {
-        const X3p = this.#choose(X2, cr1);
+    #flcRepair(X1, X2, xi, consX1xi, consX12, cr, rc) {
+        const X3p = this.#choose(X2, cr);
         const X1p = $ffec0638e655d028$export$c15ba88cf158f3d6.#setPlusElement(X1, xi);
         const X2p = $ffec0638e655d028$export$c15ba88cf158f3d6.#setMinusSet(X2, X3p);
         return this.#flcVariables(X1p, X2p, X3p, consX1xi, Math.min(consX12, consX1xi), rc);
     }
-    #flcVariable(X11, X21, xi1, consX1, consX121, rc1) {
+    #flcVariable(X1, X2, xi, consX1, consX12, rc) {
         let bestCons = this.#lb;
-        if (xi1.domain().size() === 0) return bestCons;
-        let bestX2 = (0, $3c32d3431062328c$export$1d4e454bcd46f18f).fromVariables(X21);
-        let bestDij = xi1.domain().at(0);
-        const x2Store = (0, $3c32d3431062328c$export$1d4e454bcd46f18f).fromVariables(X21);
-        for(let j = 0; j < xi1.domain().size() && bestCons < consX121; ++j){
-            const dij = xi1.domain().at(j);
-            xi1.assign(dij);
-            const consX1_xi = Math.min(consX1, this.#testX1(X11, xi1, bestCons, rc1));
-            if (consX1_xi > Math.max(bestCons, rc1)) {
+        if (xi.domain().size() === 0) return bestCons;
+        let bestX2 = (0, $3c32d3431062328c$export$1d4e454bcd46f18f).fromVariables(X2);
+        let bestDij = xi.domain().at(0);
+        const x2Store = (0, $3c32d3431062328c$export$1d4e454bcd46f18f).fromVariables(X2);
+        for(let j = 0; j < xi.domain().size() && bestCons < consX12; ++j){
+            const dij = xi.domain().at(j);
+            xi.assign(dij);
+            const consX1_xi = Math.min(consX1, this.#testX1(X1, xi, bestCons, rc));
+            if (consX1_xi > Math.max(bestCons, rc)) {
                 const crNew = new Set();
-                const consX12_xi = Math.min(Math.min(consX1_xi, consX121), this.#testX12(X11, X21, xi1, consX1_xi, consX121, crNew));
+                const consX12_xi = Math.min(Math.min(consX1_xi, consX12), this.#testX12(X1, X2, xi, consX1_xi, consX12, crNew));
                 if (consX12_xi > bestCons) {
                     bestCons = consX12_xi;
                     bestDij = dij;
-                    bestX2 = (0, $3c32d3431062328c$export$1d4e454bcd46f18f).fromVariables(X21);
+                    bestX2 = (0, $3c32d3431062328c$export$1d4e454bcd46f18f).fromVariables(X2);
                 }
                 if (crNew.size) {
-                    const repairCons = this.#flcRepair(X11, X21, xi1, consX1_xi, consX121, crNew, Math.max(rc1, bestCons));
+                    const repairCons = this.#flcRepair(X1, X2, xi, consX1_xi, consX12, crNew, Math.max(rc, bestCons));
                     if (this.#globalReturn !== -1) return bestCons;
                     if (repairCons > bestCons) {
                         bestCons = repairCons;
                         bestDij = dij;
-                        bestX2 = (0, $3c32d3431062328c$export$1d4e454bcd46f18f).fromVariables(X21);
+                        bestX2 = (0, $3c32d3431062328c$export$1d4e454bcd46f18f).fromVariables(X2);
                     }
                     x2Store.apply();
                 }
             }
         }
         bestX2.apply();
-        xi1.assign(bestDij);
+        xi.assign(bestDij);
         return bestCons;
     }
-    #flcVariables(X12, X22, X3, consX11, consX122, rc2) {
-        this._debugOutput(`X1 ${X12.size}, X2' ${X22.size}, X3' ${X3.size}`);
+    #flcVariables(X1, X2, X3, consX1, consX12, rc) {
+        this._debugOutput(`X1 ${X1.size}, X2' ${X2.size}, X3' ${X3.size}`);
         if (this._targetDeg !== null && this._targetDeg <= this._pro.worstSatisfactionDegree()) {
             this._debugOutput("stop: current degree is above the target");
             this.#globalReturn = 1;
-            return consX122;
+            return consX12;
         }
         if (this._iterLimit && this._iterLimit < this.#iterCount++) {
             this._debugOutput("stop: number of iterations has reached the limit");
             this.#globalReturn = 0;
-            return consX122;
+            return consX12;
         }
         if (this.#endTime < Date.now()) {
             this._debugOutput("stop: time limit has been reached");
             this.#globalReturn = 0;
-            return consX122;
+            return consX12;
         }
-        if (X3.size === 0) return consX122;
+        if (X3.size === 0) return consX12;
         const xi = X3.values().next().value;
-        const consX12xi = this.#flcVariable(X12, X22, xi, consX11, consX122, rc2);
-        if (this.#globalReturn !== -1) return consX122;
-        if (consX12xi < rc2) return this.#lb;
-        X22 = $ffec0638e655d028$export$c15ba88cf158f3d6.#setPlusElement(X22, xi);
+        const consX12xi = this.#flcVariable(X1, X2, xi, consX1, consX12, rc);
+        if (this.#globalReturn !== -1) return consX12;
+        if (consX12xi < rc) return this.#lb;
+        X2 = $ffec0638e655d028$export$c15ba88cf158f3d6.#setPlusElement(X2, xi);
         X3 = $ffec0638e655d028$export$c15ba88cf158f3d6.#setMinusElement(X3, xi);
-        return this.#flcVariables(X12, X22, X3, consX11, consX12xi, rc2);
+        return this.#flcVariables(X1, X2, X3, consX1, consX12xi, rc);
     }
-    #initTest(X, cr2) {
+    #initTest(X, cr) {
         const cs = new Set();
         for (const v of X)for (const c of v)cs.add(c); // All variables in X have been assigned.
         let ret = 1;
@@ -3751,34 +3753,34 @@ class $ffec0638e655d028$export$c15ba88cf158f3d6 extends (0, $984029824f982d2d$ex
         }
         for (const c of this._pro.constraints()){
             const cd = c.lowestConsistencyDegree();
-            if (cd < this.#lt) cr2.add(c);
+            if (cd < this.#lt) cr.add(c);
         }
         return ret;
     }
-    #testX1(X13, xi2, bestCons, rc3) {
+    #testX1(X1, xi, bestCons, rc) {
         let cd = 1;
         const cs = new Set();
-        for (const v of X13){
-            const temp = this._pro.constraintsBetween(v, xi2);
+        for (const v of X1){
+            const temp = this._pro.constraintsBetween(v, xi);
             for (const c of temp)cs.add(c);
         }
         for (const c of cs){
             const d = c.satisfactionDegree();
             if (d === (0, $0a5f06e9f04c3e9d$export$aec1359a0a40a615).UNDEFINED) continue;
             if (d < cd) cd = d;
-            if (cd <= bestCons || cd <= rc3) return cd; // If it is determined that a better solution than the current solution cannot be obtained
+            if (cd <= bestCons || cd <= rc) return cd; // If it is determined that a better solution than the current solution cannot be obtained
         }
         return cd;
     }
-    #testX12(X14, X23, xi3, consX1xi1, consX123, cr3) {
+    #testX12(X1, X2, xi, consX1xi, consX12, cr) {
         let csd = 1;
         const cs = new Set();
-        for (const v of X14){
-            const temp = this._pro.constraintsBetween(v, xi3);
+        for (const v of X1){
+            const temp = this._pro.constraintsBetween(v, xi);
             for (const c of temp)cs.add(c);
         }
-        for (const v of X23){
-            const temp = this._pro.constraintsBetween(v, xi3);
+        for (const v of X2){
+            const temp = this._pro.constraintsBetween(v, xi);
             for (const c of temp)cs.add(c);
         }
         for (const c of cs){
@@ -3789,7 +3791,7 @@ class $ffec0638e655d028$export$c15ba88cf158f3d6 extends (0, $984029824f982d2d$ex
         for (const c of cs){
             const sd = c.satisfactionDegree();
             if (sd === (0, $0a5f06e9f04c3e9d$export$aec1359a0a40a615).UNDEFINED) continue;
-            if (sd < consX1xi1 || sd < consX123) cr3.add(c);
+            if (sd < consX1xi || sd < consX12) cr.add(c);
         }
         return csd;
     }
@@ -3841,9 +3843,9 @@ class $7c5c935d7db103e9$export$f3429dcb0286bfee extends (0, $984029824f982d2d$ex
         for (const v of s2)sn.add(v);
         return sn;
     }
-    static #setMinusSet(s11, s21) {
-        const sn = new Set(s11);
-        for (const v of s21)sn.delete(v);
+    static #setMinusSet(s1, s2) {
+        const sn = new Set(s1);
+        for (const v of s2)sn.delete(v);
         return sn;
     }
     static #setPlusElement(s, e) {
@@ -3907,77 +3909,77 @@ class $7c5c935d7db103e9$export$f3429dcb0286bfee extends (0, $984029824f982d2d$ex
         this.#lb = low;
         this.#lt = high;
     }
-    #flcRepair(X1, X2, xi, consX1xi, consX12, cr1, rc) {
-        const X3p = this.#choose(X2, cr1);
+    #flcRepair(X1, X2, xi, consX1xi, consX12, cr, rc) {
+        const X3p = this.#choose(X2, cr);
         const X1p = $7c5c935d7db103e9$export$f3429dcb0286bfee.#setPlusElement(X1, xi);
         const X2p = $7c5c935d7db103e9$export$f3429dcb0286bfee.#setMinusSet(X2, X3p);
         return this.#flcVariables(X1p, X2p, X3p, consX1xi, Math.min(consX12, consX1xi), rc);
     }
-    #flcVariable(X11, X21, xi1, consX1, consX121, rc1) {
+    #flcVariable(X1, X2, xi, consX1, consX12, rc) {
         let bestCons = this.#lb;
-        if (xi1.domain().size() === 0) return bestCons;
-        let bestX2 = (0, $3c32d3431062328c$export$1d4e454bcd46f18f).fromVariables(X21);
-        let bestDij = xi1.domain().at(0);
-        const x2Store = (0, $3c32d3431062328c$export$1d4e454bcd46f18f).fromVariables(X21);
-        for(let j = 0; j < xi1.domain().size() && bestCons < consX121; ++j){
-            const dij = xi1.domain().at(j);
-            xi1.assign(dij);
-            const consX1_xi = Math.min(consX1, this.#testX1(X11, xi1, bestCons, rc1));
-            if (consX1_xi > Math.max(bestCons, rc1)) {
+        if (xi.domain().size() === 0) return bestCons;
+        let bestX2 = (0, $3c32d3431062328c$export$1d4e454bcd46f18f).fromVariables(X2);
+        let bestDij = xi.domain().at(0);
+        const x2Store = (0, $3c32d3431062328c$export$1d4e454bcd46f18f).fromVariables(X2);
+        for(let j = 0; j < xi.domain().size() && bestCons < consX12; ++j){
+            const dij = xi.domain().at(j);
+            xi.assign(dij);
+            const consX1_xi = Math.min(consX1, this.#testX1(X1, xi, bestCons, rc));
+            if (consX1_xi > Math.max(bestCons, rc)) {
                 const crNew = new Set();
-                const consX12_xi = Math.min(Math.min(consX1_xi, consX121), this.#testX12(X11, X21, xi1, consX1_xi, consX121, crNew));
+                const consX12_xi = Math.min(Math.min(consX1_xi, consX12), this.#testX12(X1, X2, xi, consX1_xi, consX12, crNew));
                 if (consX12_xi > bestCons) {
                     bestCons = consX12_xi;
                     bestDij = dij;
-                    bestX2 = (0, $3c32d3431062328c$export$1d4e454bcd46f18f).fromVariables(X21);
+                    bestX2 = (0, $3c32d3431062328c$export$1d4e454bcd46f18f).fromVariables(X2);
                 }
                 if (crNew.size) {
-                    const repairCons = this.#flcRepair(X11, X21, xi1, consX1_xi, consX121, crNew, Math.max(rc1, bestCons));
+                    const repairCons = this.#flcRepair(X1, X2, xi, consX1_xi, consX12, crNew, Math.max(rc, bestCons));
                     if (this.#globalReturn !== -1) return bestCons;
                     if (repairCons > bestCons) {
                         bestCons = repairCons;
                         bestDij = dij;
-                        bestX2 = (0, $3c32d3431062328c$export$1d4e454bcd46f18f).fromVariables(X21);
+                        bestX2 = (0, $3c32d3431062328c$export$1d4e454bcd46f18f).fromVariables(X2);
                     }
                     x2Store.apply();
                 }
             }
         }
         bestX2.apply();
-        xi1.assign(bestDij);
+        xi.assign(bestDij);
         return bestCons;
     }
-    #flcVariables(X12, X22, X3, consX11, consX122, rc2) {
-        X22 = new Set(X22); // Clone
+    #flcVariables(X1, X2, X3, consX1, consX12, rc) {
+        X2 = new Set(X2); // Clone
         X3 = new Set(X3); // Clone
         while(true){
-            this._debugOutput(`X1 ${X12.size}, X2' ${X22.size}, X3' ${X3.size}`);
+            this._debugOutput(`X1 ${X1.size}, X2' ${X2.size}, X3' ${X3.size}`);
             if (this._targetDeg !== null && this._targetDeg <= this._pro.worstSatisfactionDegree()) {
                 this._debugOutput("stop: current degree is above the target");
                 this.#globalReturn = 1;
-                return consX122;
+                return consX12;
             }
             if (this._iterLimit && this._iterLimit < this.#iterCount++) {
                 this._debugOutput("stop: number of iterations has reached the limit");
                 this.#globalReturn = 0;
-                return consX122;
+                return consX12;
             }
             if (this.#endTime < Date.now()) {
                 this._debugOutput("stop: time limit has been reached");
                 this.#globalReturn = 0;
-                return consX122;
+                return consX12;
             }
-            if (X3.size === 0) return consX122;
+            if (X3.size === 0) return consX12;
             const xi = X3.values().next().value;
-            const consX12xi = this.#flcVariable(X12, X22, xi, consX11, consX122, rc2);
-            if (this.#globalReturn !== -1) return consX122;
-            if (consX12xi < rc2) return this.#lb;
-            X22.add(xi);
+            const consX12xi = this.#flcVariable(X1, X2, xi, consX1, consX12, rc);
+            if (this.#globalReturn !== -1) return consX12;
+            if (consX12xi < rc) return this.#lb;
+            X2.add(xi);
             X3.delete(xi);
-            consX122 = consX12xi;
+            consX12 = consX12xi;
         }
     }
-    #initTest(X, cr2) {
+    #initTest(X, cr) {
         const cs = new Set();
         for (const v of X)for (const c of v)cs.add(c); // All variables in X have been assigned.
         let ret = 1;
@@ -3988,34 +3990,34 @@ class $7c5c935d7db103e9$export$f3429dcb0286bfee extends (0, $984029824f982d2d$ex
         }
         for (const c of this._pro.constraints()){
             const cd = c.lowestConsistencyDegree();
-            if (cd < this.#lt) cr2.add(c);
+            if (cd < this.#lt) cr.add(c);
         }
         return ret;
     }
-    #testX1(X13, xi2, bestCons, rc3) {
+    #testX1(X1, xi, bestCons, rc) {
         let cd = 1;
         const cs = new Set();
-        for (const v of X13){
-            const temp = this._pro.constraintsBetween(v, xi2);
+        for (const v of X1){
+            const temp = this._pro.constraintsBetween(v, xi);
             for (const c of temp)cs.add(c);
         }
         for (const c of cs){
             const d = c.satisfactionDegree();
             if (d === (0, $0a5f06e9f04c3e9d$export$aec1359a0a40a615).UNDEFINED) continue;
             if (d < cd) cd = d;
-            if (cd <= bestCons || cd <= rc3) return cd; // If it is determined that a better solution than the current solution cannot be obtained
+            if (cd <= bestCons || cd <= rc) return cd; // If it is determined that a better solution than the current solution cannot be obtained
         }
         return cd;
     }
-    #testX12(X14, X23, xi3, consX1xi1, consX123, cr3) {
+    #testX12(X1, X2, xi, consX1xi, consX12, cr) {
         let csd = 1;
         const cs = new Set();
-        for (const v of X14){
-            const temp = this._pro.constraintsBetween(v, xi3);
+        for (const v of X1){
+            const temp = this._pro.constraintsBetween(v, xi);
             for (const c of temp)cs.add(c);
         }
-        for (const v of X23){
-            const temp = this._pro.constraintsBetween(v, xi3);
+        for (const v of X2){
+            const temp = this._pro.constraintsBetween(v, xi);
             for (const c of temp)cs.add(c);
         }
         for (const c of cs){
@@ -4026,7 +4028,7 @@ class $7c5c935d7db103e9$export$f3429dcb0286bfee extends (0, $984029824f982d2d$ex
         for (const c of cs){
             const sd = c.satisfactionDegree();
             if (sd === (0, $0a5f06e9f04c3e9d$export$aec1359a0a40a615).UNDEFINED) continue;
-            if (sd < consX1xi1 || sd < consX123) cr3.add(c);
+            if (sd < consX1xi || sd < consX12) cr.add(c);
         }
         return csd;
     }
@@ -4492,13 +4494,13 @@ class $b27bdbb669c8aae7$export$4bfabca73d1ccb59 extends (0, $984029824f982d2d$ex
         }
         if (!removeCStar) this.#openList.add(node);
     }
-    #spread(node1) {
+    #spread(node) {
         this._debugOutput("spread");
-        this.#closedList.add(node1);
-        for (const c of this.#getNeighborConstraints(node1.getObject())){
+        this.#closedList.add(node);
+        for (const c of this.#getNeighborConstraints(node.getObject())){
             const cn = this.#nodes[c.index()];
             if (!this.#closedList.has(cn) && !this.#openList.has(cn)) {
-                node1.add(cn);
+                node.add(cn);
                 this.#openList.add(cn);
             }
         }
@@ -4793,22 +4795,22 @@ $parcel$export($95806c7189d9bfef$exports, "AC3", () => $95806c7189d9bfef$export$
         }
         return false;
     }
-    static #reviseDomain(p, v_i, v_j1) {
+    static #reviseDomain(p, v_i, v_j) {
         const val_i = v_i.value();
-        const val_j = v_j1.value(); // Save the value.
+        const val_j = v_j.value(); // Save the value.
         const d_i = v_i.domain();
         const temp = [];
-        const cs = p.constraintsBetween(v_i, v_j1);
+        const cs = p.constraintsBetween(v_i, v_j);
         vals: for (const val of d_i){
             v_i.assign(val);
             for (const c of cs){
                 if (c.size() !== 2) continue; // Check the next constraint
-                if (!$95806c7189d9bfef$export$ac824f187e852f5a.#checkConsistency(c, v_j1)) continue vals; // Since there is no partner satisfying the constraint, check the next value.
+                if (!$95806c7189d9bfef$export$ac824f187e852f5a.#checkConsistency(c, v_j)) continue vals; // Since there is no partner satisfying the constraint, check the next value.
             }
             temp.push(val);
         }
         v_i.assign(val_i); // Restore the value.
-        v_j1.assign(val_j); // Restore the value.
+        v_j.assign(val_j); // Restore the value.
         if (temp.length !== d_i.size()) {
             const nd = p.createDomain({
                 values: temp

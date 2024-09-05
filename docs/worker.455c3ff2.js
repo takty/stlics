@@ -1,26 +1,662 @@
+// modules are defined as an array
+// [ module function, map of requires ]
+//
+// map of requires is short require name -> numeric require
+//
+// anything defined in a previous bundle is accessed via the
+// orig method which is the require for previous bundles
 
+(function (modules, entry, mainEntry, parcelRequireName, globalName) {
+  /* eslint-disable no-undef */
+  var globalObject =
+    typeof globalThis !== 'undefined'
+      ? globalThis
+      : typeof self !== 'undefined'
+      ? self
+      : typeof window !== 'undefined'
+      ? window
+      : typeof global !== 'undefined'
+      ? global
+      : {};
+  /* eslint-enable no-undef */
+
+  // Save the require from previous bundle to this closure if any
+  var previousRequire =
+    typeof globalObject[parcelRequireName] === 'function' &&
+    globalObject[parcelRequireName];
+
+  var cache = previousRequire.cache || {};
+  // Do not use `require` to prevent Webpack from trying to bundle this call
+  var nodeRequire =
+    typeof module !== 'undefined' &&
+    typeof module.require === 'function' &&
+    module.require.bind(module);
+
+  function newRequire(name, jumped) {
+    if (!cache[name]) {
+      if (!modules[name]) {
+        // if we cannot find the module within our internal map or
+        // cache jump to the current global require ie. the last bundle
+        // that was added to the page.
+        var currentRequire =
+          typeof globalObject[parcelRequireName] === 'function' &&
+          globalObject[parcelRequireName];
+        if (!jumped && currentRequire) {
+          return currentRequire(name, true);
+        }
+
+        // If there are other bundles on this page the require from the
+        // previous one is saved to 'previousRequire'. Repeat this as
+        // many times as there are bundles until the module is found or
+        // we exhaust the require chain.
+        if (previousRequire) {
+          return previousRequire(name, true);
+        }
+
+        // Try the node require function if it exists.
+        if (nodeRequire && typeof name === 'string') {
+          return nodeRequire(name);
+        }
+
+        var err = new Error("Cannot find module '" + name + "'");
+        err.code = 'MODULE_NOT_FOUND';
+        throw err;
+      }
+
+      localRequire.resolve = resolve;
+      localRequire.cache = {};
+
+      var module = (cache[name] = new newRequire.Module(name));
+
+      modules[name][0].call(
+        module.exports,
+        localRequire,
+        module,
+        module.exports,
+        this
+      );
+    }
+
+    return cache[name].exports;
+
+    function localRequire(x) {
+      var res = localRequire.resolve(x);
+      return res === false ? {} : newRequire(res);
+    }
+
+    function resolve(x) {
+      var id = modules[name][1][x];
+      return id != null ? id : x;
+    }
+  }
+
+  function Module(moduleName) {
+    this.id = moduleName;
+    this.bundle = newRequire;
+    this.exports = {};
+  }
+
+  newRequire.isParcelRequire = true;
+  newRequire.Module = Module;
+  newRequire.modules = modules;
+  newRequire.cache = cache;
+  newRequire.parent = previousRequire;
+  newRequire.register = function (id, exports) {
+    modules[id] = [
+      function (require, module) {
+        module.exports = exports;
+      },
+      {},
+    ];
+  };
+
+  Object.defineProperty(newRequire, 'root', {
+    get: function () {
+      return globalObject[parcelRequireName];
+    },
+  });
+
+  globalObject[parcelRequireName] = newRequire;
+
+  for (var i = 0; i < entry.length; i++) {
+    newRequire(entry[i]);
+  }
+
+  if (mainEntry) {
+    // Expose entry point to Node, AMD or browser globals
+    // Based on https://github.com/ForbesLindesay/umd/blob/master/template.js
+    var mainExports = newRequire(mainEntry);
+
+    // CommonJS
+    if (typeof exports === 'object' && typeof module !== 'undefined') {
+      module.exports = mainExports;
+
+      // RequireJS
+    } else if (typeof define === 'function' && define.amd) {
+      define(function () {
+        return mainExports;
+      });
+
+      // <script>
+    } else if (globalName) {
+      this[globalName] = mainExports;
+    }
+  }
+})({"g45M4":[function(require,module,exports) {
+var global = arguments[3];
+var HMR_HOST = null;
+var HMR_PORT = null;
+var HMR_SECURE = false;
+var HMR_ENV_HASH = "a8fb9c35fdafe466";
+var HMR_USE_SSE = false;
+module.bundle.HMR_BUNDLE_ID = "cf2ac315455c3ff2";
+"use strict";
+/* global HMR_HOST, HMR_PORT, HMR_ENV_HASH, HMR_SECURE, HMR_USE_SSE, chrome, browser, __parcel__import__, __parcel__importScripts__, ServiceWorkerGlobalScope */ /*::
+import type {
+  HMRAsset,
+  HMRMessage,
+} from '@parcel/reporter-dev-server/src/HMRServer.js';
+interface ParcelRequire {
+  (string): mixed;
+  cache: {|[string]: ParcelModule|};
+  hotData: {|[string]: mixed|};
+  Module: any;
+  parent: ?ParcelRequire;
+  isParcelRequire: true;
+  modules: {|[string]: [Function, {|[string]: string|}]|};
+  HMR_BUNDLE_ID: string;
+  root: ParcelRequire;
+}
+interface ParcelModule {
+  hot: {|
+    data: mixed,
+    accept(cb: (Function) => void): void,
+    dispose(cb: (mixed) => void): void,
+    // accept(deps: Array<string> | string, cb: (Function) => void): void,
+    // decline(): void,
+    _acceptCallbacks: Array<(Function) => void>,
+    _disposeCallbacks: Array<(mixed) => void>,
+  |};
+}
+interface ExtensionContext {
+  runtime: {|
+    reload(): void,
+    getURL(url: string): string;
+    getManifest(): {manifest_version: number, ...};
+  |};
+}
+declare var module: {bundle: ParcelRequire, ...};
+declare var HMR_HOST: string;
+declare var HMR_PORT: string;
+declare var HMR_ENV_HASH: string;
+declare var HMR_SECURE: boolean;
+declare var HMR_USE_SSE: boolean;
+declare var chrome: ExtensionContext;
+declare var browser: ExtensionContext;
+declare var __parcel__import__: (string) => Promise<void>;
+declare var __parcel__importScripts__: (string) => Promise<void>;
+declare var globalThis: typeof self;
+declare var ServiceWorkerGlobalScope: Object;
+*/ var OVERLAY_ID = "__parcel__error__overlay__";
+var OldModule = module.bundle.Module;
+function Module(moduleName) {
+    OldModule.call(this, moduleName);
+    this.hot = {
+        data: module.bundle.hotData[moduleName],
+        _acceptCallbacks: [],
+        _disposeCallbacks: [],
+        accept: function(fn) {
+            this._acceptCallbacks.push(fn || function() {});
+        },
+        dispose: function(fn) {
+            this._disposeCallbacks.push(fn);
+        }
+    };
+    module.bundle.hotData[moduleName] = undefined;
+}
+module.bundle.Module = Module;
+module.bundle.hotData = {};
+var checkedAssets /*: {|[string]: boolean|} */ , assetsToDispose /*: Array<[ParcelRequire, string]> */ , assetsToAccept /*: Array<[ParcelRequire, string]> */ ;
+function getHostname() {
+    return HMR_HOST || (location.protocol.indexOf("http") === 0 ? location.hostname : "localhost");
+}
+function getPort() {
+    return HMR_PORT || location.port;
+}
+// eslint-disable-next-line no-redeclare
+var parent = module.bundle.parent;
+if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== "undefined") {
+    var hostname = getHostname();
+    var port = getPort();
+    var protocol = HMR_SECURE || location.protocol == "https:" && ![
+        "localhost",
+        "127.0.0.1",
+        "0.0.0.0"
+    ].includes(hostname) ? "wss" : "ws";
+    var ws;
+    if (HMR_USE_SSE) ws = new EventSource("/__parcel_hmr");
+    else try {
+        ws = new WebSocket(protocol + "://" + hostname + (port ? ":" + port : "") + "/");
+    } catch (err) {
+        if (err.message) console.error(err.message);
+        ws = {};
+    }
+    // Web extension context
+    var extCtx = typeof browser === "undefined" ? typeof chrome === "undefined" ? null : chrome : browser;
+    // Safari doesn't support sourceURL in error stacks.
+    // eval may also be disabled via CSP, so do a quick check.
+    var supportsSourceURL = false;
+    try {
+        (0, eval)('throw new Error("test"); //# sourceURL=test.js');
+    } catch (err) {
+        supportsSourceURL = err.stack.includes("test.js");
+    }
+    // $FlowFixMe
+    ws.onmessage = async function(event /*: {data: string, ...} */ ) {
+        checkedAssets = {} /*: {|[string]: boolean|} */ ;
+        assetsToAccept = [];
+        assetsToDispose = [];
+        var data /*: HMRMessage */  = JSON.parse(event.data);
+        if (data.type === "update") {
+            // Remove error overlay if there is one
+            if (typeof document !== "undefined") removeErrorOverlay();
+            let assets = data.assets.filter((asset)=>asset.envHash === HMR_ENV_HASH);
+            // Handle HMR Update
+            let handled = assets.every((asset)=>{
+                return asset.type === "css" || asset.type === "js" && hmrAcceptCheck(module.bundle.root, asset.id, asset.depsByBundle);
+            });
+            if (handled) {
+                console.clear();
+                // Dispatch custom event so other runtimes (e.g React Refresh) are aware.
+                if (typeof window !== "undefined" && typeof CustomEvent !== "undefined") window.dispatchEvent(new CustomEvent("parcelhmraccept"));
+                await hmrApplyUpdates(assets);
+                // Dispose all old assets.
+                let processedAssets = {} /*: {|[string]: boolean|} */ ;
+                for(let i = 0; i < assetsToDispose.length; i++){
+                    let id = assetsToDispose[i][1];
+                    if (!processedAssets[id]) {
+                        hmrDispose(assetsToDispose[i][0], id);
+                        processedAssets[id] = true;
+                    }
+                }
+                // Run accept callbacks. This will also re-execute other disposed assets in topological order.
+                processedAssets = {};
+                for(let i = 0; i < assetsToAccept.length; i++){
+                    let id = assetsToAccept[i][1];
+                    if (!processedAssets[id]) {
+                        hmrAccept(assetsToAccept[i][0], id);
+                        processedAssets[id] = true;
+                    }
+                }
+            } else fullReload();
+        }
+        if (data.type === "error") {
+            // Log parcel errors to console
+            for (let ansiDiagnostic of data.diagnostics.ansi){
+                let stack = ansiDiagnostic.codeframe ? ansiDiagnostic.codeframe : ansiDiagnostic.stack;
+                console.error("\uD83D\uDEA8 [parcel]: " + ansiDiagnostic.message + "\n" + stack + "\n\n" + ansiDiagnostic.hints.join("\n"));
+            }
+            if (typeof document !== "undefined") {
+                // Render the fancy html overlay
+                removeErrorOverlay();
+                var overlay = createErrorOverlay(data.diagnostics.html);
+                // $FlowFixMe
+                document.body.appendChild(overlay);
+            }
+        }
+    };
+    if (ws instanceof WebSocket) {
+        ws.onerror = function(e) {
+            if (e.message) console.error(e.message);
+        };
+        ws.onclose = function() {
+            console.warn("[parcel] \uD83D\uDEA8 Connection to the HMR server was lost");
+        };
+    }
+}
+function removeErrorOverlay() {
+    var overlay = document.getElementById(OVERLAY_ID);
+    if (overlay) {
+        overlay.remove();
+        console.log("[parcel] \u2728 Error resolved");
+    }
+}
+function createErrorOverlay(diagnostics) {
+    var overlay = document.createElement("div");
+    overlay.id = OVERLAY_ID;
+    let errorHTML = '<div style="background: black; opacity: 0.85; font-size: 16px; color: white; position: fixed; height: 100%; width: 100%; top: 0px; left: 0px; padding: 30px; font-family: Menlo, Consolas, monospace; z-index: 9999;">';
+    for (let diagnostic of diagnostics){
+        let stack = diagnostic.frames.length ? diagnostic.frames.reduce((p, frame)=>{
+            return `${p}
+<a href="/__parcel_launch_editor?file=${encodeURIComponent(frame.location)}" style="text-decoration: underline; color: #888" onclick="fetch(this.href); return false">${frame.location}</a>
+${frame.code}`;
+        }, "") : diagnostic.stack;
+        errorHTML += `
+      <div>
+        <div style="font-size: 18px; font-weight: bold; margin-top: 20px;">
+          \u{1F6A8} ${diagnostic.message}
+        </div>
+        <pre>${stack}</pre>
+        <div>
+          ${diagnostic.hints.map((hint)=>"<div>\uD83D\uDCA1 " + hint + "</div>").join("")}
+        </div>
+        ${diagnostic.documentation ? `<div>\u{1F4DD} <a style="color: violet" href="${diagnostic.documentation}" target="_blank">Learn more</a></div>` : ""}
+      </div>
+    `;
+    }
+    errorHTML += "</div>";
+    overlay.innerHTML = errorHTML;
+    return overlay;
+}
+function fullReload() {
+    if ("reload" in location) location.reload();
+    else if (extCtx && extCtx.runtime && extCtx.runtime.reload) extCtx.runtime.reload();
+}
+function getParents(bundle, id) /*: Array<[ParcelRequire, string]> */ {
+    var modules = bundle.modules;
+    if (!modules) return [];
+    var parents = [];
+    var k, d, dep;
+    for(k in modules)for(d in modules[k][1]){
+        dep = modules[k][1][d];
+        if (dep === id || Array.isArray(dep) && dep[dep.length - 1] === id) parents.push([
+            bundle,
+            k
+        ]);
+    }
+    if (bundle.parent) parents = parents.concat(getParents(bundle.parent, id));
+    return parents;
+}
+function updateLink(link) {
+    var href = link.getAttribute("href");
+    if (!href) return;
+    var newLink = link.cloneNode();
+    newLink.onload = function() {
+        if (link.parentNode !== null) // $FlowFixMe
+        link.parentNode.removeChild(link);
+    };
+    newLink.setAttribute("href", // $FlowFixMe
+    href.split("?")[0] + "?" + Date.now());
+    // $FlowFixMe
+    link.parentNode.insertBefore(newLink, link.nextSibling);
+}
+var cssTimeout = null;
+function reloadCSS() {
+    if (cssTimeout) return;
+    cssTimeout = setTimeout(function() {
+        var links = document.querySelectorAll('link[rel="stylesheet"]');
+        for(var i = 0; i < links.length; i++){
+            // $FlowFixMe[incompatible-type]
+            var href /*: string */  = links[i].getAttribute("href");
+            var hostname = getHostname();
+            var servedFromHMRServer = hostname === "localhost" ? new RegExp("^(https?:\\/\\/(0.0.0.0|127.0.0.1)|localhost):" + getPort()).test(href) : href.indexOf(hostname + ":" + getPort());
+            var absolute = /^https?:\/\//i.test(href) && href.indexOf(location.origin) !== 0 && !servedFromHMRServer;
+            if (!absolute) updateLink(links[i]);
+        }
+        cssTimeout = null;
+    }, 50);
+}
+function hmrDownload(asset) {
+    if (asset.type === "js") {
+        if (typeof document !== "undefined") {
+            let script = document.createElement("script");
+            script.src = asset.url + "?t=" + Date.now();
+            if (asset.outputFormat === "esmodule") script.type = "module";
+            return new Promise((resolve, reject)=>{
+                var _document$head;
+                script.onload = ()=>resolve(script);
+                script.onerror = reject;
+                (_document$head = document.head) === null || _document$head === void 0 || _document$head.appendChild(script);
+            });
+        } else if (typeof importScripts === "function") {
+            // Worker scripts
+            if (asset.outputFormat === "esmodule") return import(asset.url + "?t=" + Date.now());
+            else return new Promise((resolve, reject)=>{
+                try {
+                    importScripts(asset.url + "?t=" + Date.now());
+                    resolve();
+                } catch (err) {
+                    reject(err);
+                }
+            });
+        }
+    }
+}
+async function hmrApplyUpdates(assets) {
+    global.parcelHotUpdate = Object.create(null);
+    let scriptsToRemove;
+    try {
+        // If sourceURL comments aren't supported in eval, we need to load
+        // the update from the dev server over HTTP so that stack traces
+        // are correct in errors/logs. This is much slower than eval, so
+        // we only do it if needed (currently just Safari).
+        // https://bugs.webkit.org/show_bug.cgi?id=137297
+        // This path is also taken if a CSP disallows eval.
+        if (!supportsSourceURL) {
+            let promises = assets.map((asset)=>{
+                var _hmrDownload;
+                return (_hmrDownload = hmrDownload(asset)) === null || _hmrDownload === void 0 ? void 0 : _hmrDownload.catch((err)=>{
+                    // Web extension fix
+                    if (extCtx && extCtx.runtime && extCtx.runtime.getManifest().manifest_version == 3 && typeof ServiceWorkerGlobalScope != "undefined" && global instanceof ServiceWorkerGlobalScope) {
+                        extCtx.runtime.reload();
+                        return;
+                    }
+                    throw err;
+                });
+            });
+            scriptsToRemove = await Promise.all(promises);
+        }
+        assets.forEach(function(asset) {
+            hmrApply(module.bundle.root, asset);
+        });
+    } finally{
+        delete global.parcelHotUpdate;
+        if (scriptsToRemove) scriptsToRemove.forEach((script)=>{
+            if (script) {
+                var _document$head2;
+                (_document$head2 = document.head) === null || _document$head2 === void 0 || _document$head2.removeChild(script);
+            }
+        });
+    }
+}
+function hmrApply(bundle /*: ParcelRequire */ , asset /*:  HMRAsset */ ) {
+    var modules = bundle.modules;
+    if (!modules) return;
+    if (asset.type === "css") reloadCSS();
+    else if (asset.type === "js") {
+        let deps = asset.depsByBundle[bundle.HMR_BUNDLE_ID];
+        if (deps) {
+            if (modules[asset.id]) {
+                // Remove dependencies that are removed and will become orphaned.
+                // This is necessary so that if the asset is added back again, the cache is gone, and we prevent a full page reload.
+                let oldDeps = modules[asset.id][1];
+                for(let dep in oldDeps)if (!deps[dep] || deps[dep] !== oldDeps[dep]) {
+                    let id = oldDeps[dep];
+                    let parents = getParents(module.bundle.root, id);
+                    if (parents.length === 1) hmrDelete(module.bundle.root, id);
+                }
+            }
+            if (supportsSourceURL) // Global eval. We would use `new Function` here but browser
+            // support for source maps is better with eval.
+            (0, eval)(asset.output);
+            // $FlowFixMe
+            let fn = global.parcelHotUpdate[asset.id];
+            modules[asset.id] = [
+                fn,
+                deps
+            ];
+        } else if (bundle.parent) hmrApply(bundle.parent, asset);
+    }
+}
+function hmrDelete(bundle, id) {
+    let modules = bundle.modules;
+    if (!modules) return;
+    if (modules[id]) {
+        // Collect dependencies that will become orphaned when this module is deleted.
+        let deps = modules[id][1];
+        let orphans = [];
+        for(let dep in deps){
+            let parents = getParents(module.bundle.root, deps[dep]);
+            if (parents.length === 1) orphans.push(deps[dep]);
+        }
+        // Delete the module. This must be done before deleting dependencies in case of circular dependencies.
+        delete modules[id];
+        delete bundle.cache[id];
+        // Now delete the orphans.
+        orphans.forEach((id)=>{
+            hmrDelete(module.bundle.root, id);
+        });
+    } else if (bundle.parent) hmrDelete(bundle.parent, id);
+}
+function hmrAcceptCheck(bundle /*: ParcelRequire */ , id /*: string */ , depsByBundle /*: ?{ [string]: { [string]: string } }*/ ) {
+    if (hmrAcceptCheckOne(bundle, id, depsByBundle)) return true;
+    // Traverse parents breadth first. All possible ancestries must accept the HMR update, or we'll reload.
+    let parents = getParents(module.bundle.root, id);
+    let accepted = false;
+    while(parents.length > 0){
+        let v = parents.shift();
+        let a = hmrAcceptCheckOne(v[0], v[1], null);
+        if (a) // If this parent accepts, stop traversing upward, but still consider siblings.
+        accepted = true;
+        else {
+            // Otherwise, queue the parents in the next level upward.
+            let p = getParents(module.bundle.root, v[1]);
+            if (p.length === 0) {
+                // If there are no parents, then we've reached an entry without accepting. Reload.
+                accepted = false;
+                break;
+            }
+            parents.push(...p);
+        }
+    }
+    return accepted;
+}
+function hmrAcceptCheckOne(bundle /*: ParcelRequire */ , id /*: string */ , depsByBundle /*: ?{ [string]: { [string]: string } }*/ ) {
+    var modules = bundle.modules;
+    if (!modules) return;
+    if (depsByBundle && !depsByBundle[bundle.HMR_BUNDLE_ID]) {
+        // If we reached the root bundle without finding where the asset should go,
+        // there's nothing to do. Mark as "accepted" so we don't reload the page.
+        if (!bundle.parent) return true;
+        return hmrAcceptCheck(bundle.parent, id, depsByBundle);
+    }
+    if (checkedAssets[id]) return true;
+    checkedAssets[id] = true;
+    var cached = bundle.cache[id];
+    assetsToDispose.push([
+        bundle,
+        id
+    ]);
+    if (!cached || cached.hot && cached.hot._acceptCallbacks.length) {
+        assetsToAccept.push([
+            bundle,
+            id
+        ]);
+        return true;
+    }
+}
+function hmrDispose(bundle /*: ParcelRequire */ , id /*: string */ ) {
+    var cached = bundle.cache[id];
+    bundle.hotData[id] = {};
+    if (cached && cached.hot) cached.hot.data = bundle.hotData[id];
+    if (cached && cached.hot && cached.hot._disposeCallbacks.length) cached.hot._disposeCallbacks.forEach(function(cb) {
+        cb(bundle.hotData[id]);
+    });
+    delete bundle.cache[id];
+}
+function hmrAccept(bundle /*: ParcelRequire */ , id /*: string */ ) {
+    // Execute the module.
+    bundle(id);
+    // Run the accept callbacks in the new version of the module.
+    var cached = bundle.cache[id];
+    if (cached && cached.hot && cached.hot._acceptCallbacks.length) cached.hot._acceptCallbacks.forEach(function(cb) {
+        var assetsToAlsoAccept = cb(function() {
+            return getParents(module.bundle.root, id);
+        });
+        if (assetsToAlsoAccept && assetsToAccept.length) {
+            assetsToAlsoAccept.forEach(function(a) {
+                hmrDispose(a[0], a[1]);
+            });
+            // $FlowFixMe[method-unbinding]
+            assetsToAccept.push.apply(assetsToAccept, assetsToAlsoAccept);
+        }
+    });
+}
+
+},{}],"c85su":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Problem", ()=>$1f9c7ae011a64571$export$559d26475d35ac1e);
+parcelHelpers.export(exports, "CrispProblem", ()=>$c624e9db75d26c9f$export$2d7b2a6964dca148);
+parcelHelpers.export(exports, "Element", ()=>$ae754937ccaa65b0$export$db77ccec0bb4ccac);
+parcelHelpers.export(exports, "Variable", ()=>$8a169d84b9853138$export$c867a5c9595a1350);
+parcelHelpers.export(exports, "ObservableVariable", ()=>$b465f27e32fe405d$export$a14c1bd8f74377e);
+parcelHelpers.export(exports, "Domain", ()=>$79a8d1b9a9fc74d0$export$f102e87ccfb079d0);
+parcelHelpers.export(exports, "DomainArbitrary", ()=>$c390ec7dca5ac321$export$62fe53be9d2bcdd3);
+parcelHelpers.export(exports, "DomainRanged", ()=>$aa858a2a93fead82$export$681548042801f21c);
+parcelHelpers.export(exports, "Constraint", ()=>$e67c82024f87a841$export$aec1359a0a40a615);
+parcelHelpers.export(exports, "Constraint1", ()=>$cefcd65bf0a494eb$export$42d7bbd8a43e587d);
+parcelHelpers.export(exports, "Constraint2", ()=>$7e7c1b07812da051$export$18305a9eb79647d6);
+parcelHelpers.export(exports, "Constraint3", ()=>$e15e0d8061a1d3e1$export$7dc34a7e74bc57bb);
+parcelHelpers.export(exports, "ConstraintN", ()=>$f7435b989104b6d0$export$fd9d2e5591a15c9a);
+parcelHelpers.export(exports, "Relation", ()=>$f4fccc65260d093d$export$b57c6722681faed7);
+parcelHelpers.export(exports, "FuzzyRelation", ()=>$971b718aea973f33$export$3b3c4a6f6988f9e8);
+parcelHelpers.export(exports, "FuzzyTabledRelation", ()=>$c141b9b955cfd62e$export$9af92f8a5a1bfd9d);
+parcelHelpers.export(exports, "FuzzyRelationFunction", ()=>$8954958cf0b6696d$export$292ff2b1fb710ade);
+parcelHelpers.export(exports, "CrispRelation", ()=>$9098286a4d3ce42f$export$182ea39d269dda05);
+parcelHelpers.export(exports, "CrispTabledRelation", ()=>$f7617c3ac8e6cd4a$export$14031e4758dfc3cf);
+parcelHelpers.export(exports, "CrispRelationFunction", ()=>$1772f50825805f1c$export$a1cc6d3c2a0259e4);
+parcelHelpers.export(exports, "CrispRelationView", ()=>$388f571dc59ac25d$export$f47c6ef1c1dceb7d);
+parcelHelpers.export(exports, "FuzzyRelationView", ()=>$388f571dc59ac25d$export$105e23542a0b280f);
+parcelHelpers.export(exports, "Solver", ()=>$e5625d8b51be59c8$export$cca492cadf45c096);
+parcelHelpers.export(exports, "SolverFactory", ()=>$720d3cc47e3bd21f$export$4e442516b8f577ee);
+parcelHelpers.export(exports, "FlexibleLocalChanges", ()=>$3e67a3bbb2d0cdae$export$c15ba88cf158f3d6);
+parcelHelpers.export(exports, "FlexibleLocalChangesEx", ()=>$a2b0456b598cdc15$export$f3429dcb0286bfee);
+parcelHelpers.export(exports, "FuzzyBreakout", ()=>$d7c197e6a4ef7b17$export$151ca5d788220218);
+parcelHelpers.export(exports, "FuzzyForwardChecking", ()=>$8d126dc1fb260d00$export$2d94cf9ddb103458);
+parcelHelpers.export(exports, "FuzzyForwardCheckingBc", ()=>$bbd1d315bf8940be$export$532d5536583284b8);
+parcelHelpers.export(exports, "FuzzyGENET", ()=>$fb3cfe453725e4b3$export$6a3df005617df82a);
+parcelHelpers.export(exports, "SRS3", ()=>$e39b34bae78c1c37$export$4bfabca73d1ccb59);
+parcelHelpers.export(exports, "SRS3_PF", ()=>$56dbbcaaa927a4a2$export$281ed65cbb041503);
+parcelHelpers.export(exports, "Breakout", ()=>$368b031b41e29330$export$44de86bc32e07644);
+parcelHelpers.export(exports, "CrispSRS3", ()=>$6a494cae60277c44$export$193930056f923a8);
+parcelHelpers.export(exports, "ForwardChecking", ()=>$6537b0e1551710d4$export$8570b7b487498488);
+parcelHelpers.export(exports, "GENET", ()=>$59ba6be2773f89c9$export$d94917317b4f74cb);
+parcelHelpers.export(exports, "LocalChanges", ()=>$18724c3268ec037c$export$8153937ab18ca581);
+parcelHelpers.export(exports, "LocalChangesEx", ()=>$16be001e34914685$export$e577c7182ffc977b);
+parcelHelpers.export(exports, "MaxForwardChecking", ()=>$0c5cdff78dc8648d$export$2a32484f7cb0d846);
+parcelHelpers.export(exports, "AC3", ()=>$d10fdff0b3f22a66$export$ac824f187e852f5a);
+parcelHelpers.export(exports, "NodeConsistency", ()=>$a8cdbbce0cfe8aee$export$975ddbe83e2b310a);
+parcelHelpers.export(exports, "PostStabilization", ()=>$c5e681ea32920ad2$export$52631f16ca582d39);
+parcelHelpers.export(exports, "Problems", ()=>$e26450ba7c736240$export$32fae9b8f93405d0);
+parcelHelpers.export(exports, "Assignment", ()=>$9bc6df20db8be0bf$export$e6b39d88cc0d636);
+parcelHelpers.export(exports, "AssignmentList", ()=>$d7051a715721e7ce$export$1d4e454bcd46f18f);
+parcelHelpers.export(exports, "DomainPruner", ()=>$f7b05997b0c3179b$export$f307752a90139b0e);
+parcelHelpers.export(exports, "LoopDetector", ()=>$ef2881bbdac82876$export$136021658ac30d9);
 function $parcel$export(e, n, v, s) {
-  Object.defineProperty(e, n, {get: v, set: s, enumerable: true, configurable: true});
+    Object.defineProperty(e, n, {
+        get: v,
+        set: s,
+        enumerable: true,
+        configurable: true
+    });
 }
 var $1f9c7ae011a64571$exports = {};
-
-$parcel$export($1f9c7ae011a64571$exports, "Problem", () => $1f9c7ae011a64571$export$559d26475d35ac1e);
+$parcel$export($1f9c7ae011a64571$exports, "Problem", ()=>$1f9c7ae011a64571$export$559d26475d35ac1e);
 /**
  * The class represents a constraint satisfaction problem.
  *
  * @author Takuto Yanagida
  * @version 2023-04-16
  */ var $8a169d84b9853138$exports = {};
-
-$parcel$export($8a169d84b9853138$exports, "Variable", () => $8a169d84b9853138$export$c867a5c9595a1350);
+$parcel$export($8a169d84b9853138$exports, "Variable", ()=>$8a169d84b9853138$export$c867a5c9595a1350);
 /**
  * Class that represents a variable.
  *
  * @author Takuto Yanagida
  * @version 2023-04-18
  */ var $ae754937ccaa65b0$exports = {};
-
-$parcel$export($ae754937ccaa65b0$exports, "Element", () => $ae754937ccaa65b0$export$db77ccec0bb4ccac);
+$parcel$export($ae754937ccaa65b0$exports, "Element", ()=>$ae754937ccaa65b0$export$db77ccec0bb4ccac);
 /**
  * The common class of variables and constraints.
  *
@@ -62,9 +698,7 @@ $parcel$export($ae754937ccaa65b0$exports, "Element", () => $ae754937ccaa65b0$exp
         return this.#name;
     }
 }
-
-
-class $8a169d84b9853138$export$c867a5c9595a1350 extends (0, $ae754937ccaa65b0$export$db77ccec0bb4ccac) {
+class $8a169d84b9853138$export$c867a5c9595a1350 extends $ae754937ccaa65b0$export$db77ccec0bb4ccac {
     static #INVALID = Number.MIN_VALUE;
     #owner;
     #dom;
@@ -77,14 +711,14 @@ class $8a169d84b9853138$export$c867a5c9595a1350 extends (0, $ae754937ccaa65b0$ex
         this.#dom = d;
     }
     // Called only from Problem.
-    connect(c) {
-        if (this.has(c)) throw new IllegalArgumentException();
-        this.#cons.push(c);
+    connect(c1) {
+        if (this.has(c1)) throw new IllegalArgumentException();
+        this.#cons.push(c1);
     }
     // Called only from Problem.
-    disconnect(c) {
-        if (!this.has(c)) throw new IllegalArgumentException();
-        this.#cons = this.#cons.filter((n)=>n !== c);
+    disconnect(c1) {
+        if (!this.has(c1)) throw new IllegalArgumentException();
+        this.#cons = this.#cons.filter((n)=>n !== c1);
     }
     /**
 	 * Assign a value.
@@ -145,8 +779,8 @@ class $8a169d84b9853138$export$c867a5c9595a1350 extends (0, $ae754937ccaa65b0$ex
 	 * Checks whether or not the variable is associated with the specified constraint.
 	 * @param c A constraint.
 	 * @return True if associated.
-	 */ has(c) {
-        return this.#cons.includes(c);
+	 */ has(c1) {
+        return this.#cons.includes(c1);
     }
     /**
 	 * Gets a string representation.
@@ -165,25 +799,21 @@ class $8a169d84b9853138$export$c867a5c9595a1350 extends (0, $ae754937ccaa65b0$ex
 	 * @return An array of variables
 	 */ neighbors() {
         const vs = [];
-        for (const c of this.#cons){
-            for (const v of c)if (v !== this) vs.push(v);
+        for (const c1 of this.#cons){
+            for (const v of c1)if (v !== this) vs.push(v);
         }
         return vs;
     }
 }
-
-
 var $aa858a2a93fead82$exports = {};
-
-$parcel$export($aa858a2a93fead82$exports, "DomainRanged", () => $aa858a2a93fead82$export$681548042801f21c);
+$parcel$export($aa858a2a93fead82$exports, "DomainRanged", ()=>$aa858a2a93fead82$export$681548042801f21c);
 /**
  * A variable domain with contiguous integer elements.
  *
  * @author Takuto Yanagida
  * @version 2023-04-10
  */ var $79a8d1b9a9fc74d0$exports = {};
-
-$parcel$export($79a8d1b9a9fc74d0$exports, "Domain", () => $79a8d1b9a9fc74d0$export$f102e87ccfb079d0);
+$parcel$export($79a8d1b9a9fc74d0$exports, "Domain", ()=>$79a8d1b9a9fc74d0$export$f102e87ccfb079d0);
 /**
  * An abstract class that represents a variable domain.
  * The domain is immutable.
@@ -225,9 +855,7 @@ $parcel$export($79a8d1b9a9fc74d0$exports, "Domain", () => $79a8d1b9a9fc74d0$expo
         return this.at(Math.floor(Math.random() * this.size()));
     }
 }
-
-
-class $aa858a2a93fead82$export$681548042801f21c extends (0, $79a8d1b9a9fc74d0$export$f102e87ccfb079d0) {
+class $aa858a2a93fead82$export$681548042801f21c extends $79a8d1b9a9fc74d0$export$f102e87ccfb079d0 {
     #min;
     #max;
     constructor(min, max){
@@ -269,18 +897,14 @@ class $aa858a2a93fead82$export$681548042801f21c extends (0, $79a8d1b9a9fc74d0$ex
         };
     }
 }
-
-
 var $c390ec7dca5ac321$exports = {};
-
-$parcel$export($c390ec7dca5ac321$exports, "DomainArbitrary", () => $c390ec7dca5ac321$export$62fe53be9d2bcdd3);
+$parcel$export($c390ec7dca5ac321$exports, "DomainArbitrary", ()=>$c390ec7dca5ac321$export$62fe53be9d2bcdd3);
 /**
  * A variable domain with arbitrary elements.
  *
  * @author Takuto Yanagida
  * @version 2023-04-10
- */ 
-class $c390ec7dca5ac321$export$62fe53be9d2bcdd3 extends (0, $79a8d1b9a9fc74d0$export$f102e87ccfb079d0) {
+ */ class $c390ec7dca5ac321$export$62fe53be9d2bcdd3 extends $79a8d1b9a9fc74d0$export$f102e87ccfb079d0 {
     #vals;
     constructor(vals){
         super();
@@ -314,28 +938,22 @@ class $c390ec7dca5ac321$export$62fe53be9d2bcdd3 extends (0, $79a8d1b9a9fc74d0$ex
         return this.#vals[Symbol.iterator]();
     }
 }
-
-
 var $e67c82024f87a841$exports = {};
-
-$parcel$export($e67c82024f87a841$exports, "Constraint", () => $e67c82024f87a841$export$aec1359a0a40a615);
+$parcel$export($e67c82024f87a841$exports, "Constraint", ()=>$e67c82024f87a841$export$aec1359a0a40a615);
 /**
  * The class represents a constraint.
  *
  * @author Takuto Yanagida
  * @version 2023-04-11
- */ 
-var $971b718aea973f33$exports = {};
-
-$parcel$export($971b718aea973f33$exports, "FuzzyRelation", () => $971b718aea973f33$export$3b3c4a6f6988f9e8);
+ */ var $971b718aea973f33$exports = {};
+$parcel$export($971b718aea973f33$exports, "FuzzyRelation", ()=>$971b718aea973f33$export$3b3c4a6f6988f9e8);
 /**
  * The class represents fuzzy relationships between variables.
  *
  * @author Takuto Yanagida
  * @version 2023-03-25
  */ var $f4fccc65260d093d$exports = {};
-
-$parcel$export($f4fccc65260d093d$exports, "Relation", () => $f4fccc65260d093d$export$b57c6722681faed7);
+$parcel$export($f4fccc65260d093d$exports, "Relation", ()=>$f4fccc65260d093d$export$b57c6722681faed7);
 /**
  * An interface that represents the relationship between variables.
  * Use CrispRelation or FuzzyRelation class that implement this interface.
@@ -344,9 +962,7 @@ $parcel$export($f4fccc65260d093d$exports, "Relation", () => $f4fccc65260d093d$ex
  * @version 2023-03-25
  */ class $f4fccc65260d093d$export$b57c6722681faed7 {
 }
-
-
-class $971b718aea973f33$export$3b3c4a6f6988f9e8 extends (0, $f4fccc65260d093d$export$b57c6722681faed7) {
+class $971b718aea973f33$export$3b3c4a6f6988f9e8 extends $f4fccc65260d093d$export$b57c6722681faed7 {
     /**
 	 * Gets the satisfaction degree in this fuzzy relation.
 	 * @param vals Values of each variable
@@ -361,9 +977,7 @@ class $971b718aea973f33$export$3b3c4a6f6988f9e8 extends (0, $f4fccc65260d093d$ex
         return new CrispRelationView(this);
     }
 }
-
-
-class $e67c82024f87a841$export$aec1359a0a40a615 extends (0, $ae754937ccaa65b0$export$db77ccec0bb4ccac) {
+class $e67c82024f87a841$export$aec1359a0a40a615 extends $ae754937ccaa65b0$export$db77ccec0bb4ccac {
     /**
 	 * The constant indicating that the satisfaction degree is not defined.
 	 */ static UNDEFINED = -1;
@@ -389,7 +1003,7 @@ class $e67c82024f87a841$export$aec1359a0a40a615 extends (0, $ae754937ccaa65b0$ex
 	 * Returns whether this is a fuzzy constraint.
 	 * @return True if it is fuzzy constraint.
 	 */ isFuzzy() {
-        return this.rel instanceof (0, $971b718aea973f33$export$3b3c4a6f6988f9e8);
+        return this.rel instanceof $971b718aea973f33$export$3b3c4a6f6988f9e8;
     }
     /**
 	 * Returns a string representation.
@@ -455,19 +1069,15 @@ class $e67c82024f87a841$export$aec1359a0a40a615 extends (0, $ae754937ccaa65b0$ex
 	 * @return The lowest consistency degree.
 	 */ lowestConsistencyDegree() {}
 }
-
-
 var $cefcd65bf0a494eb$exports = {};
-
-$parcel$export($cefcd65bf0a494eb$exports, "Constraint1", () => $cefcd65bf0a494eb$export$42d7bbd8a43e587d);
+$parcel$export($cefcd65bf0a494eb$exports, "Constraint1", ()=>$cefcd65bf0a494eb$export$42d7bbd8a43e587d);
 /**
  * The class represents an unary constraint.
  * The constructor is not called directly, since it is created by the Problem.
  *
  * @author Takuto Yanagida
  * @version 2023-04-11
- */ 
-class $cefcd65bf0a494eb$export$42d7bbd8a43e587d extends (0, $e67c82024f87a841$export$aec1359a0a40a615) {
+ */ class $cefcd65bf0a494eb$export$42d7bbd8a43e587d extends $e67c82024f87a841$export$aec1359a0a40a615 {
     #vars = [
         null
     ];
@@ -515,27 +1125,27 @@ class $cefcd65bf0a494eb$export$42d7bbd8a43e587d extends (0, $e67c82024f87a841$ex
     /**
 	 * {@inheritDoc}
 	 */ isSatisfied() {
-        if (this.#vars[0].isEmpty()) return (0, $e67c82024f87a841$export$aec1359a0a40a615).UNDEFINED;
+        if (this.#vars[0].isEmpty()) return $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED;
         return this.crispRelation().isSatisfied(this.#vars[0].value()) ? 1 : 0;
     }
     /**
 	 * {@inheritDoc}
 	 */ satisfactionDegree() {
-        if (this.#vars[0].isEmpty()) return (0, $e67c82024f87a841$export$aec1359a0a40a615).UNDEFINED;
+        if (this.#vars[0].isEmpty()) return $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED;
         return this.fuzzyRelation().satisfactionDegree(this.#vars[0].value());
     }
     /**
 	 * {@inheritDoc}
 	 */ neighbors() {
         const cs = [];
-        for (const c of this.#vars[0])if (c !== this) cs.push(c);
+        for (const c1 of this.#vars[0])if (c1 !== this) cs.push(c1);
         return cs;
     }
     /**
 	 * {@inheritDoc}
 	 */ highestConsistencyDegree() {
         const sd = this.satisfactionDegree();
-        if (sd !== (0, $e67c82024f87a841$export$aec1359a0a40a615).UNDEFINED) return sd;
+        if (sd !== $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED) return sd;
         let cd = 0;
         for (const val of this.#vars[0].domain()){
             const s = this.fuzzyRelation().satisfactionDegree(val);
@@ -548,7 +1158,7 @@ class $cefcd65bf0a494eb$export$42d7bbd8a43e587d extends (0, $e67c82024f87a841$ex
 	 * {@inheritDoc}
 	 */ lowestConsistencyDegree() {
         const sd = this.satisfactionDegree();
-        if (sd !== (0, $e67c82024f87a841$export$aec1359a0a40a615).UNDEFINED) return sd;
+        if (sd !== $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED) return sd;
         let cd = 1;
         for (const val of this.#vars[0].domain()){
             const s = this.fuzzyRelation().satisfactionDegree(val);
@@ -558,19 +1168,15 @@ class $cefcd65bf0a494eb$export$42d7bbd8a43e587d extends (0, $e67c82024f87a841$ex
         return cd;
     }
 }
-
-
 var $7e7c1b07812da051$exports = {};
-
-$parcel$export($7e7c1b07812da051$exports, "Constraint2", () => $7e7c1b07812da051$export$18305a9eb79647d6);
+$parcel$export($7e7c1b07812da051$exports, "Constraint2", ()=>$7e7c1b07812da051$export$18305a9eb79647d6);
 /**
  * The class represents an binary constraint.
  * The constructor is not called directly, since it is created by the Problem.
  *
  * @author Takuto Yanagida
  * @version 2023-04-16
- */ 
-class $7e7c1b07812da051$export$18305a9eb79647d6 extends (0, $e67c82024f87a841$export$aec1359a0a40a615) {
+ */ class $7e7c1b07812da051$export$18305a9eb79647d6 extends $e67c82024f87a841$export$aec1359a0a40a615 {
     #vars = [
         null,
         null
@@ -626,28 +1232,28 @@ class $7e7c1b07812da051$export$18305a9eb79647d6 extends (0, $e67c82024f87a841$ex
     /**
 	 * {@inheritDoc}
 	 */ isSatisfied() {
-        if (this.#vars[0].isEmpty() || this.#vars[1].isEmpty()) return (0, $e67c82024f87a841$export$aec1359a0a40a615).UNDEFINED;
+        if (this.#vars[0].isEmpty() || this.#vars[1].isEmpty()) return $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED;
         return this.crispRelation().isSatisfied(this.#vars[0].value(), this.#vars[1].value()) ? 1 : 0;
     }
     /**
 	 * {@inheritDoc}
 	 */ satisfactionDegree() {
-        if (this.#vars[0].isEmpty() || this.#vars[1].isEmpty()) return (0, $e67c82024f87a841$export$aec1359a0a40a615).UNDEFINED;
+        if (this.#vars[0].isEmpty() || this.#vars[1].isEmpty()) return $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED;
         return this.fuzzyRelation().satisfactionDegree(this.#vars[0].value(), this.#vars[1].value());
     }
     /**
 	 * {@inheritDoc}
 	 */ neighbors() {
         const cs = [];
-        for (const c of this.#vars[0])if (c !== this) cs.push(c);
-        for (const c of this.#vars[1])if (c !== this) cs.push(c);
+        for (const c1 of this.#vars[0])if (c1 !== this) cs.push(c1);
+        for (const c1 of this.#vars[1])if (c1 !== this) cs.push(c1);
         return cs;
     }
     /**
 	 * {@inheritDoc}
 	 */ highestConsistencyDegree() {
         const sd = this.satisfactionDegree();
-        if (sd !== (0, $e67c82024f87a841$export$aec1359a0a40a615).UNDEFINED) return sd;
+        if (sd !== $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED) return sd;
         let cd = 0;
         const val1 = this.#vars[0].value();
         const val2 = this.#vars[1].value();
@@ -676,7 +1282,7 @@ class $7e7c1b07812da051$export$18305a9eb79647d6 extends (0, $e67c82024f87a841$ex
 	 * {@inheritDoc}
 	 */ lowestConsistencyDegree() {
         const sd = this.satisfactionDegree();
-        if (sd !== (0, $e67c82024f87a841$export$aec1359a0a40a615).UNDEFINED) return sd;
+        if (sd !== $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED) return sd;
         let cd = 1;
         const val1 = this.#vars[0].value();
         const val2 = this.#vars[1].value();
@@ -702,19 +1308,15 @@ class $7e7c1b07812da051$export$18305a9eb79647d6 extends (0, $e67c82024f87a841$ex
         return cd;
     }
 }
-
-
 var $e15e0d8061a1d3e1$exports = {};
-
-$parcel$export($e15e0d8061a1d3e1$exports, "Constraint3", () => $e15e0d8061a1d3e1$export$7dc34a7e74bc57bb);
+$parcel$export($e15e0d8061a1d3e1$exports, "Constraint3", ()=>$e15e0d8061a1d3e1$export$7dc34a7e74bc57bb);
 /**
  * The class represents an 3-ary constraint.
  * The constructor is not called directly, since it is created by the Problem.
  *
  * @author Takuto Yanagida
  * @version 2023-04-11
- */ 
-class $e15e0d8061a1d3e1$export$7dc34a7e74bc57bb extends (0, $e67c82024f87a841$export$aec1359a0a40a615) {
+ */ class $e15e0d8061a1d3e1$export$7dc34a7e74bc57bb extends $e67c82024f87a841$export$aec1359a0a40a615 {
     #vars = [
         null,
         null,
@@ -781,23 +1383,23 @@ class $e15e0d8061a1d3e1$export$7dc34a7e74bc57bb extends (0, $e67c82024f87a841$ex
     /**
 	 * {@inheritDoc}
 	 */ satisfactionDegree() {
-        if (this.#vars[0].isEmpty() || this.#vars[1].isEmpty() || this.#vars[2].isEmpty()) return (0, $e67c82024f87a841$export$aec1359a0a40a615).UNDEFINED;
+        if (this.#vars[0].isEmpty() || this.#vars[1].isEmpty() || this.#vars[2].isEmpty()) return $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED;
         return this.fuzzyRelation().satisfactionDegree(this.#vars[0].value(), this.#vars[1].value(), this.#vars[2].value());
     }
     /**
 	 * {@inheritDoc}
 	 */ neighbors() {
         const cs = [];
-        for (const c of this.#vars[0])if (c !== this) cs.push(c);
-        for (const c of this.#vars[1])if (c !== this) cs.push(c);
-        for (const c of this.#vars[2])if (c !== this) cs.push(c);
+        for (const c1 of this.#vars[0])if (c1 !== this) cs.push(c1);
+        for (const c1 of this.#vars[1])if (c1 !== this) cs.push(c1);
+        for (const c1 of this.#vars[2])if (c1 !== this) cs.push(c1);
         return cs;
     }
     /**
 	 * {@inheritDoc}
 	 */ highestConsistencyDegree() {
         const sd = this.satisfactionDegree();
-        if (sd !== (0, $e67c82024f87a841$export$aec1359a0a40a615).UNDEFINED) return sd;
+        if (sd !== $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED) return sd;
         let cd = 1;
         const val1 = this.#vars[0].value();
         const val2 = this.#vars[1].value();
@@ -851,7 +1453,7 @@ class $e15e0d8061a1d3e1$export$7dc34a7e74bc57bb extends (0, $e67c82024f87a841$ex
 	 * {@inheritDoc}
 	 */ lowestConsistencyDegree() {
         const sd = this.satisfactionDegree();
-        if (sd !== (0, $e67c82024f87a841$export$aec1359a0a40a615).UNDEFINED) return sd;
+        if (sd !== $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED) return sd;
         let cd = 1;
         const val1 = this.#vars[0].value();
         const val2 = this.#vars[1].value();
@@ -902,19 +1504,15 @@ class $e15e0d8061a1d3e1$export$7dc34a7e74bc57bb extends (0, $e67c82024f87a841$ex
         return cd;
     }
 }
-
-
 var $f7435b989104b6d0$exports = {};
-
-$parcel$export($f7435b989104b6d0$exports, "ConstraintN", () => $f7435b989104b6d0$export$fd9d2e5591a15c9a);
+$parcel$export($f7435b989104b6d0$exports, "ConstraintN", ()=>$f7435b989104b6d0$export$fd9d2e5591a15c9a);
 /**
  * The class represents an n-ary constraint.
  * The constructor is not called directly, since it is created by the Problem.
  *
  * @author Takuto Yanagida
  * @version 2023-04-11
- */ 
-class $f7435b989104b6d0$export$fd9d2e5591a15c9a extends (0, $e67c82024f87a841$export$aec1359a0a40a615) {
+ */ class $f7435b989104b6d0$export$fd9d2e5591a15c9a extends $e67c82024f87a841$export$aec1359a0a40a615 {
     #vars;
     #vals;
     // Called only from Problem.
@@ -979,7 +1577,7 @@ class $f7435b989104b6d0$export$fd9d2e5591a15c9a extends (0, $e67c82024f87a841$ex
 	 */ satisfactionDegree() {
         for(let i = 0; i < this.#vars.length; ++i){
             const v = this.#vars[i];
-            if (v.isEmpty()) return (0, $e67c82024f87a841$export$aec1359a0a40a615).UNDEFINED;
+            if (v.isEmpty()) return $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED;
             this.#vals[i] = v.value();
         }
         return this.fuzzyRelation().satisfactionDegree(...this.#vals);
@@ -989,7 +1587,7 @@ class $f7435b989104b6d0$export$fd9d2e5591a15c9a extends (0, $e67c82024f87a841$ex
 	 */ neighbors() {
         const cs = [];
         for (const v of this.#vars){
-            for (const c of v)if (c !== this) cs.push(c);
+            for (const c1 of v)if (c1 !== this) cs.push(c1);
         }
         return cs;
     }
@@ -997,10 +1595,10 @@ class $f7435b989104b6d0$export$fd9d2e5591a15c9a extends (0, $e67c82024f87a841$ex
 	 * {@inheritDoc}
 	 */ highestConsistencyDegree() {
         const sd = this.satisfactionDegree();
-        if (sd !== (0, $e67c82024f87a841$export$aec1359a0a40a615).UNDEFINED) return sd;
+        if (sd !== $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED) return sd;
         const emptyIndices = new Array(this.emptyVariableSize());
-        let c = 0;
-        for(let i = 0; i < this.#vars.length; ++i)if (this.#vars[i].isEmpty()) emptyIndices[c++] = i;
+        let c1 = 0;
+        for(let i = 0; i < this.#vars.length; ++i)if (this.#vars[i].isEmpty()) emptyIndices[c1++] = i;
         else this.#vals[i] = this.#vars[i].value();
         return this.checkHCD(emptyIndices, 0, 0);
     }
@@ -1008,10 +1606,10 @@ class $f7435b989104b6d0$export$fd9d2e5591a15c9a extends (0, $e67c82024f87a841$ex
 	 * {@inheritDoc}
 	 */ lowestConsistencyDegree() {
         const sd = this.satisfactionDegree();
-        if (sd !== (0, $e67c82024f87a841$export$aec1359a0a40a615).UNDEFINED) return sd;
+        if (sd !== $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED) return sd;
         const emptyIndices = new Array(this.emptyVariableSize());
-        let c = 0;
-        for(let i = 0; i < this.#vars.length; ++i)if (this.#vars[i].isEmpty()) emptyIndices[c++] = i;
+        let c1 = 0;
+        for(let i = 0; i < this.#vars.length; ++i)if (this.#vars[i].isEmpty()) emptyIndices[c1++] = i;
         else this.#vals[i] = this.#vars[i].value();
         return this.checkLCD(emptyIndices, 0, 1);
     }
@@ -1046,15 +1644,13 @@ class $f7435b989104b6d0$export$fd9d2e5591a15c9a extends (0, $e67c82024f87a841$ex
         return cd;
     }
 }
-
-
 class $1f9c7ae011a64571$export$559d26475d35ac1e {
-    #fv = (o, d)=>new (0, $8a169d84b9853138$export$c867a5c9595a1350)(o, d);
+    #fv = (o, d)=>new $8a169d84b9853138$export$c867a5c9595a1350(o, d);
     #fc = (r, vs)=>{
-        if (vs.length === 1) return new (0, $cefcd65bf0a494eb$export$42d7bbd8a43e587d)(r, ...vs);
-        if (vs.length === 2) return new (0, $7e7c1b07812da051$export$18305a9eb79647d6)(r, ...vs);
-        if (vs.length === 3) return new (0, $e15e0d8061a1d3e1$export$7dc34a7e74bc57bb)(r, ...vs);
-        return new (0, $f7435b989104b6d0$export$fd9d2e5591a15c9a)(r, vs);
+        if (vs.length === 1) return new $cefcd65bf0a494eb$export$42d7bbd8a43e587d(r, ...vs);
+        if (vs.length === 2) return new $7e7c1b07812da051$export$18305a9eb79647d6(r, ...vs);
+        if (vs.length === 3) return new $e15e0d8061a1d3e1$export$7dc34a7e74bc57bb(r, ...vs);
+        return new $f7435b989104b6d0$export$fd9d2e5591a15c9a(r, vs);
     };
     _isFuzzy = false;
     _vars = [];
@@ -1088,8 +1684,8 @@ class $1f9c7ae011a64571$export$559d26475d35ac1e {
 	 * }
 	 * @return A domain.
 	 */ createDomain(args) {
-        if (args.values) return new (0, $c390ec7dca5ac321$export$62fe53be9d2bcdd3)(args.values);
-        else if ("min" in args && "max" in args) return new (0, $aa858a2a93fead82$export$681548042801f21c)(args.min, args.max);
+        if (args.values) return new $c390ec7dca5ac321$export$62fe53be9d2bcdd3(args.values);
+        else if ("min" in args && "max" in args) return new $aa858a2a93fead82$export$681548042801f21c(args.min, args.max);
         return null;
     }
     /**
@@ -1120,25 +1716,25 @@ class $1f9c7ae011a64571$export$559d26475d35ac1e {
         for (const v of args.variables){
             if (v.owner() !== this) return null;
         }
-        const c = this.#fc(args.relation, args.variables);
-        c.setIndex(this._cons.length);
-        this._cons.push(c);
-        for (const v of args.variables)v.connect(c);
-        if (c.isFuzzy()) this._isFuzzy = true;
-        if (args.name) c.setName(args.name);
-        return c;
+        const c1 = this.#fc(args.relation, args.variables);
+        c1.setIndex(this._cons.length);
+        this._cons.push(c1);
+        for (const v of args.variables)v.connect(c1);
+        if (c1.isFuzzy()) this._isFuzzy = true;
+        if (args.name) c1.setName(args.name);
+        return c1;
     }
     //  Modification Methods --------
     /**
 	 * Remove the constraint.
 	 * @param c Constraints to be removed.
-	 */ removeConstraint(c) {
-        const index = this._cons.indexOf(c);
-        this._cons.remove(c);
+	 */ removeConstraint(c1) {
+        const index = this._cons.indexOf(c1);
+        this._cons.remove(c1);
         for(let i = index; i < this._cons.length; ++i)this._cons[i].setIndex(i);
-        for (const v of c)v.disconnect(c);
+        for (const v of c1)v.disconnect(c1);
         this._isFuzzy = false;
-        for (const c of this._cons)if (c.isFuzzy()) {
+        for (const c1 of this._cons)if (c1.isFuzzy()) {
             this._isFuzzy = true;
             break;
         }
@@ -1220,8 +1816,8 @@ class $1f9c7ae011a64571$export$559d26475d35ac1e {
 	 * @param name Name.
 	 * @return A constraint.
 	 */ constraintOf(name) {
-        for (const c of this._cons){
-            if (c.name() === name) return c;
+        for (const c1 of this._cons){
+            if (c1.name() === name) return c1;
         }
         return null;
     }
@@ -1229,8 +1825,8 @@ class $1f9c7ae011a64571$export$559d26475d35ac1e {
 	 * Returns whether the constraint is contained or not.
 	 * @param c A constraint
 	 * @return True if contained.
-	 */ hasConstraint(c) {
-        return this._cons.includes(c);
+	 */ hasConstraint(c1) {
+        return this._cons.includes(c1);
     }
     /**
 	 * Returns the list of constraint.
@@ -1248,7 +1844,7 @@ class $1f9c7ae011a64571$export$559d26475d35ac1e {
 	 * @return Constraints.
 	 */ constraintsBetween(v1, v2) {
         const cs = [];
-        for (const c of v1)if (c.has(v2)) cs.push(c);
+        for (const c1 of v1)if (c1.has(v2)) cs.push(c1);
         return cs;
     }
     /**
@@ -1257,13 +1853,13 @@ class $1f9c7ae011a64571$export$559d26475d35ac1e {
 	 */ constraintsWithWorstSatisfactionDegree() {
         const cs = [];
         let cur = 1;
-        for (const c of this._cons){
-            const s = c.satisfactionDegree();
+        for (const c1 of this._cons){
+            const s = c1.satisfactionDegree();
             if (s < cur) {
                 cur = s;
                 cs.length = 0;
-                cs.push(c);
-            } else if (s - cur < Number.MIN_VALUE * 10) cs.push(c);
+                cs.push(c1);
+            } else if (s - cur < Number.MIN_VALUE * 10) cs.push(c1);
         }
         return [
             cs,
@@ -1277,9 +1873,9 @@ class $1f9c7ae011a64571$export$559d26475d35ac1e {
 	 * @return Worst satisfaction degree.
 	 */ worstSatisfactionDegree() {
         let cs = 1;
-        for (const c of this._cons){
-            const s = c.satisfactionDegree();
-            if (s === (0, $e67c82024f87a841$export$aec1359a0a40a615).UNDEFINED) return (0, $e67c82024f87a841$export$aec1359a0a40a615).UNDEFINED;
+        for (const c1 of this._cons){
+            const s = c1.satisfactionDegree();
+            if (s === $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED) return $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED;
             if (s < cs) cs = s;
         }
         return cs;
@@ -1289,7 +1885,7 @@ class $1f9c7ae011a64571$export$559d26475d35ac1e {
 	 * @return Average of satisfaction degrees.
 	 */ averageSatisfactionDegree() {
         let ave = 0;
-        for (const c of this._cons)ave += c.satisfactionDegree();
+        for (const c1 of this._cons)ave += c1.satisfactionDegree();
         ave = ave / this._cons.length;
         return ave;
     }
@@ -1323,19 +1919,14 @@ class $1f9c7ae011a64571$export$559d26475d35ac1e {
         return this._isFuzzy;
     }
 }
-
-
 var $c624e9db75d26c9f$exports = {};
-
-$parcel$export($c624e9db75d26c9f$exports, "CrispProblem", () => $c624e9db75d26c9f$export$2d7b2a6964dca148);
+$parcel$export($c624e9db75d26c9f$exports, "CrispProblem", ()=>$c624e9db75d26c9f$export$2d7b2a6964dca148);
 /**
  * The class represents a crisp constraint satisfaction problem.
  *
  * @author Takuto Yanagida
  * @version 2023-04-16
- */ 
-
-class $c624e9db75d26c9f$export$2d7b2a6964dca148 extends (0, $1f9c7ae011a64571$export$559d26475d35ac1e) {
+ */ class $c624e9db75d26c9f$export$2d7b2a6964dca148 extends $1f9c7ae011a64571$export$559d26475d35ac1e {
     /**
 	 * Generates a crisp constraint.
 	 * @param Array args {
@@ -1345,7 +1936,7 @@ class $c624e9db75d26c9f$export$2d7b2a6964dca148 extends (0, $1f9c7ae011a64571$ex
 	 * }
 	 * @return A constraint.
 	 */ createConstraint(args) {
-        if (args.relation instanceof (0, $971b718aea973f33$export$3b3c4a6f6988f9e8)) throw new Error();
+        if (args.relation instanceof $971b718aea973f33$export$3b3c4a6f6988f9e8) throw new Error();
         return super.createConstraint(args);
     }
     /**
@@ -1366,7 +1957,7 @@ class $c624e9db75d26c9f$export$2d7b2a6964dca148 extends (0, $1f9c7ae011a64571$ex
 	 * @return Number of satisfied constraints.
 	 */ satisfiedConstraintSize() {
         let count = 0;
-        for (const c of this._cons)if (c.isSatisfied() === 1) ++count;
+        for (const c1 of this._cons)if (c1.isSatisfied() === 1) ++count;
         return count;
     }
     /**
@@ -1375,7 +1966,7 @@ class $c624e9db75d26c9f$export$2d7b2a6964dca148 extends (0, $1f9c7ae011a64571$ex
 	 * @return Array of constraints.
 	 */ violatingConstraints() {
         const cs = [];
-        for (const c of this._cons)if (c.isSatisfied() === 0) cs.push(c);
+        for (const c1 of this._cons)if (c1.isSatisfied() === 0) cs.push(c1);
         return cs;
     }
     /**
@@ -1384,24 +1975,18 @@ class $c624e9db75d26c9f$export$2d7b2a6964dca148 extends (0, $1f9c7ae011a64571$ex
 	 * @return Number of violating constraints.
 	 */ violatingConstraintSize() {
         let count = 0;
-        for (const c of this._cons)if (c.isSatisfied() === 0) ++count;
+        for (const c1 of this._cons)if (c1.isSatisfied() === 0) ++count;
         return count;
     }
 }
-
-
-
-
 var $b465f27e32fe405d$exports = {};
-
-$parcel$export($b465f27e32fe405d$exports, "ObservableVariable", () => $b465f27e32fe405d$export$a14c1bd8f74377e);
+$parcel$export($b465f27e32fe405d$exports, "ObservableVariable", ()=>$b465f27e32fe405d$export$a14c1bd8f74377e);
 /**
  * Class that represents an observable variable.
  *
  * @author Takuto Yanagida
  * @version 2023-04-18
- */ 
-class $b465f27e32fe405d$export$a14c1bd8f74377e extends (0, $8a169d84b9853138$export$c867a5c9595a1350) {
+ */ class $b465f27e32fe405d$export$a14c1bd8f74377e extends $8a169d84b9853138$export$c867a5c9595a1350 {
     #observer;
     // Called only from Problem.
     constructor(owner, d, observer){
@@ -1416,28 +2001,14 @@ class $b465f27e32fe405d$export$a14c1bd8f74377e extends (0, $8a169d84b9853138$exp
         if (this.#observer) this.#observer(this, value);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
 var $c141b9b955cfd62e$exports = {};
-
-$parcel$export($c141b9b955cfd62e$exports, "FuzzyTabledRelation", () => $c141b9b955cfd62e$export$9af92f8a5a1bfd9d);
+$parcel$export($c141b9b955cfd62e$exports, "FuzzyTabledRelation", ()=>$c141b9b955cfd62e$export$9af92f8a5a1bfd9d);
 /**
  * This class represents fuzzy relationships by table.
  *
  * @author Takuto YANAGIDA
  * @version 2023-03-26
- */ 
-class $c141b9b955cfd62e$export$9af92f8a5a1bfd9d extends (0, $971b718aea973f33$export$3b3c4a6f6988f9e8) {
+ */ class $c141b9b955cfd62e$export$9af92f8a5a1bfd9d extends $971b718aea973f33$export$3b3c4a6f6988f9e8 {
     #elms;
     #doms;
     #mul;
@@ -1466,18 +2037,14 @@ class $c141b9b955cfd62e$export$9af92f8a5a1bfd9d extends (0, $971b718aea973f33$ex
         return this.#elms[index];
     }
 }
-
-
 var $8954958cf0b6696d$exports = {};
-
-$parcel$export($8954958cf0b6696d$exports, "FuzzyRelationFunction", () => $8954958cf0b6696d$export$292ff2b1fb710ade);
+$parcel$export($8954958cf0b6696d$exports, "FuzzyRelationFunction", ()=>$8954958cf0b6696d$export$292ff2b1fb710ade);
 /**
  * Fuzzy relations defined by functions.
  *
  * @author Takuto Yanagida
  * @version 2023-04-04
- */ 
-class $8954958cf0b6696d$export$292ff2b1fb710ade extends (0, $971b718aea973f33$export$3b3c4a6f6988f9e8) {
+ */ class $8954958cf0b6696d$export$292ff2b1fb710ade extends $971b718aea973f33$export$3b3c4a6f6988f9e8 {
     #fn;
     constructor(fn){
         super();
@@ -1491,18 +2058,14 @@ class $8954958cf0b6696d$export$292ff2b1fb710ade extends (0, $971b718aea973f33$ex
         return this.#fn(...vals);
     }
 }
-
-
 var $9098286a4d3ce42f$exports = {};
-
-$parcel$export($9098286a4d3ce42f$exports, "CrispRelation", () => $9098286a4d3ce42f$export$182ea39d269dda05);
+$parcel$export($9098286a4d3ce42f$exports, "CrispRelation", ()=>$9098286a4d3ce42f$export$182ea39d269dda05);
 /**
  * The class represents crisp relationships between variables.
  *
  * @author Takuto Yanagida
  * @version 2023-03-25
- */ 
-class $9098286a4d3ce42f$export$182ea39d269dda05 extends (0, $f4fccc65260d093d$export$b57c6722681faed7) {
+ */ class $9098286a4d3ce42f$export$182ea39d269dda05 extends $f4fccc65260d093d$export$b57c6722681faed7 {
     /**
 	 * Gets whether or not the relation is satisfied in this crisp relation.
 	 * @param vals Values of each variable
@@ -1517,18 +2080,14 @@ class $9098286a4d3ce42f$export$182ea39d269dda05 extends (0, $f4fccc65260d093d$ex
         return new FuzzyRelationView(this);
     }
 }
-
-
 var $f7617c3ac8e6cd4a$exports = {};
-
-$parcel$export($f7617c3ac8e6cd4a$exports, "CrispTabledRelation", () => $f7617c3ac8e6cd4a$export$14031e4758dfc3cf);
+$parcel$export($f7617c3ac8e6cd4a$exports, "CrispTabledRelation", ()=>$f7617c3ac8e6cd4a$export$14031e4758dfc3cf);
 /**
  * This class represents crisp relationships by table.
  *
  * @author Takuto YANAGIDA
  * @version 2023-03-26
- */ 
-class $f7617c3ac8e6cd4a$export$14031e4758dfc3cf extends (0, $9098286a4d3ce42f$export$182ea39d269dda05) {
+ */ class $f7617c3ac8e6cd4a$export$14031e4758dfc3cf extends $9098286a4d3ce42f$export$182ea39d269dda05 {
     #elms;
     #doms;
     #mul;
@@ -1557,18 +2116,14 @@ class $f7617c3ac8e6cd4a$export$14031e4758dfc3cf extends (0, $9098286a4d3ce42f$ex
         return this.#elms[index];
     }
 }
-
-
 var $1772f50825805f1c$exports = {};
-
-$parcel$export($1772f50825805f1c$exports, "CrispRelationFunction", () => $1772f50825805f1c$export$a1cc6d3c2a0259e4);
+$parcel$export($1772f50825805f1c$exports, "CrispRelationFunction", ()=>$1772f50825805f1c$export$a1cc6d3c2a0259e4);
 /**
  * Crisp relations defined by functions.
  *
  * @author Takuto Yanagida
  * @version 2023-04-04
- */ 
-class $1772f50825805f1c$export$a1cc6d3c2a0259e4 extends (0, $9098286a4d3ce42f$export$182ea39d269dda05) {
+ */ class $1772f50825805f1c$export$a1cc6d3c2a0259e4 extends $9098286a4d3ce42f$export$182ea39d269dda05 {
     #fn;
     constructor(fn){
         super();
@@ -1582,20 +2137,15 @@ class $1772f50825805f1c$export$a1cc6d3c2a0259e4 extends (0, $9098286a4d3ce42f$ex
         return this.#fn(...vals);
     }
 }
-
-
 var $388f571dc59ac25d$exports = {};
-
-$parcel$export($388f571dc59ac25d$exports, "CrispRelationView", () => $388f571dc59ac25d$export$f47c6ef1c1dceb7d);
-$parcel$export($388f571dc59ac25d$exports, "FuzzyRelationView", () => $388f571dc59ac25d$export$105e23542a0b280f);
+$parcel$export($388f571dc59ac25d$exports, "CrispRelationView", ()=>$388f571dc59ac25d$export$f47c6ef1c1dceb7d);
+$parcel$export($388f571dc59ac25d$exports, "FuzzyRelationView", ()=>$388f571dc59ac25d$export$105e23542a0b280f);
 /**
  * View of relations.
  *
  * @author Takuto Yanagida
  * @version 2023-04-12
- */ 
-
-class $388f571dc59ac25d$export$f47c6ef1c1dceb7d extends (0, $9098286a4d3ce42f$export$182ea39d269dda05) {
+ */ class $388f571dc59ac25d$export$f47c6ef1c1dceb7d extends $9098286a4d3ce42f$export$182ea39d269dda05 {
     constructor(that){
         this.that = that;
     }
@@ -1603,7 +2153,7 @@ class $388f571dc59ac25d$export$f47c6ef1c1dceb7d extends (0, $9098286a4d3ce42f$ex
         return this.that.satisfactionDegree(vals) === 1;
     }
 }
-class $388f571dc59ac25d$export$105e23542a0b280f extends (0, $971b718aea973f33$export$3b3c4a6f6988f9e8) {
+class $388f571dc59ac25d$export$105e23542a0b280f extends $971b718aea973f33$export$3b3c4a6f6988f9e8 {
     constructor(that){
         this.that = that;
     }
@@ -1611,11 +2161,8 @@ class $388f571dc59ac25d$export$105e23542a0b280f extends (0, $971b718aea973f33$ex
         return this.that.isSatisfied(vals) ? 1 : 0;
     }
 }
-
-
 var $e5625d8b51be59c8$exports = {};
-
-$parcel$export($e5625d8b51be59c8$exports, "Solver", () => $e5625d8b51be59c8$export$cca492cadf45c096);
+$parcel$export($e5625d8b51be59c8$exports, "Solver", ()=>$e5625d8b51be59c8$export$cca492cadf45c096);
 /**
  * The class for solvers for finding solutions to constraint satisfaction problems.
  *
@@ -1714,19 +2261,15 @@ $parcel$export($e5625d8b51be59c8$exports, "Solver", () => $e5625d8b51be59c8$expo
         if (this._debug) this._debugOutput(str);
     }
 }
-
-
 var $720d3cc47e3bd21f$exports = {};
-
-$parcel$export($720d3cc47e3bd21f$exports, "SolverFactory", () => $720d3cc47e3bd21f$export$4e442516b8f577ee);
+$parcel$export($720d3cc47e3bd21f$exports, "SolverFactory", ()=>$720d3cc47e3bd21f$export$4e442516b8f577ee);
 /**
  * Solver factory class.
  *
  * @author Takuto Yanagida
  * @version 2023-04-17
  */ var $6537b0e1551710d4$exports = {};
-
-$parcel$export($6537b0e1551710d4$exports, "ForwardChecking", () => $6537b0e1551710d4$export$8570b7b487498488);
+$parcel$export($6537b0e1551710d4$exports, "ForwardChecking", ()=>$6537b0e1551710d4$export$8570b7b487498488);
 /**
  * This class that implements the forward checking method.
  * The minimum-remaining-values (MRV) heuristic can also be used by specifying the option.
@@ -1737,16 +2280,14 @@ $parcel$export($6537b0e1551710d4$exports, "ForwardChecking", () => $6537b0e15517
  * @author Takuto Yanagida
  * @version 2023-04-16
  */ var $d7051a715721e7ce$exports = {};
-
-$parcel$export($d7051a715721e7ce$exports, "AssignmentList", () => $d7051a715721e7ce$export$1d4e454bcd46f18f);
+$parcel$export($d7051a715721e7ce$exports, "AssignmentList", ()=>$d7051a715721e7ce$export$1d4e454bcd46f18f);
 /**
  * The class represents multiple variables and their assignments.
  *
  * @author Takuto Yanagida
  * @version 2023-04-16
  */ var $9bc6df20db8be0bf$exports = {};
-
-$parcel$export($9bc6df20db8be0bf$exports, "Assignment", () => $9bc6df20db8be0bf$export$e6b39d88cc0d636);
+$parcel$export($9bc6df20db8be0bf$exports, "Assignment", ()=>$9bc6df20db8be0bf$export$e6b39d88cc0d636);
 /**
  * The class represents a pair of variables and the values to be assigned to them.
  *
@@ -1788,8 +2329,6 @@ $parcel$export($9bc6df20db8be0bf$exports, "Assignment", () => $9bc6df20db8be0bf$
         return this.#variable;
     }
 }
-
-
 class $d7051a715721e7ce$export$1d4e454bcd46f18f {
     static fromVariables(vs) {
         const al = new $d7051a715721e7ce$export$1d4e454bcd46f18f();
@@ -1800,27 +2339,27 @@ class $d7051a715721e7ce$export$1d4e454bcd46f18f {
     constructor(){}
     setProblem(problem) {
         this.#as.length = 0;
-        for (const v of problem.variables())this.#as.push(new (0, $9bc6df20db8be0bf$export$e6b39d88cc0d636)({
+        for (const v of problem.variables())this.#as.push(new $9bc6df20db8be0bf$export$e6b39d88cc0d636({
             variable: v,
             value: v.value()
         }));
     }
     setAssignmentList(al) {
         this.#as.length = 0;
-        for (const a of al)this.#as.push(new (0, $9bc6df20db8be0bf$export$e6b39d88cc0d636)({
+        for (const a of al)this.#as.push(new $9bc6df20db8be0bf$export$e6b39d88cc0d636({
             variable: a.variable(),
             value: a.value()
         }));
     }
     setVariables(vs) {
         this.#as.length = 0;
-        for (const v of vs)this.#as.push(new (0, $9bc6df20db8be0bf$export$e6b39d88cc0d636)({
+        for (const v of vs)this.#as.push(new $9bc6df20db8be0bf$export$e6b39d88cc0d636({
             variable: v,
             value: v.value()
         }));
     }
     addVariable(variable, value = null) {
-        this.#as.push(new (0, $9bc6df20db8be0bf$export$e6b39d88cc0d636)({
+        this.#as.push(new $9bc6df20db8be0bf$export$e6b39d88cc0d636({
             variable: variable,
             value: value
         }));
@@ -1870,11 +2409,8 @@ class $d7051a715721e7ce$export$1d4e454bcd46f18f {
         return this.#as[Math.floor(Math.random() * this.#as.length)];
     }
 }
-
-
 var $f7b05997b0c3179b$exports = {};
-
-$parcel$export($f7b05997b0c3179b$exports, "DomainPruner", () => $f7b05997b0c3179b$export$f307752a90139b0e);
+$parcel$export($f7b05997b0c3179b$exports, "DomainPruner", ()=>$f7b05997b0c3179b$export$f307752a90139b0e);
 /**
  * This class holds the branch pruning states for a domain.
  *
@@ -1935,12 +2471,9 @@ $parcel$export($f7b05997b0c3179b$exports, "DomainPruner", () => $f7b05997b0c3179
         this.#hiddenSize = 0;
     }
 }
-
-
-
-class $6537b0e1551710d4$export$8570b7b487498488 extends (0, $e5625d8b51be59c8$export$cca492cadf45c096) {
+class $6537b0e1551710d4$export$8570b7b487498488 extends $e5625d8b51be59c8$export$cca492cadf45c096 {
     #vars;
-    #sol = new (0, $d7051a715721e7ce$export$1d4e454bcd46f18f)();
+    #sol = new $d7051a715721e7ce$export$1d4e454bcd46f18f();
     #relCons;
     #useMRV = false;
     #iterCount;
@@ -1953,7 +2486,7 @@ class $6537b0e1551710d4$export$8570b7b487498488 extends (0, $e5625d8b51be59c8$ex
         this.#vars = [
             ...this._pro.variables()
         ];
-        for (const v of this.#vars)v.solverObject = new (0, $f7b05997b0c3179b$export$f307752a90139b0e)(v.domain().size());
+        for (const v of this.#vars)v.solverObject = new $f7b05997b0c3179b$export$f307752a90139b0e(v.domain().size());
         this.#initializeRelatedConstraintTable();
     }
     name() {
@@ -1980,12 +2513,12 @@ class $6537b0e1551710d4$export$8570b7b487498488 extends (0, $e5625d8b51be59c8$ex
             const d_i = v_i.domain();
             const dc_i = v_i.solverObject;
             const cs = this.#getConstraintsBetween(currentIndex, v_i.index());
-            for (const c of cs){
-                if (c.emptyVariableSize() !== 1) continue;
+            for (const c1 of cs){
+                if (c1.emptyVariableSize() !== 1) continue;
                 for(let k = 0, n = d_i.size(); k < n; ++k){
                     if (dc_i.isValueHidden(k)) continue;
                     v_i.assign(d_i.at(k));
-                    if (c.isSatisfied() === 0) dc_i.hide(k, level);
+                    if (c1.isSatisfied() === 0) dc_i.hide(k, level);
                 }
                 v_i.clear();
                 if (dc_i.isEmpty()) return false; // Failure if the domain of one of the future variables is empty.
@@ -2062,11 +2595,8 @@ class $6537b0e1551710d4$export$8570b7b487498488 extends (0, $e5625d8b51be59c8$ex
         this.#useMRV = flag;
     }
 }
-
-
 var $0c5cdff78dc8648d$exports = {};
-
-$parcel$export($0c5cdff78dc8648d$exports, "MaxForwardChecking", () => $0c5cdff78dc8648d$export$2a32484f7cb0d846);
+$parcel$export($0c5cdff78dc8648d$exports, "MaxForwardChecking", ()=>$0c5cdff78dc8648d$export$2a32484f7cb0d846);
 /**
  * This class that implements the forward checking method.
  * Find the solution to the problem as the maximum CSP.
@@ -2074,12 +2604,9 @@ $parcel$export($0c5cdff78dc8648d$exports, "MaxForwardChecking", () => $0c5cdff78
  *
  * @author Takuto Yanagida
  * @version 2023-04-16
- */ 
-
-
-class $0c5cdff78dc8648d$export$2a32484f7cb0d846 extends (0, $e5625d8b51be59c8$export$cca492cadf45c096) {
+ */ class $0c5cdff78dc8648d$export$2a32484f7cb0d846 extends $e5625d8b51be59c8$export$cca492cadf45c096 {
     #vars;
-    #sol = new (0, $d7051a715721e7ce$export$1d4e454bcd46f18f)();
+    #sol = new $d7051a715721e7ce$export$1d4e454bcd46f18f();
     #maxVioCount;
     #vioCount;
     #checkedCons = new Set();
@@ -2091,7 +2618,7 @@ class $0c5cdff78dc8648d$export$2a32484f7cb0d846 extends (0, $e5625d8b51be59c8$ex
         this.#vars = [
             ...this._pro.variables()
         ];
-        for (const v of this.#vars)v.solverObject = new (0, $f7b05997b0c3179b$export$f307752a90139b0e)(v.domain().size());
+        for (const v of this.#vars)v.solverObject = new $f7b05997b0c3179b$export$f307752a90139b0e(v.domain().size());
         this.#maxVioCount = this._pro.constraintSize();
     }
     name() {
@@ -2130,9 +2657,9 @@ class $0c5cdff78dc8648d$export$2a32484f7cb0d846 extends (0, $e5625d8b51be59c8$ex
         for(let i = level + 1; i < this.#vars.length; ++i){
             const future = this.#vars[i];
             this.#cons = this._pro.constraintsBetween(vc, future);
-            for (const c of this.#cons){
-                if (c.emptyVariableSize() !== 1) continue;
-                if (this.#revise(future, c, level)) {
+            for (const c1 of this.#cons){
+                if (c1.emptyVariableSize() !== 1) continue;
+                if (this.#revise(future, c1, level)) {
                     if (future.solverObject.isEmpty()) return false; // Failure if the domain of one of the future variables is empty.
                 }
             }
@@ -2145,23 +2672,23 @@ class $0c5cdff78dc8648d$export$2a32484f7cb0d846 extends (0, $e5625d8b51be59c8$ex
         this.#checkedCons.clear(); // Reuse.
         for(let i = 0; i < level; ++i){
             this.#cons = this._pro.constraintsBetween(vc, this.#vars[i]);
-            for (const c of this.#cons){
-                if (this.#checkedCons.has(c)) continue; // Because of the possibility of duplication in polynomial constraints
-                if (c.isSatisfied() === 0) ++avc; // Neither satisfied nor undefined.
-                this.#checkedCons.add(c);
+            for (const c1 of this.#cons){
+                if (this.#checkedCons.has(c1)) continue; // Because of the possibility of duplication in polynomial constraints
+                if (c1.isSatisfied() === 0) ++avc; // Neither satisfied nor undefined.
+                this.#checkedCons.add(c1);
             }
         }
         return avc;
     }
     // Remove values from the domain of v1 that do not correspond to v2. That is, match v1 with v2.
-    #revise(v1, c, level) {
+    #revise(v1, c1, level) {
         let deleted = false;
         const dom = v1.domain();
         const dc = v1.solverObject;
         for(let i = 0; i < dom.size(); ++i){
             if (dc.isValueHidden(i)) continue;
             v1.assign(dom.at(i));
-            if (c.isSatisfied() === 0 && this.#vioCount + 1 > this.#maxVioCount) {
+            if (c1.isSatisfied() === 0 && this.#vioCount + 1 > this.#maxVioCount) {
                 dc.hide(i, level);
                 deleted = true;
             }
@@ -2185,19 +2712,14 @@ class $0c5cdff78dc8648d$export$2a32484f7cb0d846 extends (0, $e5625d8b51be59c8$ex
         return r;
     }
 }
-
-
 var $18724c3268ec037c$exports = {};
-
-$parcel$export($18724c3268ec037c$exports, "LocalChanges", () => $18724c3268ec037c$export$8153937ab18ca581);
+$parcel$export($18724c3268ec037c$exports, "LocalChanges", ()=>$18724c3268ec037c$export$8153937ab18ca581);
 /**
  * Class implements the local changes method.
  *
  * @author Takuto Yanagida
  * @version 2023-04-16
- */ 
-
-class $18724c3268ec037c$export$8153937ab18ca581 extends (0, $e5625d8b51be59c8$export$cca492cadf45c096) {
+ */ class $18724c3268ec037c$export$8153937ab18ca581 extends $e5625d8b51be59c8$export$cca492cadf45c096 {
     static #setPlusSet(s1, s2) {
         const sn = new Set(s1);
         for (const v of s2)sn.add(v);
@@ -2233,12 +2755,12 @@ class $18724c3268ec037c$export$8153937ab18ca581 extends (0, $e5625d8b51be59c8$ex
         const cs = new Set();
         for (const va of V1_V2){
             const temp = this._pro.constraintsBetween(v, va);
-            for (const c of temp)cs.add(c);
+            for (const c1 of temp)cs.add(c1);
         }
         const origVal = v.value(); // Save the value.
         v.assign(val);
-        for (const c of cs){
-            if (c.isSatisfied() === 0) for (const vi of c)newV3.add(vi);
+        for (const c1 of cs){
+            if (c1.isSatisfied() === 0) for (const vi of c1)newV3.add(vi);
         }
         v.assign(origVal); // Restore the value.
         newV3.delete(v);
@@ -2248,11 +2770,11 @@ class $18724c3268ec037c$export$8153937ab18ca581 extends (0, $e5625d8b51be59c8$ex
         const cs = new Set();
         for (const va of A){
             const temp = this._pro.constraintsBetween(v, va);
-            for (const c of temp)cs.add(c);
+            for (const c1 of temp)cs.add(c1);
         }
         const origVal = v.value(); // Save the value.
         v.assign(val);
-        for (const c of cs)if (c.isSatisfied() === 0) {
+        for (const c1 of cs)if (c1.isSatisfied() === 0) {
             v.assign(origVal); // Restore the value.
             return false;
         }
@@ -2274,7 +2796,7 @@ class $18724c3268ec037c$export$8153937ab18ca581 extends (0, $e5625d8b51be59c8$ex
     #lcVariable(V1, V2, v, d) {
         if (d.size === 0) return false;
         const val = d.values().next().value;
-        const al = (0, $d7051a715721e7ce$export$1d4e454bcd46f18f).fromVariables(V2);
+        const al = $d7051a715721e7ce$export$1d4e454bcd46f18f.fromVariables(V2);
         v.assign(val);
         const ret = this.#lcValue(V1, V2, v, val);
         if (ret || this.#globalReturn) return ret;
@@ -2320,20 +2842,15 @@ class $18724c3268ec037c$export$8153937ab18ca581 extends (0, $e5625d8b51be59c8$ex
         return this.#lcVariables(new Set(), notFixed, unassigned);
     }
 }
-
-
 var $16be001e34914685$exports = {};
-
-$parcel$export($16be001e34914685$exports, "LocalChangesEx", () => $16be001e34914685$export$e577c7182ffc977b);
+$parcel$export($16be001e34914685$exports, "LocalChangesEx", ()=>$16be001e34914685$export$e577c7182ffc977b);
 /**
  * Class implements the local changes method.
  * The implementation is optimized by converting recursive calls to loops.
  *
  * @author Takuto Yanagida
  * @version 2023-04-16
- */ 
-
-class $16be001e34914685$export$e577c7182ffc977b extends (0, $e5625d8b51be59c8$export$cca492cadf45c096) {
+ */ class $16be001e34914685$export$e577c7182ffc977b extends $e5625d8b51be59c8$export$cca492cadf45c096 {
     static #setPlusSet(s1, s2) {
         const sn = new Set(s1);
         for (const v of s2)sn.add(v);
@@ -2369,12 +2886,12 @@ class $16be001e34914685$export$e577c7182ffc977b extends (0, $e5625d8b51be59c8$ex
         const cs = new Set();
         for (const va of V1_V2){
             const temp = this._pro.constraintsBetween(v, va);
-            for (const c of temp)cs.add(c);
+            for (const c1 of temp)cs.add(c1);
         }
         const origVal = v.value(); // Save the value.
         v.assign(val);
-        for (const c of cs){
-            if (c.isSatisfied() === 0) for (const vi of c)newV3.add(vi);
+        for (const c1 of cs){
+            if (c1.isSatisfied() === 0) for (const vi of c1)newV3.add(vi);
         }
         v.assign(origVal); // Restore the value.
         newV3.delete(v);
@@ -2384,11 +2901,11 @@ class $16be001e34914685$export$e577c7182ffc977b extends (0, $e5625d8b51be59c8$ex
         const cs = new Set();
         for (const va of A){
             const temp = this._pro.constraintsBetween(v, va);
-            for (const c of temp)cs.add(c);
+            for (const c1 of temp)cs.add(c1);
         }
         const origVal = v.value(); // Save the value.
         v.assign(val);
-        for (const c of cs)if (c.isSatisfied() === 0) {
+        for (const c1 of cs)if (c1.isSatisfied() === 0) {
             v.assign(origVal); // Restore the value.
             return false;
         }
@@ -2406,7 +2923,7 @@ class $16be001e34914685$export$e577c7182ffc977b extends (0, $e5625d8b51be59c8$ex
     }
     #lcVariable(V1, V2, v) {
         for (const val of v.domain()){
-            const s = (0, $d7051a715721e7ce$export$1d4e454bcd46f18f).fromVariables(V2);
+            const s = $d7051a715721e7ce$export$1d4e454bcd46f18f.fromVariables(V2);
             v.assign(val);
             const ret = this.#lcValue(V1, V2, v);
             if (ret || this.#globalReturn) return ret;
@@ -2454,20 +2971,15 @@ class $16be001e34914685$export$e577c7182ffc977b extends (0, $e5625d8b51be59c8$ex
         return this.#lcVariables(new Set(), notFixed, unassigned);
     }
 }
-
-
 var $368b031b41e29330$exports = {};
-
-$parcel$export($368b031b41e29330$exports, "Breakout", () => $368b031b41e29330$export$44de86bc32e07644);
+$parcel$export($368b031b41e29330$exports, "Breakout", ()=>$368b031b41e29330$export$44de86bc32e07644);
 /**
  * Class implements a solver using the breakout method.
  * Solves a problem as a maximum CSP.
  *
  * @author Takuto Yanagida
  * @version 2023-04-16
- */ 
-
-class $368b031b41e29330$export$44de86bc32e07644 extends (0, $e5625d8b51be59c8$export$cca492cadf45c096) {
+ */ class $368b031b41e29330$export$44de86bc32e07644 extends $e5625d8b51be59c8$export$cca492cadf45c096 {
     #weights;
     #isRandom = true;
     constructor(p){
@@ -2483,13 +2995,13 @@ class $368b031b41e29330$export$44de86bc32e07644 extends (0, $e5625d8b51be59c8$ex
         for (const v of vioVars){
             const v_val = v.value(); // Save the value
             let nowVio = 0;
-            for (const c of v)nowVio += (1 - c.isSatisfied()) * this.#weights[c.index()];
+            for (const c1 of v)nowVio += (1 - c1.isSatisfied()) * this.#weights[c1.index()];
             out: for (const d of v.domain()){
                 if (v_val === d) continue;
                 v.assign(d);
                 let diff = nowVio;
-                for (const c of v){
-                    diff -= (1 - c.isSatisfied()) * this.#weights[c.index()];
+                for (const c1 of v){
+                    diff -= (1 - c1.isSatisfied()) * this.#weights[c1.index()];
                     // If the improvement is less than the previous improvement, try the next variable.
                     if (diff < maxDiff) continue out;
                 }
@@ -2504,14 +3016,14 @@ class $368b031b41e29330$export$44de86bc32e07644 extends (0, $e5625d8b51be59c8$ex
     }
     #listViolatingVariables(vioCons) {
         const vvs = new Set();
-        for (const c of vioCons)for (const v of c)vvs.add(v);
+        for (const c1 of vioCons)for (const v of c1)vvs.add(v);
         return Array.from(vvs);
     }
     exec() {
         const endTime = this._timeLimit === null ? Number.MAX_VALUE : Date.now() + this._timeLimit;
         let iterCount = 0;
         for (const v of this._pro.variables())if (v.isEmpty()) v.assign(v.domain().at(0));
-        const canList = new (0, $d7051a715721e7ce$export$1d4e454bcd46f18f)();
+        const canList = new $d7051a715721e7ce$export$1d4e454bcd46f18f();
         while(true){
             const vc = this._pro.violatingConstraints();
             if ((this._targetDeg ?? 1) <= this._pro.satisfiedConstraintRate()) {
@@ -2534,7 +3046,7 @@ class $368b031b41e29330$export$44de86bc32e07644 extends (0, $e5625d8b51be59c8$ex
                 canList.clear();
                 this._debugOutput("	" + e);
             } else {
-                for (const c of vc)this.#weights[c.index()] += 1;
+                for (const c1 of vc)this.#weights[c1.index()] += 1;
                 this._debugOutput("breakout");
             }
         }
@@ -2547,11 +3059,8 @@ class $368b031b41e29330$export$44de86bc32e07644 extends (0, $e5625d8b51be59c8$ex
         this.#isRandom = flag;
     }
 }
-
-
 var $59ba6be2773f89c9$exports = {};
-
-$parcel$export($59ba6be2773f89c9$exports, "GENET", () => $59ba6be2773f89c9$export$d94917317b4f74cb);
+$parcel$export($59ba6be2773f89c9$exports, "GENET", ()=>$59ba6be2773f89c9$export$d94917317b4f74cb);
 /**
  * This class implements GENET.
  * CSP (but only Binary CSP) is supported.
@@ -2559,9 +3068,7 @@ $parcel$export($59ba6be2773f89c9$exports, "GENET", () => $59ba6be2773f89c9$expor
  *
  * @author Takuto Yanagida
  * @version 2023-04-17
- */ 
-
-class $59ba6be2773f89c9$export$d94917317b4f74cb extends (0, $e5625d8b51be59c8$export$cca492cadf45c096) {
+ */ class $59ba6be2773f89c9$export$d94917317b4f74cb extends $e5625d8b51be59c8$export$cca492cadf45c096 {
     static nextInt(max) {
         return Math.floor(Math.random() * Math.floor(max));
     }
@@ -2580,27 +3087,27 @@ class $59ba6be2773f89c9$export$d94917317b4f74cb extends (0, $e5625d8b51be59c8$ex
             if (v.domain().size() === 0) return false;
             this.#clusters.push(new $59ba6be2773f89c9$export$d94917317b4f74cb.Cluster(v));
         }
-        for (const c of this._pro.constraints())if (c.size() === 1) {
-            const v = c.at(0);
-            const cl = this.#clusters[c.at(0).index()];
+        for (const c1 of this._pro.constraints())if (c1.size() === 1) {
+            const v = c1.at(0);
+            const cl = this.#clusters[c1.at(0).index()];
             for(let i = 0; i < cl.size(); ++i){
                 const origVal = v.value(); // Save the value.
                 v.assign(cl.get(i)._value);
-                if (c.isSatisfied() === 0) cons.push(new $59ba6be2773f89c9$export$d94917317b4f74cb.Connection(cl.get(i)));
+                if (c1.isSatisfied() === 0) cons.push(new $59ba6be2773f89c9$export$d94917317b4f74cb.Connection(cl.get(i)));
                 v.assign(origVal); // Restore the value.
             }
         } else {
-            const v1 = c.at(0);
-            const v2 = c.at(1);
-            const cl_f = this.#clusters[c.at(0).index()];
-            const cl_s = this.#clusters[c.at(1).index()];
+            const v1 = c1.at(0);
+            const v2 = c1.at(1);
+            const cl_f = this.#clusters[c1.at(0).index()];
+            const cl_s = this.#clusters[c1.at(1).index()];
             for(let i = 0; i < cl_f.size(); ++i){
                 const origVal1 = v1.value(); // Save the value.
                 v1.assign(cl_f.get(i)._value);
                 for(let j = 0; j < cl_s.size(); ++j){
                     const origVal2 = v2.value(); // Save the value.
                     v2.assign(cl_s.get(j)._value);
-                    if (c.isSatisfied() === 0) cons.push(new $59ba6be2773f89c9$export$d94917317b4f74cb.Connection(cl_f.get(i), cl_s.get(j)));
+                    if (c1.isSatisfied() === 0) cons.push(new $59ba6be2773f89c9$export$d94917317b4f74cb.Connection(cl_f.get(i), cl_s.get(j)));
                     v2.assign(origVal2); // Restore the value.
                 }
                 v1.assign(origVal1); // Restore the value.
@@ -2624,7 +3131,7 @@ class $59ba6be2773f89c9$export$d94917317b4f74cb extends (0, $e5625d8b51be59c8$ex
         if (!this.#createNetwork()) throw new Exception();
         const endTime = this._timeLimit === null ? Number.MAX_VALUE : Date.now() + this._timeLimit;
         let iterCount = 0;
-        const sol = new (0, $d7051a715721e7ce$export$1d4e454bcd46f18f)();
+        const sol = new $d7051a715721e7ce$export$1d4e454bcd46f18f();
         const order = [];
         for(let i = 0; i < this.#clusters.length; ++i)order.push(i);
         let cur = this._pro.satisfiedConstraintRate();
@@ -2749,8 +3256,8 @@ class $59ba6be2773f89c9$export$d94917317b4f74cb extends (0, $e5625d8b51be59c8$ex
         constructor(value){
             this._value = value;
         }
-        addConnection(c) {
-            this.#conTemp.push(c);
+        addConnection(c1) {
+            this.#conTemp.push(c1);
         }
         lockConnections() {
             this.#connections = [
@@ -2760,20 +3267,17 @@ class $59ba6be2773f89c9$export$d94917317b4f74cb extends (0, $e5625d8b51be59c8$ex
         }
         getInput() {
             let ret = 0;
-            for (const c of this.#connections){
-                const n = c.getNeuron(this); // If n is null, then the unary constraint.
-                ret += c._weight * (n === null || n._isActive ? 1 : 0);
+            for (const c1 of this.#connections){
+                const n = c1.getNeuron(this); // If n is null, then the unary constraint.
+                ret += c1._weight * (n === null || n._isActive ? 1 : 0);
             }
             return ret;
         }
     }
     $59ba6be2773f89c9$export$d94917317b4f74cb.Neuron = Neuron;
 })();
-
-
 var $6a494cae60277c44$exports = {};
-
-$parcel$export($6a494cae60277c44$exports, "CrispSRS3", () => $6a494cae60277c44$export$193930056f923a8);
+$parcel$export($6a494cae60277c44$exports, "CrispSRS3", ()=>$6a494cae60277c44$export$193930056f923a8);
 /**
  * This class implements the SRS algorithm for crisp CSP.
  * The given crisp CSP is treated as the maximum CSP.
@@ -2781,9 +3285,7 @@ $parcel$export($6a494cae60277c44$exports, "CrispSRS3", () => $6a494cae60277c44$e
  *
  * @author Takuto Yanagida
  * @version 2023-04-16
- */ 
-
-class $6a494cae60277c44$export$193930056f923a8 extends (0, $e5625d8b51be59c8$export$cca492cadf45c096) {
+ */ class $6a494cae60277c44$export$193930056f923a8 extends $e5625d8b51be59c8$export$cca492cadf45c096 {
     #closedList = new Set();
     #openList = new Set();
     #nodes = [];
@@ -2791,27 +3293,27 @@ class $6a494cae60277c44$export$193930056f923a8 extends (0, $e5625d8b51be59c8$exp
     #isRandom = true;
     constructor(p){
         super(p);
-        for (const c of this._pro.constraints()){
-            this.#nodes.push(new $6a494cae60277c44$export$193930056f923a8.TreeNode(c));
+        for (const c1 of this._pro.constraints()){
+            this.#nodes.push(new $6a494cae60277c44$export$193930056f923a8.TreeNode(c1));
             this.#neighborConstraints.push(null);
         }
     }
     name() {
         return "SRS 3 for Crisp CSPs";
     }
-    #getNeighborConstraints(c) {
-        const index = c.index();
-        if (this.#neighborConstraints[index] === null) this.#neighborConstraints[index] = c.neighbors();
+    #getNeighborConstraints(c1) {
+        const index = c1.index();
+        if (this.#neighborConstraints[index] === null) this.#neighborConstraints[index] = c1.neighbors();
         return this.#neighborConstraints[index];
     }
     #repair(c0) {
         this._debugOutput("repair");
-        const canList = new (0, $d7051a715721e7ce$export$1d4e454bcd46f18f)();
+        const canList = new $d7051a715721e7ce$export$1d4e454bcd46f18f();
         let maxDiff = 0;
         for (const v of c0){
             const v_val = v.value(); // Save the value
             let nowVio = 0;
-            for (const c of v)nowVio += 1 - c.isSatisfied();
+            for (const c1 of v)nowVio += 1 - c1.isSatisfied();
             out: for (const d of v.domain()){
                 if (v_val === d) continue;
                 v.assign(d);
@@ -2857,8 +3359,8 @@ class $6a494cae60277c44$export$193930056f923a8 extends (0, $e5625d8b51be59c8$exp
     #spread(node) {
         this._debugOutput("spread");
         this.#closedList.add(node);
-        for (const c of this.#getNeighborConstraints(node.getObject())){
-            const tnc = this.#nodes[c.index()];
+        for (const c1 of this.#getNeighborConstraints(node.getObject())){
+            const tnc = this.#nodes[c1.index()];
             if (!this.#closedList.has(tnc) && !this.#openList.has(tnc)) {
                 tnc.clear(); // Because of its reuse, it may have had children when it was used before.
                 node.add(tnc);
@@ -2900,8 +3402,8 @@ class $6a494cae60277c44$export$193930056f923a8 extends (0, $e5625d8b51be59c8$exp
     exec() {
         const vcs = this._pro.violatingConstraints();
         const c_stars = new Set();
-        for (const c of vcs){
-            const tnc = this.#nodes[c.index()];
+        for (const c1 of vcs){
+            const tnc = this.#nodes[c1.index()];
             c_stars.add(tnc);
         }
         if (this.#srs(c_stars)) return true;
@@ -2943,11 +3445,8 @@ class $6a494cae60277c44$export$193930056f923a8 extends (0, $e5625d8b51be59c8$exp
         }
     }
     $6a494cae60277c44$export$193930056f923a8.TreeNode = TreeNode;
-}
-
-var $8d126dc1fb260d00$exports = {};
-
-$parcel$export($8d126dc1fb260d00$exports, "FuzzyForwardChecking", () => $8d126dc1fb260d00$export$2d94cf9ddb103458);
+}var $8d126dc1fb260d00$exports = {};
+$parcel$export($8d126dc1fb260d00$exports, "FuzzyForwardChecking", ()=>$8d126dc1fb260d00$export$2d94cf9ddb103458);
 /**
  * This class implements the forward checking method for fuzzy CSP.
  * The minimum-remaining-values (MRV) heuristic can also be used by specifying the option.
@@ -2956,15 +3455,11 @@ $parcel$export($8d126dc1fb260d00$exports, "FuzzyForwardChecking", () => $8d126dc
  *
  * @author Takuto Yanagida
  * @version 2023-04-16
- */ 
-
-
-
-class $8d126dc1fb260d00$export$2d94cf9ddb103458 extends (0, $e5625d8b51be59c8$export$cca492cadf45c096) {
+ */ class $8d126dc1fb260d00$export$2d94cf9ddb103458 extends $e5625d8b51be59c8$export$cca492cadf45c096 {
     static CONTINUE = 0;
     static TERMINATE = 1;
     #vars;
-    #sol = new (0, $d7051a715721e7ce$export$1d4e454bcd46f18f)();
+    #sol = new $d7051a715721e7ce$export$1d4e454bcd46f18f();
     #relCons;
     #solWorstDeg = 0;
     #iterCount;
@@ -2988,7 +3483,7 @@ class $8d126dc1fb260d00$export$2d94cf9ddb103458 extends (0, $e5625d8b51be59c8$ex
         this.#initializeRelatedConstraintTable();
         this.#checkedCons = new Array(this._pro.constraintSize());
         const temp = [];
-        for (const c of this._pro.constraints())if (c.size() === 1) temp.push(c);
+        for (const c1 of this._pro.constraints())if (c1.size() === 1) temp.push(c1);
         this.#unaryCons = [
             ...temp
         ]; // To make it even if it is empty.
@@ -3012,14 +3507,14 @@ class $8d126dc1fb260d00$export$2d94cf9ddb103458 extends (0, $e5625d8b51be59c8$ex
     }
     // Prune elements of the domain that make the unary constraint worse than the current worst degree.
     #pruneUnaryConstraints() {
-        for (const c of this.#unaryCons){
-            const v = c.at(0);
+        for (const c1 of this.#unaryCons){
+            const v = c1.at(0);
             const orgVal = v.value(); // Save the value.
             const d = v.domain();
             const dc = v.solverObject;
             for(let i = 0, n = d.size(); i < n; ++i){
                 v.assign(d.at(i));
-                if (c.satisfactionDegree() <= this.#solWorstDeg) dc.hide(i, -1); // Here's a branch pruning!
+                if (c1.satisfactionDegree() <= this.#solWorstDeg) dc.hide(i, -1); // Here's a branch pruning!
             }
             v.assign(orgVal); // Restore the value.
             if (dc.isEmpty()) return false;
@@ -3027,23 +3522,23 @@ class $8d126dc1fb260d00$export$2d94cf9ddb103458 extends (0, $e5625d8b51be59c8$ex
         return true;
     }
     // Check for consistency between the current variable and one future variable, and prune elements of the domain that are inconsistent (when there is one unassigned variable in the scope of the constraint).
-    #checkForwardConsistency(level, vi, c) {
+    #checkForwardConsistency(level, vi, c1) {
         const di = vi.domain();
         const dci = vi.solverObject;
         for(let i = 0, n = di.size(); i < n; ++i){
             if (dci.isValueHidden(i)) continue;
             vi.assign(di.at(i));
-            if (c.satisfactionDegree() <= this.#solWorstDeg) dci.hide(i, level); // Here's a branch pruning!
+            if (c1.satisfactionDegree() <= this.#solWorstDeg) dci.hide(i, level); // Here's a branch pruning!
         }
         vi.clear();
         return !dci.isEmpty(); // Succeeds if the domain di of the future variable vi is not empty.
     }
     // Check for consistency between the current variable and one future variable, and prune elements of the domain that are inconsistent (when there are two unassigned variables in the scope of the constraint).
-    #checkForwardConsistency2(level, vi, c) {
+    #checkForwardConsistency2(level, vi, c1) {
         const di = vi.domain();
         const dci = vi.solverObject;
         const vj = null;
-        for (const v of c)if (v.isEmpty() && v !== vi) {
+        for (const v of c1)if (v.isEmpty() && v !== vi) {
             vj = v;
             break;
         }
@@ -3055,7 +3550,7 @@ class $8d126dc1fb260d00$export$2d94cf9ddb103458 extends (0, $e5625d8b51be59c8$ex
             for(let j = 0, nj = dj.size(); j < nj; ++j){
                 if (dcj.isValueHidden(j)) continue;
                 vj.assign(dj.at(j)); // Tentative assignment to vj
-                const s = c.satisfactionDegree();
+                const s = c1.satisfactionDegree();
                 if (s > this.#solWorstDeg) continue loop_i; // Tentative assignment to vi was OK -> next tentative assignment.
             }
             dci.hide(i, level); // It is not a solution when it is 'smaller than or equals'.
@@ -3065,12 +3560,12 @@ class $8d126dc1fb260d00$export$2d94cf9ddb103458 extends (0, $e5625d8b51be59c8$ex
         return !dci.isEmpty(); // Succeeds if the domain di of the future variable vi is not empty.
     }
     // Check for consistency between the current variable and one future variable, and prune elements of the domain that are inconsistent (when there are three unassigned variables in the scope of the constraint).
-    #checkForwardConsistency3(level, vi, c) {
+    #checkForwardConsistency3(level, vi, c1) {
         const di = vi.domain();
         const dci = vi.solverObject;
         let vj = null;
         let vk = null;
-        for (const v of c)if (v.isEmpty() && v !== vi) {
+        for (const v of c1)if (v.isEmpty() && v !== vi) {
             if (vj === null) vj = v;
             else {
                 vk = v;
@@ -3090,7 +3585,7 @@ class $8d126dc1fb260d00$export$2d94cf9ddb103458 extends (0, $e5625d8b51be59c8$ex
                 for(let k = 0, nk = dk.size(); k < nk; ++k){
                     if (dck.isValueHidden(k)) continue;
                     vk.assign(dk.at(k)); // Tentative assignment to vk
-                    const s = c.satisfactionDegree();
+                    const s = c1.satisfactionDegree();
                     if (s > this.#solWorstDeg) continue loop_i; // Tentative assignment to vi was OK -> next tentative assignment.
                 }
             }
@@ -3102,12 +3597,12 @@ class $8d126dc1fb260d00$export$2d94cf9ddb103458 extends (0, $e5625d8b51be59c8$ex
         return !dci.isEmpty(); // Succeeds if the domain di of the future variable vi is not empty.
     }
     // In the case of polynomial constraints and when there are four or more unassigned variables, all combinations of assignments of unassigned variables are examined and pruned.
-    #checkForwardConsistencyN(level, vi, c, emptySize) {
+    #checkForwardConsistencyN(level, vi, c1, emptySize) {
         const di = vi.domain();
         const dci = vi.solverObject;
         const emp = new Array(emptySize - 1);
         let j = 0;
-        for (const v of c)if (v.isEmpty() && v !== vi) emp[j++] = v;
+        for (const v of c1)if (v.isEmpty() && v !== vi) emp[j++] = v;
         const indexes = new Array(emp.length);
         loop_i: for(let i = 0, n = di.size(); i < n; ++i){
             if (dci.isValueHidden(i)) continue;
@@ -3125,7 +3620,7 @@ class $8d126dc1fb260d00$export$2d94cf9ddb103458 extends (0, $e5625d8b51be59c8$ex
                     emp[k].assign(dk.at(indexes[k]));
                 }
                 if (!hidden) {
-                    const s = c.satisfactionDegree();
+                    const s = c1.satisfactionDegree();
                     if (s > this.#solWorstDeg) continue loop_i; // Tentative assignment to vi was OK -> next tentative assignment.
                 }
                 for(let k = 0; k < emp.length; ++k){
@@ -3146,17 +3641,17 @@ class $8d126dc1fb260d00$export$2d94cf9ddb103458 extends (0, $e5625d8b51be59c8$ex
         for (const v_i of this.#vars){
             if (!v_i.isEmpty()) continue; // If it is a past or present variable.
             const cs = this.#getConstraintsBetween(index, v_i.index());
-            for (const c of cs){
-                const emptySize = c.emptyVariableSize();
+            for (const c1 of cs){
+                const emptySize = c1.emptyVariableSize();
                 if (emptySize === 1) {
-                    if (!this.#checkForwardConsistency(level, v_i, c)) return false;
+                    if (!this.#checkForwardConsistency(level, v_i, c1)) return false;
                 } else if (this.#pruneIntensively) {
                     if (emptySize === 2) {
-                        if (!this.#checkForwardConsistency2(level, v_i, c)) return false;
+                        if (!this.#checkForwardConsistency2(level, v_i, c1)) return false;
                     } else if (emptySize === 3) {
-                        if (!this.#checkForwardConsistency3(level, v_i, c)) return false;
+                        if (!this.#checkForwardConsistency3(level, v_i, c1)) return false;
                     } else if (emptySize > 3) {
-                        if (!this.#checkForwardConsistencyN(level, v_i, c, emptySize)) return false;
+                        if (!this.#checkForwardConsistencyN(level, v_i, c1, emptySize)) return false;
                     }
                 }
             }
@@ -3170,11 +3665,11 @@ class $8d126dc1fb260d00$export$2d94cf9ddb103458 extends (0, $e5625d8b51be59c8$ex
             const vi = this.#vars[i];
             if (vi === vc || vi.isEmpty()) continue; // If it is a future variable or a present variable.
             const cs = this.#getConstraintsBetween(vc.index(), i);
-            for (const c of cs){
-                if (this.#checkedCons[c.index()]) continue; // Because of the possibility of duplication in polynomial constraints
-                const s = c.satisfactionDegree();
-                if (s !== (0, $e67c82024f87a841$export$aec1359a0a40a615).UNDEFINED && s <= this.#solWorstDeg) return false;
-                this.#checkedCons[c.index()] = true;
+            for (const c1 of cs){
+                if (this.#checkedCons[c1.index()]) continue; // Because of the possibility of duplication in polynomial constraints
+                const s = c1.satisfactionDegree();
+                if (s !== $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED && s <= this.#solWorstDeg) return false;
+                this.#checkedCons[c1.index()] = true;
             }
         }
         return true;
@@ -3185,14 +3680,14 @@ class $8d126dc1fb260d00$export$2d94cf9ddb103458 extends (0, $e5625d8b51be59c8$ex
             for(let j = i + 1; j < this.#sequence.length; ++j){
                 const vj = this.#sequence[j];
                 const cs = this.#getConstraintsBetween(index_vi, vj.index());
-                for (const c of cs){
+                for (const c1 of cs){
                     const orgVal = vj.value();
                     const dj = vj.domain();
                     const dcj = vj.solverObject;
                     for(let k = 0, n = dj.size(); k < n; ++k){
                         if (dcj.isValueHidden(k)) continue;
                         vj.assign(dj.at(k));
-                        if (c.satisfactionDegree() <= this.#solWorstDeg) dcj.hide(k, i); // Here's a branch pruning!
+                        if (c1.satisfactionDegree() <= this.#solWorstDeg) dcj.hide(k, i); // Here's a branch pruning!
                     }
                     vj.assign(orgVal);
                 }
@@ -3272,7 +3767,7 @@ class $8d126dc1fb260d00$export$2d94cf9ddb103458 extends (0, $e5625d8b51be59c8$ex
     exec() {
         this.#endTime = this._timeLimit === null ? Number.MAX_VALUE : Date.now() + this._timeLimit;
         this.#iterCount = 0;
-        for (const v of this.#vars)v.solverObject = new (0, $f7b05997b0c3179b$export$f307752a90139b0e)(v.domain().size()); // Generation of domain pruners.
+        for (const v of this.#vars)v.solverObject = new $f7b05997b0c3179b$export$f307752a90139b0e(v.domain().size()); // Generation of domain pruners.
         this._pro.clearAllVariables();
         if (!this.#pruneUnaryConstraints()) return false; // Since _worstSatisfactionDegree_ has been updated, call this function.
         let success = false;
@@ -3349,25 +3844,19 @@ class $8d126dc1fb260d00$export$2d94cf9ddb103458 extends (0, $e5625d8b51be59c8$ex
         this.#pruneIntensively = flag;
     }
 }
-
-
 var $bbd1d315bf8940be$exports = {};
-
-$parcel$export($bbd1d315bf8940be$exports, "FuzzyForwardCheckingBc", () => $bbd1d315bf8940be$export$532d5536583284b8);
+$parcel$export($bbd1d315bf8940be$exports, "FuzzyForwardCheckingBc", ()=>$bbd1d315bf8940be$export$532d5536583284b8);
 /**
  * This class implements the forward checking method for fuzzy CSPs that contain only binary constraints.
  * The minimum-remaining-values (MRV) heuristic can also be used by specifying the option.
  *
  * @author Takuto Yanagida
  * @version 2023-04-16
- */ 
-
-
-class $bbd1d315bf8940be$export$532d5536583284b8 extends (0, $e5625d8b51be59c8$export$cca492cadf45c096) {
+ */ class $bbd1d315bf8940be$export$532d5536583284b8 extends $e5625d8b51be59c8$export$cca492cadf45c096 {
     static CONTINUE = 0;
     static TERMINATE = 1;
     #vars;
-    #sol = new (0, $d7051a715721e7ce$export$1d4e454bcd46f18f)();
+    #sol = new $d7051a715721e7ce$export$1d4e454bcd46f18f();
     #relCons;
     #solWorstDeg = 0;
     #iterCount;
@@ -3407,13 +3896,13 @@ class $bbd1d315bf8940be$export$532d5536583284b8 extends (0, $e5625d8b51be59c8$ex
         return this.#relCons[vi_index][vj_index];
     }
     // Check for consistency between the current variable and one future variable, and prune elements of the domain that are inconsistent (when there is one unassigned variable in the scope of the constraint).
-    #checkForwardConsistency(level, vi, c) {
+    #checkForwardConsistency(level, vi, c1) {
         const di = vi.domain();
         const dci = vi.solverObject;
         for(let i = 0, n = di.size(); i < n; ++i){
             if (dci.isValueHidden(i)) continue;
             vi.assign(di.at(i));
-            if (c.satisfactionDegree() <= this.#solWorstDeg) dci.hide(i, level); // Here's a branch pruning!
+            if (c1.satisfactionDegree() <= this.#solWorstDeg) dci.hide(i, level); // Here's a branch pruning!
         }
         vi.clear();
         return !dci.isEmpty(); // Succeeds if the domain di of the future variable vi is not empty.
@@ -3423,8 +3912,8 @@ class $bbd1d315bf8940be$export$532d5536583284b8 extends (0, $e5625d8b51be59c8$ex
         for (const v_i of this.#vars){
             if (!v_i.isEmpty()) continue; // If it is a past or present variable.
             const cs = this.#getConstraintsBetween(index, v_i.index());
-            for (const c of cs)if (c.size() === 2) {
-                if (!this.#checkForwardConsistency(level, v_i, c)) return false;
+            for (const c1 of cs)if (c1.size() === 2) {
+                if (!this.#checkForwardConsistency(level, v_i, c1)) return false;
             }
         }
         return true;
@@ -3497,9 +3986,9 @@ class $bbd1d315bf8940be$export$532d5536583284b8 extends (0, $e5625d8b51be59c8$ex
     exec() {
         this.#endTime = this._timeLimit === null ? Number.MAX_VALUE : Date.now() + this._timeLimit;
         this.#iterCount = 0;
-        for (const v of this.#vars)v.solverObject = new (0, $f7b05997b0c3179b$export$f307752a90139b0e)(v.domain().size()); // Generation of domain pruners.
+        for (const v of this.#vars)v.solverObject = new $f7b05997b0c3179b$export$f307752a90139b0e(v.domain().size()); // Generation of domain pruners.
         this._pro.clearAllVariables();
-        const sol = new (0, $d7051a715721e7ce$export$1d4e454bcd46f18f)();
+        const sol = new $d7051a715721e7ce$export$1d4e454bcd46f18f();
         let success = false;
         while(true){
             const bc = this.#branch(0);
@@ -3569,20 +4058,14 @@ class $bbd1d315bf8940be$export$532d5536583284b8 extends (0, $e5625d8b51be59c8$ex
         this.#degInc = degree;
     }
 }
-
-
 var $3e67a3bbb2d0cdae$exports = {};
-
-$parcel$export($3e67a3bbb2d0cdae$exports, "FlexibleLocalChanges", () => $3e67a3bbb2d0cdae$export$c15ba88cf158f3d6);
+$parcel$export($3e67a3bbb2d0cdae$exports, "FlexibleLocalChanges", ()=>$3e67a3bbb2d0cdae$export$c15ba88cf158f3d6);
 /**
  * A class that implements the flexible local changes method.
  *
  * @author Takuto Yanagida
  * @version 2023-04-16
- */ 
-
-
-class $3e67a3bbb2d0cdae$export$c15ba88cf158f3d6 extends (0, $e5625d8b51be59c8$export$cca492cadf45c096) {
+ */ class $3e67a3bbb2d0cdae$export$c15ba88cf158f3d6 extends $e5625d8b51be59c8$export$cca492cadf45c096 {
     static #setPlusSet(s1, s2) {
         const sn = new Set(s1);
         for (const v of s2)sn.add(v);
@@ -3617,9 +4100,9 @@ class $3e67a3bbb2d0cdae$export$c15ba88cf158f3d6 extends (0, $e5625d8b51be59c8$ex
     }
     #choose(x2, cr) {
         const res = new Map();
-        for (const c of cr){
-            if (!c.isDefined()) continue;
-            for (const v of c)if (!res.has(v)) res.set(v, 1);
+        for (const c1 of cr){
+            if (!c1.isDefined()) continue;
+            for (const v of c1)if (!res.has(v)) res.set(v, 1);
             else res.set(v, res.get(v) + 1);
         }
         const vs = [
@@ -3637,7 +4120,7 @@ class $3e67a3bbb2d0cdae$export$c15ba88cf158f3d6 extends (0, $e5625d8b51be59c8$ex
         const ret = new Set();
         for (const v of vs){
             let remain = false;
-            for (const c of cr)if (c.isDefined()) {
+            for (const c1 of cr)if (c1.isDefined()) {
                 remain = true;
                 break;
             }
@@ -3650,9 +4133,9 @@ class $3e67a3bbb2d0cdae$export$c15ba88cf158f3d6 extends (0, $e5625d8b51be59c8$ex
     #computeHighestAndLowestConsistencyDegree() {
         let low = 1;
         let high = 0;
-        for (const v of this._pro.variables())for (const c of v){
-            const l = c.lowestConsistencyDegree();
-            const h = c.highestConsistencyDegree();
+        for (const v of this._pro.variables())for (const c1 of v){
+            const l = c1.lowestConsistencyDegree();
+            const h = c1.highestConsistencyDegree();
             if (l < low) low = l;
             if (h > high) high = h;
         }
@@ -3668,9 +4151,9 @@ class $3e67a3bbb2d0cdae$export$c15ba88cf158f3d6 extends (0, $e5625d8b51be59c8$ex
     #flcVariable(X1, X2, xi, consX1, consX12, rc) {
         let bestCons = this.#lb;
         if (xi.domain().size() === 0) return bestCons;
-        let bestX2 = (0, $d7051a715721e7ce$export$1d4e454bcd46f18f).fromVariables(X2);
+        let bestX2 = $d7051a715721e7ce$export$1d4e454bcd46f18f.fromVariables(X2);
         let bestDij = xi.domain().at(0);
-        const x2Store = (0, $d7051a715721e7ce$export$1d4e454bcd46f18f).fromVariables(X2);
+        const x2Store = $d7051a715721e7ce$export$1d4e454bcd46f18f.fromVariables(X2);
         for(let j = 0; j < xi.domain().size() && bestCons < consX12; ++j){
             const dij = xi.domain().at(j);
             xi.assign(dij);
@@ -3681,7 +4164,7 @@ class $3e67a3bbb2d0cdae$export$c15ba88cf158f3d6 extends (0, $e5625d8b51be59c8$ex
                 if (consX12_xi > bestCons) {
                     bestCons = consX12_xi;
                     bestDij = dij;
-                    bestX2 = (0, $d7051a715721e7ce$export$1d4e454bcd46f18f).fromVariables(X2);
+                    bestX2 = $d7051a715721e7ce$export$1d4e454bcd46f18f.fromVariables(X2);
                 }
                 if (crNew.size) {
                     const repairCons = this.#flcRepair(X1, X2, xi, consX1_xi, consX12, crNew, Math.max(rc, bestCons));
@@ -3689,7 +4172,7 @@ class $3e67a3bbb2d0cdae$export$c15ba88cf158f3d6 extends (0, $e5625d8b51be59c8$ex
                     if (repairCons > bestCons) {
                         bestCons = repairCons;
                         bestDij = dij;
-                        bestX2 = (0, $d7051a715721e7ce$export$1d4e454bcd46f18f).fromVariables(X2);
+                        bestX2 = $d7051a715721e7ce$export$1d4e454bcd46f18f.fromVariables(X2);
                     }
                     x2Store.apply();
                 }
@@ -3727,16 +4210,16 @@ class $3e67a3bbb2d0cdae$export$c15ba88cf158f3d6 extends (0, $e5625d8b51be59c8$ex
     }
     #initTest(X, cr) {
         const cs = new Set();
-        for (const v of X)for (const c of v)cs.add(c); // All variables in X have been assigned.
+        for (const v of X)for (const c1 of v)cs.add(c1); // All variables in X have been assigned.
         let ret = 1;
-        for (const c of cs){
-            const sd = c.satisfactionDegree();
-            if (sd === (0, $e67c82024f87a841$export$aec1359a0a40a615).UNDEFINED) continue;
+        for (const c1 of cs){
+            const sd = c1.satisfactionDegree();
+            if (sd === $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED) continue;
             if (sd < ret) ret = sd;
         }
-        for (const c of this._pro.constraints()){
-            const cd = c.lowestConsistencyDegree();
-            if (cd < this.#lt) cr.add(c);
+        for (const c1 of this._pro.constraints()){
+            const cd = c1.lowestConsistencyDegree();
+            if (cd < this.#lt) cr.add(c1);
         }
         return ret;
     }
@@ -3745,11 +4228,11 @@ class $3e67a3bbb2d0cdae$export$c15ba88cf158f3d6 extends (0, $e5625d8b51be59c8$ex
         const cs = new Set();
         for (const v of X1){
             const temp = this._pro.constraintsBetween(v, xi);
-            for (const c of temp)cs.add(c);
+            for (const c1 of temp)cs.add(c1);
         }
-        for (const c of cs){
-            const d = c.satisfactionDegree();
-            if (d === (0, $e67c82024f87a841$export$aec1359a0a40a615).UNDEFINED) continue;
+        for (const c1 of cs){
+            const d = c1.satisfactionDegree();
+            if (d === $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED) continue;
             if (d < cd) cd = d;
             if (cd <= bestCons || cd <= rc) return cd; // If it is determined that a better solution than the current solution cannot be obtained
         }
@@ -3760,21 +4243,21 @@ class $3e67a3bbb2d0cdae$export$c15ba88cf158f3d6 extends (0, $e5625d8b51be59c8$ex
         const cs = new Set();
         for (const v of X1){
             const temp = this._pro.constraintsBetween(v, xi);
-            for (const c of temp)cs.add(c);
+            for (const c1 of temp)cs.add(c1);
         }
         for (const v of X2){
             const temp = this._pro.constraintsBetween(v, xi);
-            for (const c of temp)cs.add(c);
+            for (const c1 of temp)cs.add(c1);
         }
-        for (const c of cs){
-            const sd = c.satisfactionDegree();
-            if (sd === (0, $e67c82024f87a841$export$aec1359a0a40a615).UNDEFINED) continue;
+        for (const c1 of cs){
+            const sd = c1.satisfactionDegree();
+            if (sd === $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED) continue;
             if (sd < csd) csd = sd;
         }
-        for (const c of cs){
-            const sd = c.satisfactionDegree();
-            if (sd === (0, $e67c82024f87a841$export$aec1359a0a40a615).UNDEFINED) continue;
-            if (sd < consX1xi || sd < consX12) cr.add(c);
+        for (const c1 of cs){
+            const sd = c1.satisfactionDegree();
+            if (sd === $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED) continue;
+            if (sd < consX1xi || sd < consX12) cr.add(c1);
         }
         return csd;
     }
@@ -3794,7 +4277,7 @@ class $3e67a3bbb2d0cdae$export$c15ba88cf158f3d6 extends (0, $e5625d8b51be59c8$ex
         let initSol = null;
         if (X3.size === 0) {
             rc = initCons;
-            initSol = (0, $d7051a715721e7ce$export$1d4e454bcd46f18f).fromVariables(X2);
+            initSol = $d7051a715721e7ce$export$1d4e454bcd46f18f.fromVariables(X2);
         } else rc = this.#lb;
         const X3p = $3e67a3bbb2d0cdae$export$c15ba88cf158f3d6.#setPlusSet(this.#choose(X2, cr), X3);
         const X2p = $3e67a3bbb2d0cdae$export$c15ba88cf158f3d6.#setMinusSet(X2, X3p);
@@ -3806,21 +4289,15 @@ class $3e67a3bbb2d0cdae$export$c15ba88cf158f3d6 extends (0, $e5625d8b51be59c8$ex
         return result > wsd && result > 0 && (this.#globalReturn !== 0 || this._targetDeg === null);
     }
 }
-
-
 var $a2b0456b598cdc15$exports = {};
-
-$parcel$export($a2b0456b598cdc15$exports, "FlexibleLocalChangesEx", () => $a2b0456b598cdc15$export$f3429dcb0286bfee);
+$parcel$export($a2b0456b598cdc15$exports, "FlexibleLocalChangesEx", ()=>$a2b0456b598cdc15$export$f3429dcb0286bfee);
 /**
  * A class that implements the flexible local changes method.
  * The implementation is optimized by converting recursive calls to loops.
  *
  * @author Takuto Yanagida
  * @version 2023-04-11
- */ 
-
-
-class $a2b0456b598cdc15$export$f3429dcb0286bfee extends (0, $e5625d8b51be59c8$export$cca492cadf45c096) {
+ */ class $a2b0456b598cdc15$export$f3429dcb0286bfee extends $e5625d8b51be59c8$export$cca492cadf45c096 {
     static #setPlusSet(s1, s2) {
         const sn = new Set(s1);
         for (const v of s2)sn.add(v);
@@ -3850,9 +4327,9 @@ class $a2b0456b598cdc15$export$f3429dcb0286bfee extends (0, $e5625d8b51be59c8$ex
     }
     #choose(x2, cr) {
         const res = new Map();
-        for (const c of cr){
-            if (!c.isDefined()) continue;
-            for (const v of c)if (!res.has(v)) res.set(v, 1);
+        for (const c1 of cr){
+            if (!c1.isDefined()) continue;
+            for (const v of c1)if (!res.has(v)) res.set(v, 1);
             else res.set(v, res.get(v) + 1);
         }
         const vs = [
@@ -3870,7 +4347,7 @@ class $a2b0456b598cdc15$export$f3429dcb0286bfee extends (0, $e5625d8b51be59c8$ex
         const ret = new Set();
         for (const v of vs){
             let remain = false;
-            for (const c of cr)if (c.isDefined()) {
+            for (const c1 of cr)if (c1.isDefined()) {
                 remain = true;
                 break;
             }
@@ -3883,9 +4360,9 @@ class $a2b0456b598cdc15$export$f3429dcb0286bfee extends (0, $e5625d8b51be59c8$ex
     #computeHighestAndLowestConsistencyDegree() {
         let low = 1;
         let high = 0;
-        for (const v of this._pro.variables())for (const c of v){
-            const l = c.lowestConsistencyDegree();
-            const h = c.highestConsistencyDegree();
+        for (const v of this._pro.variables())for (const c1 of v){
+            const l = c1.lowestConsistencyDegree();
+            const h = c1.highestConsistencyDegree();
             if (l < low) low = l;
             if (h > high) high = h;
         }
@@ -3901,9 +4378,9 @@ class $a2b0456b598cdc15$export$f3429dcb0286bfee extends (0, $e5625d8b51be59c8$ex
     #flcVariable(X1, X2, xi, consX1, consX12, rc) {
         let bestCons = this.#lb;
         if (xi.domain().size() === 0) return bestCons;
-        let bestX2 = (0, $d7051a715721e7ce$export$1d4e454bcd46f18f).fromVariables(X2);
+        let bestX2 = $d7051a715721e7ce$export$1d4e454bcd46f18f.fromVariables(X2);
         let bestDij = xi.domain().at(0);
-        const x2Store = (0, $d7051a715721e7ce$export$1d4e454bcd46f18f).fromVariables(X2);
+        const x2Store = $d7051a715721e7ce$export$1d4e454bcd46f18f.fromVariables(X2);
         for(let j = 0; j < xi.domain().size() && bestCons < consX12; ++j){
             const dij = xi.domain().at(j);
             xi.assign(dij);
@@ -3914,7 +4391,7 @@ class $a2b0456b598cdc15$export$f3429dcb0286bfee extends (0, $e5625d8b51be59c8$ex
                 if (consX12_xi > bestCons) {
                     bestCons = consX12_xi;
                     bestDij = dij;
-                    bestX2 = (0, $d7051a715721e7ce$export$1d4e454bcd46f18f).fromVariables(X2);
+                    bestX2 = $d7051a715721e7ce$export$1d4e454bcd46f18f.fromVariables(X2);
                 }
                 if (crNew.size) {
                     const repairCons = this.#flcRepair(X1, X2, xi, consX1_xi, consX12, crNew, Math.max(rc, bestCons));
@@ -3922,7 +4399,7 @@ class $a2b0456b598cdc15$export$f3429dcb0286bfee extends (0, $e5625d8b51be59c8$ex
                     if (repairCons > bestCons) {
                         bestCons = repairCons;
                         bestDij = dij;
-                        bestX2 = (0, $d7051a715721e7ce$export$1d4e454bcd46f18f).fromVariables(X2);
+                        bestX2 = $d7051a715721e7ce$export$1d4e454bcd46f18f.fromVariables(X2);
                     }
                     x2Store.apply();
                 }
@@ -3964,16 +4441,16 @@ class $a2b0456b598cdc15$export$f3429dcb0286bfee extends (0, $e5625d8b51be59c8$ex
     }
     #initTest(X, cr) {
         const cs = new Set();
-        for (const v of X)for (const c of v)cs.add(c); // All variables in X have been assigned.
+        for (const v of X)for (const c1 of v)cs.add(c1); // All variables in X have been assigned.
         let ret = 1;
-        for (const c of cs){
-            const sd = c.satisfactionDegree();
-            if (sd === (0, $e67c82024f87a841$export$aec1359a0a40a615).UNDEFINED) continue;
+        for (const c1 of cs){
+            const sd = c1.satisfactionDegree();
+            if (sd === $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED) continue;
             if (sd < ret) ret = sd;
         }
-        for (const c of this._pro.constraints()){
-            const cd = c.lowestConsistencyDegree();
-            if (cd < this.#lt) cr.add(c);
+        for (const c1 of this._pro.constraints()){
+            const cd = c1.lowestConsistencyDegree();
+            if (cd < this.#lt) cr.add(c1);
         }
         return ret;
     }
@@ -3982,11 +4459,11 @@ class $a2b0456b598cdc15$export$f3429dcb0286bfee extends (0, $e5625d8b51be59c8$ex
         const cs = new Set();
         for (const v of X1){
             const temp = this._pro.constraintsBetween(v, xi);
-            for (const c of temp)cs.add(c);
+            for (const c1 of temp)cs.add(c1);
         }
-        for (const c of cs){
-            const d = c.satisfactionDegree();
-            if (d === (0, $e67c82024f87a841$export$aec1359a0a40a615).UNDEFINED) continue;
+        for (const c1 of cs){
+            const d = c1.satisfactionDegree();
+            if (d === $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED) continue;
             if (d < cd) cd = d;
             if (cd <= bestCons || cd <= rc) return cd; // If it is determined that a better solution than the current solution cannot be obtained
         }
@@ -3997,21 +4474,21 @@ class $a2b0456b598cdc15$export$f3429dcb0286bfee extends (0, $e5625d8b51be59c8$ex
         const cs = new Set();
         for (const v of X1){
             const temp = this._pro.constraintsBetween(v, xi);
-            for (const c of temp)cs.add(c);
+            for (const c1 of temp)cs.add(c1);
         }
         for (const v of X2){
             const temp = this._pro.constraintsBetween(v, xi);
-            for (const c of temp)cs.add(c);
+            for (const c1 of temp)cs.add(c1);
         }
-        for (const c of cs){
-            const sd = c.satisfactionDegree();
-            if (sd === (0, $e67c82024f87a841$export$aec1359a0a40a615).UNDEFINED) continue;
+        for (const c1 of cs){
+            const sd = c1.satisfactionDegree();
+            if (sd === $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED) continue;
             if (sd < csd) csd = sd;
         }
-        for (const c of cs){
-            const sd = c.satisfactionDegree();
-            if (sd === (0, $e67c82024f87a841$export$aec1359a0a40a615).UNDEFINED) continue;
-            if (sd < consX1xi || sd < consX12) cr.add(c);
+        for (const c1 of cs){
+            const sd = c1.satisfactionDegree();
+            if (sd === $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED) continue;
+            if (sd < consX1xi || sd < consX12) cr.add(c1);
         }
         return csd;
     }
@@ -4031,7 +4508,7 @@ class $a2b0456b598cdc15$export$f3429dcb0286bfee extends (0, $e5625d8b51be59c8$ex
         let initSol = null;
         if (X3.size === 0) {
             rc = initCons;
-            initSol = (0, $d7051a715721e7ce$export$1d4e454bcd46f18f).fromVariables(X2);
+            initSol = $d7051a715721e7ce$export$1d4e454bcd46f18f.fromVariables(X2);
         } else rc = this.#lb;
         const X3p = $a2b0456b598cdc15$export$f3429dcb0286bfee.#setPlusSet(this.#choose(X2, cr), X3);
         const X2p = $a2b0456b598cdc15$export$f3429dcb0286bfee.#setMinusSet(X2, X3p);
@@ -4043,19 +4520,14 @@ class $a2b0456b598cdc15$export$f3429dcb0286bfee extends (0, $e5625d8b51be59c8$ex
         return result > wsd && result > 0 && (this.#globalReturn !== 0 || this._targetDeg === null);
     }
 }
-
-
 var $d7c197e6a4ef7b17$exports = {};
-
-$parcel$export($d7c197e6a4ef7b17$exports, "FuzzyBreakout", () => $d7c197e6a4ef7b17$export$151ca5d788220218);
+$parcel$export($d7c197e6a4ef7b17$exports, "FuzzyBreakout", ()=>$d7c197e6a4ef7b17$export$151ca5d788220218);
 /**
  * Class implements a solver using the breakout method for fuzzy CSP.
  *
  * @author Takuto Yanagida
  * @version 2023-04-16
- */ 
-
-class $d7c197e6a4ef7b17$export$151ca5d788220218 extends (0, $e5625d8b51be59c8$export$cca492cadf45c096) {
+ */ class $d7c197e6a4ef7b17$export$151ca5d788220218 extends $e5625d8b51be59c8$export$cca492cadf45c096 {
     #weights;
     #lastSolDeg;
     #isRandom = true;
@@ -4075,13 +4547,13 @@ class $d7c197e6a4ef7b17$export$151ca5d788220218 extends (0, $e5625d8b51be59c8$ex
         for (const v of worstVars){
             const v_val = v.value(); // Save the value
             let nowVio = 0;
-            for (const c of v)nowVio += (1 - c.satisfactionDegree()) * this.#weights[c.index()];
+            for (const c1 of v)nowVio += (1 - c1.satisfactionDegree()) * this.#weights[c1.index()];
             out: for (const d of v.domain()){
                 if (v_val === d) continue;
                 v.assign(d);
                 let diff = nowVio;
-                for (const c of v){
-                    diff -= (1 - c.satisfactionDegree()) * this.#weights[c.index()];
+                for (const c1 of v){
+                    diff -= (1 - c1.satisfactionDegree()) * this.#weights[c1.index()];
                     // If the improvement is less than the previous improvement, try the next variable.
                     if (diff < maxDiff) continue out;
                 }
@@ -4096,7 +4568,7 @@ class $d7c197e6a4ef7b17$export$151ca5d788220218 extends (0, $e5625d8b51be59c8$ex
     }
     #listWorstVariables(worstCons) {
         const wvs = new Set();
-        for (const c of worstCons)for (const v of c)wvs.add(v);
+        for (const c1 of worstCons)for (const v of c1)wvs.add(v);
         return Array.from(wvs);
     }
     exec() {
@@ -4104,8 +4576,8 @@ class $d7c197e6a4ef7b17$export$151ca5d788220218 extends (0, $e5625d8b51be59c8$ex
         let iterCount = 0;
         for (const v of this._pro.variables())if (v.isEmpty()) v.assign(v.domain().at(0));
         const deg = this._pro.worstSatisfactionDegree();
-        const canList = new (0, $d7051a715721e7ce$export$1d4e454bcd46f18f)();
-        const sol = new (0, $d7051a715721e7ce$export$1d4e454bcd46f18f)();
+        const canList = new $d7051a715721e7ce$export$1d4e454bcd46f18f();
+        const sol = new $d7051a715721e7ce$export$1d4e454bcd46f18f();
         while(true){
             const [vc, wsd] = this._pro.constraintsWithWorstSatisfactionDegree();
             if (this._targetDeg !== null && this._targetDeg <= wsd) {
@@ -4133,7 +4605,7 @@ class $d7c197e6a4ef7b17$export$151ca5d788220218 extends (0, $e5625d8b51be59c8$ex
                 canList.clear();
                 this._debugOutput("	" + e);
             } else {
-                for (const c of vc)this.#weights[c.index()] += 1;
+                for (const c1 of vc)this.#weights[c1.index()] += 1;
                 this._debugOutput("breakout");
             }
         }
@@ -4148,20 +4620,15 @@ class $d7c197e6a4ef7b17$export$151ca5d788220218 extends (0, $e5625d8b51be59c8$ex
         this.#isRandom = flag;
     }
 }
-
-
 var $fb3cfe453725e4b3$exports = {};
-
-$parcel$export($fb3cfe453725e4b3$exports, "FuzzyGENET", () => $fb3cfe453725e4b3$export$6a3df005617df82a);
+$parcel$export($fb3cfe453725e4b3$exports, "FuzzyGENET", ()=>$fb3cfe453725e4b3$export$6a3df005617df82a);
 /**
  * This class implements fuzzy GENET.
  * CSPs and FCSPs (but only Binary (F)CSPs) is supported.
  *
  * @author Takuto Yanagida
  * @version 2023-04-17
- */ 
-
-class $fb3cfe453725e4b3$export$6a3df005617df82a extends (0, $e5625d8b51be59c8$export$cca492cadf45c096) {
+ */ class $fb3cfe453725e4b3$export$6a3df005617df82a extends $e5625d8b51be59c8$export$cca492cadf45c096 {
     static nextInt(max) {
         return Math.floor(Math.random() * Math.floor(max));
     }
@@ -4182,27 +4649,27 @@ class $fb3cfe453725e4b3$export$6a3df005617df82a extends (0, $e5625d8b51be59c8$ex
             if (v.domain().size() === 0) return false;
             this.#clusters.push(new $fb3cfe453725e4b3$export$6a3df005617df82a.Cluster(v));
         }
-        for (const c of this._pro.constraints())if (c.size() === 1) {
-            const v = c.at(0);
-            const cl = this.#clusters[c.at(0).index()];
+        for (const c1 of this._pro.constraints())if (c1.size() === 1) {
+            const v = c1.at(0);
+            const cl = this.#clusters[c1.at(0).index()];
             for(let i = 0; i < cl.size(); ++i){
                 const origVal = v.value(); // Save the value.
                 v.assign(cl.get(i)._value);
-                if (c.satisfactionDegree() <= worstDeg) cons.push(new $fb3cfe453725e4b3$export$6a3df005617df82a.Connection(c, cl.get(i)));
+                if (c1.satisfactionDegree() <= worstDeg) cons.push(new $fb3cfe453725e4b3$export$6a3df005617df82a.Connection(c1, cl.get(i)));
                 v.assign(origVal); // Restore the value.
             }
         } else {
-            const v1 = c.at(0);
-            const v2 = c.at(1);
-            const cl_f = this.#clusters[c.at(0).index()];
-            const cl_s = this.#clusters[c.at(1).index()];
+            const v1 = c1.at(0);
+            const v2 = c1.at(1);
+            const cl_f = this.#clusters[c1.at(0).index()];
+            const cl_s = this.#clusters[c1.at(1).index()];
             for(let i = 0; i < cl_f.size(); ++i){
                 const origVal1 = v1.value(); // Save the value.
                 v1.assign(cl_f.get(i)._value);
                 for(let j = 0; j < cl_s.size(); ++j){
                     const origVal2 = v2.value(); // Save the value.
                     v2.assign(cl_s.get(j)._value);
-                    if (c.satisfactionDegree() <= worstDeg) cons.push(new $fb3cfe453725e4b3$export$6a3df005617df82a.Connection(c, cl_f.get(i), cl_s.get(j)));
+                    if (c1.satisfactionDegree() <= worstDeg) cons.push(new $fb3cfe453725e4b3$export$6a3df005617df82a.Connection(c1, cl_f.get(i), cl_s.get(j)));
                     v2.assign(origVal2); // Restore the value.
                 }
                 v1.assign(origVal1); // Restore the value.
@@ -4226,7 +4693,7 @@ class $fb3cfe453725e4b3$export$6a3df005617df82a extends (0, $e5625d8b51be59c8$ex
         if (!this.#createNetwork(this.#worstSatisfactionDegree)) throw new Exception();
         const endTime = this._timeLimit === null ? Number.MAX_VALUE : Date.now() + this._timeLimit;
         let iterCount = 0;
-        const sol = new (0, $d7051a715721e7ce$export$1d4e454bcd46f18f)();
+        const sol = new $d7051a715721e7ce$export$1d4e454bcd46f18f();
         const order = [];
         for(let i = 0; i < this.#clusters.length; ++i)order.push(i);
         let cur = this._pro.worstSatisfactionDegree();
@@ -4329,9 +4796,9 @@ class $fb3cfe453725e4b3$export$6a3df005617df82a extends (0, $e5625d8b51be59c8$ex
         #second;
         _weight;
         // Order of neurons must be the same as the order of variables that the constraint has.
-        constructor(c, first, second = null){
-            this._weight = c.satisfactionDegree() - 1;
-            this.#c = c;
+        constructor(c1, first, second = null){
+            this._weight = c1.satisfactionDegree() - 1;
+            this.#c = c1;
             this.#first = first;
             this.#first.addConnection(this);
             this.#second = second;
@@ -4357,8 +4824,8 @@ class $fb3cfe453725e4b3$export$6a3df005617df82a extends (0, $e5625d8b51be59c8$ex
         constructor(value){
             this._value = value;
         }
-        addConnection(c) {
-            this.#conTemp.push(c);
+        addConnection(c1) {
+            this.#conTemp.push(c1);
         }
         lockConnections() {
             this.#connections = [
@@ -4368,29 +4835,23 @@ class $fb3cfe453725e4b3$export$6a3df005617df82a extends (0, $e5625d8b51be59c8$ex
         }
         getInput() {
             let ret = 0;
-            for (const c of this.#connections){
-                const n = c.getNeuron(this); // If n is null, then the unary constraint.
-                ret += c._weight * (n === null || n._isActive ? 1 : 0);
+            for (const c1 of this.#connections){
+                const n = c1.getNeuron(this); // If n is null, then the unary constraint.
+                ret += c1._weight * (n === null || n._isActive ? 1 : 0);
             }
             return ret;
         }
     }
     $fb3cfe453725e4b3$export$6a3df005617df82a.Neuron = Neuron;
 })();
-
-
 var $e39b34bae78c1c37$exports = {};
-
-$parcel$export($e39b34bae78c1c37$exports, "SRS3", () => $e39b34bae78c1c37$export$4bfabca73d1ccb59);
+$parcel$export($e39b34bae78c1c37$exports, "SRS3", ()=>$e39b34bae78c1c37$export$4bfabca73d1ccb59);
 /**
  * This class implements the SRS algorithm.
  *
  * @author Takuto Yanagida
  * @version 2023-04-17
- */ 
-
-
-class $e39b34bae78c1c37$export$4bfabca73d1ccb59 extends (0, $e5625d8b51be59c8$export$cca492cadf45c096) {
+ */ class $e39b34bae78c1c37$export$4bfabca73d1ccb59 extends $e5625d8b51be59c8$export$cca492cadf45c096 {
     // Threshold for adopting a candidate assignment at repair time (should be 0 if strictly following SRS 3)
     static REPAIR_THRESHOLD = 0;
     #closedList = new Set();
@@ -4403,8 +4864,8 @@ class $e39b34bae78c1c37$export$4bfabca73d1ccb59 extends (0, $e5625d8b51be59c8$ex
     #isRandom = true;
     constructor(p){
         super(p);
-        for (const c of this._pro.constraints()){
-            this.#nodes.push(new $e39b34bae78c1c37$export$4bfabca73d1ccb59.TreeNode(c));
+        for (const c1 of this._pro.constraints()){
+            this.#nodes.push(new $e39b34bae78c1c37$export$4bfabca73d1ccb59.TreeNode(c1));
             this.#neighborConstraints.push(null);
         }
     }
@@ -4414,14 +4875,14 @@ class $e39b34bae78c1c37$export$4bfabca73d1ccb59 extends (0, $e5625d8b51be59c8$ex
     foundSolution(solution, worstDegree) {
         return false;
     }
-    #getNeighborConstraints(c) {
-        const index = c.index();
-        if (this.#neighborConstraints[index] === null) this.#neighborConstraints[index] = c.neighbors();
+    #getNeighborConstraints(c1) {
+        const index = c1.index();
+        if (this.#neighborConstraints[index] === null) this.#neighborConstraints[index] = c1.neighbors();
         return this.#neighborConstraints[index];
     }
     #repair(c0) {
         this._debugOutput("repair");
-        const canList = new (0, $d7051a715721e7ce$export$1d4e454bcd46f18f)();
+        const canList = new $d7051a715721e7ce$export$1d4e454bcd46f18f();
         const minDeg0 = c0.satisfactionDegree(); // Target c0 should certainly be an improvement over this.
         const min = this._pro.worstSatisfactionDegree(); // Lower bound of neighborhood constraints.
         let maxDeg0 = c0.satisfactionDegree(); // Satisfaction degree of target c0 for the most improvement so far.
@@ -4435,11 +4896,11 @@ class $e39b34bae78c1c37$export$4bfabca73d1ccb59 extends (0, $e5625d8b51be59c8$ex
                 const deg0 = c0.satisfactionDegree();
                 // If target c0 cannot be improved, the assignment is rejected.
                 if (minDeg0 > deg0 || maxDeg0 - deg0 > $e39b34bae78c1c37$export$4bfabca73d1ccb59.REPAIR_THRESHOLD) continue;
-                for (const c of v){
-                    if (c === c0) continue;
-                    const deg = c.satisfactionDegree();
+                for (const c1 of v){
+                    if (c1 === c0) continue;
+                    const deg = c1.satisfactionDegree();
                     // If one of the neighborhood constraints c is less than or equal to the worst, the assignment is rejected.
-                    if (deg !== (0, $e67c82024f87a841$export$aec1359a0a40a615).UNDEFINED && deg < min) continue out;
+                    if (deg !== $e67c82024f87a841$export$aec1359a0a40a615.UNDEFINED && deg < min) continue out;
                 }
                 if (deg0 > maxDeg0) {
                     maxDeg0 = deg0;
@@ -4480,8 +4941,8 @@ class $e39b34bae78c1c37$export$4bfabca73d1ccb59 extends (0, $e5625d8b51be59c8$ex
     #spread(node) {
         this._debugOutput("spread");
         this.#closedList.add(node);
-        for (const c of this.#getNeighborConstraints(node.getObject())){
-            const cn = this.#nodes[c.index()];
+        for (const c1 of this.#getNeighborConstraints(node.getObject())){
+            const cn = this.#nodes[c1.index()];
             if (!this.#closedList.has(cn) && !this.#openList.has(cn)) {
                 node.add(cn);
                 this.#openList.add(cn);
@@ -4491,8 +4952,8 @@ class $e39b34bae78c1c37$export$4bfabca73d1ccb59 extends (0, $e5625d8b51be59c8$ex
     #srs() {
         this._debugOutput("srs");
         const [wsdcs] = this._pro.constraintsWithWorstSatisfactionDegree();
-        for (const c of wsdcs){
-            const cn = this.#nodes[c.index()];
+        for (const c1 of wsdcs){
+            const cn = this.#nodes[c1.index()];
             cn.setParent(null);
             this.#c_stars.add(cn);
         }
@@ -4525,7 +4986,7 @@ class $e39b34bae78c1c37$export$4bfabca73d1ccb59 extends (0, $e5625d8b51be59c8$ex
         this.#endTime = this._timeLimit === null ? Number.MAX_VALUE : Date.now() + this._timeLimit;
         this.#iterCount = 0;
         if (this._targetDeg && this._targetDeg <= this._pro.worstSatisfactionDegree()) return true;
-        const sol = new (0, $d7051a715721e7ce$export$1d4e454bcd46f18f)();
+        const sol = new $d7051a715721e7ce$export$1d4e454bcd46f18f();
         let success = false;
         while(true){
             const ret = this.#srs();
@@ -4585,20 +5046,15 @@ class $e39b34bae78c1c37$export$4bfabca73d1ccb59 extends (0, $e5625d8b51be59c8$ex
         }
     }
     $e39b34bae78c1c37$export$4bfabca73d1ccb59.TreeNode = TreeNode;
-}
-
-var $56dbbcaaa927a4a2$exports = {};
-
-$parcel$export($56dbbcaaa927a4a2$exports, "SRS3_PF", () => $56dbbcaaa927a4a2$export$281ed65cbb041503);
+}var $56dbbcaaa927a4a2$exports = {};
+$parcel$export($56dbbcaaa927a4a2$exports, "SRS3_PF", ()=>$56dbbcaaa927a4a2$export$281ed65cbb041503);
 /**
  * This class implements the SRS algorithm with PF.
  *
  * @author Takuto Yanagida
  * @version 2023-04-16
- */ 
-var $c5e681ea32920ad2$exports = {};
-
-$parcel$export($c5e681ea32920ad2$exports, "PostStabilization", () => $c5e681ea32920ad2$export$52631f16ca582d39);
+ */ var $c5e681ea32920ad2$exports = {};
+$parcel$export($c5e681ea32920ad2$exports, "PostStabilization", ()=>$c5e681ea32920ad2$export$52631f16ca582d39);
 /**
  * Class of post-stabilization.
  *
@@ -4628,10 +5084,7 @@ $parcel$export($c5e681ea32920ad2$exports, "PostStabilization", () => $c5e681ea32
         return true;
     }
 }
-
-
-
-class $56dbbcaaa927a4a2$export$281ed65cbb041503 extends (0, $e39b34bae78c1c37$export$4bfabca73d1ccb59) {
+class $56dbbcaaa927a4a2$export$281ed65cbb041503 extends $e39b34bae78c1c37$export$4bfabca73d1ccb59 {
     constructor(p){
         super(p);
     }
@@ -4645,18 +5098,16 @@ class $56dbbcaaa927a4a2$export$281ed65cbb041503 extends (0, $e39b34bae78c1c37$ex
             deg = this._pro.worstSatisfactionDegree();
             uvs = this._pro.emptyVariableSize();
         }
-        const al = new (0, $d7051a715721e7ce$export$1d4e454bcd46f18f)();
+        const al = new $d7051a715721e7ce$export$1d4e454bcd46f18f();
         al.setProblem(this._pro);
         const res = super.exec();
-        if (res) (0, $c5e681ea32920ad2$export$52631f16ca582d39).apply(this._pro, al);
+        if (res) $c5e681ea32920ad2$export$52631f16ca582d39.apply(this._pro, al);
         this._debugOutput(`result: ${res ? "success" : "failure"}`);
         this._debugOutput(`satisfaction degree: ${deg} -> ${this._pro.worstSatisfactionDegree()}`);
         this._debugOutput(`unassigned size: ${uvs} -> ${this._pro.emptyVariableSize()}`);
         return res;
     }
 }
-
-
 class $720d3cc47e3bd21f$export$4e442516b8f577ee {
     static crispSolverNames() {
         return [
@@ -4692,25 +5143,25 @@ class $720d3cc47e3bd21f$export$4e442516b8f577ee {
         switch(type.replaceAll(" ", "")){
             case "ForwardChecking":
             case "forward-checking":
-                return new (0, $6537b0e1551710d4$export$8570b7b487498488)(p);
+                return new $6537b0e1551710d4$export$8570b7b487498488(p);
             case "MaxForwardChecking":
             case "max-forward-checking":
-                return new (0, $0c5cdff78dc8648d$export$2a32484f7cb0d846)(p);
+                return new $0c5cdff78dc8648d$export$2a32484f7cb0d846(p);
             case "LocalChanges":
             case "local-changes":
-                return new (0, $18724c3268ec037c$export$8153937ab18ca581)(p);
+                return new $18724c3268ec037c$export$8153937ab18ca581(p);
             case "LocalChangesEx":
             case "local-changes-ex":
-                return new (0, $16be001e34914685$export$e577c7182ffc977b)(p);
+                return new $16be001e34914685$export$e577c7182ffc977b(p);
             case "Breakout":
             case "breakout":
-                return new (0, $368b031b41e29330$export$44de86bc32e07644)(p);
+                return new $368b031b41e29330$export$44de86bc32e07644(p);
             case "GENET":
             case "genet":
-                return new (0, $59ba6be2773f89c9$export$d94917317b4f74cb)(p);
+                return new $59ba6be2773f89c9$export$d94917317b4f74cb(p);
             case "CrispSRS3":
             case "crisp-srs3":
-                return new (0, $6a494cae60277c44$export$193930056f923a8)(p);
+                return new $6a494cae60277c44$export$193930056f923a8(p);
         }
         return null;
     }
@@ -4718,63 +5169,45 @@ class $720d3cc47e3bd21f$export$4e442516b8f577ee {
         switch(type.replaceAll(" ", "")){
             case "FuzzyForwardChecking":
             case "fuzzy-forward-checking":
-                return new (0, $8d126dc1fb260d00$export$2d94cf9ddb103458)(p);
+                return new $8d126dc1fb260d00$export$2d94cf9ddb103458(p);
             case "FuzzyForwardCheckingBc":
             case "fuzzy-forward-checking-bc":
-                return new (0, $bbd1d315bf8940be$export$532d5536583284b8)(p);
+                return new $bbd1d315bf8940be$export$532d5536583284b8(p);
             case "FlexibleLocalChanges":
             case "flexible-local-changes":
-                return new (0, $3e67a3bbb2d0cdae$export$c15ba88cf158f3d6)(p);
+                return new $3e67a3bbb2d0cdae$export$c15ba88cf158f3d6(p);
             case "FlexibleLocalChangesEx":
             case "flexible-local-changes-ex":
-                return new (0, $a2b0456b598cdc15$export$f3429dcb0286bfee)(p);
+                return new $a2b0456b598cdc15$export$f3429dcb0286bfee(p);
             case "FuzzyBreakout":
             case "fuzzy-breakout":
-                return new (0, $d7c197e6a4ef7b17$export$151ca5d788220218)(p);
+                return new $d7c197e6a4ef7b17$export$151ca5d788220218(p);
             case "FuzzyGENET":
             case "fuzzy-genet":
-                return new (0, $fb3cfe453725e4b3$export$6a3df005617df82a)(p);
+                return new $fb3cfe453725e4b3$export$6a3df005617df82a(p);
             case "SRS3":
             case "srs3":
-                return new (0, $e39b34bae78c1c37$export$4bfabca73d1ccb59)(p);
+                return new $e39b34bae78c1c37$export$4bfabca73d1ccb59(p);
             case "SRS3PF":
             case "SRS3_PF":
             case "srs3-pf":
-                return new (0, $56dbbcaaa927a4a2$export$281ed65cbb041503)(p);
+                return new $56dbbcaaa927a4a2$export$281ed65cbb041503(p);
         }
         return null;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 var $d10fdff0b3f22a66$exports = {};
-
-$parcel$export($d10fdff0b3f22a66$exports, "AC3", () => $d10fdff0b3f22a66$export$ac824f187e852f5a);
+$parcel$export($d10fdff0b3f22a66$exports, "AC3", ()=>$d10fdff0b3f22a66$export$ac824f187e852f5a);
 /**
  * The class implements AC-3, one of the arc consistency algorithms.
  *
  * @author Takuto Yanagida
  * @version 2023-04-10
  */ class $d10fdff0b3f22a66$export$ac824f187e852f5a {
-    static #checkConsistency(c, v_j) {
+    static #checkConsistency(c1, v_j) {
         for (const val of v_j.domain()){
             v_j.assign(val);
-            if (c.isSatisfied() === 1) return true; // Current assignment of v_i is consistent.
+            if (c1.isSatisfied() === 1) return true; // Current assignment of v_i is consistent.
         }
         return false;
     }
@@ -4786,9 +5219,9 @@ $parcel$export($d10fdff0b3f22a66$exports, "AC3", () => $d10fdff0b3f22a66$export$
         const cs = p.constraintsBetween(v_i, v_j);
         vals: for (const val of d_i){
             v_i.assign(val);
-            for (const c of cs){
-                if (c.size() !== 2) continue; // Check the next constraint
-                if (!$d10fdff0b3f22a66$export$ac824f187e852f5a.#checkConsistency(c, v_j)) continue vals; // Since there is no partner satisfying the constraint, check the next value.
+            for (const c1 of cs){
+                if (c1.size() !== 2) continue; // Check the next constraint
+                if (!$d10fdff0b3f22a66$export$ac824f187e852f5a.#checkConsistency(c1, v_j)) continue vals; // Since there is no partner satisfying the constraint, check the next value.
             }
             temp.push(val);
         }
@@ -4806,22 +5239,19 @@ $parcel$export($d10fdff0b3f22a66$exports, "AC3", () => $d10fdff0b3f22a66$export$
     }
     static apply(p) {
         const cs = [];
-        for (const c of p.constraints())if (c.size() === 2) cs.add(c);
+        for (const c1 of p.constraints())if (c1.size() === 2) cs.add(c1);
         while(!cs.isEmpty()){
-            const c = cs.remove(cs.size() - 1);
-            const v_k = c.at(0);
-            const v_m = c.at(1);
+            const c1 = cs.remove(cs.size() - 1);
+            const v_k = c1.at(0);
+            const v_m = c1.at(1);
             if ($d10fdff0b3f22a66$export$ac824f187e852f5a.#reviseDomain(p, v_k, v_m)) {
                 for (const c1 of p.constraints())if (c1.size() === 2 && c1.at(1) === v_k && c1.at(0) !== v_m) cs.add(0, c1);
             }
         }
     }
 }
-
-
 var $a8cdbbce0cfe8aee$exports = {};
-
-$parcel$export($a8cdbbce0cfe8aee$exports, "NodeConsistency", () => $a8cdbbce0cfe8aee$export$975ddbe83e2b310a);
+$parcel$export($a8cdbbce0cfe8aee$exports, "NodeConsistency", ()=>$a8cdbbce0cfe8aee$export$975ddbe83e2b310a);
 /**
  * Utility class that performs node consistency.
  *
@@ -4839,13 +5269,13 @@ $parcel$export($a8cdbbce0cfe8aee$exports, "NodeConsistency", () => $a8cdbbce0cfe
             const d = v.domain();
             const origVal = v.value(); // Save the value.
             const elms = [];
-            for (const c of v){
-                if (c.size() !== 1) continue;
+            for (const c1 of v){
+                if (c1.size() !== 1) continue;
                 for (const val of d){
                     v.assign(val);
-                    if (c.satisfactionDegree() >= threshold) elms.push(val);
+                    if (c1.satisfactionDegree() >= threshold) elms.push(val);
                 }
-                p.removeConstraint(c);
+                p.removeConstraint(c1);
             }
             v.assign(origVal); // Restore the value.
             if (elms.length === 0) return false;
@@ -4865,13 +5295,13 @@ $parcel$export($a8cdbbce0cfe8aee$exports, "NodeConsistency", () => $a8cdbbce0cfe
             const d = v.domain();
             const origVal = v.value(); // Save the value.
             const elms = [];
-            for (const c of v){
-                if (c.size() !== 1) continue;
+            for (const c1 of v){
+                if (c1.size() !== 1) continue;
                 for (const val of d){
                     v.assign(val);
-                    if (c.isSatisfied() === 1) elms.push(val);
+                    if (c1.isSatisfied() === 1) elms.push(val);
                 }
-                p.removeConstraint(c);
+                p.removeConstraint(c1);
             }
             v.assign(origVal); // Restore the value.
             if (elms.length === 0) return false;
@@ -4882,21 +5312,14 @@ $parcel$export($a8cdbbce0cfe8aee$exports, "NodeConsistency", () => $a8cdbbce0cfe
         return true;
     }
 }
-
-
-
 var $e26450ba7c736240$exports = {};
-
-$parcel$export($e26450ba7c736240$exports, "Problems", () => $e26450ba7c736240$export$32fae9b8f93405d0);
+$parcel$export($e26450ba7c736240$exports, "Problems", ()=>$e26450ba7c736240$export$32fae9b8f93405d0);
 /**
  * Utility class for constraint satisfaction problems.
  *
  * @author Takuto Yanagida
  * @version 2023-04-18
- */ 
-
-
-class $e26450ba7c736240$export$32fae9b8f93405d0 {
+ */ class $e26450ba7c736240$export$32fae9b8f93405d0 {
     static #averagePathLength(p, v, length, baseLength, vo) {
         const vn = [];
         for (const c1 of v){
@@ -4995,14 +5418,14 @@ class $e26450ba7c736240$export$32fae9b8f93405d0 {
         return cp;
     }
 }
-class $e26450ba7c736240$var$CrispFuzzyProblem extends (0, $c624e9db75d26c9f$export$2d7b2a6964dca148) {
+class $e26450ba7c736240$var$CrispFuzzyProblem extends $c624e9db75d26c9f$export$2d7b2a6964dca148 {
     createVariable(v) {
         const iv = new $e26450ba7c736240$var$ImaginaryVariable(v);
         this.addVariable(iv);
         return v;
     }
 }
-class $e26450ba7c736240$var$CrispFuzzyRelation extends (0, $9098286a4d3ce42f$export$182ea39d269dda05) {
+class $e26450ba7c736240$var$CrispFuzzyRelation extends $9098286a4d3ce42f$export$182ea39d269dda05 {
     #th;
     #fr;
     constructor(fr, th){
@@ -5013,7 +5436,7 @@ class $e26450ba7c736240$var$CrispFuzzyRelation extends (0, $9098286a4d3ce42f$exp
         return this.#fr.satisfactionDegree(vs) >= this.#th;
     }
 }
-class $e26450ba7c736240$var$ImaginaryVariable extends (0, $8a169d84b9853138$export$c867a5c9595a1350) {
+class $e26450ba7c736240$var$ImaginaryVariable extends $8a169d84b9853138$export$c867a5c9595a1350 {
     #orig;
     constructor(v){
         super(v.owner(), v.domain());
@@ -5034,14 +5457,8 @@ class $e26450ba7c736240$var$ImaginaryVariable extends (0, $8a169d84b9853138$expo
         return this.#orig.value();
     }
 }
-
-
-
-
-
 var $ef2881bbdac82876$exports = {};
-
-$parcel$export($ef2881bbdac82876$exports, "LoopDetector", () => $ef2881bbdac82876$export$136021658ac30d9);
+$parcel$export($ef2881bbdac82876$exports, "LoopDetector", ()=>$ef2881bbdac82876$export$136021658ac30d9);
 /**
  * This class detects that a solver's operation is looping.
  *
@@ -5115,8 +5532,88 @@ $parcel$export($ef2881bbdac82876$exports, "LoopDetector", () => $ef2881bbdac8287
     }
 }
 
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"fn8Fk"}],"fn8Fk":[function(require,module,exports) {
+exports.interopDefault = function(a) {
+    return a && a.__esModule ? a : {
+        default: a
+    };
+};
+exports.defineInteropFlag = function(a) {
+    Object.defineProperty(a, "__esModule", {
+        value: true
+    });
+};
+exports.exportAll = function(source, dest) {
+    Object.keys(source).forEach(function(key) {
+        if (key === "default" || key === "__esModule" || Object.prototype.hasOwnProperty.call(dest, key)) return;
+        Object.defineProperty(dest, key, {
+            enumerable: true,
+            get: function() {
+                return source[key];
+            }
+        });
+    });
+    return dest;
+};
+exports.export = function(dest, destName, get) {
+    Object.defineProperty(dest, destName, {
+        enumerable: true,
+        get: get
+    });
+};
 
+},{}],"hQbVJ":[function(require,module,exports) {
+/**
+ * An interface that represents the relationship between variables.
+ * Use CrispRelation or FuzzyRelation class that implement this interface.
+ *
+ * @author Takuto Yanagida
+ * @version 2023-03-25
+ */ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Relation", ()=>Relation);
+class Relation {
+}
 
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"fn8Fk"}],"2sE23":[function(require,module,exports) {
+/**
+ * The class for models that provides a factory method to generate constraint satisfaction problems.
+ *
+ * @author Takuto Yanagida
+ * @version 2023-04-16
+ */ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "Model", ()=>Model);
+class Model {
+    _debug = true;
+    _debugOutput = (e)=>console.log(e);
+    /**
+	 * Generates a constraint satisfaction problems.
+	 * @param p Objects to include the problem to be generated
+	 * @return A generated problem.
+	 */ createProblem(p) {}
+    /**
+	 * Returns whether the generated problem is a fuzzy constraint satisfaction problem, i.e., whether it contains fuzzy constraints.
+	 * @return If it is a fuzzy constraint satisfaction problem, true
+	 */ isFuzzy() {}
+    // -------------------------------------------------------------------------
+    /**
+	 * Sets whether to output debug strings.
+	 * @param boolean flag Do output if true.
+	 */ setDebugMode(flag) {
+        this._debug = flag;
+    }
+    /**
+	 * Sets a function that used for outputting debug strings.
+	 * @param function fn Function called when debug output.
+	 */ setDebugOutput(fn) {
+        this._debugOutput = fn;
+    }
+    _debugOutput(str) {
+        if (this._debug) this._debugOutput(str);
+    }
+}
 
-export {$1f9c7ae011a64571$export$559d26475d35ac1e as Problem, $c624e9db75d26c9f$export$2d7b2a6964dca148 as CrispProblem, $ae754937ccaa65b0$export$db77ccec0bb4ccac as Element, $8a169d84b9853138$export$c867a5c9595a1350 as Variable, $b465f27e32fe405d$export$a14c1bd8f74377e as ObservableVariable, $79a8d1b9a9fc74d0$export$f102e87ccfb079d0 as Domain, $c390ec7dca5ac321$export$62fe53be9d2bcdd3 as DomainArbitrary, $aa858a2a93fead82$export$681548042801f21c as DomainRanged, $e67c82024f87a841$export$aec1359a0a40a615 as Constraint, $cefcd65bf0a494eb$export$42d7bbd8a43e587d as Constraint1, $7e7c1b07812da051$export$18305a9eb79647d6 as Constraint2, $e15e0d8061a1d3e1$export$7dc34a7e74bc57bb as Constraint3, $f7435b989104b6d0$export$fd9d2e5591a15c9a as ConstraintN, $f4fccc65260d093d$export$b57c6722681faed7 as Relation, $971b718aea973f33$export$3b3c4a6f6988f9e8 as FuzzyRelation, $c141b9b955cfd62e$export$9af92f8a5a1bfd9d as FuzzyTabledRelation, $8954958cf0b6696d$export$292ff2b1fb710ade as FuzzyRelationFunction, $9098286a4d3ce42f$export$182ea39d269dda05 as CrispRelation, $f7617c3ac8e6cd4a$export$14031e4758dfc3cf as CrispTabledRelation, $1772f50825805f1c$export$a1cc6d3c2a0259e4 as CrispRelationFunction, $388f571dc59ac25d$export$f47c6ef1c1dceb7d as CrispRelationView, $388f571dc59ac25d$export$105e23542a0b280f as FuzzyRelationView, $e5625d8b51be59c8$export$cca492cadf45c096 as Solver, $720d3cc47e3bd21f$export$4e442516b8f577ee as SolverFactory, $3e67a3bbb2d0cdae$export$c15ba88cf158f3d6 as FlexibleLocalChanges, $a2b0456b598cdc15$export$f3429dcb0286bfee as FlexibleLocalChangesEx, $d7c197e6a4ef7b17$export$151ca5d788220218 as FuzzyBreakout, $8d126dc1fb260d00$export$2d94cf9ddb103458 as FuzzyForwardChecking, $bbd1d315bf8940be$export$532d5536583284b8 as FuzzyForwardCheckingBc, $fb3cfe453725e4b3$export$6a3df005617df82a as FuzzyGENET, $e39b34bae78c1c37$export$4bfabca73d1ccb59 as SRS3, $56dbbcaaa927a4a2$export$281ed65cbb041503 as SRS3_PF, $368b031b41e29330$export$44de86bc32e07644 as Breakout, $6a494cae60277c44$export$193930056f923a8 as CrispSRS3, $6537b0e1551710d4$export$8570b7b487498488 as ForwardChecking, $59ba6be2773f89c9$export$d94917317b4f74cb as GENET, $18724c3268ec037c$export$8153937ab18ca581 as LocalChanges, $16be001e34914685$export$e577c7182ffc977b as LocalChangesEx, $0c5cdff78dc8648d$export$2a32484f7cb0d846 as MaxForwardChecking, $d10fdff0b3f22a66$export$ac824f187e852f5a as AC3, $a8cdbbce0cfe8aee$export$975ddbe83e2b310a as NodeConsistency, $c5e681ea32920ad2$export$52631f16ca582d39 as PostStabilization, $e26450ba7c736240$export$32fae9b8f93405d0 as Problems, $9bc6df20db8be0bf$export$e6b39d88cc0d636 as Assignment, $d7051a715721e7ce$export$1d4e454bcd46f18f as AssignmentList, $f7b05997b0c3179b$export$f307752a90139b0e as DomainPruner, $ef2881bbdac82876$export$136021658ac30d9 as LoopDetector};
-//# sourceMappingURL=stlics.esm.js.map
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"fn8Fk"}]},["g45M4"], null, "parcelRequire95bc")
+
+//# sourceMappingURL=worker.455c3ff2.js.map
