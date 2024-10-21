@@ -29,21 +29,21 @@ export class Breakout extends Solver {
 		return 'Breakout';
 	}
 
-	#findCandidates(vioVars: Variable[], canList: AssignmentList): void {
+	#findCandidates(vioXs: Variable[], canList: AssignmentList): void {
 		let maxDiff = 0;
 
-		for (const v of vioVars) {
-			const v_val = v.value();  // Save the value
+		for (const x of vioXs) {
+			const x_v = x.value();  // Save the value
 
 			let nowVio = 0;
-			for (const c of v) {
+			for (const c of x) {
 				nowVio += (1 - c.isSatisfied()) * this.#weights[c.index()];
 			}
-			out: for (const d of v.domain()) {
-				if (v_val === d) continue;
-				v.assign(d);
-				let diff = nowVio;
-				for (const c of v) {
+			out: for (const d of x.domain()) {
+				if (x_v === d) continue;
+				x.assign(d);
+				let diff: number = nowVio;
+				for (const c of x) {
 					diff -= (1 - c.isSatisfied()) * this.#weights[c.index()];
 					// If the improvement is less than the previous improvement, try the next variable.
 					if (diff < maxDiff) {
@@ -53,31 +53,33 @@ export class Breakout extends Solver {
 				if (diff > maxDiff) {  // Found assignments that are better than ever before.
 					maxDiff = diff;
 					canList.clear();
-					canList.addVariable(v, d);
+					canList.addVariable(x, d);
 				} else if (maxDiff !== 0) {  // Found assignments that can be improved to the same level as before.
-					canList.addVariable(v, d);
+					canList.addVariable(x, d);
 				}
 			}
-			v.assign(v_val);  // Restore the value.
+			x.assign(x_v);  // Restore the value.
 		}
 	}
 
-	#listViolatingVariables(vioCons: Constraint[]): Variable[] {
-		const vvs = new Set<Variable>();
-		for (const c of vioCons) {
-			for (const v of c) {
-				vvs.add(v);
+	#listViolatingVariables(vioCs: Constraint[]): Variable[] {
+		const xxs = new Set<Variable>();
+		for (const c of vioCs) {
+			for (const x of c) {
+				xxs.add(x);
 			}
 		}
-		return Array.from<Variable>(vvs);
+		return Array.from<Variable>(xxs);
 	}
 
 	exec(): boolean {
 		const endTime = (this._timeLimit === null) ? Number.MAX_VALUE : (Date.now() + this._timeLimit);
 		let iterCount = 0;
 
-		for (const v of this._pro.variables()) {
-			if (v.isEmpty()) v.assign(v.domain().at(0));
+		for (const x of this._pro.variables()) {
+			if (x.isEmpty()) {
+				x.assign(x.domain().at(0));
+			}
 		}
 
 		const canList = new AssignmentList();

@@ -3,7 +3,7 @@
  * The constructor is not called directly, since it is created by the Problem.
  *
  * @author Takuto Yanagida
- * @version 2023-04-11
+ * @version 2024-10-21
  */
 
 import { Constraint } from './constraint';
@@ -12,12 +12,12 @@ import { Relation } from './relation';
 
 export class Constraint1 extends Constraint {
 
-	#vars: [Variable] = [] as unknown as [Variable];
+	#xs: [Variable] = [] as unknown as [Variable];
 
 	// Called only from Problem.
-	constructor(r: Relation, v: Variable) {
+	constructor(r: Relation, x: Variable) {
 		super(r);
-		this.#vars = [v];
+		this.#xs = [x];
 	}
 
 	/**
@@ -30,60 +30,22 @@ export class Constraint1 extends Constraint {
 	/**
 	 * {@inheritDoc}
 	 */
-	at(index: number): Variable {
-		if (index === 0) return this.#vars[0];
-		throw new RangeError();
+	at(index: number): Variable | undefined {
+		return this.#xs.at(index);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	[Symbol.iterator](): Iterator<Variable> {
-		return this.#vars[Symbol.iterator]();
+	has(x: Variable) {
+		return x === this.#xs[0];
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	has(v: Variable) {
-		return v === this.#vars[0];
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	indexOf(v: Variable) {
-		return (v === this.#vars[0]) ? 0 : -1;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	emptyVariableSize() {
-		return this.#vars[0].isEmpty() ? 1 : 0;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	isDefined(): boolean {
-		return !this.#vars[0].isEmpty();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	isSatisfied(): -1|0|1 {
-		if (this.#vars[0].isEmpty()) return Constraint.UNDEFINED;
-		return this.crispRelation().isSatisfied(this.#vars[0].value()) ? 1 : 0;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	satisfactionDegree(): number {
-		if (this.#vars[0].isEmpty()) return Constraint.UNDEFINED;
-		return this.fuzzyRelation().satisfactionDegree(this.#vars[0].value());
+	indexOf(x: Variable): number {
+		return (x === this.#xs[0]) ? 0 : -1;
 	}
 
 	/**
@@ -91,8 +53,11 @@ export class Constraint1 extends Constraint {
 	 */
 	neighbors(): Constraint[] {
 		const cs: Constraint[] = [];
-		for (const c of this.#vars[0]) {
-			if (c !== this as unknown as Constraint) cs.push(c);
+
+		for (const c of this.#xs[0]) {
+			if (c !== this) {
+				cs.push(c);
+			}
 		}
 		return cs;
 	}
@@ -100,17 +65,66 @@ export class Constraint1 extends Constraint {
 	/**
 	 * {@inheritDoc}
 	 */
+	[Symbol.iterator](): Iterator<Variable> {
+		return this.#xs[Symbol.iterator]();
+	}
+
+
+	// -------------------------------------------------------------------------
+
+
+	/**
+	 * {@inheritDoc}
+	 */
+	emptyVariableSize(): number {
+		return this.#xs[0].isEmpty() ? 1 : 0;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	isDefined(): boolean {
+		return !this.#xs[0].isEmpty();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	isSatisfied(): -1 | 0 | 1 {
+		if (this.#xs[0].isEmpty()) {
+			return Constraint.UNDEFINED;
+		}
+		return this.crispRelation().isSatisfied(this.#xs[0].value()) ? 1 : 0;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	satisfactionDegree(): number {
+		if (this.#xs[0].isEmpty()) {
+			return Constraint.UNDEFINED;
+		}
+		return this.fuzzyRelation().satisfactionDegree(this.#xs[0].value());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
 	highestConsistencyDegree(): number {
-		const sd = this.satisfactionDegree();
+		const sd: number = this.satisfactionDegree();
 		if (sd !== Constraint.UNDEFINED) {
 			return sd;
 		}
-		let cd = 0;
+		let cd: number = 0;
 
-		for (const val of this.#vars[0].domain()) {
-			const s = this.fuzzyRelation().satisfactionDegree(val);
-			if (s > cd) cd = s;
-			if (cd === 1) break;
+		for (const v of this.#xs[0].domain()) {
+			const s: number = this.fuzzyRelation().satisfactionDegree(v);
+			if (s > cd) {
+				cd = s;
+			}
+			if (cd === 1) {
+				break;
+			}
 		}
 		return cd;
 	}
@@ -119,16 +133,20 @@ export class Constraint1 extends Constraint {
 	 * {@inheritDoc}
 	 */
 	lowestConsistencyDegree(): number {
-		const sd = this.satisfactionDegree();
+		const sd: number = this.satisfactionDegree();
 		if (sd !== Constraint.UNDEFINED) {
 			return sd;
 		}
-		let cd = 1;
+		let cd: number = 1;
 
-		for (const val of this.#vars[0].domain()) {
-			const s = this.fuzzyRelation().satisfactionDegree(val);
-			if (s < cd) cd = s;
-			if (cd === 0) break;
+		for (const v of this.#xs[0].domain()) {
+			const s: number = this.fuzzyRelation().satisfactionDegree(v);
+			if (s < cd) {
+				cd = s;
+			}
+			if (cd === 0) {
+				break;
+			}
 		}
 		return cd;
 	}

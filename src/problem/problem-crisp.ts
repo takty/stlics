@@ -39,7 +39,7 @@ export class CrispProblem extends Problem {
 	 * @return Rate of satisfied constraints.
 	 */
 	satisfiedConstraintRate() {
-		return this.satisfiedConstraintSize() / this._cons.length;
+		return this.satisfiedConstraintSize() / this.#cs.length;
 	}
 
 	/**
@@ -49,7 +49,7 @@ export class CrispProblem extends Problem {
 	 */
 	satisfiedConstraintSize() {
 		let count = 0;
-		for (const c of this._cons) {
+		for (const c of this.#cs) {
 			if (c.isSatisfied() === 1) ++count;
 		}
 		return count;
@@ -62,7 +62,7 @@ export class CrispProblem extends Problem {
 	 */
 	violatingConstraints(): Constraint[] {
 		const cs = [];
-		for (const c of this._cons) {
+		for (const c of this.#cs) {
 			if (c.isSatisfied() === 0) cs.push(c);
 		}
 		return cs;
@@ -75,7 +75,7 @@ export class CrispProblem extends Problem {
 	 */
 	violatingConstraintSize() {
 		let count = 0;
-		for (const c of this._cons) {
+		for (const c of this.#cs) {
 			if (c.isSatisfied() === 0) ++count;
 		}
 		return count;

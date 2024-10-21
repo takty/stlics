@@ -2,57 +2,57 @@
  * Utility class for constraint satisfaction problems.
  *
  * @author Takuto Yanagida
- * @version 2023-04-18
+ * @version 2024-10-22
  */
 
 import { Problem } from '../problem/problem';
 import { CrispProblem } from '../problem/problem-crisp';
 import { Variable } from '../problem/variable';
+import { ImaginaryVariable } from '../problem/variables';
 import { Domain } from '../problem/domain';
 import { Relation } from '../problem/relation';
-import { CrispRelation } from '../problem/relation-crisp';
-import { FuzzyRelation } from '../problem/relation-fuzzy';
+import { CrispRelation, FuzzyRelation } from '../problem/relation';
 
 export class Problems {
 
-	static #averagePathLength(p: Problem, v: Variable, length: number[], baseLength: number, vo: Set<Variable>): void {
-		const vn: Variable[] = [];
+	static #averagePathLength(p: Problem, x: Variable, length: number[], baseLength: number, xo: Set<Variable>): void {
+		const xn: Variable[] = [];
 
-		for (const c of v) {
-			for (const vi of c) {
-				if (length[vi.index()] === Number.MAX_VALUE) {
-					vn.push(vi);
-					length[vi.index()] = baseLength + 1;
+		for (const c of x) {
+			for (const xi of c) {
+				if (length[xi.index()] === Number.MAX_VALUE) {
+					xn.push(xi);
+					length[xi.index()] = baseLength + 1;
 				}
 			}
 		}
-		for (const vi of vn) vo.add(vi);
-		for (const vi of vn) {
-			Problems.#averagePathLength(p, vi, length, baseLength + 1, vo);
+		for (const xi of xn) xo.add(xi);
+		for (const xi of xn) {
+			Problems.#averagePathLength(p, xi, length, baseLength + 1, xo);
 		}
 	}
 
 	/**
 	 * Calculates the average path length for a given variable.
 	 * @param p A problem.
-	 * @param v A variable of the problem.
+	 * @param x A variable of the problem.
 	 * @return Average path length.
 	 */
-	static averagePathLength(p: Problem, v: Variable) {
+	static averagePathLength(p: Problem, x: Variable): number {
 		const ls = new Array(p.variableSize());
 		ls.fill(Number.MAX_VALUE);
 
-		const vs = new Set<Variable>();
-		vs.add(v);
+		const xs = new Set<Variable>();
+		xs.add(x);
 
-		ls[v.index()] = 0;
-		Problems.#averagePathLength(p, v, ls, 0, vs);
+		ls[x.index()] = 0;
+		Problems.#averagePathLength(p, x, ls, 0, xs);
 
-		let connectedSize = 0;
-		let sum = 0;
+		let connectedSize: number = 0;
+		let sum: number = 0;
 
-		for (let i = 0; i < ls.length; ++i) {
-			if (ls[i] !== Number.MAX_VALUE && i !== v.index()) {
+		for (let i: number = 0; i < ls.length; ++i) {
+			if (ls[i] !== Number.MAX_VALUE && i !== x.index()) {
 				++connectedSize;
 				sum += ls[i];
 			}
@@ -68,11 +68,11 @@ export class Problems {
 	 * @param p A problem.
 	 * @return Average path length.
 	 */
-	static averagePathLengths(p: Problem) {
+	static averagePathLengths(p: Problem): number[] {
 		const ls = new Array(p.variableSize());
 
-		for (const v of p.variables()) {
-			ls[v.index()] = Problems.averagePathLength(p, v);
+		for (const x of p.variables()) {
+			ls[x.index()] = Problems.averagePathLength(p, x);
 		}
 		return ls;
 	}
@@ -85,8 +85,8 @@ export class Problems {
 	static domains(p: Problem): Domain[] {
 		const ds: Domain[] = [];
 
-		for (const v of p.variables()) {
-			ds.push(v.domain());
+		for (const x of p.variables()) {
+			ds.push(x.domain());
 		}
 		return ds;
 	}
@@ -100,14 +100,14 @@ export class Problems {
 	static possibleSatisfactionDegreesOfUnaryConstraints(p: Problem, degrees: number[]): number[] {
 		for (const c of p.constraints()) {
 			if (c.size() !== 1) continue;
-			const v: Variable = c.at(0);
-			const origVal: number = v.value();  // Save the value.
+			const x: Variable = c.at(0) as Variable;
+			const origVal: number = x.value();  // Save the value.
 
-			for (const val of v.domain()) {
-				v.assign(val);
+			for (const v of x.domain()) {
+				x.assign(v);
 				degrees.push(c.satisfactionDegree());
 			}
-			v.assign(origVal);  // Restore the value.
+			x.assign(origVal);  // Restore the value.
 		}
 		return degrees;
 	}
@@ -119,7 +119,7 @@ export class Problems {
 	 */
 	static setDomains(p: Problem, ds: Domain[]): void {
 		for (let i: number = 0; i < ds.length; ++i) {
-			p.variableAt(i).setDomain(ds[i]);
+			p.variableAt(i).domain(ds[i]);
 		}
 	}
 
@@ -134,14 +134,14 @@ export class Problems {
 	static toViewAsCrispProblem(p: Problem, threshold: number): CrispFuzzyProblem {
 		const cp = new CrispFuzzyProblem();
 
-		for (const v of p.variables()) {
-			cp.createVariable({ variable: v });
+		for (const x of p.variables()) {
+			cp.createVariable({ variable: x });
 		}
 		for (const c of p.constraints()) {
-			const vs: Variable[] = [];
+			const xs: Variable[] = [];
 
-			for (const v of c) {
-				vs.push(cp.variableAt(v.index()));
+			for (const x of c) {
+				xs.push(cp.variableAt(x.index()));
 			}
 			let r: Relation;
 			if (c.isFuzzy()) {
@@ -149,7 +149,7 @@ export class Problems {
 			} else {
 				r = c.crispRelation();
 			}
-			cp.createConstraint({ relation: r, variables: vs });
+			cp.createConstraint({ relation: r, variables: xs });
 		}
 		return cp;
 	}
@@ -178,35 +178,6 @@ class CrispFuzzyRelation implements CrispRelation {
 
 	isSatisfied(...vs: number[]): 0 | 1 {
 		return this.#fr.satisfactionDegree(...vs) >= this.#th ? 1 : 0;
-	}
-
-}
-
-class ImaginaryVariable extends Variable {
-
-	#orig: Variable;
-
-	constructor(v: Variable) {
-		super(v.owner(), v.domain());
-		this.#orig = v;
-		this.setName(v.name());
-		this.assign(v.value());
-	}
-
-	assign(value: number): void {
-		this.#orig.assign(value);
-	}
-
-	domain(): Domain {
-		return this.#orig.domain();
-	}
-
-	setDomain(dom: Domain): void {
-		this.#orig.setDomain(dom);
-	}
-
-	value(): number {
-		return this.#orig.value();
 	}
 
 }

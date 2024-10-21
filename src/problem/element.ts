@@ -2,7 +2,7 @@
  * The common class of variables and constraints.
  *
  * @author Takuto Yanagida
- * @version 2022-08-15
+ * @version 2024-10-21
  */
 
 export class Element {

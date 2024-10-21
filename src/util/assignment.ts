@@ -2,23 +2,23 @@
  * The class represents a pair of variables and the values to be assigned to them.
  *
  * @author Takuto Yanagida
- * @version 2023-03-25
+ * @version 2024-10-22
  */
 
 import { Variable } from '../problem/variable';
 
 export class Assignment {
 
-	#variable: Variable;
-	#value: number;
+	#x: Variable;
+	#v: number;
 
 	constructor(args: { assignment: Assignment; } | { variable: Variable; value?: number|null }) {
 		if ('assignment' in args) {
-			this.#variable = args.assignment.variable();
-			this.#value = args.assignment.value();
+			this.#x = args.assignment.variable();
+			this.#v = args.assignment.value();
 		} else if ('variable' in args) {
-			this.#variable = args.variable;
-			this.#value = args.value ?? args.variable.value();
+			this.#x = args.variable;
+			this.#v = args.value ?? args.variable.value();
 		} else {
 			throw new RangeError();
 		}
@@ -28,7 +28,7 @@ export class Assignment {
 	 * Assigns a value to a stored variable.
 	 */
 	apply(): void {
-		this.#variable.assign(this.#value);
+		this.#x.assign(this.#v);
 	}
 
 	/**
@@ -36,7 +36,7 @@ export class Assignment {
 	 * @return A string representation.
 	 */
 	toString(): string {
-		return `v${this.#variable.index()} <- ${this.#value}`;
+		return `v${this.#x.index()} <- ${this.#v}`;
 	}
 
 	/**
@@ -44,7 +44,7 @@ export class Assignment {
 	 * @return Value.
 	 */
 	value(): number {
-		return this.#value;
+		return this.#v;
 	}
 
 	/**
@@ -52,7 +52,7 @@ export class Assignment {
 	 * @return Variable.
 	 */
 	variable(): Variable {
-		return this.#variable;
+		return this.#x;
 	}
 
 }

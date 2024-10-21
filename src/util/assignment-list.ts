@@ -2,7 +2,7 @@
  * The class represents multiple variables and their assignments.
  *
  * @author Takuto Yanagida
- * @version 2023-04-16
+ * @version 2024-10-22
  */
 
 import { Assignment } from './assignment';
@@ -11,9 +11,9 @@ import { Problem } from '../problem/problem';
 
 export class AssignmentList {
 
-	static fromVariables(vs: Iterable<Variable>): AssignmentList {
+	static fromVariables(xs: Iterable<Variable>): AssignmentList {
 		const al = new AssignmentList();
-		al.setVariables(vs);
+		al.setVariables(xs);
 		return al;
 	}
 
@@ -22,10 +22,10 @@ export class AssignmentList {
 	constructor() {
 	}
 
-	setProblem(problem: Problem): void {
+	setProblem(p: Problem): void {
 		this.#as.length = 0;
-		for (const v of problem.variables()) {
-			this.#as.push(new Assignment({ variable: v, value: v.value() }));
+		for (const x of p.variables()) {
+			this.#as.push(new Assignment({ variable: x, value: x.value() }));
 		}
 	}
 
@@ -36,14 +36,14 @@ export class AssignmentList {
 		}
 	}
 
-	setVariables(vs: Iterable<Variable>): void {
+	setVariables(xs: Iterable<Variable>): void {
 		this.#as.length = 0;
-		for (const v of vs) {
-			this.#as.push(new Assignment({ variable: v, value: v.value() }));
+		for (const x of xs) {
+			this.#as.push(new Assignment({ variable: x, value: x.value() }));
 		}
 	}
 
-	addVariable(variable: Variable, value: number|null = null): void {
+	addVariable(variable: Variable, value: number | null = null): void {
 		this.#as.push(new Assignment({ variable, value }));
 	}
 
@@ -75,9 +75,12 @@ export class AssignmentList {
 	}
 
 	differenceSize(): number {
-		let diff = 0;
+		let diff: number = 0;
+
 		for (const a of this.#as) {
-			if (a.variable().value() !== a.value()) ++diff;
+			if (a.variable().value() !== a.value()) {
+				++diff;
+			}
 		}
 		return diff;
 	}

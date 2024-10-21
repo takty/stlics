@@ -2,7 +2,7 @@
  * The class represents a constraint satisfaction problem.
  *
  * @author Takuto Yanagida
- * @version 2023-04-16
+ * @version 2024-10-21
  */
 
 import { Variable } from './variable';
@@ -18,17 +18,23 @@ import { Relation } from './relation';
 
 export class Problem {
 
-	#fv = (o: Problem, d: Domain): Variable => new Variable(o, d);
-	#fc: (r: Relation, vs: Variable[]) => Constraint = (r, vs) => {
-		if (vs.length === 1) return new Constraint1(r, vs[0]) as unknown as Constraint;
-		if (vs.length === 2) return new Constraint2(r, vs[0], vs[1]) as unknown as Constraint;
-		if (vs.length === 3) return new Constraint3(r, vs[0], vs[1], vs[2]) as unknown as Constraint;
-		return new ConstraintN(r, ...vs) as unknown as Constraint;
-	}
+	#fv: (o: Problem, d: Domain) => Variable = (o: Problem, d: Domain): Variable => new Variable(o, d);
+	#fc: (r: Relation, xs: Variable[]) => Constraint = (r: Relation, xs: Variable[]): Constraint => {
+		if (xs.length === 1) {
+			return new Constraint1(r, xs[0]);
+		}
+		if (xs.length === 2) {
+			return new Constraint2(r, xs[0], xs[1]);
+		}
+		if (xs.length === 3) {
+			return new Constraint3(r, xs[0], xs[1], xs[2]);
+		}
+		return new ConstraintN(r, ...xs);
+	};
 
-	_isFuzzy: boolean = false;
-	_vars: Variable[]    = [];
-	_cons: Constraint[]    = [];
+	#isFuzzy: boolean = false;
+	#xs: Variable[] = [];
+	#cs: Constraint[] = [];
 
 	// Methods for Modifying Factories --------
 
@@ -42,7 +48,7 @@ export class Problem {
 	/**
 	 * Sets a variable factory.
 	 */
-	setConstraintFactory(fn: (r: Relation, vs: Variable[]) => Constraint): void {
+	setConstraintFactory(fn: (r: Relation, xs: Variable[]) => Constraint): void {
 		this.#fc = fn;
 	}
 
@@ -52,9 +58,9 @@ export class Problem {
 	 * Adds a variable to this problem.
 	 * @param Variable v A variable.
 	 */
-	addVariable(v: Variable) {
-		v.setIndex(this._vars.length);
-		this._vars.push(v);
+	addVariable(x: Variable): void {
+		x.setIndex(this.#xs.length);
+		this.#xs.push(x);
 	}
 
 	/**
@@ -67,7 +73,7 @@ export class Problem {
 	 * }
 	 * @return A domain.
 	 */
-	createDomain(args: {values: number[]}|{min: number, max: number}) {
+	createDomain(args: { values: number[]; } | { min: number, max: number; }): Domain | null {
 		if ('values' in args) {
 			return new DomainArbitrary(args.values);
 		} else if ('min' in args && 'max' in args) {
@@ -85,22 +91,26 @@ export class Problem {
 	 * }
 	 * @return A variable.
 	 */
-	createVariable(args: {name: string, domain: Domain, value?: number}|{variable: Variable}): Variable {
+	createVariable(args: { name: string, domain: Domain, value?: number; } | { variable: Variable; }): Variable {
 		if ('variable' in args) {
-			const v = this.#fv(this, args.variable.domain());
-			this.addVariable(v);
-			v.setName(v.name());
-			v.assign(v.value());
-			return v;
+			const x: Variable = this.#fv(this, args.variable.domain());
+			this.addVariable(x);
+			x.setName(x.name());
+			x.assign(x.value());
+			return x;
 		} else {
 			if (args.value !== undefined && !args.domain.contains(args.value)) {
 				throw new Error();
 			}
-			const v = this.#fv(this, args.domain);
-			this.addVariable(v);
-			if (args.name) v.setName(args.name);
-			if (args.value) v.assign(args.value);
-			return v;
+			const x: Variable = this.#fv(this, args.domain);
+			this.addVariable(x);
+			if (args.name) {
+				x.setName(args.name);
+			}
+			if (args.value) {
+				x.assign(args.value);
+			}
+			return x;
 		}
 	}
 
@@ -113,16 +123,22 @@ export class Problem {
 	 * }
 	 * @return A constraint.
 	 */
-	createConstraint(args: {name?: string, variables: Variable[], relation: Relation}) {
-		for (const v of args.variables) {
-			if (v.owner() !== this) return null;
+	createConstraint(args: { name?: string, variables: Variable[], relation: Relation; }): Constraint | null {
+		for (const x of args.variables) {
+			if (x.owner() !== this) return null;
 		}
-		const c = this.#fc(args.relation, args.variables);
-		c.setIndex(this._cons.length);
-		this._cons.push(c);
-		for (const v of args.variables) v.connect(c);
-		if (c.isFuzzy()) this._isFuzzy = true;
-		if ('name' in args) c.setName(args.name as string);
+		const c: Constraint = this.#fc(args.relation, args.variables);
+		c.setIndex(this.#cs.length);
+		this.#cs.push(c);
+		for (const x of args.variables) {
+			x.connect(c);
+		}
+		if (c.isFuzzy()) {
+			this.#isFuzzy = true;
+		}
+		if ('name' in args) {
+			c.setName(args.name as string);
+		}
 		return c;
 	}
 
@@ -133,18 +149,18 @@ export class Problem {
 	 * @param c Constraints to be removed.
 	 */
 	removeConstraint(c: Constraint): void {
-		const index = this._cons.indexOf(c);
-		this._cons.splice(index, 1);
-		for (let i = index; i < this._cons.length; ++i) {
-			this._cons[i].setIndex(i);
+		const index: number = this.#cs.indexOf(c);
+		this.#cs.splice(index, 1);
+		for (let i: number = index; i < this.#cs.length; ++i) {
+			this.#cs[i].setIndex(i);
 		}
-		for (const v of c) {
-			v.disconnect(c);
+		for (const x of c) {
+			x.disconnect(c);
 		}
-		this._isFuzzy = false;
-		for (const c of this._cons) {
+		this.#isFuzzy = false;
+		for (const c of this.#cs) {
 			if (c.isFuzzy()) {
-				this._isFuzzy = true;
+				this.#isFuzzy = true;
 				break;
 			}
 		}
@@ -154,8 +170,8 @@ export class Problem {
 	 * Changes the status of all variables to unassigned.
 	 */
 	clearAllVariables(): void {
-		for (const v of this._vars) {
-			v.clear();
+		for (const x of this.#xs) {
+			x.clear();
 		}
 	}
 
@@ -164,9 +180,9 @@ export class Problem {
 	 * The index of each variable is reassigned.
 	 */
 	reverseVariables(): void {
-		this._vars.reverse();
-		for (let i = 0; i < this._vars.length; ++i) {
-			this._vars[i].setIndex(i);
+		this.#xs.reverse();
+		for (let i: number = 0; i < this.#xs.length; ++i) {
+			this.#xs[i].setIndex(i);
 		}
 	}
 
@@ -176,9 +192,9 @@ export class Problem {
 	 * @param comparator A comparator.
 	 */
 	sortVariables(comparator: (a: Variable, b: Variable) => number): void {
-		this._vars.sort(comparator);
-		for (let i = 0; i < this._vars.length; ++i) {
-			this._vars[i].setIndex(i);
+		this.#xs.sort(comparator);
+		for (let i: number = 0; i < this.#xs.length; ++i) {
+			this.#xs[i].setIndex(i);
 		}
 	}
 
@@ -189,7 +205,7 @@ export class Problem {
 	 * @return Number of variables
 	 */
 	variableSize(): number {
-		return this._vars.length;
+		return this.#xs.length;
 	}
 
 	/**
@@ -198,7 +214,7 @@ export class Problem {
 	 * @return A variable
 	 */
 	variableAt(index: number): Variable {
-		return this._vars[index];
+		return this.#xs[index];
 	}
 
 	/**
@@ -206,20 +222,22 @@ export class Problem {
 	 * @param name Name.
 	 * @return A variable.
 	 */
-	variableOf(name: string): Variable|null {
-		for (const v of this._vars) {
-			if (v.name() === name) return v;
+	variableOf(name: string): Variable | null {
+		for (const x of this.#xs) {
+			if (x.name() === name) {
+				return x;
+			}
 		}
 		return null;
 	}
 
 	/**
 	 * Returns whether the variable is contained or not.
-	 * @param v A variable.
+	 * @param x A variable.
 	 * @return True if contained.
 	 */
-	hasVariable(v: Variable): boolean {
-		return this._vars.includes(v);
+	hasVariable(x: Variable): boolean {
+		return this.#xs.includes(x);
 	}
 
 	/**
@@ -228,7 +246,7 @@ export class Problem {
 	 * @return The variable list.
 	 */
 	variables(): Variable[] {
-		return this._vars;
+		return this.#xs;
 	}
 
 	// Methods for Constraints --------
@@ -238,7 +256,7 @@ export class Problem {
 	 * @return Number of constraints
 	 */
 	constraintSize(): number {
-		return this._cons.length;
+		return this.#cs.length;
 	}
 
 	/**
@@ -247,7 +265,7 @@ export class Problem {
 	 * @return A constraint.
 	 */
 	constraintAt(index: number): Constraint {
-		return this._cons[index];
+		return this.#cs[index];
 	}
 
 	/**
@@ -255,9 +273,11 @@ export class Problem {
 	 * @param name Name.
 	 * @return A constraint.
 	 */
-	constraintOf(name: string): Constraint|null {
-		for (const c of this._cons) {
-			if (c.name() === name) return c;
+	constraintOf(name: string): Constraint | null {
+		for (const c of this.#cs) {
+			if (c.name() === name) {
+				return c;
+			}
 		}
 		return null;
 	}
@@ -268,7 +288,7 @@ export class Problem {
 	 * @return True if contained.
 	 */
 	hasConstraint(c: Constraint): boolean {
-		return this._cons.includes(c);
+		return this.#cs.includes(c);
 	}
 
 	/**
@@ -277,7 +297,7 @@ export class Problem {
 	 * @return The constraint list.
 	 */
 	constraints(): Constraint[] {
-		return this._cons;
+		return this.#cs;
 	}
 
 	/**
@@ -289,9 +309,11 @@ export class Problem {
 	 * @return Constraints.
 	 */
 	constraintsBetween(v1: Variable, v2: Variable): Constraint[] {
-		const cs = [];
+		const cs: Constraint[] = [];
 		for (const c of v1) {
-			if (c.has(v2)) cs.push(c);
+			if (c.has(v2)) {
+				cs.push(c);
+			}
 		}
 		return cs;
 	}
@@ -302,9 +324,9 @@ export class Problem {
 	 */
 	constraintsWithWorstSatisfactionDegree(): [Constraint[], number] {
 		const cs: Constraint[] = [];
-		let cur = 1;
-		for (const c of this._cons) {
-			const s = c.satisfactionDegree();
+		let cur: number = 1;
+		for (const c of this.#cs) {
+			const s: number = c.satisfactionDegree();
 			if (s < cur) {
 				cur = s;
 				cs.length = 0;
@@ -324,9 +346,9 @@ export class Problem {
 	 * @return Worst satisfaction degree.
 	 */
 	worstSatisfactionDegree(): number {
-		let cs = 1;
-		for (const c of this._cons) {
-			const s = c.satisfactionDegree();
+		let cs: number = 1;
+		for (const c of this.#cs) {
+			const s: number = c.satisfactionDegree();
 			if (s === Constraint.UNDEFINED) return Constraint.UNDEFINED;
 			if (s < cs) cs = s;
 		}
@@ -338,11 +360,11 @@ export class Problem {
 	 * @return Average of satisfaction degrees.
 	 */
 	averageSatisfactionDegree(): number {
-		let ave = 0;
-		for (const c of this._cons) {
+		let ave: number = 0;
+		for (const c of this.#cs) {
 			ave += c.satisfactionDegree();
 		}
-		ave = ave / this._cons.length;
+		ave = ave / this.#cs.length;
 		return ave;
 	}
 
@@ -351,11 +373,14 @@ export class Problem {
 	 * @return Number of variables with no value assigned.
 	 */
 	emptyVariableSize(): number {
-		let num = 0;
-		for (const v of this._vars) {
-			if (v.isEmpty()) num++;
+		let n: number = 0;
+
+		for (const x of this.#xs) {
+			if (x.isEmpty()) {
+				n++;
+			}
 		}
-		return num;
+		return n;
 	}
 
 	/**
@@ -371,8 +396,10 @@ export class Problem {
 	 * @return True if it exists.
 	 */
 	hasEmptyDomain(): boolean {
-		for (const v of this._vars) {
-			if (v.domain().size() === 0) return true;
+		for (const x of this.#xs) {
+			if (x.domain().size() === 0) {
+				return true;
+			}
 		}
 		return false;
 	}
@@ -382,7 +409,7 @@ export class Problem {
 	 * @return True if it is a fuzzy constraint satisfaction problem.
 	 */
 	isFuzzy(): boolean {
-		return this._isFuzzy;
+		return this.#isFuzzy;
 	}
 
 }

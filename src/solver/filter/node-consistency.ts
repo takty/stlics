@@ -2,7 +2,7 @@
  * Utility class that performs node consistency.
  *
  * @author Takuto Yanagida
- * @version 2023-04-11
+ * @version 2024-10-21
  */
 
 import { Problem } from '../../problem/problem';
@@ -19,28 +19,28 @@ export class NodeConsistency {
 	 * @return True if there is no empty domain.
 	 */
 	static applyToProblem(p: Problem, threshold: number): boolean {
-		for (const v of p.variables()) {
-			const d       = v.domain();
-			const origVal = v.value();  // Save the value.
-			const elms: number[]    = [];
+		for (const x of p.variables()) {
+			const d: Domain = x.domain();
+			const origV: number = x.value();  // Save the value.
+			const elms: number[] = [];
 
-			for (const c of v) {
+			for (const c of x) {
 				if (c.size() !== 1) continue;
 
-				for (const val of d) {
-					v.assign(val);
+				for (const v of d) {
+					x.assign(v);
 
 					if (c.satisfactionDegree() >= threshold) {
-						elms.push(val);
+						elms.push(v);
 					}
 				}
 				p.removeConstraint(c);
 			}
-			v.assign(origVal);  // Restore the value.
+			x.assign(origV);  // Restore the value.
 			if (elms.length === 0) {
 				return false;
 			}
-			v.setDomain(p.createDomain({ values: elms }) as Domain);
+			x.domain(p.createDomain({ values: elms }) as Domain);
 		}
 		return true;
 	}
@@ -52,28 +52,28 @@ export class NodeConsistency {
 	 * @return True if there is no empty domain.
 	 */
 	static applyToCrispProblem(p: CrispProblem) {
-		for (const v of p.variables()) {
-			const d       = v.domain();
-			const origVal = v.value();  // Save the value.
-			const elms: number[]    = [];
+		for (const x of p.variables()) {
+			const d: Domain = x.domain();
+			const origV: number = x.value();  // Save the value.
+			const elms: number[] = [];
 
-			for (const c of v) {
+			for (const c of x) {
 				if (c.size() !== 1) continue;
 
-				for (const val of d) {
-					v.assign(val);
+				for (const v of d) {
+					x.assign(v);
 
 					if (c.isSatisfied() === 1) {
-						elms.push(val);
+						elms.push(v);
 					}
 				}
 				p.removeConstraint(c);
 			}
-			v.assign(origVal);  // Restore the value.
+			x.assign(origV);  // Restore the value.
 			if (elms.length === 0) {
 				return false;
 			}
-			v.setDomain(p.createDomain({ values: elms }) as Domain);
+			x.domain(p.createDomain({ values: elms }) as Domain);
 		}
 		return true;
 	}

@@ -4,7 +4,7 @@ export * from './src/problem/problem-crisp';
 export * from './src/problem/element';
 
 export * from './src/problem/variable';
-export * from './src/problem/observable-variable';
+export * from './src/problem/variables';
 
 export * from './src/problem/domain';
 export * from './src/problem/domain-arbitrary';
@@ -17,14 +17,6 @@ export * from './src/problem/constraint-3';
 export * from './src/problem/constraint-n';
 
 export * from './src/problem/relation';
-export * from './src/problem/relation-fuzzy';
-export * from './src/problem/relation-fuzzy-table';
-export * from './src/problem/relation-fuzzy-function';
-export * from './src/problem/relation-crisp';
-export * from './src/problem/relation-crisp-table';
-export * from './src/problem/relation-crisp-function';
-
-export * from './src/problem/relation-view';
 
 // -----------------------------------------------------------------------------
 

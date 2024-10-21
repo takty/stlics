@@ -2,53 +2,53 @@
  * A variable domain with arbitrary elements.
  *
  * @author Takuto Yanagida
- * @version 2023-04-10
+ * @version 2024-10-21
  */
 
 import { Domain } from './domain';
 
 export class DomainArbitrary extends Domain {
 
-	#vals: number[];
+	#vs: number[];
 
-	constructor(vals: number[]) {
+	constructor(vs: number[]) {
 		super();
-		this.#vals = [...vals];
+		this.#vs = [...vs];
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	contains(val: number): boolean {
-		return this.#vals.includes(val);
+	contains(v: number): boolean {
+		return this.#vs.includes(v);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	indexOf(val: number): number {
-		return this.#vals.indexOf(val);
+	indexOf(v: number): number {
+		return this.#vs.indexOf(v);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	size(): number {
-		return this.#vals.length;
+		return this.#vs.length;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	at(index: number): number {
-		return this.#vals[index];
+		return this.#vs[index];
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	[Symbol.iterator](): Iterator<number> {
-		return this.#vals[Symbol.iterator]();
+		return this.#vs[Symbol.iterator]();
 	}
 
 }

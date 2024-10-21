@@ -1,6 +1,6 @@
 import { Problem } from '../../problem/problem';
 import { CrispProblem } from '../../problem/problem-crisp';
-import { ObservableVariable } from '../../problem/observable-variable';
+import { ObservableVariable } from '../../problem/variables';
 import { Solver } from '../../solver/solver';
 import { Model } from '../../_model/model';
 import { SolverFactory } from '../../solver/solver-factory';

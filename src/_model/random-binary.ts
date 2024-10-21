@@ -2,13 +2,14 @@
  * Sample implementation of a random binary problem.
  *
  * @author Takuto Yanagida
- * @version 2023-04-16
+ * @version 2024-10-21
  */
 
 import { Problem } from '../problem/problem';
 import { Variable } from '../problem/variable';
+import { Constraint } from '../problem/constraint';
 import { Domain } from '../problem/domain';
-import { FuzzyRelation } from '../problem/relation-fuzzy';
+import { FuzzyRelation } from '../problem/relation';
 import { Beta } from './beta';
 import { Model } from './model';
 
@@ -23,12 +24,12 @@ export class RandomBinary extends Model {
 	#t: number;
 	#sig: number;
 
-	constructor(varCount: number, density: number, aveTightness: number, domainSize: number|null = null) {
+	constructor(varCount: number, density: number, aveTightness: number, domainSize: number | null = null) {
 		super();
 		this.#size = varCount;
-		this.#den  = density;
-		this.#t    = aveTightness;
-		this.#sig  = domainSize ?? varCount;
+		this.#den = density;
+		this.#t = aveTightness;
+		this.#sig = domainSize ?? varCount;
 	}
 
 	getVariableCount(): number {
@@ -68,19 +69,19 @@ export class RandomBinary extends Model {
 	}
 
 	createProblem(p: Problem): Problem {
-		const r  = (this.#den * ((this.#size * this.#size - this.#size) / 2)) | 0;
-		const vs: Variable[] = [];
-		for (let i = 0; i <this.#size; ++i) {
-			vs.push(p.createVariable({ domain: p.createDomain({ min: 0, max: this.#sig - 1 }) as Domain, value: 0, name: '' }));
+		const r: number = (this.#den * ((this.#size * this.#size - this.#size) / 2)) | 0;
+		const xs: Variable[] = [];
+		for (let i: number = 0; i < this.#size; ++i) {
+			xs.push(p.createVariable({ domain: p.createDomain({ min: 0, max: this.#sig - 1 }) as Domain, value: 0, name: '' }));
 		}
 		while (p.constraintSize() < r) {
-			const i = RandomBinary.nextInt(this.#size);
-			const j = RandomBinary.nextInt(this.#size);
+			const i: number = RandomBinary.nextInt(this.#size);
+			const j: number = RandomBinary.nextInt(this.#size);
 
 			if (i !== j) {
-				const temp = p.constraintsBetween(vs[i], vs[j]);
+			const temp: Constraint[] = p.constraintsBetween(xs[i], xs[j]);
 				if (0 === temp.length) {
-					p.createConstraint({ relation: new TableRelation(this.#getRelationTable()), variables: [vs[i], vs[j]] });
+					p.createConstraint({ relation: new TableRelation(this.#getRelationTable()), variables: [xs[i], xs[j]] });
 				}
 			}
 		}
@@ -89,12 +90,12 @@ export class RandomBinary extends Model {
 
 	#getRelationTable(): number[][] {
 		const table: number[][] = [];
-		for (let i = 0; i < this.#sig; ++i) {
+		for (let i: number = 0; i < this.#sig; ++i) {
 			table.push(new Array(this.#sig));
 		}
-		for (let i = 0; i < this.#sig; ++i) {
-			for (let j = 0; j < this.#sig; ++j) {
-				const q = (this.#t === 0) ? Number.MAX_VALUE : (1 - this.#t) / this.#t;
+		for (let i: number = 0; i < this.#sig; ++i) {
+			for (let j: number = 0; j < this.#sig; ++j) {
+				const q: number = (this.#t === 0) ? Number.MAX_VALUE : (1 - this.#t) / this.#t;
 				table[i][j] = Beta.random(1, q);
 			}
 		}

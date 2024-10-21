@@ -88,7 +88,7 @@ export class FuzzyForwardChecking extends Solver {
 	// Prune elements of the domain that make the unary constraint worse than the current worst degree.
 	#pruneUnaryConstraints() {
 		for (const c of this.#unaryCons) {
-			const v      = c.at(0);
+			const v      = c.at(0) as Variable;
 			const orgVal = v.value();  // Save the value.
 			const d      = v.domain();
 			const dc     = v.solverObject;

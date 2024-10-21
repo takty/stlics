@@ -2,15 +2,17 @@
  * This class detects that a solver's operation is looping.
  *
  * @author Takuto Yanagida
- * @version 2023-04-16
+ * @version 2024-10-22
  */
 
 export class LoopDetector {
 
-	#indices: number[] = [];
-	#values: number[] = [];
 	#loopLength: number;
 	#iterCount: number;
+
+	#is: number[] = [];
+	#vs: number[] = [];
+
 	#cur: number = 0;
 
 	constructor(loopLength: number = 30, iterCount: number = 3) {
@@ -20,33 +22,35 @@ export class LoopDetector {
 	}
 
 	#assignToVariable(index: number, value: number): void {
-		this.#indices[this.#cur] = index;
-		this.#values[this.#cur] = value;
+		this.#is[this.#cur] = index;
+		this.#vs[this.#cur] = value;
+
 		if (--this.#cur === -1) {
-			this.#cur = this.#indices.length - 1;
+			this.#cur = this.#is.length - 1;
 		}
 	}
 
 	#checkLooping(): number {
-		const key = new Array(this.#loopLength);
-		const val = new Array(this.#loopLength);
-		out: for (let length = 1; length <= this.#loopLength; ++length) {
-			let offset = this.#cur + 1;
-			for (let i = 0; i < length; ++i) {
-				if (i + offset === this.#indices.length) {
-					offset -= this.#indices.length;
+		const is = new Array(this.#loopLength);
+		const vs = new Array(this.#loopLength);
+
+		out: for (let length: number = 1; length <= this.#loopLength; ++length) {
+			let offset: number = this.#cur + 1;
+			for (let i: number = 0; i < length; ++i) {
+				if (i + offset === this.#is.length) {
+					offset -= this.#is.length;
 				}
-				key[i] = this.#indices[i + offset];
-				val[i] = this.#values[i + offset];
+				is[i] = this.#is[i + offset];
+				vs[i] = this.#vs[i + offset];
 			}
-			let fi = length;
-			for (let i = 0; i < this.#iterCount - 1; ++i) {
+			let fi: number = length;
+			for (let i: number = 0; i < this.#iterCount - 1; ++i) {
 				offset = this.#cur + 1;
-				for (let j = 0; j < length; ++j) {
-					if (fi + j + offset >= this.#indices.length) {
-						offset -= this.#indices.length;
+				for (let j: number = 0; j < length; ++j) {
+					if (fi + j + offset >= this.#is.length) {
+						offset -= this.#is.length;
 					}
-					if (this.#indices[fi + j + offset] !== key[j] || this.#values[fi + j + offset] !== val[j]) {
+					if (this.#is[fi + j + offset] !== is[j] || this.#vs[fi + j + offset] !== vs[j]) {
 						continue out;
 					}
 				}
@@ -58,11 +62,11 @@ export class LoopDetector {
 	}
 
 	#initArrays(): void {
-		this.#indices = new Array(this.#loopLength * this.#iterCount);
-		this.#values = new Array(this.#loopLength * this.#iterCount);
-		this.#indices.fill(-1);
-		this.#values.fill(-1);
-		this.#cur = this.#indices.length - 1;
+		this.#is = new Array(this.#loopLength * this.#iterCount);
+		this.#vs = new Array(this.#loopLength * this.#iterCount);
+		this.#is.fill(-1);
+		this.#vs.fill(-1);
+		this.#cur = this.#is.length - 1;
 	}
 
 	checkLoop(variableIndex: number, value: number): number {
@@ -71,8 +75,8 @@ export class LoopDetector {
 	}
 
 	clear(): void {
-		this.#indices.fill(-1);
-		this.#values.fill(-1);
+		this.#is.fill(-1);
+		this.#vs.fill(-1);
 	}
 
 	iterationCount(): number {
@@ -84,11 +88,11 @@ export class LoopDetector {
 	}
 
 	values(): number[] {
-		return this.#values.slice();
+		return this.#vs.slice();
 	}
 
 	variableIndices(): number[] {
-		return this.#indices.slice();
+		return this.#is.slice();
 	}
 
 }

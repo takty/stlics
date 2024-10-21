@@ -2,7 +2,7 @@
  * A variable domain with contiguous integer elements.
  *
  * @author Takuto Yanagida
- * @version 2023-04-10
+ * @version 2024-10-21
  */
 
 import { Domain } from './domain';
@@ -21,15 +21,15 @@ export class DomainRanged extends Domain {
 	/**
 	 * {@inheritDoc}
 	 */
-	contains(val: number): boolean {
-		return this.#min <= val && val <= this.#max;
+	contains(v: number): boolean {
+		return this.#min <= v && v <= this.#max;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	indexOf(val: number): number {
-		return (this.#min <= val && val <= this.#max) ? (val - this.#min) : -1;
+	indexOf(v: number): number {
+		return (this.#min <= v && v <= this.#max) ? (v - this.#min) : -1;
 	}
 
 	/**
@@ -50,12 +50,12 @@ export class DomainRanged extends Domain {
 	 * {@inheritDoc}
 	 */
 	[Symbol.iterator](): Iterator<number> {
-		let val = this.#min;
-		const max = this.#max;
+		let v: number = this.#min;
+		const max: number = this.#max;
 		return {
 			next(): IteratorResult<number> {
-				if (val <= max) {
-					return { value: val++, done: false };
+				if (v <= max) {
+					return { value: v++, done: false };
 				} else {
 					return { value: null, done: true };
 				}

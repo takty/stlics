@@ -2,14 +2,13 @@
  * The class represents a constraint.
  *
  * @author Takuto Yanagida
- * @version 2023-04-11
+ * @version 2024-10-21
  */
 
 import { Element } from './element';
 import { Variable } from './variable';
 import { Relation } from './relation';
-import { CrispRelation } from './relation-crisp';
-import { FuzzyRelation } from './relation-fuzzy';
+import { CrispRelation, FuzzyRelation } from './relation';
 
 export abstract class Constraint extends Element {
 
@@ -55,8 +54,12 @@ export abstract class Constraint extends Element {
 	 * @return A string representation.
 	 */
 	toString(): string {
+		const n = this.name();
+		const np = n ? `(${n})` : '';
 		const s = this.satisfactionDegree();
-		return `c${this.index()}${this.name() === '' ? '' : `(${this.name()})`} = ${s === Constraint.UNDEFINED ? 'UNDEFINED' : s}`;
+		const sn = s === Constraint.UNDEFINED ? 'UNDEFINED' : ('' + s);
+
+		return `c${this.index()}${np} = ${sn}`;
 	}
 
 	/**
@@ -70,27 +73,37 @@ export abstract class Constraint extends Element {
 	 * @param index Index.
 	 * @return A variable.
 	 */
-	abstract at(index: number): Variable;
+	abstract at(index: number): Variable | undefined;
+
+	/**
+	 * Returns whether the specified variable is associated or not.
+	 * @param x A variable.
+	 * @return True if it is associated.
+	 */
+	abstract has(x: Variable): boolean;
+
+	/**
+	 * Gets the index of a specified variable.
+	 * If not found, returns -1.
+	 * @param x A variable.
+	 * @return Index.
+	 */
+	abstract indexOf(x: Variable): number;
+
+	/**
+	 * Returns the set of constraints connected via the associated variables.
+	 * @return A set of constraints.
+	 */
+	abstract neighbors(): Constraint[];
 
 	/**
 	 * Gets the iterator of the associated variables.
 	 */
 	abstract [Symbol.iterator](): Iterator<Variable>;
 
-	/**
-	 * Returns whether the specified variable is associated or not.
-	 * @param v A variable.
-	 * @return True if it is associated.
-	 */
-	abstract has(v: Variable): boolean;
 
-	/**
-	 * Gets the index of a specified variable.
-	 * If not found, returns -1.
-	 * @param v A variable.
-	 * @return Index.
-	 */
-	abstract indexOf(v: Variable): number;
+	// -------------------------------------------------------------------------
+
 
 	/**
 	 * Returns the number of scope variables that have not been assigned a value.
@@ -109,19 +122,13 @@ export abstract class Constraint extends Element {
 	 * Returns whether or not this constraint is satisfied.
 	 * @return 1 if satisfied, 0 if not, UNDEFINED if undefined
 	 */
-	abstract isSatisfied(): -1|0|1;
+	abstract isSatisfied(): -1 | 0 | 1;
 
 	/**
 	 * Gets the current satisfaction degree.
 	 * @return Degree 0 - 1, UNDEFINED if undefined.
 	 */
 	abstract satisfactionDegree(): number;
-
-	/**
-	 * Returns the set of constraints connected via the associated variables.
-	 * @return A set of constraints.
-	 */
-	abstract neighbors(): Constraint[];
 
 	/**
 	 * Calculates the highest consistency degree.

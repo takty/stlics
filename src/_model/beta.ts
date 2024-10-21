@@ -43,7 +43,7 @@ export class Beta {
 	}
 
 	static random(a: number, b: number): number {
-		const T = Beta.#gamma(a);
+		const T: number = Beta.#gamma(a);
 		return T / (T + Beta.#gamma(b));
 	}
 

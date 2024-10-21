@@ -3,7 +3,7 @@
  * CSPs and FCSPs (but only Binary (F)CSPs) is supported.
  *
  * @author Takuto Yanagida
- * @version 2023-04-17
+ * @version 2024-10-21
  */
 
 import { AssignmentList } from '../../util/assignment-list';
@@ -41,8 +41,8 @@ export class FuzzyGENET extends Solver {
 		}
 		for (const c of this._pro.constraints()) {
 			if (c.size() === 1) {  // In the case of unary constraints.
-				const v  = c.at(0);
-				const cl = this.#clusters[c.at(0).index()];
+				const v = c.at(0) as Variable;
+				const cl = this.#clusters[v.index()];
 
 				for (let i = 0; i < cl.size(); ++i) {
 					const origVal = v.value();  // Save the value.
@@ -54,10 +54,10 @@ export class FuzzyGENET extends Solver {
 					v.assign(origVal);  // Restore the value.
 				}
 			} else {  // In the case of binary constraints.
-				const v1   = c.at(0);
-				const v2   = c.at(1);
-				const cl_f = this.#clusters[c.at(0).index()];
-				const cl_s = this.#clusters[c.at(1).index()];
+				const v1 = c.at(0) as Variable;
+				const v2 = c.at(1) as Variable;
+				const cl_f = this.#clusters[v1.index()];
+				const cl_s = this.#clusters[v2.index()];
 
 				for (let i = 0; i < cl_f.size(); ++i) {
 					const origVal1 = v1.value();  // Save the value.

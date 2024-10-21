@@ -2,7 +2,7 @@
  * The class for models that provides a factory method to generate constraint satisfaction problems.
  *
  * @author Takuto Yanagida
- * @version 2023-04-16
+ * @version 2024-10-21
  */
 
 import { Problem } from '../problem/problem';

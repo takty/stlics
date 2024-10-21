@@ -3,7 +3,7 @@
  * The domain is immutable.
  *
  * @author Takuto Yanagida
- * @version 2023-04-10
+ * @version 2024-10-21
  */
 
 export abstract class Domain {
@@ -11,18 +11,18 @@ export abstract class Domain {
 	/**
 	 * Checks whether the specified value is included as an element of the domain.
 	 *
-	 * @param val A value.
+	 * @param v A value.
 	 * @return True if the value is included.
 	 */
-	abstract contains(val: number): boolean;
+	abstract contains(v: number): boolean;
 
 	/**
 	 * Gets the index of the specified value. If it does not exist, -1 is returned.
 	 *
-	 * @param val A value.
+	 * @param v A value.
 	 * @return The index.
 	 */
-	abstract indexOf(val: number): number;
+	abstract indexOf(v: number): number;
 
 	/**
 	 * Gets the size of the domain, including the pruned elements.
