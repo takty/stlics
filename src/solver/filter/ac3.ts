@@ -1,0 +1,76 @@
+/**
+ * The class implements AC-3, one of the arc consistency algorithms.
+ *
+ * @author Takuto Yanagida
+ * @version 2023-04-10
+ */
+
+import { Problem } from '../../problem/problem';
+import { Variable } from '../../problem/variable';
+import { Constraint } from '../../problem/constraint';
+import { Domain } from '../../problem/domain';
+
+export class AC3 {
+
+	static #checkConsistency(c: Constraint, v_j: Variable): boolean {
+		for (const val of v_j.domain()) {  // Is there a partner that satisfies the constraint?
+			v_j.assign(val);
+
+			if (c.isSatisfied() === 1) {  // It exists!
+				return true;  // Current assignment of v_i is consistent.
+			}
+		}
+		return false;
+	}
+
+	static #reviseDomain(p: Problem, v_i: Variable, v_j: Variable): boolean {
+		const val_i = v_i.value();
+		const val_j = v_j.value();  // Save the value.
+		const d_i   = v_i.domain();
+		const temp: number[] = [];
+
+		const cs = p.constraintsBetween(v_i, v_j);
+
+		vals: for (const val of d_i) {
+			v_i.assign(val);
+
+			for (const c of cs) {
+				if (c.size() !== 2) continue;  // Check the next constraint
+				if (!AC3.#checkConsistency(c, v_j)) continue vals;   // Since there is no partner satisfying the constraint, check the next value.
+			}
+			temp.push(val);
+		}
+		v_i.assign(val_i);  // Restore the value.
+		v_j.assign(val_j);  // Restore the value.
+
+		if (temp.length !== d_i.size()) {
+			const nd = p.createDomain({ values: temp }) as Domain;
+			v_i.setDomain(nd);
+			console.log(d_i.size() + ' -> ' + nd.size());
+			return true;
+		}
+		return false;
+	}
+
+	static apply(p: Problem): void {
+		const cs: Constraint[] = [];
+
+		for (const c of p.constraints()) {
+			if (c.size() === 2) cs.push(c);
+		}
+		while (cs.length) {
+			const c   = cs.pop() as Constraint;
+			const v_k = c.at(0);
+			const v_m = c.at(1);
+
+			if (AC3.#reviseDomain(p, v_k, v_m)) {
+				for (const c1 of p.constraints()) {
+					if (c1.size() === 2 && c1.at(1) === v_k && c1.at(0) !== v_m) {
+						cs.unshift(c1);
+					}
+				}
+			}
+		}
+	}
+
+}
