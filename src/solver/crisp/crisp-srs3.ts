@@ -1,29 +1,36 @@
 /**
  * This class implements the SRS algorithm for crisp CSP.
  * The given crisp CSP is treated as the maximum CSP.
- * Similar to SRS 3, the repair algorithm searches for an assignment that satisfies itself without reducing the number of satisfactions of its neighbors.
+ * Similar to SRS 3, the repair algorithm searches for an assignment that
+ * satisfies itself without reducing the number of satisfactions of its neighbors.
  *
  * @author Takuto Yanagida
- * @version 2023-04-16
+ * @version 2024-10-22
  */
 
-import { AssignmentList } from '../../util/assignment-list';
-import { Solver } from '../solver';
 import { Problem } from '../../problem/problem';
 import { CrispProblem } from '../../problem/problem-crisp';
 import { Constraint } from '../../problem/constraint';
+import { Assignment } from '../../util/assignment';
+import { AssignmentList } from '../../util/assignment-list';
+import { Solver } from '../solver';
 
 export class CrispSRS3 extends Solver {
 
-	#closedList          = new Set();
-	#openList            = new Set();  // LinkedHashSet is used in the original implementation.
-	#nodes: TreeNode[]               = [];
-	#neighborConstraints: (Constraint[]|null)[] = [];  // Cache
+	#isRandom: boolean = true;
 
-	#isRandom = true;
+	#closedList: Set<TreeNode> = new Set();
+	#openList: Set<TreeNode> = new Set();  // LinkedHashSet is used in the original implementation.
+	#nodes: TreeNode[] = [];
+	#neighborConstraints: (Constraint[] | null)[] = [];  // Cache
 
-	constructor(p: Problem) {
-		super(p);
+	/**
+	 * Generates a solver given a constraint satisfaction problem.
+	 * @param p A crisp problem.
+	 */
+	constructor(p: CrispProblem) {
+		super(p as Problem);
+
 		for (const c of this._pro.constraints()) {
 			this.#nodes.push(new TreeNode(c));
 			this.#neighborConstraints.push(null);
@@ -34,52 +41,66 @@ export class CrispSRS3 extends Solver {
 		return 'SRS 3 for Crisp CSPs';
 	}
 
-	#getNeighborConstraints(c: Constraint): Constraint[] {
-		const index = c.index();
+	/**
+	 * Sets the randomness of the algorithm.
+	 * Enabling randomness reduces the risk of falling into a local solution, but makes the solution unrepeatable.
+	 * @param flag If true, randomness is enabled.
+	 */
+	setRandomness(flag: boolean): void {
+		this.#isRandom = flag;
+	}
 
-		if (this.#neighborConstraints[index] === null) {
-			this.#neighborConstraints[index] = c.neighbors();
+	#getNeighborConstraints(c: Constraint): Constraint[] {
+		const i: number = c.index();
+
+		if (this.#neighborConstraints[i] === null) {
+			this.#neighborConstraints[i] = c.neighbors();
 		}
-		return this.#neighborConstraints[index];
+		return this.#neighborConstraints[i];
 	}
 
 	#repair(c0: Constraint): boolean {
 		this._debugOutput('repair');
 
 		const canList = new AssignmentList();
-		let maxDiff = 0;
+		let maxDiff: number = 0;
 
-		for (const v of c0) {
-			const v_val = v.value();  // Save the value
+		for (const x of c0) {
+			const x_v: number = x.value();  // Save the value
 
-			let nowVio = 0;
-			for (const c of v) {
+			let nowVio: number = 0;
+			for (const c of x) {
 				nowVio += (1 - c.isSatisfied());
 			}
-			out: for (const d of v.domain()) {
-				if (v_val === d) continue;
-				v.assign(d);
-				if (c0.isSatisfied() !== 1) continue;  // Assuming c0 improvement
-
-				let diff = nowVio;
-				for (const n of v) {
-					diff -= (1 - n.isSatisfied());
-					if (diff < maxDiff) continue out;  // If the improvement is less than the previous improvement, try the next variable.
+			out: for (const v of x.domain()) {
+				if (x_v === v) {
+					continue;
+				}
+				x.assign(v);
+				if (c0.isSatisfied() !== 1) {
+					continue;  // Assuming c0 improvement
+				}
+				let diff: number = nowVio;
+				for (const c of x) {
+					diff -= (1 - c.isSatisfied());
+					if (diff < maxDiff) {
+						continue out;  // If the improvement is less than the previous improvement, try the next variable.
+					}
 				}
 				if (diff > maxDiff) {  // An assignment that are better than ever before is found.
 					maxDiff = diff;
 					canList.clear();
-					canList.addVariable(v, d);
+					canList.addVariable(x, v);
 				} else if (maxDiff !== 0) {  // An assignments that can be improved to the same level as before is found.
-					canList.addVariable(v, d);
+					canList.addVariable(x, v);
 				}
 			}
-			v.assign(v_val);  // Restore the value
+			x.assign(x_v);  // Restore the value
 		}
 		if (canList.size() > 0) {
-			const e = this.#isRandom ? canList.random() : canList.at(0);
-			e.apply();
-			this._debugOutput('\t' + e);
+			const a: Assignment = this.#isRandom ? canList.random() : canList.at(0);
+			a.apply();
+			this._debugOutput('\t' + a);
 			return true;
 		}
 		return false;
@@ -87,7 +108,7 @@ export class CrispSRS3 extends Solver {
 
 	#shrink(node: TreeNode, c_stars: Set<TreeNode>): void {
 		const temp: TreeNode[] = [];
-		let cur = node;
+		let cur: TreeNode = node;
 
 		while (true) {  // This procedure is originally a recursive call, but converted to a loop
 			cur = cur.parent() as TreeNode;
@@ -110,16 +131,16 @@ export class CrispSRS3 extends Solver {
 		}
 	}
 
-	#spread(node: TreeNode): void {
+	#spread(n: TreeNode): void {
 		this._debugOutput('spread');
-		this.#closedList.add(node);
+		this.#closedList.add(n);
 
-		for (const c of this.#getNeighborConstraints(node.getObject())) {
-			const tnc = this.#nodes[c.index()];
+		for (const c of this.#getNeighborConstraints(n.getObject())) {
+			const tnc: TreeNode = this.#nodes[c.index()];
 
 			if (!this.#closedList.has(tnc) && !this.#openList.has(tnc)) {  // For constraints that are not included in Open or Closed
 				tnc.clear();  // Because of its reuse, it may have had children when it was used before.
-				node.add(tnc);
+				n.add(tnc);
 				this.#openList.add(tnc);
 			}
 		}
@@ -127,17 +148,18 @@ export class CrispSRS3 extends Solver {
 
 	#srs(c_stars: Set<TreeNode>): boolean {
 		this._debugOutput('srs');
-		const endTime = (this._timeLimit === null) ? Number.MAX_VALUE : (Date.now() + this._timeLimit);
-		let iterCount = 0;
+		const endTime: number = (this._timeLimit === null) ? Number.MAX_VALUE : (Date.now() + this._timeLimit);
+		let iterCount: number = 0;
 
 		this.#closedList.clear();
 		this.#openList.clear();
 		for (const n of c_stars) {
 			this.#openList.add(n);
 		}
+		const p = this._pro as CrispProblem;
 
 		while (c_stars.size && this.#openList.size) {
-			if ((this._targetDeg ?? 1) <= (this._pro as CrispProblem).satisfiedConstraintRate()) {  // Success if violation rate improves from specified
+			if ((this._targetDeg ?? 1) <= p.satisfiedConstraintRate()) {  // Success if violation rate improves from specified
 				this._debugOutput('stop: current degree is above the target');
 				return true;
 			}
@@ -169,11 +191,11 @@ export class CrispSRS3 extends Solver {
 	}
 
 	exec(): boolean {
-		const vcs     = (this._pro as CrispProblem).violatingConstraints();
+		const vcs: Constraint[] = (this._pro as CrispProblem).violatingConstraints();
 		const c_stars = new Set<TreeNode>();
 
 		for (const c of vcs) {
-			const tnc = this.#nodes[c.index()];
+			const tnc: TreeNode = this.#nodes[c.index()];
 			c_stars.add(tnc);
 		}
 		if (this.#srs(c_stars)) {
@@ -182,21 +204,12 @@ export class CrispSRS3 extends Solver {
 		return c_stars.size === 0;
 	}
 
-	/**
-	 * Sets the randomness of the algorithm.
-	 * Enabling randomness reduces the risk of falling into a local solution, but makes the solution unrepeatable.
-	 * @param flag If true, randomness is enabled.
-	 */
-	setRandomness(flag: boolean): void {
-		this.#isRandom = flag;
-	}
-
 }
 
 class TreeNode {
 
 	#children: TreeNode[] = [];
-	#parent: TreeNode|null;
+	#parent: TreeNode | null;
 	#obj: any;
 
 	constructor(obj: any) {

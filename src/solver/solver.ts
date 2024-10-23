@@ -2,7 +2,7 @@
  * The class for solvers for finding solutions to constraint satisfaction problems.
  *
  * @author Takuto Yanagida
- * @version 2023-04-16
+ * @version 2024-10-22
  */
 
 import { Problem } from '../problem/problem';

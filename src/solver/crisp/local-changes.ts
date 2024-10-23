@@ -2,7 +2,7 @@
  * Class implements the local changes method.
  *
  * @author Takuto Yanagida
- * @version 2023-04-16
+ * @version 2024-10-22
  */
 
 import { Problem } from '../../problem/problem';
@@ -14,22 +14,8 @@ import { Solver } from '../solver';
 
 export class LocalChanges extends Solver {
 
-	static #setPlusSet<T>(s1: Set<T>, s2: Set<T>): Set<T> {
-		const sn = new Set(s1);
-		for (const v of s2) sn.add(v);
-		return sn;
-	}
-
-	static #setMinusSet<T>(s1: Set<T>, s2: Set<T>): Set<T> {
-		const sn = new Set(s1);
-		for (const v of s2) sn.delete(v);
-		return sn;
-	}
-
 	static #setPlusElement<T>(s: Set<T>, e: T): Set<T> {
-		const sn = new Set(s);
-		sn.add(e);
-		return sn;
+		return new Set(s).add(e);
 	}
 
 	static #setMinusElement<T>(s: Set<T>, e: T): Set<T> {
@@ -53,140 +39,147 @@ export class LocalChanges extends Solver {
 		return 'Local Changes';
 	}
 
-	#createNewV3(V1_V2: Set<Variable>, v: Variable, val: number): Set<Variable> {
-		const newV3 = new Set<Variable>();
-		const cs    = new Set<Constraint>();
+	#createNewV3(X1_X2: Set<Variable>, x: Variable, v: number): Set<Variable> {
+		const newX3 = new Set<Variable>();
+		const cs = new Set<Constraint>();
 
-		for (const va of V1_V2) {
-			const temp = this._pro.constraintsBetween(v, va);
-			for (const c of temp) cs.add(c);
+		for (const xa of X1_X2) {
+			const temp: Constraint[] = this._pro.constraintsBetween(x, xa);
+			for (const c of temp) {
+				cs.add(c);
+			}
 		}
-		const origVal = v.value();  // Save the value.
-		v.assign(val);
+		const origV: number = x.value();  // Save the value.
+		x.assign(v);
 
 		for (const c of cs) {
 			if (c.isSatisfied() === 0) {
-				for (const vi of c) {
-					newV3.add(vi);
+				for (const xi of c) {
+					newX3.add(xi);
 				}
 			}
 		}
-		v.assign(origVal);  // Restore the value.
-		newV3.delete(v);
-		return newV3;
+		x.assign(origV);  // Restore the value.
+		newX3.delete(x);
+		return newX3;
 	}
 
-	#isConsistent(A: Set<Variable>, v: Variable, val: number) {
+	#isConsistent(A: Set<Variable>, x: Variable, v: number): boolean {
 		const cs = new Set<Constraint>();
 
-		for (const va of A) {
-			const temp = this._pro.constraintsBetween(v, va);
-			for (const c of temp) cs.add(c);
+		for (const xa of A) {
+			const temp: Constraint[] = this._pro.constraintsBetween(x, xa);
+			for (const c of temp) {
+				cs.add(c);
+			}
 		}
-		const origVal = v.value();  // Save the value.
-		v.assign(val);
+		const origV: number = x.value();  // Save the value.
+		x.assign(v);
 
 		for (const c of cs) {
 			if (c.isSatisfied() === 0) {
-				v.assign(origVal);  // Restore the value.
+				x.assign(origV);  // Restore the value.
 				return false;
 			}
 		}
-		v.assign(origVal);  // Restore the value.
+		x.assign(origV);  // Restore the value.
 		return true;
 	}
 
-	#lcValue(V1: Set<Variable>, V2: Set<Variable>, v: Variable, val: number): boolean {
-		if (!this.#isConsistent(V1, v, val)) {
+	#lcValue(X1: Set<Variable>, X2: Set<Variable>, x: Variable, v: number): boolean {
+		if (!this.#isConsistent(X1, x, v)) {
 			return false;
 		}
-		const V1_V2 = LocalChanges.#setPlusSet(V1, V2);
-		if (this.#isConsistent(V1_V2, v, val)) {
+		const X1_X2: Set<Variable> = X1.union(X2);
+		if (this.#isConsistent(X1_X2, x, v)) {
 			return true;
 		}
-		const V3 = this.#createNewV3(V1_V2, v, val);
+		const X3: Set<Variable> = this.#createNewV3(X1_X2, x, v);
 
-		const T = LocalChanges.#setMinusSet(V1_V2, V3);
-		if (!this.#isConsistent(T, v, val)) {
+		const T: Set<Variable> = X1_X2.difference(X3);
+		if (!this.#isConsistent(T, x, v)) {
 			this._debugOutput('bug');
 		}
-
-		for (const vv of V3) {
-			vv.clear();
+		for (const xx of X3) {
+			xx.clear();
 		}
-		V1 = LocalChanges.#setPlusElement(V1, v);
-		V2 = LocalChanges.#setMinusSet(V2, V3);
-		return this.#lcVariables(V1, V2, V3);
+
+		X1 = LocalChanges.#setPlusElement(X1, x);
+		X2 = X2.difference(X3);
+		return this.#lcVariables(X1, X2, X3);
 	}
 
-	#lcVariable(V1: Set<Variable>, V2: Set<Variable>, v: Variable, d: Set<number>): boolean {
+	#lcVariable(X1: Set<Variable>, X2: Set<Variable>, x: Variable, d: Set<number>): boolean {
 		if (d.size === 0) {
 			return false;
 		}
-		const val = d.values().next().value as number;
-		const  al = AssignmentList.fromVariables(V2);
-		v.assign(val);
+		const v = d.values().next().value as number;
+		const al: AssignmentList = AssignmentList.fromVariables(X2);
+		x.assign(v);
 
-		const ret = this.#lcValue(V1, V2, v, val);
+		const ret: boolean = this.#lcValue(X1, X2, x, v);
 		if (ret || this.#globalReturn) {
 			return ret;
 		}
 
-		v.clear();
+		x.clear();
 		al.apply();
 
-		return this.#lcVariable(V1, V2, v, LocalChanges.#setMinusElement(d, val));
+		return this.#lcVariable(X1, X2, x, LocalChanges.#setMinusElement(d, v));
 	}
 
-	#lcVariables(V1: Set<Variable>, V2: Set<Variable>, V3: Set<Variable>): boolean {
-		this._debugOutput(`V1 ${V1.size}, V2' ${V2.size}, V3' ${V3.size}`);
+	#lcVariables(X1: Set<Variable>, X2: Set<Variable>, X3: Set<Variable>): boolean {
+		this._debugOutput(`X1 ${X1.size}, X2' ${X2.size}, X3' ${X3.size}`);
 
-		if ((this._targetDeg ?? 1) <= (this._pro as CrispProblem).satisfiedConstraintRate()) {  // Success if violation rate improves from specified
+		// Success if violation rate improves from specified
+		if ((this._targetDeg ?? 1) <= (this._pro as CrispProblem).satisfiedConstraintRate()) {
 			this._debugOutput('stop: current degree is above the target');
 			this.#globalReturn = true;
 			return true;
 		}
-		if (this._iterLimit && this._iterLimit < this.#iterCount++) {  // Failure if repeated a specified number
+		// Failure if repeated a specified number
+		if (this._iterLimit && this._iterLimit < this.#iterCount++) {
 			this._debugOutput('stop: number of iterations has reached the limit');
 			this.#globalReturn = true;
 			return false;
 		}
-		if (this.#endTime < Date.now()) {  // Failure if time limit is exceeded
+		// Failure if time limit is exceeded
+		if (this.#endTime < Date.now()) {
 			this._debugOutput('stop: time limit has been reached');
 			this.#globalReturn = true;
 			return false;
 		}
 
-		if (V3.size === 0) {
+		if (X3.size === 0) {
 			return true;
 		}
-		const v = V3.values().next().value as Variable;
+		const x = X3.values().next().value as Variable;
 		const d = new Set<number>();
-		for (const val of v.domain()) {
-			d.add(val);
+		for (const v of x.domain()) {
+			d.add(v);
 		}
 
-		const ret = this.#lcVariable(V1, V2, v, d);
+		const ret: boolean = this.#lcVariable(X1, X2, x, d);
 		if (!ret || this.#globalReturn) {
 			return ret;
 		}
-		V2 = LocalChanges.#setPlusElement(V2, v);
-		V3 = LocalChanges.#setMinusElement(V3, v);
-		return this.#lcVariables(V1, V2, V3);
+		X2 = LocalChanges.#setPlusElement(X2, x);
+		X3 = LocalChanges.#setMinusElement(X3, x);
+		return this.#lcVariables(X1, X2, X3);
 	}
 
-	exec() {
-		this.#endTime      = (this._timeLimit === null) ? Number.MAX_VALUE : (Date.now() + this._timeLimit);
-		this.#iterCount    = 0;
+	exec(): boolean {
+		this.#endTime = (this._timeLimit === null) ? Number.MAX_VALUE : (Date.now() + this._timeLimit);
+		this.#iterCount = 0;
 		this.#globalReturn = false;
 
 		if (this._pro.emptyVariableSize() === 0) {
 			this._pro.clearAllVariables();
 		}
-		const notFixed   = new Set<Variable>();
+		const notFixed = new Set<Variable>();
 		const unassigned = new Set<Variable>();
-		for (const v of this._pro.variables()) {
-			(!v.isEmpty() ? notFixed : unassigned).add(v);
+		for (const x of this._pro.variables()) {
+			(!x.isEmpty() ? notFixed : unassigned).add(x);
 		}
 		return this.#lcVariables(new Set(), notFixed, unassigned);
 	}

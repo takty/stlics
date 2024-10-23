@@ -4,7 +4,7 @@
  * Find the solution to the problem as the maximum CSP.
  *
  * @author Takuto Yanagida
- * @version 2023-04-17
+ * @version 2024-10-22
  */
 
 import { AssignmentList } from '../../util/assignment-list';
@@ -22,8 +22,12 @@ export class GENET extends Solver {
 	#clusters: Cluster[] = [];
 	#connections: Connection[] = [];
 
-	constructor(p: Problem) {
-		super(p);
+	/**
+	 * Generates a solver given a constraint satisfaction problem.
+	 * @param p A crisp problem.
+	 */
+	constructor(p: CrispProblem) {
+		super(p as Problem);
 	}
 
 	name(): string {
@@ -34,49 +38,53 @@ export class GENET extends Solver {
 		this._debugOutput('network creation start');
 		const cons: Connection[] = [];
 
-		for (const v of this._pro.variables()) {
-			if (v.domain().size() === 0) return false;
-			this.#clusters.push(new Cluster(v));
+		for (const x of this._pro.variables()) {
+			if (x.domain().size() === 0) {
+				return false;
+			}
+			this.#clusters.push(new Cluster(x));
 		}
 		for (const c of this._pro.constraints()) {
 			if (c.size() === 1) {  // In the case of unary constraints.
-				const v  = c.at(0) as Variable;
-				const cl = this.#clusters[v.index()];
+				const x = c.at(0) as Variable;
+				const cl: Cluster = this.#clusters[x.index()];
 
-				for (let i = 0; i < cl.size(); ++i) {
-					const origVal = v.value();  // Save the value.
-					v.assign(cl.get(i)._value);
+				for (let i: number = 0; i < cl.size(); ++i) {
+					const origV: number = x.value();  // Save the value.
+					x.assign(cl.get(i)._value);
 
 					if (c.isSatisfied() === 0) {
 						cons.push(new Connection(cl.get(i)));
 					}
-					v.assign(origVal);  // Restore the value.
+					x.assign(origV);  // Restore the value.
 				}
 			} else {  // In the case of binary constraints.
-				const v1 = c.at(0) as Variable;
-				const v2 = c.at(1) as Variable;
-				const cl_f = this.#clusters[v1.index()];
-				const cl_s = this.#clusters[v2.index()];
+				const x1 = c.at(0) as Variable;
+				const x2 = c.at(1) as Variable;
+				const cl_f: Cluster = this.#clusters[x1.index()];
+				const cl_s: Cluster = this.#clusters[x2.index()];
 
-				for (let i = 0; i < cl_f.size(); ++i) {
-					const origVal1 = v1.value();  // Save the value.
-					v1.assign(cl_f.get(i)._value);
+				for (let i: number = 0; i < cl_f.size(); ++i) {
+					const origV1: number = x1.value();  // Save the value.
+					x1.assign(cl_f.get(i)._value);
 
-					for (let j = 0; j < cl_s.size(); ++j) {
-						const origVal2 = v2.value();  // Save the value.
-						v2.assign(cl_s.get(j)._value);
+					for (let j: number = 0; j < cl_s.size(); ++j) {
+						const origV2: number = x2.value();  // Save the value.
+						x2.assign(cl_s.get(j)._value);
 
 						if (c.isSatisfied() === 0) {
 							cons.push(new Connection(cl_f.get(i), cl_s.get(j)));
 						}
-						v2.assign(origVal2);  // Restore the value.
+						x2.assign(origV2);  // Restore the value.
 					}
-					v1.assign(origVal1);  // Restore the value.
+					x1.assign(origV1);  // Restore the value.
 				}
 			}
 		}
 		for (const cl of this.#clusters) {
-			for (const n of cl._neurons) n.lockConnections();
+			for (const n of cl._neurons) {
+				n.lockConnections();
+			}
 		}
 		this.#connections = cons;
 		this._debugOutput('network creation complete');
@@ -84,11 +92,11 @@ export class GENET extends Solver {
 	}
 
 	#shuffle(is: number[]): number[] {
-		for (let i = is.length; i > 1; --i) {
-			const j    = GENET.nextInt(i);
-			const temp = is[i - 1];
+		for (let i: number = is.length; i > 1; --i) {
+			const j: number = GENET.nextInt(i);
+			const temp: number = is[i - 1];
 			is[i - 1] = is[j];
-			is[j]     = temp;
+			is[j] = temp;
 		}
 		return is;
 	}
@@ -97,17 +105,18 @@ export class GENET extends Solver {
 		if (!this.#createNetwork()) {
 			throw new Error();
 		}
-		const endTime = (this._timeLimit === null) ? Number.MAX_VALUE : (Date.now() + this._timeLimit);
-		let iterCount = 0;
+		const endTime: number = (this._timeLimit === null) ? Number.MAX_VALUE : (Date.now() + this._timeLimit);
+		let iterCount: number = 0;
 
-		const sol   = new AssignmentList();
+		const sol = new AssignmentList();
 		const order: number[] = [];
-		for (let i = 0; i < this.#clusters.length; ++i) {
+		for (let i: number = 0; i < this.#clusters.length; ++i) {
 			order.push(i);
 		}
 
-		let cur     = (this._pro as CrispProblem).satisfiedConstraintRate();
-		let success = false;
+		const p = this._pro as CrispProblem;
+		let cur: number = p.satisfiedConstraintRate();
+		let success: boolean = false;
 
 		while (true) {
 			if (this._iterLimit && this._iterLimit < iterCount++) {  // Failure if repeated a specified number
@@ -119,7 +128,7 @@ export class GENET extends Solver {
 				break;
 			}
 
-			let modified = false;
+			let modified: boolean = false;
 			for (const i of this.#shuffle(order)) {
 				if (this.#clusters[i].setActivityMaximumInput()) {
 					modified = true;  // Turn on the node with the largest input in each cluster
@@ -133,12 +142,12 @@ export class GENET extends Solver {
 				for (const clu of this.#clusters) {
 					clu.applyToVariable();  // Apply to variable
 				}
-				const d = (this._pro as CrispProblem).satisfiedConstraintRate();
-				if (cur < d) {  // If it's a better assignment than ever, save it.
-					cur = d;
-					this._debugOutput(`satisfied constraint rate: ${d}`);
+				const rate: number = p.satisfiedConstraintRate();
+				if (cur < rate) {  // If it's a better assignment than ever, save it.
+					cur = rate;
+					this._debugOutput(`satisfied constraint rate: ${rate}`);
 					sol.setProblem(this._pro);
-					if (this.foundSolution(sol, d)) {  // Call hook
+					if (this.foundSolution(sol, rate)) {  // Call hook
 						success = true;
 						break;
 					}
@@ -162,16 +171,16 @@ class Cluster {
 		return Math.floor(Math.random() * Math.floor(max));
 	}
 
-	#v: Variable;  // For avoiding a bug(?) of parcel.
+	#x: Variable;  // For avoiding a bug(?) of parcel.
 	#index: number = 0;
 	#maxNeurons: number[] = [];
-	_neurons: Neuron[]    = [];
+	_neurons: Neuron[] = [];
 
-	constructor(v: Variable) {
-		this.#v = v;
+	constructor(x: Variable) {
+		this.#x = x;
 
-		for (const val of v.domain()) {
-			this._neurons.push(new Neuron(val));
+		for (const v of x.domain()) {
+			this._neurons.push(new Neuron(v));
 		}
 		this.#setActivity(Cluster.nextInt(this._neurons.length));
 	}
@@ -185,7 +194,7 @@ class Cluster {
 	}
 
 	applyToVariable(): void {
-		this.#v.assign(this._neurons[this.#index]._value);
+		this.#x.assign(this._neurons[this.#index]._value);
 	}
 
 	get(index: number): Neuron {
@@ -200,11 +209,11 @@ class Cluster {
 	setActivityMaximumInput(): boolean {
 		this.#maxNeurons.length = 0;
 
-		let max       = Number.NEGATIVE_INFINITY;
-		let alreadyOn = false;
+		let max: number = Number.NEGATIVE_INFINITY;
+		let alreadyOn: boolean = false;
 
-		for (let i = 0; i < this._neurons.length; ++i) {
-			const input = this._neurons[i].getInput();
+		for (let i: number = 0; i < this._neurons.length; ++i) {
+			const input: number = this._neurons[i].getInput();
 
 			if (max <= input) {
 				if (max < input) {
@@ -234,11 +243,11 @@ class Cluster {
 class Connection {
 
 	#first: Neuron;
-	#second: Neuron|null;
+	#second: Neuron | null;
 	_weight: number;  // Direct reference (read) allowed.
 
 	// Order of neurons must be the same as the order of variables that the constraint has.
-	constructor(first: Neuron, second: Neuron|null = null) {
+	constructor(first: Neuron, second: Neuron | null = null) {
 		this._weight = -1;
 
 		this.#first = first;
@@ -249,8 +258,8 @@ class Connection {
 		}
 	}
 
-	getNeuron(self: Neuron): Neuron|null {
-		if (self === this.#first)  return this.#second;
+	getNeuron(self: Neuron): Neuron | null {
+		if (self === this.#first) return this.#second;
 		if (self === this.#second) return this.#first;
 		return null;
 	}
@@ -266,8 +275,9 @@ class Connection {
 
 class Neuron {
 
-	#conTemp: Connection[]|null = [];
+	#conTemp: Connection[] | null = [];
 	#connections: Connection[] = [];
+
 	_value: number;  // Direct reference (read) allowed.
 	_isActive: boolean = false;  // Direct reference (read, write) allowed.
 
@@ -281,13 +291,14 @@ class Neuron {
 
 	lockConnections(): void {
 		this.#connections = [...this.#conTemp as Connection[]];
-		this.#conTemp     = null;  // No longer being used.
+		this.#conTemp = null;  // No longer being used.
 	}
 
 	getInput(): number {
-		let ret = 0;
+		let ret: number = 0;
+
 		for (const c of this.#connections) {
-			const n = c.getNeuron(this);  // If n is null, then the unary constraint.
+			const n: Neuron | null = c.getNeuron(this);  // If n is null, then the unary constraint.
 			ret += c._weight * ((n === null || n._isActive) ? 1 : 0);
 		}
 		return ret;

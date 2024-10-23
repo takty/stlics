@@ -2,7 +2,7 @@
  * The class represents a crisp constraint satisfaction problem.
  *
  * @author Takuto Yanagida
- * @version 2023-04-16
+ * @version 2024-10-22
  */
 
 import { Problem } from './problem';
@@ -21,7 +21,7 @@ export class CrispProblem extends Problem {
 	 * }
 	 * @return A constraint.
 	 */
-	createConstraint(args: { name?: string, variables: Variable[], relation: Relation; }) {
+	createConstraint(args: { name?: string, variables: Variable[], relation: Relation; }): Constraint | null {
 		if ('satisfactionDegree' in args.relation) throw new Error();
 		return super.createConstraint(args);
 	}
@@ -38,8 +38,8 @@ export class CrispProblem extends Problem {
 	 * Returns the rate of constraints that are satisfied out of all constraints.
 	 * @return Rate of satisfied constraints.
 	 */
-	satisfiedConstraintRate() {
-		return this.satisfiedConstraintSize() / this.#cs.length;
+	satisfiedConstraintRate(): number {
+		return this.satisfiedConstraintSize() / this.constraintSize();
 	}
 
 	/**
@@ -47,10 +47,13 @@ export class CrispProblem extends Problem {
 	 * Undefined constraints are ignored.
 	 * @return Number of satisfied constraints.
 	 */
-	satisfiedConstraintSize() {
-		let count = 0;
-		for (const c of this.#cs) {
-			if (c.isSatisfied() === 1) ++count;
+	satisfiedConstraintSize(): number {
+		let count: number = 0;
+
+		for (const c of this.constraints()) {
+			if (c.isSatisfied() === 1) {
+				++count;
+			}
 		}
 		return count;
 	}
@@ -61,9 +64,12 @@ export class CrispProblem extends Problem {
 	 * @return Array of constraints.
 	 */
 	violatingConstraints(): Constraint[] {
-		const cs = [];
-		for (const c of this.#cs) {
-			if (c.isSatisfied() === 0) cs.push(c);
+		const cs: Constraint[] = [];
+
+		for (const c of this.constraints()) {
+			if (c.isSatisfied() === 0) {
+				cs.push(c);
+			}
 		}
 		return cs;
 	}
@@ -73,12 +79,15 @@ export class CrispProblem extends Problem {
 	 * Undefined constraints are ignored.
 	 * @return Number of violating constraints.
 	 */
-	violatingConstraintSize() {
-		let count = 0;
-		for (const c of this.#cs) {
-			if (c.isSatisfied() === 0) ++count;
+	violatingConstraintSize(): number {
+		let size: number = 0;
+
+		for (const c of this.constraints()) {
+			if (c.isSatisfied() === 0) {
+				++size;
+			}
 		}
-		return count;
+		return size;
 	}
 
 }

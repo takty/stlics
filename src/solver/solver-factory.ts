@@ -2,11 +2,12 @@
  * Solver factory class.
  *
  * @author Takuto Yanagida
- * @version 2023-04-17
+ * @version 2024-10-22
  */
 
 import { Solver } from './solver';
 import { Problem } from '../problem/problem';
+import { CrispProblem } from '../problem/problem-crisp';
 
 export class SolverFactory {
 
@@ -36,14 +37,18 @@ export class SolverFactory {
 	}
 
 	static async createSolver(type: string, p: Problem): Promise<Solver | null> {
-		const cs = await SolverFactory.createCrispSolver(type, p);
-		if (cs) return cs;
-		const fs = await SolverFactory.createFuzzySolver(type, p);
-		if (fs) return fs;
+		const cs: Solver | null = await SolverFactory.createCrispSolver(type, p as CrispProblem);
+		if (cs) {
+			return cs;
+		}
+		const fs: Solver | null = await SolverFactory.createFuzzySolver(type, p);
+		if (fs) {
+			return fs;
+		}
 		return null;
 	}
 
-	static async createCrispSolver(type: string, p: Problem): Promise<Solver | null> {
+	static async createCrispSolver(type: string, p: CrispProblem): Promise<Solver | null> {
 		switch (type.replaceAll(' ', '')) {
 			case 'ForwardChecking':
 			case 'forward-checking':

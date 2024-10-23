@@ -4,12 +4,13 @@
  * Each variable must have its own domain because it hides domain elements as branch pruning.
  *
  * @author Takuto Yanagida
- * @version 2023-04-16
+ * @version 2024-10-22
  */
 
 import { Problem } from '../../problem/problem';
 import { CrispProblem } from '../../problem/problem-crisp';
 import { Variable } from '../../problem/variable';
+import { Domain } from '../../problem/domain';
 import { Constraint } from '../../problem/constraint';
 import { AssignmentList } from '../../util/assignment-list';
 import { DomainPruner } from '../../util/domain-pruner';
@@ -17,22 +18,27 @@ import { Solver } from '../solver';
 
 export class MaxForwardChecking extends Solver {
 
-	#vars: Variable[];
+	#xs: Variable[];
 	#sol: AssignmentList = new AssignmentList();
 
 	#maxVioCount: number;
 	#vioCount: number = 0;
-	#checkedCons: Set<Constraint> = new Set();
-	#cons: Constraint[] = [];
+	#checkedCs: Set<Constraint> = new Set();
+	#cs: Constraint[] = [];
 
 	#iterCount: number = 0;
 	#endTime: number = 0;
 
-	constructor(p: Problem) {
-		super(p);
-		this.#vars = [...this._pro.variables()];
-		for (const v of this.#vars) {
-			v.solverObject = new DomainPruner(v.domain().size());
+	/**
+	 * Generates a solver given a constraint satisfaction problem.
+	 * @param p A crisp problem.
+	 */
+	constructor(p: CrispProblem) {
+		super(p as Problem);
+
+		this.#xs = [...this._pro.variables()];
+		for (const x of this.#xs) {
+			x.solverObject = new DomainPruner(x.domain().size());
 		}
 		this.#maxVioCount = this._pro.constraintSize();
 	}
@@ -42,49 +48,72 @@ export class MaxForwardChecking extends Solver {
 	}
 
 	#branch(level: number, vioCount: number): boolean {
-		if (this._iterLimit && this._iterLimit < this.#iterCount++) return false;  // Failure if repeated a specified number.
-		if (this.#endTime < Date.now()) return false;  // Failure if time limit is exceeded.
+		// Failure if repeated a specified number.
+		if (this._iterLimit && this._iterLimit < this.#iterCount++) {
+			return false;
+		}
+		// Failure if time limit is exceeded.
+		if (this.#endTime < Date.now()) {
+			return false;
+		}
 
-		if (level === this._pro.variableSize()) {
-			const vcs = (this._pro as CrispProblem).violatingConstraintSize();
+		const p = this._pro as CrispProblem;
+
+		if (level === p.variableSize()) {
+			const vcs: number = p.violatingConstraintSize();
+
 			if (vcs < this.#maxVioCount) {
 				this.#maxVioCount = vcs;
 				this.#sol.setProblem(this._pro);
 				this._debugOutput(`   refreshed ${this.#maxVioCount}`);
-				if ((this._targetDeg ?? 1) <= (this._pro as CrispProblem).satisfiedConstraintRate()) return true;
+				if ((this._targetDeg ?? 1) <= p.satisfiedConstraintRate()) {
+					return true;
+				}
 			}
 			return false;
 		}
-		const vc  = this.#vars[level];
-		const dom = vc.domain();
-		const dc  = vc.solverObject;
+		const xc: Variable = this.#xs[level];
+		const d: Domain = xc.domain();
+		const dp: DomainPruner = xc.solverObject as DomainPruner;
 
-		for (let i = 0; i < dom.size(); ++i) {
-			if (dc.isValueHidden(i)) continue;
-			vc.assign(dom.at(i));
-			this.#vioCount = vioCount + this.#getAdditionalViolationCount(level, vc);  // for max begin
-			if (this.#vioCount > this.#maxVioCount) continue;  // for max end
-			if (this.#checkForward(level) && this.#branch(level + 1, this.#vioCount)) return true;
-			for (const v of this.#vars) {
-				v.solverObject.reveal(level);
+		for (let i: number = 0, n: number = d.size(); i < n; ++i) {
+			if (dp.isValueHidden(i)) {
+				continue;
+			}
+			xc.assign(d.at(i));
+
+			this.#vioCount = vioCount + this.#getAdditionalViolationCount(level, xc);  // for max begin
+			if (this.#vioCount > this.#maxVioCount) {
+				continue;  // for max end
+			}
+
+			if (this.#checkForward(level) && this.#branch(level + 1, this.#vioCount)) {
+				return true;
+			}
+			for (const x of this.#xs) {
+				(x.solverObject as DomainPruner).reveal(level);
 			}
 		}
-		vc.clear();
+		xc.clear();
 		return false;
 	}
 
 	// Checks for possible assignment to a future variable from the current variable assignment.
 	#checkForward(level: number): boolean {
-		const vc = this.#vars[level];
+		const xc: Variable = this.#xs[level];
 
-		for (let i = level + 1; i < this.#vars.length; ++i) {
-			const future = this.#vars[i];
-			this.#cons = this._pro.constraintsBetween(vc, future);
+		for (let i: number = level + 1; i < this.#xs.length; ++i) {
+			const future: Variable = this.#xs[i];
+			this.#cs = this._pro.constraintsBetween(xc, future);
 
-			for (const c of this.#cons) {
-				if (c.emptyVariableSize() !== 1) continue;
+			for (const c of this.#cs) {
+				if (c.emptyVariableSize() !== 1) {
+					continue;
+				}
 				if (this.#revise(future, c, level)) {
-					if (future.solverObject.isEmpty()) return false;  // Failure if the domain of one of the future variables is empty.
+					if ((future.solverObject as DomainPruner).isEmpty()) {
+						return false;  // Failure if the domain of one of the future variables is empty.
+					}
 				}
 			}
 		}
@@ -92,34 +121,43 @@ export class MaxForwardChecking extends Solver {
 	}
 
 	// Find the number of constraint violations that have increased due to the current value of the variable vc.
-	#getAdditionalViolationCount(level: number, vc: Variable): number {
-		let avc = 0;
-		this.#checkedCons.clear();  // Reuse.
-		for (let i = 0; i < level; ++i) {
-			this.#cons = this._pro.constraintsBetween(vc, this.#vars[i]);
+	#getAdditionalViolationCount(level: number, xc: Variable): number {
+		let avc: number = 0;
+		this.#checkedCs.clear();  // Reuse.
 
-			for (const c of this.#cons) {
-				if (this.#checkedCons.has(c)) continue;  // Because of the possibility of duplication in polynomial constraints
-				if (c.isSatisfied() === 0) ++avc;  // Neither satisfied nor undefined.
-				this.#checkedCons.add(c);
+		for (let i: number = 0; i < level; ++i) {
+			this.#cs = this._pro.constraintsBetween(xc, this.#xs[i]);
+
+			for (const c of this.#cs) {
+				if (this.#checkedCs.has(c)) {
+					// Because of the possibility of duplication in polynomial constraints
+					continue;
+				}
+				if (c.isSatisfied() === 0) {
+					// Neither satisfied nor undefined.
+					++avc;
+				}
+				this.#checkedCs.add(c);
 			}
 		}
 		return avc;
 	}
 
 	// Remove values from the domain of v1 that do not correspond to v2. That is, match v1 with v2.
-	#revise(v1: Variable, c: Constraint, level: number): boolean {
-		let deleted = false;
+	#revise(x1: Variable, c: Constraint, level: number): boolean {
+		let deleted: boolean = false;
 
-		const dom = v1.domain();
-		const dc  = v1.solverObject;
+		const d: Domain = x1.domain();
+		const dp: DomainPruner = x1.solverObject as DomainPruner;
 
-		for (let i = 0; i < dom.size(); ++i) {
-			if (dc.isValueHidden(i)) continue;
-			v1.assign(dom.at(i));
+		for (let k: number = 0, n: number = d.size(); k < n; ++k) {
+			if (dp.isValueHidden(k)) {
+				continue;
+			}
+			x1.assign(d.at(k));
 
 			if (c.isSatisfied() === 0 && this.#vioCount + 1 > this.#maxVioCount) {
-				dc.hide(i, level);
+				dp.hide(k, level);
 				deleted = true;
 			}
 		}
@@ -127,11 +165,11 @@ export class MaxForwardChecking extends Solver {
 	}
 
 	exec(): boolean {
-		this.#endTime   = (this._timeLimit === null) ? Number.MAX_VALUE : (Date.now() + this._timeLimit);
+		this.#endTime = (this._timeLimit === null) ? Number.MAX_VALUE : (Date.now() + this._timeLimit);
 		this.#iterCount = 0;
 
 		this._pro.clearAllVariables();
-		const r = this.#branch(0, 0);
+		const r: boolean = this.#branch(0, 0);
 		if (r) {
 			this._debugOutput('stop: current degree is above the target');
 		} else {
@@ -145,7 +183,7 @@ export class MaxForwardChecking extends Solver {
 
 		for (const a of this.#sol) {
 			a.apply();
-			a.variable().solverObject.revealAll();
+			(a.variable().solverObject as DomainPruner).revealAll();
 		}
 		return r;
 	}

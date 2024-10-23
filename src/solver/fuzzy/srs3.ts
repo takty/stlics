@@ -2,12 +2,13 @@
  * This class implements the SRS algorithm.
  *
  * @author Takuto Yanagida
- * @version 2023-04-17
+ * @version 2024-10-22
  */
 
 import { Problem } from '../../problem/problem';
-import { AssignmentList } from '../../util/assignment-list';
 import { Constraint } from '../../problem/constraint';
+import { Assignment } from '../../util/assignment';
+import { AssignmentList } from '../../util/assignment-list';
 import { Solver } from '../solver';
 
 export class SRS3 extends Solver {
@@ -15,12 +16,12 @@ export class SRS3 extends Solver {
 	// Threshold for adopting a candidate assignment at repair time (should be 0 if strictly following SRS 3)
 	static REPAIR_THRESHOLD = 0;
 
-	#closedList          = new Set<TreeNode>();
-	#openList            = new Set<TreeNode>();  // LinkedHashSet is used in the original implementation.
-	#nodes: TreeNode[]   = [];
-	#neighborConstraints: (Constraint[]|null)[] = [];  // Cache
+	#closedList: Set<TreeNode> = new Set<TreeNode>();
+	#openList: Set<TreeNode> = new Set<TreeNode>();  // LinkedHashSet is used in the original implementation.
+	#nodes: TreeNode[] = [];
+	#neighborConstraints: (Constraint[] | null)[] = [];  // Cache
 
-	#c_stars = new Set<TreeNode>();  // ArrayList is used in the original implementation.
+	#c_stars: Set<TreeNode> = new Set<TreeNode>();  // ArrayList is used in the original implementation.
 
 	#iterCount: number = 0;
 	#endTime: number = 0;
@@ -28,6 +29,7 @@ export class SRS3 extends Solver {
 
 	constructor(p: Problem) {
 		super(p);
+
 		for (const c of this._pro.constraints()) {
 			this.#nodes.push(new TreeNode(c));
 			this.#neighborConstraints.push(null);
@@ -39,52 +41,59 @@ export class SRS3 extends Solver {
 	}
 
 	#getNeighborConstraints(c: Constraint): Constraint[] {
-		const index = c.index();
+		const i: number = c.index();
 
-		if (this.#neighborConstraints[index] === null) {
-			this.#neighborConstraints[index] = c.neighbors();
+		if (this.#neighborConstraints[i] === null) {
+			this.#neighborConstraints[i] = c.neighbors();
 		}
-		return this.#neighborConstraints[index];
+		return this.#neighborConstraints[i];
 	}
 
 	#repair(c0: Constraint): boolean {
 		this._debugOutput('repair');
 
 		const canList = new AssignmentList();
-		const minDeg0 = c0.satisfactionDegree();  // Target c0 should certainly be an improvement over this.
-		const min     = this._pro.worstSatisfactionDegree();  // Lower bound of neighborhood constraints.
-		let maxDeg0   = c0.satisfactionDegree();  // Satisfaction degree of target c0 for the most improvement so far.
+		const minDeg0: number = c0.satisfactionDegree();  // Target c0 should certainly be an improvement over this.
+		const min: number = this._pro.worstSatisfactionDegree();  // Lower bound of neighborhood constraints.
+		let maxDeg0: number = c0.satisfactionDegree();  // Satisfaction degree of target c0 for the most improvement so far.
 
 		// If a candidate satisfying the condition is stronger than the previous candidates,
 		// it is replaced, and if no candidate is found until the end, it fails.
-		for (const v of c0) {
-			const v_val = v.value();  // Save the value
+		for (const x of c0) {
+			const x_v: number = x.value();  // Save the value
 
-			out: for (const d of v.domain()) {
-				if (v_val === d) continue;
-				v.assign(d);
-				const deg0 = c0.satisfactionDegree();
+			out: for (const v of x.domain()) {
+				if (x_v === v) {
+					continue;
+				}
+				x.assign(v);
+				const deg0: number = c0.satisfactionDegree();
 				// If target c0 cannot be improved, the assignment is rejected.
-				if (minDeg0 > deg0 || maxDeg0 - deg0 > SRS3.REPAIR_THRESHOLD) continue;
-
-				for (const c of v) {
-					if (c === c0) continue;
-					const deg = c.satisfactionDegree();
+				if (minDeg0 > deg0 || maxDeg0 - deg0 > SRS3.REPAIR_THRESHOLD) {
+					continue;
+				}
+				for (const c of x) {
+					if (c === c0) {
+						continue;
+					}
+					const deg: number = c.satisfactionDegree();
 					// If one of the neighborhood constraints c is less than or equal to the worst, the assignment is rejected.
-					if (deg !== Constraint.UNDEFINED && deg < min) continue out;
+					if (deg !== Constraint.UNDEFINED && deg < min) {
+						continue out;
+					}
 				}
 				if (deg0 > maxDeg0) {
 					maxDeg0 = deg0;
 					canList.clear();
 				}
-				canList.addVariable(v, d);
+				canList.addVariable(x, v);
 			}
-			v.assign(v_val);  // Restore the value
+			x.assign(x_v);  // Restore the value
 		}
 		if (canList.size() > 0) {
-			const e = this.#isRandom ? canList.random() : canList.at(0);
-			e.apply();
-			this._debugOutput('\t' + e);
+			const a: Assignment = this.#isRandom ? canList.random() : canList.at(0);
+			a.apply();
+			this._debugOutput('\t' + a);
 			return true;
 		}
 		return false;
@@ -93,7 +102,7 @@ export class SRS3 extends Solver {
 	#shrink(node: TreeNode): void {
 		this._debugOutput('shrink');
 
-		let removeCStar = false;
+		let removeCStar: boolean = false;
 		while (true) {
 			node = node.parent() as TreeNode;
 			if (this.#c_stars.delete(node)) {
@@ -121,11 +130,11 @@ export class SRS3 extends Solver {
 		this.#closedList.add(node);
 
 		for (const c of this.#getNeighborConstraints(node.getObject())) {
-			const cn = this.#nodes[c.index()];
+			const tnc: TreeNode = this.#nodes[c.index()];
 
-			if (!this.#closedList.has(cn) && !this.#openList.has(cn)) {  // For constraints that are not included in Open or Closed.
-				node.add(cn);
-				this.#openList.add(cn);
+			if (!this.#closedList.has(tnc) && !this.#openList.has(tnc)) {  // For constraints that are not included in Open or Closed.
+				node.add(tnc);
+				this.#openList.add(tnc);
 			}
 		}
 	}
@@ -135,7 +144,7 @@ export class SRS3 extends Solver {
 
 		const [wsd_cs,] = this._pro.constraintsWithWorstSatisfactionDegree();
 		for (const c of wsd_cs) {
-			const cn = this.#nodes[c.index()];
+			const cn: TreeNode = this.#nodes[c.index()];
 			cn.setParent(null);
 			this.#c_stars.add(cn);
 		}
@@ -171,20 +180,20 @@ export class SRS3 extends Solver {
 	}
 
 	exec(): boolean {
-		this.#endTime   = (this._timeLimit === null) ? Number.MAX_VALUE : (Date.now() + this._timeLimit);
+		this.#endTime = (this._timeLimit === null) ? Number.MAX_VALUE : (Date.now() + this._timeLimit);
 		this.#iterCount = 0;
 		if (this._targetDeg && this._targetDeg <= this._pro.worstSatisfactionDegree()) {
 			return true;
 		}
 		const sol = new AssignmentList();
 
-		let success = false;
+		let success: boolean = false;
 		while (true) {
-			const ret = this.#srs();
+			const ret: boolean = this.#srs();
 			if (!ret || this.#c_stars.size) {
 				break;
 			}
-			const solutionWorstDeg = this._pro.worstSatisfactionDegree();
+			const solutionWorstDeg: number = this._pro.worstSatisfactionDegree();
 			this._debugOutput(`\tfound a solution: ${solutionWorstDeg}\t${this._targetDeg}`);
 			sol.setProblem(this._pro);
 
@@ -217,7 +226,7 @@ export class SRS3 extends Solver {
 class TreeNode {
 
 	#children: TreeNode[] = [];
-	#parent: TreeNode|null;
+	#parent: TreeNode | null;
 	#obj: any;
 
 	constructor(obj: any) {
@@ -253,7 +262,7 @@ class TreeNode {
 		return this.#parent;
 	}
 
-	setParent(p: TreeNode|null) {
+	setParent(p: TreeNode | null): void {
 		this.#parent = p;
 	}
 

@@ -3,7 +3,7 @@
  * The implementation is optimized by converting recursive calls to loops.
  *
  * @author Takuto Yanagida
- * @version 2023-04-16
+ * @version 2024-10-22
  */
 
 import { Problem } from '../../problem/problem';
@@ -15,22 +15,8 @@ import { Solver } from '../solver';
 
 export class LocalChangesEx extends Solver {
 
-	static #setPlusSet<T>(s1: Set<T>, s2: Set<T>): Set<T> {
-		const sn = new Set<T>(s1);
-		for (const v of s2) sn.add(v);
-		return sn;
-	}
-
-	static #setMinusSet<T>(s1: Set<T>, s2: Set<T>): Set<T> {
-		const sn = new Set<T>(s1);
-		for (const v of s2) sn.delete(v);
-		return sn;
-	}
-
 	static #setPlusElement<T>(s: Set<T>, e: T): Set<T> {
-		const sn = new Set<T>(s);
-		sn.add(e);
-		return sn;
+		return new Set(s).add(e);
 	}
 
 	#iterCount: number = 0;
@@ -44,133 +30,140 @@ export class LocalChangesEx extends Solver {
 		}
 	}
 
-	name() {
+	name(): string {
 		return 'Local Changes Ex';
 	}
 
-	#createNewV3(V1_V2: Set<Variable>, v: Variable, val: number): Set<Variable> {
-		const newV3 = new Set<Variable>();
-		const cs    = new Set<Constraint>();
+	#createNewV3(X1_X2: Set<Variable>, x: Variable, v: number): Set<Variable> {
+		const newX3 = new Set<Variable>();
+		const cs = new Set<Constraint>();
 
-		for (const va of V1_V2) {
-			const temp = this._pro.constraintsBetween(v, va);
-			for (const c of temp) cs.add(c);
+		for (const xa of X1_X2) {
+			const temp: Constraint[] = this._pro.constraintsBetween(x, xa);
+			for (const c of temp) {
+				cs.add(c);
+			}
 		}
-		const origVal = v.value();  // Save the value.
-		v.assign(val);
+		const origV: number = x.value();  // Save the value.
+		x.assign(v);
 
 		for (const c of cs) {
 			if (c.isSatisfied() === 0) {
-				for (const vi of c) {
-					newV3.add(vi);
+				for (const xi of c) {
+					newX3.add(xi);
 				}
 			}
 		}
-		v.assign(origVal);  // Restore the value.
-		newV3.delete(v);
-		return newV3;
+		x.assign(origV);  // Restore the value.
+		newX3.delete(x);
+		return newX3;
 	}
 
-	#isConsistent(A: Set<Variable>, v: Variable, val: number): boolean {
+	#isConsistent(A: Set<Variable>, x: Variable, v: number): boolean {
 		const cs = new Set<Constraint>();
 
-		for (const va of A) {
-			const temp = this._pro.constraintsBetween(v, va);
-			for (const c of temp) cs.add(c);
+		for (const xa of A) {
+			const temp: Constraint[] = this._pro.constraintsBetween(x, xa);
+			for (const c of temp) {
+				cs.add(c);
+			}
 		}
-		const origVal = v.value();  // Save the value.
-		v.assign(val);
+		const origV: number = x.value();  // Save the value.
+		x.assign(v);
 
 		for (const c of cs) {
 			if (c.isSatisfied() === 0) {
-				v.assign(origVal);  // Restore the value.
+				x.assign(origV);  // Restore the value.
 				return false;
 			}
 		}
-		v.assign(origVal);  // Restore the value.
+		x.assign(origV);  // Restore the value.
 		return true;
 	}
 
-	#lcValue(V1: Set<Variable>, V2: Set<Variable>, v: Variable): boolean {
-		if (!this.#isConsistent(V1, v, v.value())) {
+	#lcValue(X1: Set<Variable>, X2: Set<Variable>, x: Variable): boolean {
+		if (!this.#isConsistent(X1, x, x.value())) {
 			return false;
 		}
-		const V1_V2 = LocalChangesEx.#setPlusSet(V1, V2);
-		if (this.#isConsistent(V1_V2, v, v.value())) {
+		const X1_X2: Set<Variable> = X1.union(X2);
+		if (this.#isConsistent(X1_X2, x, x.value())) {
 			return true;
 		}
-		const V3 = this.#createNewV3(V1_V2, v, v.value());
+		const X3: Set<Variable> = this.#createNewV3(X1_X2, x, x.value());
 
-		V2 = LocalChangesEx.#setMinusSet(V2, V3);
-		V1 = LocalChangesEx.#setPlusElement(V1, v);
-		return this.#lcVariables(V1, V2, V3);
+		X1 = LocalChangesEx.#setPlusElement(X1, x);
+		X2 = X2.difference(X3);
+		return this.#lcVariables(X1, X2, X3);
 	}
 
-	#lcVariable(V1: Set<Variable>, V2: Set<Variable>, v: Variable): boolean {
-		for (const val of v.domain()) {
-			const s = AssignmentList.fromVariables(V2);
-			v.assign(val);
+	#lcVariable(X1: Set<Variable>, X2: Set<Variable>, x: Variable): boolean {
+		for (const v of x.domain()) {
+			const al: AssignmentList = AssignmentList.fromVariables(X2);
+			x.assign(v);
 
-			const ret = this.#lcValue(V1, V2, v);
+			const ret: boolean = this.#lcValue(X1, X2, x);
 			if (ret || this.#globalReturn) {
 				return ret;
 			}
 
-			v.clear();
-			s.apply();
+			x.clear();
+			al.apply();
 		}
 		return false;
 	}
 
-	#lcVariables(V1: Set<Variable>, V2: Set<Variable>, V3: Set<Variable>): boolean {
-		V2 = new Set(V2);  // Clone
-		V3 = new Set(V3);  // Clone
+	#lcVariables(X1: Set<Variable>, X2: Set<Variable>, X3: Set<Variable>): boolean {
+		X2 = new Set(X2);  // Clone
+		X3 = new Set(X3);  // Clone
 
 		while (true) {
-			this._debugOutput(`V1 ${V1.size}, V2' ${V2.size}, V3' ${V3.size}`);
+			this._debugOutput(`X1 ${X1.size}, X2' ${X2.size}, X3' ${X3.size}`);
 
-			if ((this._targetDeg ?? 1) <= (this._pro as CrispProblem).satisfiedConstraintRate()) {  // Success if violation rate improves from specified
+			// Success if violation rate improves from specified
+			if ((this._targetDeg ?? 1) <= (this._pro as CrispProblem).satisfiedConstraintRate()) {
 				this._debugOutput('stop: current degree is above the target');
 				this.#globalReturn = true;
 				return true;
 			}
-			if (this._iterLimit && this._iterLimit < this.#iterCount++) {  // Failure if repeated a specified number
+			// Failure if repeated a specified number
+			if (this._iterLimit && this._iterLimit < this.#iterCount++) {
 				this._debugOutput('stop: number of iterations has reached the limit');
 				this.#globalReturn = true;
 				return false;
 			}
-			if (this.#endTime < Date.now()) {  // Failure if time limit is exceeded
+			// Failure if time limit is exceeded
+			if (this.#endTime < Date.now()) {
 				this._debugOutput('stop: time limit has been reached');
 				this.#globalReturn = true;
 				return false;
 			}
 
-			if (V3.size === 0) {
+			if (X3.size === 0) {
 				return true;
 			}
-			const v   = V3.values().next().value as Variable;
-			const ret = this.#lcVariable(V1, V2, v);
+			const x = X3.values().next().value as Variable;
+			const ret: boolean = this.#lcVariable(X1, X2, x);
 
 			if (!ret || this.#globalReturn) {
 				return ret;
 			}
-			V2.add(v);
-			V3.delete(v);
+			X2.add(x);
+			X3.delete(x);
 		}
 	}
 
 	exec(): boolean {
-		this.#endTime      = (this._timeLimit === null) ? Number.MAX_VALUE : (Date.now() + this._timeLimit);
-		this.#iterCount    = 0;
+		this.#endTime = (this._timeLimit === null) ? Number.MAX_VALUE : (Date.now() + this._timeLimit);
+		this.#iterCount = 0;
 		this.#globalReturn = false;
 
 		if (this._pro.emptyVariableSize() === 0) {
 			this._pro.clearAllVariables();
 		}
-		const notFixed   = new Set<Variable>();
+		const notFixed = new Set<Variable>();
 		const unassigned = new Set<Variable>();
-		for (const v of this._pro.variables()) {
-			(!v.isEmpty() ? notFixed : unassigned).add(v);
+		for (const x of this._pro.variables()) {
+			(!x.isEmpty() ? notFixed : unassigned).add(x);
 		}
 		return this.#lcVariables(new Set(), notFixed, unassigned);
 	}
