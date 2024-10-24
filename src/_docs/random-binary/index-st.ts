@@ -1,6 +1,4 @@
-import { Problem } from '../../../stlics.ts';
-import { Solver } from '../../../stlics.ts';
-import { SolverFactory } from '../../../stlics.ts';
+import { Problem, Solver, SolverFactory } from '../../../stlics.ts';
 import { RandomBinary } from '../../_model/random-binary';
 
 const COUNT = 1;  // Interaction count
@@ -8,28 +6,27 @@ const VAR_NUM = 10;  // Number of variables
 const DENSITY = 0.5;
 const AVE_TIGHTNESS = 0.5;
 
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', async (): Promise<void> => {
 	const output = document.getElementById('output') as HTMLOutputElement;
-	const log = e => output.value += `${e}\n`;
+	const log: (e: any) => string = (e: any): string => output.value += `${e}\n`;
+	const sn: string = SolverFactory.fuzzySolverNames()[1];
 
-	const sn = SolverFactory.fuzzySolverNames()[1];
+	let sum_time: number = 0;
+	let sum_deg: number = 0;
 
-	let sum_time = 0;
-	let sum_deg = 0;
-
-	for (let i = 0; i < COUNT; ++i) {
+	for (let i: number = 0; i < COUNT; ++i) {
 		const rp = new RandomBinary(VAR_NUM, DENSITY, AVE_TIGHTNESS);
-		const p = rp.createProblem(new Problem());
-		const t = Date.now();  // Start time measurement
+		const p: Problem = rp.createProblem(new Problem());
+		const t: number = Date.now();  // Start time measurement
 
 		const s = await SolverFactory.createSolver(sn, p) as Solver;
 		// s.setTargetRate(null);
 		s.setTimeLimit(10000);
 		s.setDebugOutput(log);
-		const res = s.solve();
+		const res: boolean = s.solve();
 
-		const ct = Date.now() - t;  // Stop time measurement
-		const cd = p.worstSatisfactionDegree();
+		const ct: number = Date.now() - t;  // Stop time measurement
+		const cd: number = p.worstSatisfactionDegree();
 		log(`solver: ${s.name()}   ${res ? 'success' : 'failure'}`);
 		log(`trial: ${i + 1}   time: ${ct}   degree: ${cd}`);
 		sum_time += ct;

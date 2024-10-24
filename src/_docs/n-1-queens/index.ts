@@ -6,10 +6,10 @@ const SOLVER_TYPE = 4;
 const TARGET_RATE = 0.8;
 const QUEEN_NUM   = 20;
 
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', async (): Promise<void> => {
 	const solTypeSel = document.getElementById('solver-type') as HTMLSelectElement;
-	SolverFactory.fuzzySolverNames().forEach((sn, i) => {
-		const o = document.createElement('option');
+	SolverFactory.fuzzySolverNames().forEach((sn: string, i: number): void => {
+		const o: HTMLOptionElement = document.createElement('option');
 		o.textContent = sn;
 		o.value       = '' + i;
 		solTypeSel.appendChild(o);
@@ -23,14 +23,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 	const board  = document.getElementById('board') as HTMLTableElement;
 	const output = document.getElementById('output') as HTMLOutputElement;
-	const log    = createLogOutput();
+	const log: (e: any) => void = createLogOutput();
 
 	let trs: HTMLTableRowElement[]|null = null;
 	let worker: Worker|null = null;
 
 	const solStartBtn = document.getElementById('solver-start') as HTMLButtonElement;
 	const solStopBtn  = document.getElementById('solver-stop') as HTMLButtonElement;
-	solStartBtn.addEventListener('click', () => {
+	solStartBtn.addEventListener('click', (): void => {
 		solStartBtn.disabled = true;
 		solStopBtn.disabled  = false;
 
@@ -43,10 +43,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 		trs = makeBoard(board, parseInt(queenNum.value));
 		output.value = '';
 
-		worker = initialize(() => solStopBtn.click());
+		worker = initialize((): void => solStopBtn.click());
 		start(worker, parseInt(solTypeSel.value), parseFloat(targetRate.value), parseInt(queenNum.value));
 	});
-	solStopBtn.addEventListener('click', () => {
+	solStopBtn.addEventListener('click', (): void => {
 		solStartBtn.disabled = false;
 		solStopBtn.disabled  = true;
 
@@ -57,16 +57,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 	// -------------------------------------------------------------------------
 
 
-	function makeBoard(board, size): HTMLTableRowElement[] {
+	function makeBoard(board: HTMLTableElement, size: number): HTMLTableRowElement[] {
 		const trs: HTMLTableRowElement[] = [];
 		board.innerHTML = '';
-		for (let i = 0; i < size; ++i) {
-			const tr = document.createElement('tr');
+		for (let i: number = 0; i < size; ++i) {
+			const tr: HTMLTableRowElement = document.createElement('tr');
 			board.appendChild(tr);
 			trs.push(tr);
 
-			for (let j = 0; j < size - 1; ++j) {
-				const td = document.createElement('td');
+			for (let j: number = 0; j < size - 1; ++j) {
+				const td: HTMLTableCellElement = document.createElement('td');
 				tr.appendChild(td);
 			}
 		}
@@ -77,14 +77,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 	// -------------------------------------------------------------------------
 
 
-	let count = 0;
+	let count: number = 0;
 
-	function initialize(onFinish) {
-		let sumTime = 0;
-		let sumDeg  = 0;
+	function initialize(onFinish: () => void): Worker {
+		let sumTime: number = 0;
+		let sumDeg: number  = 0;
 
 		const ww = new Worker(new URL('worker.ts', import.meta.url), { type: 'module' });
-		ww.onmessage = e => {
+		ww.onmessage = (e: MessageEvent<any>): void => {
 			const { data } = e;
 			if ('log' in data) {
 				log(data.log);
@@ -109,12 +109,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 		return ww;
 	}
 
-	async function start(ww, solverType, targetRate, queenNum) {
-		for (let i = 0; i < COUNT; ++i) {
-			const now = count;
+	async function start(ww: Worker, solverType: number, targetRate: number, queenNum: number) {
+		for (let i: number = 0; i < COUNT; ++i) {
+			const now: number = count;
 			ww.postMessage({ task: 'create', args: [queenNum] });
 			ww.postMessage({ task: 'solve', args: [solverType, targetRate] });
-			await waitFor(() => (count !== now));
+			await waitFor((): boolean => (count !== now));
 		}
 	}
 });

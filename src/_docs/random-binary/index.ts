@@ -8,10 +8,10 @@ const VAR_NUM       = 10;
 const DENSITY       = 0.5;
 const AVE_TIGHTNESS = 0.5;
 
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', async (): Promise<void> => {
 	const solTypeSel = document.getElementById('solver-type') as HTMLSelectElement;
-	SolverFactory.fuzzySolverNames().forEach((sn, i) => {
-		const o = document.createElement('option');
+	SolverFactory.fuzzySolverNames().forEach((sn: string, i: number): void => {
+		const o: HTMLOptionElement = document.createElement('option');
 		o.textContent = sn;
 		o.value       = '' + i;
 		solTypeSel.appendChild(o);
@@ -28,22 +28,22 @@ document.addEventListener('DOMContentLoaded', async () => {
 	aveTightness.value = '' + AVE_TIGHTNESS;
 
 	const output = document.getElementById('output') as HTMLOutputElement;
-	const log    = createLogOutput();
+	const log: (e: any) => void = createLogOutput();
 
 	let worker: Worker|null = null;
 
 	const solStartBtn = document.getElementById('solver-start') as HTMLButtonElement;
 	const solStopBtn  = document.getElementById('solver-stop') as HTMLButtonElement;
-	solStartBtn.addEventListener('click', () => {
+	solStartBtn.addEventListener('click', (): void => {
 		solStartBtn.disabled = true;
 		solStopBtn.disabled  = false;
 
 		output.value = '';
 
-		worker = initialize(() => solStopBtn.click());
+		worker = initialize((): void => solStopBtn.click());
 		start(worker, parseInt(solTypeSel.value), parseFloat(targetRate.value), parseFloat(varNum.value), parseFloat(density.value), parseFloat(aveTightness.value));
 	});
-	solStopBtn.addEventListener('click', () => {
+	solStopBtn.addEventListener('click', (): void => {
 		solStartBtn.disabled = false;
 		solStopBtn.disabled  = true;
 		if (worker) worker.terminate();
@@ -56,11 +56,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 	let count = 0;
 
 	function initialize(onFinish): Worker {
-		let sumTime = 0;
-		let sumDeg  = 0;
+		let sumTime: number = 0;
+		let sumDeg: number  = 0;
 
 		const ww = new Worker(new URL('worker.ts', import.meta.url), { type: 'module' });
-		ww.onmessage = e => {
+		ww.onmessage = (e: MessageEvent<any>): void => {
 			const { data } = e;
 			if ('log' in data) {
 				log(data.log);
@@ -82,12 +82,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 		return ww;
 	}
 
-	async function start(ww, solverType, targetRate, varNum, density, aveTightness) {
-		for (let i = 0; i < COUNT; ++i) {
-			const now = count;
+	async function start(ww: Worker, solverType: number, targetRate: number, varNum: number, density: number, aveTightness: number) {
+		for (let i: number = 0; i < COUNT; ++i) {
+			const now: number = count;
 			ww.postMessage({ task: 'create', args: [varNum, density, aveTightness] });
 			ww.postMessage({ task: 'solve', args: [solverType, targetRate] });
-			await waitFor(() => (count !== now));
+			await waitFor((): boolean => (count !== now));
 		}
 	}
 });

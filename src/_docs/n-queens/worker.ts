@@ -1,11 +1,7 @@
-import { Problem } from '../../../stlics.ts';
-import { CrispProblem } from '../../../stlics.ts';
-import { ObservableVariable } from '../../../stlics.ts';
-import { Solver } from '../../../stlics.ts';
-import { SolverFactory } from '../../../stlics.ts';
+import { Problem, CrispProblem, Variable, ObservableVariable, Domain, Solver, SolverFactory } from '../../../stlics.ts';
 import { N_queens } from '../../_model/n-queens.js';
 
-onmessage = async e => {
+onmessage = async (e: MessageEvent<any>): Promise<void> => {
 	const { task, args } = e.data;
 	switch (task) {
 		case 'create':
@@ -17,40 +13,40 @@ onmessage = async e => {
 	}
 };
 
-let m: N_queens|null = null;
-let p: Problem|null = null;
+let m: N_queens | null = null;
+let p: Problem | null = null;
 
-function create(num: number) {
+function create(num: number): void {
 	m = new N_queens(num);
 	m.setDebugOutput(log);
 
-	const obs = (v, val) => board(val - 1, v.index());
+	const obs: (x: Variable, v: number) => void = (x: Variable, v: number): void => board(v - 1, x.index());
 
 	p = new CrispProblem();
-	p.setVariableFactory((o, d) => new ObservableVariable(o, d, obs));
+	p.setVariableFactory((o: Problem, d: Domain): ObservableVariable => new ObservableVariable(o, d, obs));
 	p = m.createProblem(p);
 }
 
 async function solve(type: string, targetRate: number): Promise<void> {
-	const t  = Date.now();  // Start time measurement
-	const sn = SolverFactory.crispSolverNames()[type];
+	const t: number = Date.now();  // Start time measurement
+	const sn: string = SolverFactory.crispSolverNames()[type];
 
 	const s = await SolverFactory.createSolver(sn, p as Problem) as Solver;
 	s.setTargetRate(targetRate);
 	s.setDebugOutput(log);
 
-	const result = s.solve();
-	const time   = Date.now() - t;  // Stop time measurement
-	const rate   = (p as CrispProblem).satisfiedConstraintRate();
+	const result: boolean = s.solve();
+	const time: number = Date.now() - t;  // Stop time measurement
+	const rate: number = (p as CrispProblem).satisfiedConstraintRate();
 
 	(m as N_queens).printResult(p as Problem);
 	postMessage({ result, time, rate, solver: s.name() });
 }
 
-function log(e) {
+function log(e: any): void {
 	postMessage({ log: e });
 }
 
-function board(x, y) {
+function board(x: number, y: number): void {
 	postMessage({ board: { x, y } });
 }

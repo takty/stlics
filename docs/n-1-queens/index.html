@@ -1,1 +1,57 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><title>N-1 Queens Problem</title><meta name="viewport" content="width=device-width, initial-scale=1"><script nomodule defer src="/stlics/n-queens/index.bb6614fd.js"></script><script type="module" src="/stlics/n-queens/index.950b969f.js"></script><script type="module" src="/stlics/n-1-queens/index.c8153ef0.js"></script><script src="/stlics/n-1-queens/index.001b9680.js" nomodule defer></script><link rel="stylesheet" href="/stlics/index.342e4cc9.css"><link rel="stylesheet" href="/stlics/n-queens/index.38be5cf5.css"></head><body> <header> <h1>N-1 Queens Problem</h1> <nav><a href="/stlics/index.html">Go back</a></nav> </header> <main> <div class="frame"> <p> In chess, there is a piece called the "queen," which can move freely in any direction—vertically, horizontally, or diagonally. </p> <p> In the N-1 Queens problem, you are given an <b>N×(N-1) board</b> and the goal is to place <b>N queens</b> on it. In this case, some queens will be able to attack each other vertically, horizontally, or diagonally. However, the key point is that the <b>distance between the rows of attacking queens</b> should be as large as possible. The greater the distance, the better the configuration. </p> <p> For example, if N is 4, you need to place 4 queens on a <b>4×3</b> board, aiming to maximize the distance between the rows of any queens that can attack each other. As N increases, finding the optimal configuration becomes more challenging, and solving this is the main objective of the problem. </p> </div> <aside> <div> <label>Number of Queens: <input id="queen-num" type="number" min="4" max="100"></label> </div> <div> <label>Solver Type: <select id="solver-type"></select></label> <label>Target Rate: <input id="target-rate" type="number" min="0.1" max="1" step="0.1"></label> </div> <div> <button id="solver-start">Start</button> <button id="solver-stop" disabled>Stop</button> </div> </aside> <table id="board"></table> <textarea id="output" rows="32"></textarea> </main> </body></html>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<title>N-1 Queens Problem</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+  <script type="module" crossorigin src="../assets/n1q-DaPg0Aqc.js"></script>
+  <link rel="modulepreload" crossorigin href="../assets/style-CICdWEZl.js">
+  <link rel="stylesheet" crossorigin href="../assets/style-iNrj-QCp.css">
+  <link rel="stylesheet" crossorigin href="../assets/klales-LuzbB4If.css">
+</head>
+
+<body>
+	<header>
+		<h1>N-1 Queens Problem</h1>
+		<nav><a href="../index.html">Go back</a></nav>
+	</header>
+
+	<main>
+		<div class="frame">
+			<p>
+				In chess, there is a piece called the "queen," which can move freely in any direction—vertically,
+				horizontally, or diagonally.
+			</p>
+			<p>
+				In the N-1 Queens problem, you are given an <b>N×(N-1) board</b> and the goal is to place <b>N queens</b> on it. In
+				this case, some queens will be able to attack each other vertically, horizontally, or diagonally.
+				However, the key point is that the <b>distance between the rows of attacking queens</b> should be as large as
+				possible. The greater the distance, the better the configuration.
+			</p>
+			<p>
+				For example, if N is 4, you need to place 4 queens on a <b>4×3</b> board, aiming to maximize the distance
+				between the rows of any queens that can attack each other. As N increases, finding the optimal
+				configuration becomes more challenging, and solving this is the main objective of the problem.
+			</p>
+		</div>
+
+		<aside>
+			<div>
+				<label>Number of Queens: <input id="queen-num" type="number" min="4" max="100"></label>
+			</div>
+			<div>
+				<label>Solver Type: <select id="solver-type"></select></label>
+				<label>Target Rate: <input id="target-rate" type="number" min="0.1" max="1" step="0.1"></label>
+			</div>
+			<div>
+				<button id="solver-start">Start</button>
+				<button id="solver-stop" disabled>Stop</button>
+			</div>
+		</aside>
+		<table id="board"></table>
+		<textarea id="output" rows="32"></textarea>
+	</main>
+</body>
+
+</html>

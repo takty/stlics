@@ -1,34 +1,31 @@
-import { CrispProblem }  from '../../../stlics.ts';
-import { Solver } from '../../../stlics.ts';
-import { SolverFactory } from '../../../stlics.ts';
-import { N_queens }      from '../../_model/n-queens';
-
+import { Problem, CrispProblem, Solver, SolverFactory } from '../../../stlics.ts';
+import { N_queens } from '../../_model/n-queens';
 import { createLogOutput } from '../util';
 
-const COUNT       = 1;   // Interaction count
-const QUEEN_NUM   = 20;  // Number of queens
+const COUNT = 1;   // Interaction count
+const QUEEN_NUM = 20;  // Number of queens
 const SOLVER_TYPE = 4;
 
-document.addEventListener('DOMContentLoaded', async () => {
-	const log = createLogOutput();
-	const sn  = SolverFactory.crispSolverNames()[SOLVER_TYPE];
+document.addEventListener('DOMContentLoaded', async (): Promise<void> => {
+	const log: (e: any) => void = createLogOutput();
+	const sn: string = SolverFactory.crispSolverNames()[SOLVER_TYPE];
 
-	let sum_time = 0;
-	let sum_rate = 0;
+	let sum_time: number = 0;
+	let sum_rate: number = 0;
 
-	for (let i = 0; i < COUNT; ++i) {
+	for (let i: number = 0; i < COUNT; ++i) {
 		const nq = new N_queens(QUEEN_NUM);
-		const p  = nq.createProblem(new CrispProblem());
-		const t  = Date.now();  // Start time measurement
+		const p: Problem = nq.createProblem(new CrispProblem());
+		const t: number = Date.now();  // Start time measurement
 
 		const s = await SolverFactory.createSolver(sn, p) as Solver;
 		// s.setTargetRate(null);
 		s.setTimeLimit(10000);
 		s.setDebugOutput(log);
-		const result = s.solve();
+		const result: boolean = s.solve();
 
-		const time = Date.now() - t;  // Stop time measurement
-		const rate = (p as CrispProblem).satisfiedConstraintRate();
+		const time: number = Date.now() - t;  // Stop time measurement
+		const rate: number = (p as CrispProblem).satisfiedConstraintRate();
 		log(`solver: ${s.name()}   ${result ? 'success' : 'failure'}`);
 		log(`trial: ${i + 1}   time: ${time}   rate: ${rate}`);
 		nq.setDebugOutput(log);
