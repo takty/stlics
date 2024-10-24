@@ -34,6 +34,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 		solStartBtn.disabled = true;
 		solStopBtn.disabled  = false;
 
+		if (40 <= parseInt(queenNum.value)) {
+			board.classList.add('small');
+		} else {
+			board.classList.remove('small');
+		}
+
 		trs = makeBoard(board, parseInt(queenNum.value));
 		output.value = '';
 

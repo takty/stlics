@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 	<meta charset="utf-8">
 	<title>N Queens Problem</title>
@@ -14,7 +15,25 @@
 		<h1>N Queens Problem</h1>
 		<nav><a href="../index.html">Go back</a></nav>
 	</header>
+
 	<main>
+		<div class="frame">
+			<p>
+				In chess, there is a piece called the "queen," which can move freely in any direction—vertically,
+				horizontally, or diagonally.
+			</p>
+			<p>
+				In the N-Queens problem, you are given an N×N board, and the goal is to place N queens on it. The key point
+				is that no queen should be able to attack another. A queen can attack another if they are in the same row,
+				column, or diagonal.
+			</p>
+			<p>
+				For example, if N is 4, you need to place 4 queens on a 4×4 board in such a way that no queen can attack
+				another. As N increases, finding a solution becomes more difficult, and figuring out how to do this is the
+				challenge of the problem.
+			</p>
+		</div>
+
 		<aside>
 			<div>
 				<label>Number of Queens: <input id="queen-num" type="number" min="4" max="100"></label>
@@ -32,4 +51,5 @@
 		<textarea id="output" rows="32"></textarea>
 	</main>
 </body>
+
 </html>

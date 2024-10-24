@@ -1,12 +1,42 @@
+header + main {
+	margin-block-start: 1rem;
+}
+
+.frame {
+	background-color: #aaa3;
+	padding         : 1.25rem 1.5rem;
+
+	> :first-child {
+		margin-block-start: 0;
+	}
+	> :last-child {
+		margin-block-end: 0;
+	}
+}
+
+aside {
+	> div {
+		margin-block: 1rem;
+	}
+
+	label:has(+ label) {
+		margin-inline-end: 0.5rem;
+	}
+}
+
 textarea#output {
 	width: 100%;
 }
 
 table#board {
+	--cell-size: 0.85rem;
+
 	td {
-		width : 0.85rem;
-		height: 0.85rem;
+		width : var(--cell-size);
+		height: var(--cell-size);
 		border: 1px solid #aaa;
+
+		padding: 0;
 	}
 
 	@for $i from 0 through 99 {
@@ -16,4 +46,8 @@ table#board {
 			}
 		}
 	}
+}
+
+table.small#board {
+	--cell-size: 0.5rem;
 }
