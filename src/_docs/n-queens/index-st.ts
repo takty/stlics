@@ -1,6 +1,6 @@
-import { CrispProblem }  from '../../problem/problem-crisp';
-import { Solver } from '../../solver/solver';
-import { SolverFactory } from '../../solver/solver-factory';
+import { CrispProblem }  from '../../../stlics.ts';
+import { Solver } from '../../../stlics.ts';
+import { SolverFactory } from '../../../stlics.ts';
 import { N_queens }      from '../../_model/n-queens';
 
 import { createLogOutput } from '../util';

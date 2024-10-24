@@ -1,7 +1,6 @@
-import { Problem } from '../../problem/problem';
-import { Solver } from '../../solver/solver';
-import { Model } from '../../_model/model';
-import { SolverFactory } from '../../solver/solver-factory';
+import { Problem } from '../../../stlics.ts';
+import { Solver } from '../../../stlics.ts';
+import { SolverFactory } from '../../../stlics.ts';
 import { RandomBinary }  from '../../_model/random-binary';
 
 onmessage = async e => {
@@ -16,7 +15,7 @@ onmessage = async e => {
 	}
 };
 
-let m: Model|null = null;
+let m: RandomBinary|null = null;
 let p: Problem|null = null;
 
 function create(varNum: number, density: number, aveTightness: number): void {

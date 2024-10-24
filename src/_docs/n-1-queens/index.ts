@@ -1,4 +1,4 @@
-import { SolverFactory } from '../../../dist/stlics.min.js';
+import { SolverFactory } from '../../../stlics.ts';
 import { waitFor, createLogOutput } from '../util.js';
 
 const COUNT       = 1;  // Interaction count
@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 		let sumTime = 0;
 		let sumDeg  = 0;
 
-		const ww = new Worker(new URL('worker.js', import.meta.url), { type: 'module' });
+		const ww = new Worker(new URL('worker.ts', import.meta.url), { type: 'module' });
 		ww.onmessage = e => {
 			const { data } = e;
 			if ('log' in data) {

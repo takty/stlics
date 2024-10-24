@@ -1,6 +1,6 @@
-import { Problem } from '../../problem/problem';
-import { Solver } from '../../solver/solver';
-import { SolverFactory } from '../../solver/solver-factory';
+import { Problem } from '../../../stlics.ts';
+import { Solver } from '../../../stlics.ts';
+import { SolverFactory } from '../../../stlics.ts';
 import { RandomBinary } from '../../_model/random-binary';
 
 const COUNT = 1;  // Interaction count

@@ -1,9 +1,8 @@
-import { Problem } from '../../problem/problem';
-import { CrispProblem } from '../../problem/problem-crisp';
-import { ObservableVariable } from '../../problem/variables';
-import { Solver } from '../../solver/solver';
-import { Model } from '../../_model/model';
-import { SolverFactory } from '../../solver/solver-factory';
+import { Problem } from '../../../stlics.ts';
+import { CrispProblem } from '../../../stlics.ts';
+import { ObservableVariable } from '../../../stlics.ts';
+import { Solver } from '../../../stlics.ts';
+import { SolverFactory } from '../../../stlics.ts';
 import { N_queens } from '../../_model/n-queens.js';
 
 onmessage = async e => {
