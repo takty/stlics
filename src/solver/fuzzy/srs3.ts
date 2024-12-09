@@ -2,7 +2,7 @@
  * This class implements the SRS algorithm.
  *
  * @author Takuto Yanagida
- * @version 2024-10-22
+ * @version 2024-12-09
  */
 
 import { Problem } from '../../problem/problem';
@@ -194,6 +194,9 @@ export class SRS3 extends Solver {
 				break;
 			}
 			const solutionWorstDeg: number = this._pro.worstSatisfactionDegree();
+			if (-1 === solutionWorstDeg) {
+				continue;
+			}
 			this._debugOutput(`\tfound a solution: ${solutionWorstDeg}\t${this._targetDeg}`);
 			sol.setProblem(this._pro);
 
