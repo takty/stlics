@@ -22,7 +22,7 @@ export class FuzzyBreakout extends Solver {
 	constructor(p: Problem) {
 		super(p);
 
-		this.#ws = new Array(this._pro.constraintSize());
+		this.#ws = new Array(this.pro.constraintSize());
 		this.#ws.fill(1);
 	}
 
@@ -87,37 +87,37 @@ export class FuzzyBreakout extends Solver {
 	}
 
 	exec(): boolean {
-		const endTime: number = (this._timeLimit === null) ? Number.MAX_VALUE : (Date.now() + this._timeLimit);
+		const endTime: number = (this.timeLimit === null) ? Number.MAX_VALUE : (Date.now() + this.timeLimit);
 		let iterCount: number = 0;
 
-		for (const x of this._pro.variables()) {
+		for (const x of this.pro.variables()) {
 			if (x.isEmpty()) {
 				x.assign(x.domain().at(0));
 			}
 		}
 
-		const deg: number = this._pro.worstSatisfactionDegree();
+		const deg: number = this.pro.worstSatisfactionDegree();
 		const canList = new AssignmentList();
 
 		const sol = new AssignmentList();
 
 		while (true) {
-			const [vcs, wsd] = this._pro.constraintsWithWorstSatisfactionDegree();
-			this._debugOutput(`worst satisfaction degree: ${wsd}`);
+			const [vcs, wsd] = this.pro.constraintsWithWorstSatisfactionDegree();
+			this.debugOutput(`worst satisfaction degree: ${wsd}`);
 
 			// Failure if repeated a specified number
-			if (this._iterLimit && this._iterLimit < iterCount++) {
-				this._debugOutput('stop: number of iterations has reached the limit');
+			if (this.iterLimit && this.iterLimit < iterCount++) {
+				this.debugOutput('stop: number of iterations has reached the limit');
 				break;
 			}
 			// Failure if time limit is exceeded
 			if (endTime < Date.now()) {
-				this._debugOutput('stop: time limit has been reached');
+				this.debugOutput('stop: time limit has been reached');
 				break;
 			}
 
 			if (this.#lastSolDeg < wsd) {
-				sol.setProblem(this._pro);
+				sol.setProblem(this.pro);
 				this.#lastSolDeg = wsd;
 
 				if (this.foundSolution(sol, this.#lastSolDeg)) {  // Call hook
@@ -125,8 +125,8 @@ export class FuzzyBreakout extends Solver {
 				}
 			}
 			// Success if the degree improves from specified
-			if (this._targetDeg && this._targetDeg <= wsd) {
-				this._debugOutput('stop: current degree is above the target');
+			if (this.targetDeg && this.targetDeg <= wsd) {
+				this.debugOutput('stop: current degree is above the target');
 				return true;
 			}
 
@@ -136,15 +136,17 @@ export class FuzzyBreakout extends Solver {
 				const a: Assignment = this.#isRandom ? canList.random() : canList.at(0);
 				a.apply();
 				canList.clear();
-				this._debugOutput('\t' + a);
+				this.debugOutput('\t' + a);
 			} else {
 				for (const c of vcs) {
 					this.#ws[c.index()] += 1;
 				}
-				this._debugOutput('breakout');
+				this.debugOutput('breakout');
 			}
 		}
-		if (this._targetDeg === null && deg < this._pro.worstSatisfactionDegree()) return true;
+		if (this.targetDeg === null && deg < this.pro.worstSatisfactionDegree()) {
+			return true;
+		}
 		return false;
 	}
 

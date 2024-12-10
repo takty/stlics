@@ -2,7 +2,7 @@
  * This class implements the SRS algorithm with PF.
  *
  * @author Takuto Yanagida
- * @version 2024-10-22
+ * @version 2024-12-10
  */
 
 import { Problem } from '../../problem/problem';
@@ -23,21 +23,21 @@ export class SRS3_PF extends SRS3 {
 	exec(): boolean {
 		let deg: number = 0;
 		let uvs: number = 0;
-		if (this._debug) {
-			deg = this._pro.worstSatisfactionDegree();
-			uvs = this._pro.emptyVariableSize();
+		if (this.debug) {
+			deg = this.pro.worstSatisfactionDegree();
+			uvs = this.pro.emptyVariableSize();
 		}
 		const al = new AssignmentList();
-		al.setProblem(this._pro);
+		al.setProblem(this.pro);
 
 		const res: boolean = super.exec();
 
 		if (res) {
-			PostStabilization.apply(this._pro, al);
+			PostStabilization.apply(this.pro, al);
 		}
-		this._debugOutput(`result: ${res ? 'success' : 'failure'}`);
-		this._debugOutput(`satisfaction degree: ${deg} -> ${this._pro.worstSatisfactionDegree()}`);
-		this._debugOutput(`unassigned size: ${uvs} -> ${this._pro.emptyVariableSize()}`);
+		this.debugOutput(`result: ${res ? 'success' : 'failure'}`);
+		this.debugOutput(`satisfaction degree: ${deg} -> ${this.pro.worstSatisfactionDegree()}`);
+		this.debugOutput(`unassigned size: ${uvs} -> ${this.pro.emptyVariableSize()}`);
 		return res;
 	}
 

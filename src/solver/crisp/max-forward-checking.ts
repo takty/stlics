@@ -4,7 +4,7 @@
  * Each variable must have its own domain because it hides domain elements as branch pruning.
  *
  * @author Takuto Yanagida
- * @version 2024-10-22
+ * @version 2024-12-10
  */
 
 import { Problem } from '../../problem/problem';
@@ -36,11 +36,11 @@ export class MaxForwardChecking extends Solver {
 	constructor(p: CrispProblem) {
 		super(p as Problem);
 
-		this.#xs = [...this._pro.variables()];
+		this.#xs = [...this.pro.variables()];
 		for (const x of this.#xs) {
 			x.solverObject = new DomainPruner(x.domain().size());
 		}
-		this.#maxVioCount = this._pro.constraintSize();
+		this.#maxVioCount = this.pro.constraintSize();
 	}
 
 	name(): string {
@@ -49,7 +49,7 @@ export class MaxForwardChecking extends Solver {
 
 	#branch(level: number, vioCount: number): boolean {
 		// Failure if repeated a specified number.
-		if (this._iterLimit && this._iterLimit < this.#iterCount++) {
+		if (this.iterLimit && this.iterLimit < this.#iterCount++) {
 			return false;
 		}
 		// Failure if time limit is exceeded.
@@ -57,16 +57,16 @@ export class MaxForwardChecking extends Solver {
 			return false;
 		}
 
-		const p = this._pro as CrispProblem;
+		const p = this.pro as CrispProblem;
 
 		if (level === p.variableSize()) {
 			const vcs: number = p.violatingConstraintSize();
 
 			if (vcs < this.#maxVioCount) {
 				this.#maxVioCount = vcs;
-				this.#sol.setProblem(this._pro);
-				this._debugOutput(`   refreshed ${this.#maxVioCount}`);
-				if ((this._targetDeg ?? 1) <= p.satisfiedConstraintRate()) {
+				this.#sol.setProblem(this.pro);
+				this.debugOutput(`   refreshed ${this.#maxVioCount}`);
+				if ((this.targetDeg ?? 1) <= p.satisfiedConstraintRate()) {
 					return true;
 				}
 			}
@@ -104,7 +104,7 @@ export class MaxForwardChecking extends Solver {
 
 		for (let i: number = level + 1; i < this.#xs.length; ++i) {
 			const future: Variable = this.#xs[i];
-			this.#cs = this._pro.constraintsBetween(xc, future);
+			this.#cs = this.pro.constraintsBetween(xc, future);
 
 			for (const c of this.#cs) {
 				if (c.emptyVariableSize() !== 1) {
@@ -126,7 +126,7 @@ export class MaxForwardChecking extends Solver {
 		this.#checkedCs.clear();  // Reuse.
 
 		for (let i: number = 0; i < level; ++i) {
-			this.#cs = this._pro.constraintsBetween(xc, this.#xs[i]);
+			this.#cs = this.pro.constraintsBetween(xc, this.#xs[i]);
 
 			for (const c of this.#cs) {
 				if (this.#checkedCs.has(c)) {
@@ -165,19 +165,19 @@ export class MaxForwardChecking extends Solver {
 	}
 
 	exec(): boolean {
-		this.#endTime = (this._timeLimit === null) ? Number.MAX_VALUE : (Date.now() + this._timeLimit);
+		this.#endTime = (this.timeLimit === null) ? Number.MAX_VALUE : (Date.now() + this.timeLimit);
 		this.#iterCount = 0;
 
-		this._pro.clearAllVariables();
+		this.pro.clearAllVariables();
 		const r: boolean = this.#branch(0, 0);
 		if (r) {
-			this._debugOutput('stop: current degree is above the target');
+			this.debugOutput('stop: current degree is above the target');
 		} else {
-			if (this._iterLimit && this._iterLimit < this.#iterCount) {
-				this._debugOutput('stop: number of iterations has reached the limit');
+			if (this.iterLimit && this.iterLimit < this.#iterCount) {
+				this.debugOutput('stop: number of iterations has reached the limit');
 			}
 			if (this.#endTime < Date.now()) {
-				this._debugOutput('stop: time limit has been reached');
+				this.debugOutput('stop: time limit has been reached');
 			}
 		}
 

@@ -3,7 +3,7 @@
  * Solves a problem as a maximum CSP.
  *
  * @author Takuto Yanagida
- * @version 2024-10-22
+ * @version 2024-12-10
  */
 
 import { Problem } from '../../problem/problem';
@@ -27,7 +27,7 @@ export class Breakout extends Solver {
 	constructor(p: CrispProblem) {
 		super(p as Problem);
 
-		this.#ws = new Array(this._pro.constraintSize());
+		this.#ws = new Array(this.pro.constraintSize());
 		this.#ws.fill(1);
 	}
 
@@ -92,49 +92,49 @@ export class Breakout extends Solver {
 	}
 
 	exec(): boolean {
-		const endTime: number = (this._timeLimit === null) ? Number.MAX_VALUE : (Date.now() + this._timeLimit);
+		const endTime: number = (this.timeLimit === null) ? Number.MAX_VALUE : (Date.now() + this.timeLimit);
 		let iterCount: number = 0;
 
-		for (const x of this._pro.variables()) {
+		for (const x of this.pro.variables()) {
 			if (x.isEmpty()) {
 				x.assign(x.domain().at(0));
 			}
 		}
 
 		const canList = new AssignmentList();
-		const p = this._pro as CrispProblem;
+		const p = this.pro as CrispProblem;
 
 		while (true) {
 			const vcs: Constraint[] = p.violatingConstraints();
 			// Success if violation rate improves from specified
-			if ((this._targetDeg ?? 1) <= p.satisfiedConstraintRate()) {
-				this._debugOutput('stop: current degree is above the target');
+			if ((this.targetDeg ?? 1) <= p.satisfiedConstraintRate()) {
+				this.debugOutput('stop: current degree is above the target');
 				return true;
 			}
 			// Failure if repeated a specified number
-			if (this._iterLimit && this._iterLimit < iterCount++) {
-				this._debugOutput('stop: number of iterations has reached the limit');
+			if (this.iterLimit && this.iterLimit < iterCount++) {
+				this.debugOutput('stop: number of iterations has reached the limit');
 				return false;
 			}
 			// Failure if time limit is exceeded
 			if (endTime < Date.now()) {
-				this._debugOutput('stop: time limit has been reached');
+				this.debugOutput('stop: time limit has been reached');
 				return false;
 			}
 
-			this._debugOutput(vcs.length + ' violations');
+			this.debugOutput(vcs.length + ' violations');
 			this.#findCandidates(this.#listViolatingVariables(vcs), canList);
 
 			if (0 < canList.size()) {
 				const a: Assignment = this.#isRandom ? canList.random() : canList.at(0);
 				a.apply();
 				canList.clear();
-				this._debugOutput('\t' + a);
+				this.debugOutput('\t' + a);
 			} else {
 				for (const c of vcs) {
 					this.#ws[c.index()] += 1;
 				}
-				this._debugOutput('breakout');
+				this.debugOutput('breakout');
 			}
 		}
 	}

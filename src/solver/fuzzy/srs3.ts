@@ -2,7 +2,7 @@
  * This class implements the SRS algorithm.
  *
  * @author Takuto Yanagida
- * @version 2024-12-09
+ * @version 2024-12-10
  */
 
 import { Problem } from '../../problem/problem';
@@ -30,7 +30,7 @@ export class SRS3 extends Solver {
 	constructor(p: Problem) {
 		super(p);
 
-		for (const c of this._pro.constraints()) {
+		for (const c of this.pro.constraints()) {
 			this.#nodes.push(new TreeNode(c));
 			this.#neighborConstraints.push(null);
 		}
@@ -50,11 +50,11 @@ export class SRS3 extends Solver {
 	}
 
 	#repair(c0: Constraint): boolean {
-		this._debugOutput('repair');
+		this.debugOutput('repair');
 
 		const canList = new AssignmentList();
 		const minDeg0: number = c0.satisfactionDegree();  // Target c0 should certainly be an improvement over this.
-		const min: number = this._pro.worstSatisfactionDegree();  // Lower bound of neighborhood constraints.
+		const min: number = this.pro.worstSatisfactionDegree();  // Lower bound of neighborhood constraints.
 		let maxDeg0: number = c0.satisfactionDegree();  // Satisfaction degree of target c0 for the most improvement so far.
 
 		// If a candidate satisfying the condition is stronger than the previous candidates,
@@ -93,14 +93,14 @@ export class SRS3 extends Solver {
 		if (canList.size() > 0) {
 			const a: Assignment = this.#isRandom ? canList.random() : canList.at(0);
 			a.apply();
-			this._debugOutput('\t' + a);
+			this.debugOutput('\t' + a);
 			return true;
 		}
 		return false;
 	}
 
 	#shrink(node: TreeNode): void {
-		this._debugOutput('shrink');
+		this.debugOutput('shrink');
 
 		let removeCStar: boolean = false;
 		while (true) {
@@ -126,7 +126,7 @@ export class SRS3 extends Solver {
 	}
 
 	#spread(node: TreeNode): void {
-		this._debugOutput('spread');
+		this.debugOutput('spread');
 		this.#closedList.add(node);
 
 		for (const c of this.#getNeighborConstraints(node.getObject())) {
@@ -140,9 +140,9 @@ export class SRS3 extends Solver {
 	}
 
 	#srs(): boolean {
-		this._debugOutput('srs');
+		this.debugOutput('srs');
 
-		const [wsd_cs,] = this._pro.constraintsWithWorstSatisfactionDegree();
+		const [wsd_cs,] = this.pro.constraintsWithWorstSatisfactionDegree();
 		for (const c of wsd_cs) {
 			const cn: TreeNode = this.#nodes[c.index()];
 			cn.setParent(null);
@@ -155,12 +155,12 @@ export class SRS3 extends Solver {
 		}
 
 		while (this.#c_stars.size && this.#openList.size) {
-			if (this._iterLimit && this._iterLimit < this.#iterCount++) {  // Failure if repeated a specified number
-				this._debugOutput('stop: number of iterations has reached the limit');
+			if (this.iterLimit && this.iterLimit < this.#iterCount++) {  // Failure if repeated a specified number
+				this.debugOutput('stop: number of iterations has reached the limit');
 				return false;
 			}
 			if (this.#endTime < Date.now()) {  // Failure if time limit is exceeded
-				this._debugOutput('stop: time limit has been reached');
+				this.debugOutput('stop: time limit has been reached');
 				return false;
 			}
 
@@ -180,9 +180,9 @@ export class SRS3 extends Solver {
 	}
 
 	exec(): boolean {
-		this.#endTime = (this._timeLimit === null) ? Number.MAX_VALUE : (Date.now() + this._timeLimit);
+		this.#endTime = (this.timeLimit === null) ? Number.MAX_VALUE : (Date.now() + this.timeLimit);
 		this.#iterCount = 0;
-		if (this._targetDeg && this._targetDeg <= this._pro.worstSatisfactionDegree()) {
+		if (this.targetDeg && this.targetDeg <= this.pro.worstSatisfactionDegree()) {
 			return true;
 		}
 		const sol = new AssignmentList();
@@ -193,21 +193,21 @@ export class SRS3 extends Solver {
 			if (!ret || this.#c_stars.size) {
 				break;
 			}
-			const solutionWorstDeg: number = this._pro.worstSatisfactionDegree();
+			const solutionWorstDeg: number = this.pro.worstSatisfactionDegree();
 			if (-1 === solutionWorstDeg) {
 				continue;
 			}
-			this._debugOutput(`\tfound a solution: ${solutionWorstDeg}\t${this._targetDeg}`);
-			sol.setProblem(this._pro);
+			this.debugOutput(`\tfound a solution: ${solutionWorstDeg}\t${this.targetDeg}`);
+			sol.setProblem(this.pro);
 
 			if (this.foundSolution(sol, solutionWorstDeg)) {  // Call hook
 				success = true;
 				break;
 			}
-			if (this._targetDeg === null) {  // Satisfaction degree is not specified
+			if (this.targetDeg === null) {  // Satisfaction degree is not specified
 				success = true;
-			} else if (this._targetDeg <= solutionWorstDeg) {  // The current degree exceeded the specified degree.
-				this._debugOutput('stop: current degree is above the target');
+			} else if (this.targetDeg <= solutionWorstDeg) {  // The current degree exceeded the specified degree.
+				this.debugOutput('stop: current degree is above the target');
 				success = true;
 				break;
 			}

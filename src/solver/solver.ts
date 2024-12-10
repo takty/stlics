@@ -1,8 +1,8 @@
 /**
- * The class for solvers for finding solutions to constraint satisfaction problems.
+ * The class for solvers for finding solutions to CSPs.
  *
  * @author Takuto Yanagida
- * @version 2024-10-22
+ * @version 2024-12-10
  */
 
 import { Problem } from '../problem/problem';
@@ -10,41 +10,41 @@ import { AssignmentList } from '../util/assignment-list';
 
 export class Solver {
 
-	_debug: boolean = true;
+	protected debug: boolean = true;
 
 	#debugOutput: (e: any) => void = (e: any): void => console.log(e);
 
 	/**
-	 * The crisp/fuzzy constraint satisfaction problem solved by the solver.
+	 * The crisp/fuzzy CSP solved by the solver.
 	 */
-	_pro: Problem;
+	protected pro: Problem;
 
 	/**
 	 *  Limit number of iterations.
 	 */
-	_iterLimit: number|null = null;
+	protected iterLimit: number|null = null;
 
 	/**
 	 * Time limit.
 	 */
-	_timeLimit: number|null = null;
+	protected timeLimit: number|null = null;
 
 	/**
 	 * Target 'satisfied constraint rate' or 'constraint satisfaction degree'.
 	 */
-	_targetDeg: number|null = 0.8;
+	protected targetDeg: number|null = 0.8;
 
 	/**
 	 * Listeners of this solver.
 	 */
-	#listener: { foundSolution: ((as: AssignmentList, wd: number) => boolean) }[] = [];
+	#listeners: ((as: AssignmentList, wd: number) => boolean)[] = [];
 
 	/**
-	 * Generates a solver given a constraint satisfaction problem.
-	 * @param pro A constraint satisfaction problem.
+	 * Generates a solver given a CSP.
+	 * @param pro A CSP.
 	 */
 	constructor(pro: Problem) {
-		this._pro = pro;
+		this.pro = pro;
 	}
 
 	/**
@@ -70,7 +70,7 @@ export class Solver {
 	 * @param count Maximum value; null means not set.
 	 */
 	setIterationLimit(count: number|null = null): void {
-		this._iterLimit = count;
+		this.iterLimit = count;
 	}
 
 	/**
@@ -79,7 +79,7 @@ export class Solver {
 	 * @param msec Time limit. null means not set.
 	 */
 	setTimeLimit(msec: number|null = null): void {
-		this._timeLimit = msec;
+		this.timeLimit = msec;
 	}
 
 	/**
@@ -88,11 +88,11 @@ export class Solver {
 	 * @param rate Degree or rate. null indicates not set.
 	 */
 	setTargetRate(rate: number|null = null): void {
-		this._targetDeg = rate;
+		this.targetDeg = rate;
 	}
 
 	/**
-	 * Computes the solution to a constraint satisfaction problem.
+	 * Computes the solution to a CSP.
 	 * The specific meaning of the return value depends on the implementation of the algorithm.
 	 * @return True if the algorithm succeeds
 	 */
@@ -100,19 +100,19 @@ export class Solver {
 		return this.exec();
 	}
 
-	addListener(l: { foundSolution: (solution: AssignmentList, worstDegree: number) => boolean; }): void {
-		this.#listener.push(l);
+	addListener(l: (solution: AssignmentList, worstDegree: number) => boolean): void {
+		this.#listeners.push(l);
 	}
 
-	removeListener(l: { foundSolution: (solution: AssignmentList, worstDegree: number) => boolean; }): void {
-		this.#listener.splice(this.#listener.indexOf(l), 1);
+	removeListener(l: (solution: AssignmentList, worstDegree: number) => boolean): void {
+		this.#listeners.splice(this.#listeners.indexOf(l), 1);
 	}
 
 	foundSolution(solution: AssignmentList, worstDegree: number): boolean {
 		let finish: boolean = false;
 
-		for (const l of this.#listener) {
-			if (l.foundSolution(solution, worstDegree)) {
+		for (const l of this.#listeners) {
+			if (l(solution, worstDegree)) {
 				finish = true;
 			}
 		}
@@ -128,7 +128,7 @@ export class Solver {
 	 * @param boolean flag Do output if true.
 	 */
 	setDebugMode(flag: boolean): void {
-		this._debug = flag;
+		this.debug = flag;
 	}
 
 	/**
@@ -139,8 +139,8 @@ export class Solver {
 		this.#debugOutput = fn;
 	}
 
-	_debugOutput(str: any): void {
-		if (this._debug) this.#debugOutput(str);
+	protected debugOutput(str: any): void {
+		if (this.debug) this.#debugOutput(str);
 	}
 
 }

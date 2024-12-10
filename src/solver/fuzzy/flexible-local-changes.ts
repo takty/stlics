@@ -2,7 +2,7 @@
  * A class that implements the flexible local changes method.
  *
  * @author Takuto Yanagida
- * @version 2024-10-22
+ * @version 2024-12-10
  */
 
 import { Constraint } from '../../problem/constraint';
@@ -89,7 +89,7 @@ export class FlexibleLocalChanges extends Solver {
 		let low: number = 1;
 		let high: number = 0;
 
-		for (const x of this._pro.variables()) {
+		for (const x of this.pro.variables()) {
 			for (const c of x) {
 				const l: number = c.lowestConsistencyDegree();
 				const h: number = c.highestConsistencyDegree();
@@ -152,23 +152,23 @@ export class FlexibleLocalChanges extends Solver {
 	}
 
 	#flcVariables(X1: Set<Variable>, X2: Set<Variable>, X3: Set<Variable>, consX1: number, consX12: number, rc: number): number {
-		this._debugOutput(`X1 ${X1.size}, X2' ${X2.size}, X3' ${X3.size}`);
+		this.debugOutput(`X1 ${X1.size}, X2' ${X2.size}, X3' ${X3.size}`);
 
 		// Success if the degree improves from specified
-		if (this._targetDeg !== null && this._targetDeg <= this._pro.worstSatisfactionDegree()) {
-			this._debugOutput('stop: current degree is above the target');
+		if (this.targetDeg !== null && this.targetDeg <= this.pro.worstSatisfactionDegree()) {
+			this.debugOutput('stop: current degree is above the target');
 			this.#globalReturn = 1;
 			return consX12;
 		}
 		// Failure if repeated a specified number
-		if (this._iterLimit && this._iterLimit < this.#iterCount++) {
-			this._debugOutput('stop: number of iterations has reached the limit');
+		if (this.iterLimit && this.iterLimit < this.#iterCount++) {
+			this.debugOutput('stop: number of iterations has reached the limit');
 			this.#globalReturn = 0;
 			return consX12;
 		}
 		// Failure if time limit is exceeded
 		if (this.#endTime < Date.now()) {
-			this._debugOutput('stop: time limit has been reached');
+			this.debugOutput('stop: time limit has been reached');
 			this.#globalReturn = 0;
 			return consX12;
 		}
@@ -207,7 +207,7 @@ export class FlexibleLocalChanges extends Solver {
 				ret = sd;
 			}
 		}
-		for (const c of this._pro.constraints()) {
+		for (const c of this.pro.constraints()) {
 			const cd: number = c.lowestConsistencyDegree();
 			if (cd < this.#lt) {
 				cr.add(c);
@@ -221,7 +221,7 @@ export class FlexibleLocalChanges extends Solver {
 		const cs = new Set<Constraint>();
 
 		for (const x of X1) {
-		const temp: Constraint[] = this._pro.constraintsBetween(x, xi);
+		const temp: Constraint[] = this.pro.constraintsBetween(x, xi);
 			for (const c of temp) {
 				cs.add(c);
 			}
@@ -247,13 +247,13 @@ export class FlexibleLocalChanges extends Solver {
 		const cs = new Set<Constraint>();
 
 		for (const x of X1) {
-			const temp: Constraint[] = this._pro.constraintsBetween(x, xi);
+			const temp: Constraint[] = this.pro.constraintsBetween(x, xi);
 			for (const c of temp) {
 				cs.add(c);
 			}
 		}
 		for (const x of X2) {
-			const temp: Constraint[] = this._pro.constraintsBetween(x, xi);
+			const temp: Constraint[] = this.pro.constraintsBetween(x, xi);
 			for (const c of temp) {
 				cs.add(c);
 			}
@@ -280,18 +280,18 @@ export class FlexibleLocalChanges extends Solver {
 	}
 
 	exec(): boolean {
-		this.#endTime = (this._timeLimit === null) ? Number.MAX_VALUE : (Date.now() + this._timeLimit);
+		this.#endTime = (this.timeLimit === null) ? Number.MAX_VALUE : (Date.now() + this.timeLimit);
 		this.#iterCount = 0;
 		this.#globalReturn = -1;
 
-		const wsd: number = this._pro.worstSatisfactionDegree();
-		if (this._pro.emptyVariableSize() === 0) {
-			this._pro.clearAllVariables();
+		const wsd: number = this.pro.worstSatisfactionDegree();
+		if (this.pro.emptyVariableSize() === 0) {
+			this.pro.clearAllVariables();
 		}
 		const X1 = new Set<Variable>();
 		const X2 = new Set<Variable>();  // Currently assigned variables.
 		const X3 = new Set<Variable>();  // Currently unassigned variables.
-		for (const x of this._pro.variables()) {
+		for (const x of this.pro.variables()) {
 			(!x.isEmpty() ? X2 : X3).add(x);
 		}
 
@@ -314,8 +314,8 @@ export class FlexibleLocalChanges extends Solver {
 				initSol.apply();
 			}
 		}
-		result = this._pro.worstSatisfactionDegree();
-		return result > wsd && result > 0 && (this.#globalReturn !== 0 || this._targetDeg === null);
+		result = this.pro.worstSatisfactionDegree();
+		return result > wsd && result > 0 && (this.#globalReturn !== 0 || this.targetDeg === null);
 	}
 
 }

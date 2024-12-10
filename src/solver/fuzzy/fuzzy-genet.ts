@@ -3,7 +3,7 @@
  * CSPs and FCSPs (but only Binary (F)CSPs) is supported.
  *
  * @author Takuto Yanagida
- * @version 2024-10-22
+ * @version 2024-12-10
  */
 
 import { AssignmentList } from '../../util/assignment-list';
@@ -32,16 +32,16 @@ export class FuzzyGENET extends Solver {
 	}
 
 	#createNetwork(worstDeg: number): boolean {
-		this._debugOutput('network creation start');
+		this.debugOutput('network creation start');
 		const cons: Connection[] = [];
 
-		for (const x of this._pro.variables()) {
+		for (const x of this.pro.variables()) {
 			if (x.domain().size() === 0) {
 				return false;
 			}
 			this.#clusters.push(new Cluster(x));
 		}
-		for (const c of this._pro.constraints()) {
+		for (const c of this.pro.constraints()) {
 			if (c.size() === 1) {  // In the case of unary constraints.
 				const x = c.at(0) as Variable;
 				const cl: Cluster = this.#clusters[x.index()];
@@ -84,7 +84,7 @@ export class FuzzyGENET extends Solver {
 			}
 		}
 		this.#connections = cons;
-		this._debugOutput('network creation complete');
+		this.debugOutput('network creation complete');
 		return true;
 	}
 
@@ -102,7 +102,7 @@ export class FuzzyGENET extends Solver {
 		if (!this.#createNetwork(this.#worstSatisfactionDegree)) {
 			throw new Error();
 		}
-		const endTime: number = (this._timeLimit === null) ? Number.MAX_VALUE : (Date.now() + this._timeLimit);
+		const endTime: number = (this.timeLimit === null) ? Number.MAX_VALUE : (Date.now() + this.timeLimit);
 		let iterCount: number = 0;
 
 		const sol = new AssignmentList();
@@ -111,16 +111,16 @@ export class FuzzyGENET extends Solver {
 			order.push(i);
 		}
 
-		let cur: number = this._pro.worstSatisfactionDegree();
+		let cur: number = this.pro.worstSatisfactionDegree();
 		let success: boolean = false;
 
 		while (true) {
-			if (this._iterLimit && this._iterLimit < iterCount++) {  // Failure if repeated a specified number
-				this._debugOutput('stop: number of iterations has reached the limit');
+			if (this.iterLimit && this.iterLimit < iterCount++) {  // Failure if repeated a specified number
+				this.debugOutput('stop: number of iterations has reached the limit');
 				break;
 			}
 			if (endTime < Date.now()) {  // Failure if time limit is exceeded
-				this._debugOutput('stop: time limit has been reached');
+				this.debugOutput('stop: time limit has been reached');
 				break;
 			}
 
@@ -139,19 +139,19 @@ export class FuzzyGENET extends Solver {
 				for (const clu of this.#clusters) {
 					clu.applyToVariable();  // Apply to variable
 				}
-				const d: number = this._pro.worstSatisfactionDegree();
+				const d: number = this.pro.worstSatisfactionDegree();
 				if (cur < d) {  // If it's a better assignment than ever, save it.
 					cur = d;
-					this._debugOutput(`worst satisfaction degree: ${d}`);
-					sol.setProblem(this._pro);
+					this.debugOutput(`worst satisfaction degree: ${d}`);
+					sol.setProblem(this.pro);
 					if (this.foundSolution(sol, d)) {  // Call hook
 						success = true;
 						break;
 					}
-					if (this._targetDeg === null) {  // Satisfaction degree is not specified.
+					if (this.targetDeg === null) {  // Satisfaction degree is not specified.
 						success = true;
-					} else if (this._targetDeg <= cur) {  // Satisfaction degree is specified.
-						this._debugOutput('stop: current degree is above the target');
+					} else if (this.targetDeg <= cur) {  // Satisfaction degree is specified.
+						this.debugOutput('stop: current degree is above the target');
 						success = true;
 						break;
 					}

@@ -3,7 +3,7 @@
  * The implementation is optimized by converting recursive calls to loops.
  *
  * @author Takuto Yanagida
- * @version 2024-10-22
+ * @version 2024-12-10
  */
 
 import { Problem } from '../../problem/problem';
@@ -26,7 +26,7 @@ export class LocalChangesEx extends Solver {
 	constructor(p: Problem, unassignAll: boolean = false) {
 		super(p);
 		if (unassignAll) {
-			this._pro.clearAllVariables();
+			this.pro.clearAllVariables();
 		}
 	}
 
@@ -39,7 +39,7 @@ export class LocalChangesEx extends Solver {
 		const cs = new Set<Constraint>();
 
 		for (const xa of X1_X2) {
-			const temp: Constraint[] = this._pro.constraintsBetween(x, xa);
+			const temp: Constraint[] = this.pro.constraintsBetween(x, xa);
 			for (const c of temp) {
 				cs.add(c);
 			}
@@ -63,7 +63,7 @@ export class LocalChangesEx extends Solver {
 		const cs = new Set<Constraint>();
 
 		for (const xa of A) {
-			const temp: Constraint[] = this._pro.constraintsBetween(x, xa);
+			const temp: Constraint[] = this.pro.constraintsBetween(x, xa);
 			for (const c of temp) {
 				cs.add(c);
 			}
@@ -117,23 +117,23 @@ export class LocalChangesEx extends Solver {
 		X3 = new Set(X3);  // Clone
 
 		while (true) {
-			this._debugOutput(`X1 ${X1.size}, X2' ${X2.size}, X3' ${X3.size}`);
+			this.debugOutput(`X1 ${X1.size}, X2' ${X2.size}, X3' ${X3.size}`);
 
 			// Success if violation rate improves from specified
-			if ((this._targetDeg ?? 1) <= (this._pro as CrispProblem).satisfiedConstraintRate()) {
-				this._debugOutput('stop: current degree is above the target');
+			if ((this.targetDeg ?? 1) <= (this.pro as CrispProblem).satisfiedConstraintRate()) {
+				this.debugOutput('stop: current degree is above the target');
 				this.#globalReturn = true;
 				return true;
 			}
 			// Failure if repeated a specified number
-			if (this._iterLimit && this._iterLimit < this.#iterCount++) {
-				this._debugOutput('stop: number of iterations has reached the limit');
+			if (this.iterLimit && this.iterLimit < this.#iterCount++) {
+				this.debugOutput('stop: number of iterations has reached the limit');
 				this.#globalReturn = true;
 				return false;
 			}
 			// Failure if time limit is exceeded
 			if (this.#endTime < Date.now()) {
-				this._debugOutput('stop: time limit has been reached');
+				this.debugOutput('stop: time limit has been reached');
 				this.#globalReturn = true;
 				return false;
 			}
@@ -153,16 +153,16 @@ export class LocalChangesEx extends Solver {
 	}
 
 	exec(): boolean {
-		this.#endTime = (this._timeLimit === null) ? Number.MAX_VALUE : (Date.now() + this._timeLimit);
+		this.#endTime = (this.timeLimit === null) ? Number.MAX_VALUE : (Date.now() + this.timeLimit);
 		this.#iterCount = 0;
 		this.#globalReturn = false;
 
-		if (this._pro.emptyVariableSize() === 0) {
-			this._pro.clearAllVariables();
+		if (this.pro.emptyVariableSize() === 0) {
+			this.pro.clearAllVariables();
 		}
 		const notFixed = new Set<Variable>();
 		const unassigned = new Set<Variable>();
-		for (const x of this._pro.variables()) {
+		for (const x of this.pro.variables()) {
 			(!x.isEmpty() ? notFixed : unassigned).add(x);
 		}
 		return this.#lcVariables(new Set(), notFixed, unassigned);

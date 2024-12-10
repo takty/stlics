@@ -5,7 +5,7 @@
  * Forward checking is also performed for problems with polynomial constraints.
  *
  * @author Takuto Yanagida
- * @version 2024-10-23
+ * @version 2024-12-10
  */
 
 import { Problem } from '../../problem/problem';
@@ -44,13 +44,13 @@ export class FuzzyForwardChecking extends Solver {
 	 */
 	constructor(p: Problem, worstSatisfactionDegree: number | null = null) {
 		super(p);
-		this.#xs = [...this._pro.variables()];
-		this.#sequence = new Array(this._pro.variableSize());
+		this.#xs = [...this.pro.variables()];
+		this.#sequence = new Array(this.pro.variableSize());
 		this.#initializeRelatedConstraintTable();
-		this.#checkedCons = new Array(this._pro.constraintSize());
+		this.#checkedCons = new Array(this.pro.constraintSize());
 
 		const temp: Constraint[] = [];
-		for (const c of this._pro.constraints()) {
+		for (const c of this.pro.constraints()) {
 			if (c.size() === 1) temp.push(c);
 		}
 		this.#unaryCons = [...temp];  // To make it even if it is empty.
@@ -98,16 +98,16 @@ export class FuzzyForwardChecking extends Solver {
 	 * @param rate Degree. null indicates not set.
 	 */
 	setTargetRate(rate: number | null = null): void {
-		this._targetDeg = rate;
-		if (this._targetDeg === null) {
+		this.targetDeg = rate;
+		if (this.targetDeg === null) {
 			this.#solWorstDeg = 0;
 		} else {
 			// Find the worstSatisfactionDegree_ that is slightly smaller than the targetDegree_.
 			let e: number = Number.MIN_VALUE;
-			this.#solWorstDeg = this._targetDeg - e;
-			while (this.#solWorstDeg >= this._targetDeg) {
+			this.#solWorstDeg = this.targetDeg - e;
+			while (this.#solWorstDeg >= this.targetDeg) {
 				e *= 10;
-				this.#solWorstDeg = this._targetDeg - e;
+				this.#solWorstDeg = this.targetDeg - e;
 			}
 		}
 	}
@@ -121,7 +121,7 @@ export class FuzzyForwardChecking extends Solver {
 
 			for (let i: number = 0; i < this.#xs.length; ++i) {
 				if (i < j) {
-					this.#relCons[j][i] = this._pro.constraintsBetween(this.#xs[i], this.#xs[j]);
+					this.#relCons[j][i] = this.pro.constraintsBetween(this.#xs[i], this.#xs[j]);
 				}
 			}
 		}
@@ -401,7 +401,7 @@ export class FuzzyForwardChecking extends Solver {
 			if (dp.isValueHidden(i)) {
 				continue;
 			}
-			if ((this._iterLimit && this._iterLimit < this.#iterCount++) || this.#endTime < Date.now()) {
+			if ((this.iterLimit && this.iterLimit < this.#iterCount++) || this.#endTime < Date.now()) {
 				bc = FuzzyForwardChecking.TERMINATE;  // Search terminated due to restrictions.
 				break;
 			}
@@ -432,18 +432,18 @@ export class FuzzyForwardChecking extends Solver {
 
 		for (let i: number = 0, n: number = d.size(); i < n; ++i) {
 			if (dp.isValueHidden(i)) continue;
-			if ((this._iterLimit && this._iterLimit < this.#iterCount++) || this.#endTime < Date.now()) {
+			if ((this.iterLimit && this.iterLimit < this.#iterCount++) || this.#endTime < Date.now()) {
 				bc = FuzzyForwardChecking.TERMINATE;  // Search terminated due to restrictions.
 				break;
 			}
 			xc.assign(d.at(i));
 
-			const deg: number = this._pro.worstSatisfactionDegree();
+			const deg: number = this.pro.worstSatisfactionDegree();
 			if (deg > this.#solWorstDeg) {  // A new solution is assumed when 'greater than'.
 				this.#solWorstDeg = deg;
-				this.#sol.setProblem(this._pro);
+				this.#sol.setProblem(this.pro);
 				bc = FuzzyForwardChecking.TERMINATE;
-				if (this._targetDeg !== null && this._targetDeg <= this.#solWorstDeg) {  // Search ends when target is reached
+				if (this.targetDeg !== null && this.targetDeg <= this.#solWorstDeg) {  // Search ends when target is reached
 					break;
 				}
 				this.#pruneUnaryConstraints();
@@ -456,41 +456,41 @@ export class FuzzyForwardChecking extends Solver {
 
 	// Do search.
 	exec(): boolean {
-		this.#endTime = (this._timeLimit === null) ? Number.MAX_VALUE : (Date.now() + this._timeLimit);
+		this.#endTime = (this.timeLimit === null) ? Number.MAX_VALUE : (Date.now() + this.timeLimit);
 		this.#iterCount = 0;
 
 		for (const x of this.#xs) {
 			x.solverObject = new DomainPruner(x.domain().size());  // Generation of domain pruners.
 		}
-		this._pro.clearAllVariables();
+		this.pro.clearAllVariables();
 		if (!this.#pruneUnaryConstraints()) return false;  // Since _worstSatisfactionDegree_ has been updated, call this function.
 
 		let success: boolean = false;
 		while (true) {
 			const bc: number = this.#branch(0);
 			if (bc === FuzzyForwardChecking.TERMINATE) {
-				if (this._iterLimit && this._iterLimit < this.#iterCount++) {
-					this._debugOutput('stop: number of iterations has reached the limit');
+				if (this.iterLimit && this.iterLimit < this.#iterCount++) {
+					this.debugOutput('stop: number of iterations has reached the limit');
 					break;
 				}
 				if (this.#endTime < Date.now()) {
-					this._debugOutput('stop: time limit has been reached');
+					this.debugOutput('stop: time limit has been reached');
 					break;
 				}
 			}
 			if (this.#sol.isEmpty()) {
 				break;
 			}
-			this._debugOutput(`\tfound a solution: ${this.#solWorstDeg}`);
+			this.debugOutput(`\tfound a solution: ${this.#solWorstDeg}`);
 			if (this.foundSolution(this.#sol, this.#solWorstDeg)) {  // Call hook
 				success = true;
 				break;
 			}
-			if (this._targetDeg === null) {  // Degree not specified
+			if (this.targetDeg === null) {  // Degree not specified
 				success = true;
 				this.#solWorstDeg += this.#degInc;  // Find the next solution within the limit.
-			} else if (this._targetDeg <= this.#solWorstDeg) {  // The current degree exceeded the specified degree.
-				this._debugOutput('stop: current degree is above the target');
+			} else if (this.targetDeg <= this.#solWorstDeg) {  // The current degree exceeded the specified degree.
+				this.debugOutput('stop: current degree is above the target');
 				success = true;
 				break;
 			}

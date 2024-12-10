@@ -5,7 +5,7 @@
  * satisfies itself without reducing the number of satisfactions of its neighbors.
  *
  * @author Takuto Yanagida
- * @version 2024-10-22
+ * @version 2024-12-10
  */
 
 import { Problem } from '../../problem/problem';
@@ -31,7 +31,7 @@ export class CrispSRS3 extends Solver {
 	constructor(p: CrispProblem) {
 		super(p as Problem);
 
-		for (const c of this._pro.constraints()) {
+		for (const c of this.pro.constraints()) {
 			this.#nodes.push(new TreeNode(c));
 			this.#neighborConstraints.push(null);
 		}
@@ -60,7 +60,7 @@ export class CrispSRS3 extends Solver {
 	}
 
 	#repair(c0: Constraint): boolean {
-		this._debugOutput('repair');
+		this.debugOutput('repair');
 
 		const canList = new AssignmentList();
 		let maxDiff: number = 0;
@@ -100,7 +100,7 @@ export class CrispSRS3 extends Solver {
 		if (canList.size() > 0) {
 			const a: Assignment = this.#isRandom ? canList.random() : canList.at(0);
 			a.apply();
-			this._debugOutput('\t' + a);
+			this.debugOutput('\t' + a);
 			return true;
 		}
 		return false;
@@ -132,7 +132,7 @@ export class CrispSRS3 extends Solver {
 	}
 
 	#spread(n: TreeNode): void {
-		this._debugOutput('spread');
+		this.debugOutput('spread');
 		this.#closedList.add(n);
 
 		for (const c of this.#getNeighborConstraints(n.getObject())) {
@@ -147,8 +147,8 @@ export class CrispSRS3 extends Solver {
 	}
 
 	#srs(c_stars: Set<TreeNode>): boolean {
-		this._debugOutput('srs');
-		const endTime: number = (this._timeLimit === null) ? Number.MAX_VALUE : (Date.now() + this._timeLimit);
+		this.debugOutput('srs');
+		const endTime: number = (this.timeLimit === null) ? Number.MAX_VALUE : (Date.now() + this.timeLimit);
 		let iterCount: number = 0;
 
 		this.#closedList.clear();
@@ -156,19 +156,19 @@ export class CrispSRS3 extends Solver {
 		for (const n of c_stars) {
 			this.#openList.add(n);
 		}
-		const p = this._pro as CrispProblem;
+		const p = this.pro as CrispProblem;
 
 		while (c_stars.size && this.#openList.size) {
-			if ((this._targetDeg ?? 1) <= p.satisfiedConstraintRate()) {  // Success if violation rate improves from specified
-				this._debugOutput('stop: current degree is above the target');
+			if ((this.targetDeg ?? 1) <= p.satisfiedConstraintRate()) {  // Success if violation rate improves from specified
+				this.debugOutput('stop: current degree is above the target');
 				return true;
 			}
-			if (this._iterLimit && this._iterLimit < iterCount++) {  // Failure if repeated a specified number
-				this._debugOutput('stop: number of iterations has reached the limit');
+			if (this.iterLimit && this.iterLimit < iterCount++) {  // Failure if repeated a specified number
+				this.debugOutput('stop: number of iterations has reached the limit');
 				return false;
 			}
 			if (endTime < Date.now()) {  // Failure if time limit is exceeded
-				this._debugOutput('stop: time limit has been reached');
+				this.debugOutput('stop: time limit has been reached');
 				return false;
 			}
 
@@ -191,7 +191,7 @@ export class CrispSRS3 extends Solver {
 	}
 
 	exec(): boolean {
-		const vcs: Constraint[] = (this._pro as CrispProblem).violatingConstraints();
+		const vcs: Constraint[] = (this.pro as CrispProblem).violatingConstraints();
 		const c_stars = new Set<TreeNode>();
 
 		for (const c of vcs) {

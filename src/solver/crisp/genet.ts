@@ -4,7 +4,7 @@
  * Find the solution to the problem as the maximum CSP.
  *
  * @author Takuto Yanagida
- * @version 2024-10-22
+ * @version 2024-12-10
  */
 
 import { AssignmentList } from '../../util/assignment-list';
@@ -35,16 +35,16 @@ export class GENET extends Solver {
 	}
 
 	#createNetwork(): boolean {
-		this._debugOutput('network creation start');
+		this.debugOutput('network creation start');
 		const cons: Connection[] = [];
 
-		for (const x of this._pro.variables()) {
+		for (const x of this.pro.variables()) {
 			if (x.domain().size() === 0) {
 				return false;
 			}
 			this.#clusters.push(new Cluster(x));
 		}
-		for (const c of this._pro.constraints()) {
+		for (const c of this.pro.constraints()) {
 			if (c.size() === 1) {  // In the case of unary constraints.
 				const x = c.at(0) as Variable;
 				const cl: Cluster = this.#clusters[x.index()];
@@ -87,7 +87,7 @@ export class GENET extends Solver {
 			}
 		}
 		this.#connections = cons;
-		this._debugOutput('network creation complete');
+		this.debugOutput('network creation complete');
 		return true;
 	}
 
@@ -105,7 +105,7 @@ export class GENET extends Solver {
 		if (!this.#createNetwork()) {
 			throw new Error();
 		}
-		const endTime: number = (this._timeLimit === null) ? Number.MAX_VALUE : (Date.now() + this._timeLimit);
+		const endTime: number = (this.timeLimit === null) ? Number.MAX_VALUE : (Date.now() + this.timeLimit);
 		let iterCount: number = 0;
 
 		const sol = new AssignmentList();
@@ -114,17 +114,17 @@ export class GENET extends Solver {
 			order.push(i);
 		}
 
-		const p = this._pro as CrispProblem;
+		const p = this.pro as CrispProblem;
 		let cur: number = p.satisfiedConstraintRate();
 		let success: boolean = false;
 
 		while (true) {
-			if (this._iterLimit && this._iterLimit < iterCount++) {  // Failure if repeated a specified number
-				this._debugOutput('stop: number of iterations has reached the limit');
+			if (this.iterLimit && this.iterLimit < iterCount++) {  // Failure if repeated a specified number
+				this.debugOutput('stop: number of iterations has reached the limit');
 				break;
 			}
 			if (endTime < Date.now()) {  // Failure if time limit is exceeded
-				this._debugOutput('stop: time limit has been reached');
+				this.debugOutput('stop: time limit has been reached');
 				break;
 			}
 
@@ -145,14 +145,14 @@ export class GENET extends Solver {
 				const rate: number = p.satisfiedConstraintRate();
 				if (cur < rate) {  // If it's a better assignment than ever, save it.
 					cur = rate;
-					this._debugOutput(`satisfied constraint rate: ${rate}`);
-					sol.setProblem(this._pro);
+					this.debugOutput(`satisfied constraint rate: ${rate}`);
+					sol.setProblem(this.pro);
 					if (this.foundSolution(sol, rate)) {  // Call hook
 						success = true;
 						break;
 					}
-					if (this._targetDeg ?? 1 <= cur) {  // Success if violation rate improves from specified
-						this._debugOutput('stop: current degree is above the target');
+					if (this.targetDeg ?? 1 <= cur) {  // Success if violation rate improves from specified
+						this.debugOutput('stop: current degree is above the target');
 						success = true;
 						break;
 					}

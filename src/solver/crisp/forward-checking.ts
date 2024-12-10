@@ -6,7 +6,7 @@
  * Forward checking is also performed for problems with polynomial constraints.
  *
  * @author Takuto Yanagida
- * @version 2024-10-22
+ * @version 2024-12-10
  */
 
 import { Problem } from '../../problem/problem';
@@ -36,7 +36,7 @@ export class ForwardChecking extends Solver {
 	constructor(p: CrispProblem) {
 		super(p as Problem);
 
-		this.#xs = [...this._pro.variables()];
+		this.#xs = [...this.pro.variables()];
 		for (const x of this.#xs) {
 			x.solverObject = new DomainPruner(x.domain().size());
 		}
@@ -73,7 +73,7 @@ export class ForwardChecking extends Solver {
 
 			for (let i: number = 0; i < this.#xs.length; ++i) {
 				if (i < j) {
-					this.#relCs[j][i] = this._pro.constraintsBetween(this.#xs[i], this.#xs[j]);
+					this.#relCs[j][i] = this.pro.constraintsBetween(this.#xs[i], this.#xs[j]);
 				}
 			}
 		}
@@ -141,7 +141,7 @@ export class ForwardChecking extends Solver {
 	// Searches for one variable at a time.
 	#branch(level: number): boolean {
 		// Failure if repeated a specified number.
-		if (this._iterLimit && this._iterLimit < this.#iterCount++) {
+		if (this.iterLimit && this.iterLimit < this.#iterCount++) {
 			return false;
 		}
 		// Failure if time limit is exceeded.
@@ -149,8 +149,8 @@ export class ForwardChecking extends Solver {
 			return false;
 		}
 
-		if (level === this._pro.variableSize()) {
-			this.#sol.setProblem(this._pro);
+		if (level === this.pro.variableSize()) {
+			this.#sol.setProblem(this.pro);
 			return true;
 		}
 		const xc_index: number = this.#useMRV ? this.#indexOfVariableWithMRV() : level;
@@ -177,18 +177,18 @@ export class ForwardChecking extends Solver {
 
 	// Do search.
 	exec(): boolean {
-		this.#endTime = (this._timeLimit === null) ? Number.MAX_VALUE : (Date.now() + this._timeLimit);
+		this.#endTime = (this.timeLimit === null) ? Number.MAX_VALUE : (Date.now() + this.timeLimit);
 		this.#iterCount = 0;
 
-		this._pro.clearAllVariables();
+		this.pro.clearAllVariables();
 		const r: boolean = this.#branch(0);
 		if (r) {
 		} else {
-			if (this._iterLimit && this._iterLimit < this.#iterCount) {
-				this._debugOutput('stop: number of iterations has reached the limit');
+			if (this.iterLimit && this.iterLimit < this.#iterCount) {
+				this.debugOutput('stop: number of iterations has reached the limit');
 			}
 			if (this.#endTime < Date.now()) {
-				this._debugOutput('stop: time limit has been reached');
+				this.debugOutput('stop: time limit has been reached');
 			}
 		}
 
