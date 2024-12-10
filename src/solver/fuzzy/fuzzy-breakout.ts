@@ -2,7 +2,7 @@
  * Class implements a solver using the breakout method for fuzzy CSP.
  *
  * @author Takuto Yanagida
- * @version 2024-12-09
+ * @version 2024-12-10
  */
 
 import { Problem } from '../../problem/problem';
@@ -105,11 +105,6 @@ export class FuzzyBreakout extends Solver {
 			const [vcs, wsd] = this._pro.constraintsWithWorstSatisfactionDegree();
 			this._debugOutput(`worst satisfaction degree: ${wsd}`);
 
-			// Success if the degree improves from specified
-			if (this._targetDeg && this._targetDeg <= wsd) {
-				this._debugOutput('stop: current degree is above the target');
-				return true;
-			}
 			// Failure if repeated a specified number
 			if (this._iterLimit && this._iterLimit < iterCount++) {
 				this._debugOutput('stop: number of iterations has reached the limit');
@@ -128,6 +123,11 @@ export class FuzzyBreakout extends Solver {
 				if (this.foundSolution(sol, this.#lastSolDeg)) {  // Call hook
 					return true;
 				}
+			}
+			// Success if the degree improves from specified
+			if (this._targetDeg && this._targetDeg <= wsd) {
+				this._debugOutput('stop: current degree is above the target');
+				return true;
 			}
 
 			this.#findCandidates(this.#listWorstVariables(vcs), canList);
