@@ -2,7 +2,7 @@
  * Class implements a solver using the breakout method for fuzzy CSP.
  *
  * @author Takuto Yanagida
- * @version 2024-12-10
+ * @version 2024-12-16
  */
 
 import { Problem } from '../../problem/problem';
@@ -19,6 +19,10 @@ export class FuzzyBreakout extends Solver {
 	#ws: number[];
 	#lastSolDeg: number = 0;
 
+	/**
+	 * Generates a solver given a constraint satisfaction problem.
+	 * @param p A problem.
+	 */
 	constructor(p: Problem) {
 		super(p);
 
@@ -75,7 +79,7 @@ export class FuzzyBreakout extends Solver {
 		}
 	}
 
-	#listWorstVariables(worstCs: Iterable<Constraint>): Iterable<Variable> {
+	#listWorstVariables(worstCs: Iterable<Constraint>): Variable[] {
 		const xs = new Set<Variable>();
 
 		for (const c of worstCs) {
