@@ -1,6 +1,4 @@
 export * from './src/problem/problem';
-export * from './src/problem/problem-crisp';
-
 export * from './src/problem/element';
 
 export * from './src/problem/variable';
@@ -18,19 +16,21 @@ export * from './src/problem/constraint-n';
 
 export * from './src/problem/relation';
 
+
 // -----------------------------------------------------------------------------
+
 
 export * from './src/solver/solver';
 export * from './src/solver/solver-factory-static';
+export * from './src/solver/monitor';
 
 export * from './src/solver/fuzzy/flexible-local-changes';
 export * from './src/solver/fuzzy/flexible-local-changes-ex';
+export * from './src/solver/fuzzy/full-checking';
 export * from './src/solver/fuzzy/fuzzy-breakout';
 export * from './src/solver/fuzzy/fuzzy-forward-checking';
-export * from './src/solver/fuzzy/fuzzy-forward-checking-bc';
 export * from './src/solver/fuzzy/fuzzy-genet';
 export * from './src/solver/fuzzy/srs3';
-export * from './src/solver/fuzzy/srs3-pf';
 
 export * from './src/solver/crisp/breakout';
 export * from './src/solver/crisp/crisp-srs3';
@@ -42,9 +42,11 @@ export * from './src/solver/crisp/max-forward-checking';
 
 export * from './src/solver/filter/ac3';
 export * from './src/solver/filter/node-consistency';
-export * from './src/solver/filter/post-stabilization';
+export * from './src/solver/filter/post-stabilizer';
+
 
 // -----------------------------------------------------------------------------
+
 
 export * from './src/util/problems';
 export * from './src/util/assignment';
