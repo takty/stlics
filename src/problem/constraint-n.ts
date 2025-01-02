@@ -3,13 +3,13 @@
  * The constructor is not called directly, since it is created by the Problem.
  *
  * @author Takuto Yanagida
- * @version 2024-10-21
+ * @version 2024-12-17
  */
 
 import { Constraint } from './constraint';
+import { Relation } from './relation';
 import { Variable } from './variable';
 import { Domain } from './domain';
-import { Relation } from './relation';
 
 export class ConstraintN extends Constraint {
 
@@ -24,35 +24,35 @@ export class ConstraintN extends Constraint {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * {@override}
 	 */
 	size(): number {
 		return this.#xs.length;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * {@override}
 	 */
 	at(index: number): Variable | undefined {
 		return this.#xs.at(index);
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * {@override}
 	 */
 	has(x: Variable): boolean {
 		return this.#xs.includes(x);
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * {@override}
 	 */
 	indexOf(x: Variable): number {
 		return this.#xs.indexOf(x);
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * {@override}
 	 */
 	neighbors(): Constraint[] {
 		const cs: Constraint[] = [];
@@ -68,7 +68,7 @@ export class ConstraintN extends Constraint {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * {@override}
 	 */
 	[Symbol.iterator](): Iterator<Variable> {
 		return this.#xs[Symbol.iterator]();
@@ -79,21 +79,19 @@ export class ConstraintN extends Constraint {
 
 
 	/**
-	 * {@inheritDoc}
+	 * {@override}
 	 */
 	emptyVariableSize(): number {
 		let n: number = 0;
 
 		for (const x of this.#xs) {
-			if (x.isEmpty()) {
-				++n;
-			}
+			n += x.isEmpty() ? 1 : 0;
 		}
 		return n;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * {@override}
 	 */
 	isDefined(): boolean {
 		for (const x of this.#xs) {
@@ -105,23 +103,9 @@ export class ConstraintN extends Constraint {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * {@override}
 	 */
 	isSatisfied(): -1 | 0 | 1 {
-		for (let i: number = 0; i < this.#xs.length; ++i) {
-			const x: Variable = this.#xs[i];
-			if (x.isEmpty()) {
-				return -1;
-			}
-			this.#vs[i] = x.value();
-		}
-		return this.crispRelation().isSatisfied(...this.#vs) ? 1 : 0;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	satisfactionDegree(): number {
 		for (let i: number = 0; i < this.#xs.length; ++i) {
 			const x: Variable = this.#xs[i];
 			if (x.isEmpty()) {
@@ -129,16 +113,30 @@ export class ConstraintN extends Constraint {
 			}
 			this.#vs[i] = x.value();
 		}
-		return this.fuzzyRelation().satisfactionDegree(...this.#vs);
+		return this.rel.isSatisfied(...this.#vs) ? 1 : 0;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * {@override}
+	 */
+	degree(): number {
+		for (let i: number = 0; i < this.#xs.length; ++i) {
+			const x: Variable = this.#xs[i];
+			if (x.isEmpty()) {
+				return Constraint.UNDEFINED;
+			}
+			this.#vs[i] = x.value();
+		}
+		return this.rel.degree(...this.#vs);
+	}
+
+	/**
+	 * {@override}
 	 */
 	highestConsistencyDegree(): number {
-		const sd: number = this.satisfactionDegree();
-		if (sd !== Constraint.UNDEFINED) {
-			return sd;
+		const d: number = this.degree();
+		if (d !== Constraint.UNDEFINED) {
+			return d;
 		}
 		const emptyIndices = new Array(this.emptyVariableSize());
 		let c: number = 0;
@@ -155,12 +153,12 @@ export class ConstraintN extends Constraint {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * {@override}
 	 */
 	lowestConsistencyDegree(): number {
-		const sd: number = this.satisfactionDegree();
-		if (sd !== Constraint.UNDEFINED) {
-			return sd;
+		const d: number = this.degree();
+		if (d !== Constraint.UNDEFINED) {
+			return d;
 		}
 		const emptyIndices = new Array(this.emptyVariableSize());
 		let c: number = 0;
@@ -183,7 +181,7 @@ export class ConstraintN extends Constraint {
 		if (currentStep === emptyIndices.length - 1) {
 			for (const v of d) {
 				this.#vs[index] = v;
-				const s: number = this.fuzzyRelation().satisfactionDegree(...this.#vs);
+				const s: number = this.rel.degree(...this.#vs);
 				if (s > cd) {
 					cd = s;
 				}
@@ -194,7 +192,7 @@ export class ConstraintN extends Constraint {
 		} else {
 			for (const v of d) {
 				this.#vs[index] = v;
-				cd = this.checkLCD(emptyIndices, currentStep + 1, cd);
+				cd = this.checkHCD(emptyIndices, currentStep + 1, cd);
 			}
 		}
 		return cd;
@@ -207,7 +205,7 @@ export class ConstraintN extends Constraint {
 		if (currentStep === emptyIndices.length - 1) {
 			for (const v of d) {
 				this.#vs[index] = v;
-				const s: number = this.fuzzyRelation().satisfactionDegree(...this.#vs);
+				const s: number = this.rel.degree(...this.#vs);
 				if (s < cd) {
 					cd = s;
 				}

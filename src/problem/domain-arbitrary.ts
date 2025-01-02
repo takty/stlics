@@ -2,7 +2,7 @@
  * A variable domain with arbitrary elements.
  *
  * @author Takuto Yanagida
- * @version 2024-10-21
+ * @version 2024-12-17
  */
 
 import { Domain } from './domain';
@@ -17,35 +17,35 @@ export class DomainArbitrary extends Domain {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * {@override}
 	 */
 	contains(v: number): boolean {
 		return this.#vs.includes(v);
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * {@override}
 	 */
 	indexOf(v: number): number {
 		return this.#vs.indexOf(v);
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * {@override}
 	 */
 	size(): number {
 		return this.#vs.length;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * {@override}
 	 */
 	at(index: number): number {
 		return this.#vs[index];
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * {@override}
 	 */
 	[Symbol.iterator](): Iterator<number> {
 		return this.#vs[Symbol.iterator]();

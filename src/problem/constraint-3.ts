@@ -3,13 +3,13 @@
  * The constructor is not called directly, since it is created by the Problem.
  *
  * @author Takuto Yanagida
- * @version 2024-10-21
+ * @version 2024-12-17
  */
 
 import { Constraint } from './constraint';
+import { Relation } from './relation';
 import { Variable } from './variable';
 import { Domain } from './domain';
-import { Relation } from './relation';
 
 export class Constraint3 extends Constraint {
 
@@ -22,28 +22,28 @@ export class Constraint3 extends Constraint {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * {@override}
 	 */
 	size(): number {
 		return 3;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * {@override}
 	 */
 	at(index: number): Variable | undefined {
 		return this.#xs.at(index);
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * {@override}
 	 */
 	has(x: Variable): boolean {
 		return this.#xs[0] === x || this.#xs[1] === x || this.#xs[2] === x;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * {@override}
 	 */
 	indexOf(x: Variable): number {
 		if (x === this.#xs[0]) return 0;
@@ -53,31 +53,23 @@ export class Constraint3 extends Constraint {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * {@override}
 	 */
 	neighbors(): Constraint[] {
 		const cs: Constraint[] = [];
 
-		for (const c of this.#xs[0]) {
-			if (c !== this) {
-				cs.push(c);
-			}
-		}
-		for (const c of this.#xs[1]) {
-			if (c !== this) {
-				cs.push(c);
-			}
-		}
-		for (const c of this.#xs[2]) {
-			if (c !== this) {
-				cs.push(c);
+		for (const x of this.#xs) {
+			for (const c of x) {
+				if (c !== this) {
+					cs.push(c);
+				}
 			}
 		}
 		return cs;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * {@override}
 	 */
 	[Symbol.iterator](): Iterator<Variable> {
 		return this.#xs[Symbol.iterator]();
@@ -88,7 +80,7 @@ export class Constraint3 extends Constraint {
 
 
 	/**
-	 * {@inheritDoc}
+	 * {@override}
 	 */
 	emptyVariableSize(): number {
 		let n: number = 0;
@@ -100,41 +92,48 @@ export class Constraint3 extends Constraint {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * {@override}
 	 */
 	isDefined(): boolean {
 		return !this.#xs[0].isEmpty() && !this.#xs[1].isEmpty() && !this.#xs[2].isEmpty();
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * {@override}
 	 */
 	isSatisfied(): -1 | 0 | 1 {
 		if (this.#xs[0].isEmpty() || this.#xs[1].isEmpty() || this.#xs[2].isEmpty()) {
 			return Constraint.UNDEFINED;
 		}
-		return this.crispRelation().isSatisfied(this.#xs[0].value(), this.#xs[1].value(), this.#xs[2].value()) ? 1 : 0;
+		return this.rel.isSatisfied(this.#xs[0].value(), this.#xs[1].value(), this.#xs[2].value()) ? 1 : 0;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * {@override}
 	 */
-	satisfactionDegree(): number {
+	degree(): number {
 		if (this.#xs[0].isEmpty() || this.#xs[1].isEmpty() || this.#xs[2].isEmpty()) {
 			return Constraint.UNDEFINED;
 		}
-		return this.fuzzyRelation().satisfactionDegree(this.#xs[0].value(), this.#xs[1].value(), this.#xs[2].value());
+		return this.rel.degree(this.#xs[0].value(), this.#xs[1].value(), this.#xs[2].value());
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * {@override}
 	 */
 	highestConsistencyDegree(): number {
-		const sd: number = this.satisfactionDegree();
-		if (sd !== Constraint.UNDEFINED) {
-			return sd;
+		const d: number = this.degree();
+		if (d !== Constraint.UNDEFINED) {
+			return d;
 		}
-		let cd: number = 1;
+		let cd: number = 0;
+		const fn = (v1: number, v2: number, v3: number): boolean => {
+			const d: number = this.rel.degree(v1, v2, v3);
+			if (d > cd) {
+				cd = d;
+			}
+			return (cd === 1);
+		}
 		const v1: number = this.#xs[0].value();
 		const v2: number = this.#xs[1].value();
 		const v3: number = this.#xs[2].value();
@@ -144,82 +143,39 @@ export class Constraint3 extends Constraint {
 
 		if (this.#xs[0].isEmpty() && !this.#xs[1].isEmpty() && !this.#xs[2].isEmpty()) {
 			for (const v1 of d1) {
-				const s: number = this.fuzzyRelation().satisfactionDegree(v1, v2, v3);
-				if (s > cd) {
-					cd = s;
-				}
-				if (cd === 1) {
-					break;
-				}
+				if (fn(v1, v2, v3)) break;
 			}
 		} else if (!this.#xs[0].isEmpty() && this.#xs[1].isEmpty() && !this.#xs[2].isEmpty()) {
 			for (const v2 of d2) {
-				const s: number = this.fuzzyRelation().satisfactionDegree(v1, v2, v3);
-				if (s > cd) {
-					cd = s;
-				}
-				if (cd === 1) {
-					break;
-				}
+				if (fn(v1, v2, v3)) break;
 			}
 		} else if (!this.#xs[0].isEmpty() && !this.#xs[1].isEmpty() && this.#xs[2].isEmpty()) {
 			for (const v3 of d3) {
-				const s: number = this.fuzzyRelation().satisfactionDegree(v1, v2, v3);
-				if (s > cd) {
-					cd = s;
-				}
-				if (cd === 1) {
-					break;
-				}
+				if (fn(v1, v2, v3)) break;
 			}
-
 		} else if (this.#xs[0].isEmpty() && this.#xs[1].isEmpty() && !this.#xs[2].isEmpty()) {
 			for (const v1 of d1) {
 				for (const v2 of d2) {
-					const s: number = this.fuzzyRelation().satisfactionDegree(v1, v2, v3);
-					if (s > cd) {
-						cd = s;
-					}
-					if (cd === 1) {
-						break;
-					}
+					if (fn(v1, v2, v3)) break;
 				}
 			}
 		} else if (this.#xs[0].isEmpty() && !this.#xs[1].isEmpty() && this.#xs[2].isEmpty()) {
 			for (const v1 of d1) {
 				for (const v3 of d3) {
-					const s: number = this.fuzzyRelation().satisfactionDegree(v1, v2, v3);
-					if (s > cd) {
-						cd = s;
-					}
-					if (cd === 1) {
-						break;
-					}
+					if (fn(v1, v2, v3)) break;
 				}
 			}
 		} else if (!this.#xs[0].isEmpty() && this.#xs[1].isEmpty() && this.#xs[2].isEmpty()) {
 			for (const v2 of d2) {
 				for (const v3 of d3) {
-					const s: number = this.fuzzyRelation().satisfactionDegree(v1, v2, v3);
-					if (s > cd) {
-						cd = s;
-					}
-					if (cd === 1) {
-						break;
-					}
+					if (fn(v1, v2, v3)) break;
 				}
 			}
 		} else {
 			for (const v1 of d1) {
 				for (const v2 of d2) {
 					for (const v3 of d3) {
-						const s: number = this.fuzzyRelation().satisfactionDegree(v1, v2, v3);
-						if (s > cd) {
-							cd = s;
-						}
-						if (cd === 1) {
-							break;
-						}
+						if (fn(v1, v2, v3)) break;
 					}
 				}
 			}
@@ -228,14 +184,21 @@ export class Constraint3 extends Constraint {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * {@override}
 	 */
 	lowestConsistencyDegree(): number {
-		const sd: number = this.satisfactionDegree();
-		if (sd !== Constraint.UNDEFINED) {
-			return sd;
+		const d: number = this.degree();
+		if (d !== Constraint.UNDEFINED) {
+			return d;
 		}
 		let cd: number = 1;
+		const fn = (v1: number, v2: number, v3: number): boolean => {
+			const d: number = this.rel.degree(v1, v2, v3);
+			if (d < cd) {
+				cd = d;
+			}
+			return (cd === 0);
+		}
 		const v1: number = this.#xs[0].value();
 		const v2: number = this.#xs[1].value();
 		const v3: number = this.#xs[2].value();
@@ -245,81 +208,39 @@ export class Constraint3 extends Constraint {
 
 		if (this.#xs[0].isEmpty() && !this.#xs[1].isEmpty() && !this.#xs[2].isEmpty()) {
 			for (const v1 of d1) {
-				const s: number = this.fuzzyRelation().satisfactionDegree(v1, v2, v3);
-				if (s < cd) {
-					cd = s;
-				}
-				if (cd === 0) {
-					break;
-				}
+				if (fn(v1, v2, v3)) break;
 			}
 		} else if (!this.#xs[0].isEmpty() && this.#xs[1].isEmpty() && !this.#xs[2].isEmpty()) {
 			for (const v2 of d2) {
-				const s: number = this.fuzzyRelation().satisfactionDegree(v1, v2, v3);
-				if (s < cd) {
-					cd = s;
-				}
-				if (cd === 0) {
-					break;
-				}
+				if (fn(v1, v2, v3)) break;
 			}
 		} else if (!this.#xs[0].isEmpty() && !this.#xs[1].isEmpty() && this.#xs[2].isEmpty()) {
 			for (const v3 of d3) {
-				const s: number = this.fuzzyRelation().satisfactionDegree(v1, v2, v3);
-				if (s < cd) {
-					cd = s;
-				}
-				if (cd === 0) {
-					break;
-				}
+				if (fn(v1, v2, v3)) break;
 			}
 		} else if (this.#xs[0].isEmpty() && this.#xs[1].isEmpty() && !this.#xs[2].isEmpty()) {
 			for (const v1 of d1) {
 				for (const v2 of d2) {
-					const s: number = this.fuzzyRelation().satisfactionDegree(v1, v2, v3);
-					if (s < cd) {
-						cd = s;
-					}
-					if (cd === 0) {
-						break;
-					}
+					if (fn(v1, v2, v3)) break;
 				}
 			}
 		} else if (this.#xs[0].isEmpty() && !this.#xs[1].isEmpty() && this.#xs[2].isEmpty()) {
 			for (const v1 of d1) {
 				for (const v3 of d3) {
-					const s: number = this.fuzzyRelation().satisfactionDegree(v1, v2, v3);
-					if (s < cd) {
-						cd = s;
-					}
-					if (cd === 0) {
-						break;
-					}
+					if (fn(v1, v2, v3)) break;
 				}
 			}
 		} else if (!this.#xs[0].isEmpty() && this.#xs[1].isEmpty() && this.#xs[2].isEmpty()) {
 			for (const v2 of d2) {
 				for (const v3 of d3) {
-					const s: number = this.fuzzyRelation().satisfactionDegree(v1, v2, v3);
-					if (s < cd) {
-						cd = s;
-					}
-					if (cd === 0) {
-						break;
-					}
+					if (fn(v1, v2, v3)) break;
 				}
 			}
 		} else {
 			for (const v1 of d1) {
 				for (const v2 of d2) {
 					for (const v3 of d3) {
-						const s: number = this.fuzzyRelation().satisfactionDegree(v1, v2, v3);
-						if (s < cd) {
-							cd = s;
-						}
-						if (cd === 0) {
-							break;
-						}
+						if (fn(v1, v2, v3)) break;
 					}
 				}
 			}

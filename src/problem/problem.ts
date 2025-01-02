@@ -2,7 +2,7 @@
  * The class represents a constraint satisfaction problem.
  *
  * @author Takuto Yanagida
- * @version 2024-10-21
+ * @version 2024-12-17
  */
 
 import { Variable } from './variable';
@@ -36,7 +36,9 @@ export class Problem {
 	#xs: Variable[] = [];
 	#cs: Constraint[] = [];
 
-	// Methods for Modifying Factories --------
+
+	// Methods for Modifying Factories -----------------------------------------
+
 
 	/**
 	 * Sets a variable factory.
@@ -52,7 +54,9 @@ export class Problem {
 		this.#fc = fn;
 	}
 
-	// Generation Methods --------
+
+	// Generation Methods ------------------------------------------------------
+
 
 	/**
 	 * Adds a variable to this problem.
@@ -125,7 +129,9 @@ export class Problem {
 	 */
 	createConstraint(args: { name?: string, variables: Variable[], relation: Relation; }): Constraint | null {
 		for (const x of args.variables) {
-			if (x.owner() !== this) return null;
+			if (x.owner() !== this) {
+				return null;
+			}
 		}
 		const c: Constraint = this.#fc(args.relation, args.variables);
 		c.setIndex(this.#cs.length);
@@ -142,7 +148,9 @@ export class Problem {
 		return c;
 	}
 
-	//  Modification Methods --------
+
+	//  Modification Methods ---------------------------------------------------
+
 
 	/**
 	 * Remove the constraint.
@@ -198,10 +206,21 @@ export class Problem {
 		}
 	}
 
-	// Methods for Variables --------
+
+	// Methods for Variables ---------------------------------------------------
+
 
 	/**
-	 * Returns the number of variables in the problem.
+	 * Returns the list of variables.
+	 * The returned list is not allowed to be modified.
+	 * @return The variable list.
+	 */
+	variables(): Variable[] {
+		return this.#xs;
+	}
+
+	/**
+	 * Gets the number of variables in the problem.
 	 * @return Number of variables
 	 */
 	variableSize(): number {
@@ -209,8 +228,8 @@ export class Problem {
 	}
 
 	/**
-	 * Returns a variable by index.
-	 * @param index Index (0 <= index < getVariableSize()).
+	 * Gets a variable by index.
+	 * @param index Index (0 <= index < variableSize()).
 	 * @return A variable
 	 */
 	variableAt(index: number): Variable {
@@ -218,7 +237,7 @@ export class Problem {
 	}
 
 	/**
-	 * Returns a variable by name.
+	 * Gets a variable by name.
 	 * @param name Name.
 	 * @return A variable.
 	 */
@@ -240,16 +259,18 @@ export class Problem {
 		return this.#xs.includes(x);
 	}
 
-	/**
-	 * Returns the list of variables.
-	 * The returned list is not allowed to be modified.
-	 * @return The variable list.
-	 */
-	variables(): Variable[] {
-		return this.#xs;
-	}
 
-	// Methods for Constraints --------
+	// Methods for Constraints -------------------------------------------------
+
+
+	/**
+	 * Returns the list of constraint.
+	 * The returned list is not allowed to be modified.
+	 * @return The constraint list.
+	 */
+	constraints(): Constraint[] {
+		return this.#cs;
+	}
 
 	/**
 	 * Gets the number of constraints in the problem.
@@ -260,7 +281,7 @@ export class Problem {
 	}
 
 	/**
-	 * Returns a constraint with an index.
+	 * Gets a constraint by index.
 	 * @param index Index (0 <= index < constraintSize()).
 	 * @return A constraint.
 	 */
@@ -269,7 +290,7 @@ export class Problem {
 	}
 
 	/**
-	 * Returns a constraint by name.
+	 * Gets a constraint by name.
 	 * @param name Name.
 	 * @return A constraint.
 	 */
@@ -292,15 +313,6 @@ export class Problem {
 	}
 
 	/**
-	 * Returns the list of constraint.
-	 * The returned list is not allowed to be modified.
-	 * @return The constraint list.
-	 */
-	constraints(): Constraint[] {
-		return this.#cs;
-	}
-
-	/**
 	 * Gets the constraints that exist between the specified variables.
 	 * Returns an empty array if no constraints exist.
 	 * If there are multiple constraints between two variables (including the case of n-ary constraints (2 < n)), they will be included in the return array.
@@ -318,54 +330,24 @@ export class Problem {
 		return cs;
 	}
 
-	/**
-	 * Finds the set of worst satisfiable constraints in a fuzzy constraint satisfaction problem.
-	 * @return Array of constraints and worst satisfaction degree.
-	 */
-	constraintsWithWorstSatisfactionDegree(): [Constraint[], number] {
-		const cs: Constraint[] = [];
-		let cur: number = 1;
-		for (const c of this.#cs) {
-			const s: number = c.satisfactionDegree();
-			if (s < cur) {
-				cur = s;
-				cs.length = 0;
-				cs.push(c);
-			} else if (s - cur < Number.MIN_VALUE * 10) {
-				cs.push(c);
-			}
-		}
-		return [cs, cur];
-	}
 
-	// State acquisition methods --------
+	// State acquisition methods -----------------------------------------------
+
 
 	/**
-	 * Returns the worst satisfaction degree for the constraints contained in the fuzzy constraint satisfaction problem.
-	 * If the degree cannot be determined because the variable has not yet been assigned a value or for some other reason, -1 is returned.
-	 * @return Worst satisfaction degree.
+	 * Returns whether the problem is a fuzzy constraint satisfaction problem, i.e., whether it contains fuzzy constraints.
+	 * @return True if it is a fuzzy constraint satisfaction problem.
 	 */
-	worstSatisfactionDegree(): number {
-		let cs: number = 1;
-		for (const c of this.#cs) {
-			const s: number = c.satisfactionDegree();
-			if (s === Constraint.UNDEFINED) return Constraint.UNDEFINED;
-			if (s < cs) cs = s;
-		}
-		return cs;
+	isFuzzy(): boolean {
+		return this.#isFuzzy;
 	}
 
 	/**
-	 * Gets the average of satisfaction degrees of the fuzzy constraints.
-	 * @return Average of satisfaction degrees.
+	 * Gets the constraint density (number of constraints/number of variables).
+	 * @return Constraint density.
 	 */
-	averageSatisfactionDegree(): number {
-		let ave: number = 0;
-		for (const c of this.#cs) {
-			ave += c.satisfactionDegree();
-		}
-		ave = ave / this.#cs.length;
-		return ave;
+	constraintDensity(): number {
+		return this.#cs.length / this.#xs.length;
 	}
 
 	/**
@@ -376,19 +358,9 @@ export class Problem {
 		let n: number = 0;
 
 		for (const x of this.#xs) {
-			if (x.isEmpty()) {
-				n++;
-			}
+			n += x.isEmpty() ? 1 : 0;
 		}
 		return n;
-	}
-
-	/**
-	 * Gets the constraint density (number of constraints/number of variables).
-	 * @return Constraint density.
-	 */
-	constraintDensity(): number {
-		return this.constraintSize() / this.variableSize();
 	}
 
 	/**
@@ -405,11 +377,114 @@ export class Problem {
 	}
 
 	/**
-	 * Returns whether the problem is a fuzzy constraint satisfaction problem, i.e., whether it contains fuzzy constraints.
-	 * @return True if it is a fuzzy constraint satisfaction problem.
+	 * Returns the worst satisfaction degree for the constraints contained in the fuzzy constraint satisfaction problem.
+	 * If the degree cannot be determined because the variable has not yet been assigned a value or for some other reason, -1 is returned.
+	 * @return Worst satisfaction degree.
 	 */
-	isFuzzy(): boolean {
-		return this.#isFuzzy;
+	degree(): number {
+		let wd: number = 1;
+		for (const c of this.#cs) {
+			const d: number = c.degree();
+			if (d === Constraint.UNDEFINED) {
+				return d;
+			}
+			if (d < wd) {
+				wd = d;
+			}
+		}
+		return wd;
+	}
+
+	/**
+	 * Finds the set of worst satisfiable constraints in a fuzzy constraint satisfaction problem.
+	 * @return Array of constraints and worst satisfaction degree.
+	 */
+	constraintsWithDegree(): [Constraint[], number] {
+		const cs: Constraint[] = [];
+		let cur: number = 1;
+		for (const c of this.#cs) {
+			const s: number = c.degree();
+			if (s < cur) {
+				cur = s;
+				cs.length = 0;
+				cs.push(c);
+			} else if (s - cur < Number.MIN_VALUE * 10) {
+				cs.push(c);
+			}
+		}
+		return [cs, cur];
+	}
+
+	/**
+	 * Gets the average of satisfaction degrees of the fuzzy constraints.
+	 * @return Average of satisfaction degrees.
+	 */
+	averageDegree(): number {
+		let s: number = 0;
+		for (const c of this.#cs) {
+			s += c.degree();
+		}
+		return s / this.#cs.length;
+	}
+
+	/**
+	 * Returns the rate of constraints that are satisfied out of all constraints.
+	 * @return Rate of satisfied constraints.
+	 */
+	ratio(): number {
+		return this.satisfiedConstraintSize() / this.#cs.length;
+	}
+
+	/**
+	 * Returns the number of satisfied constraints.
+	 * Undefined constraints are ignored.
+	 * @return Number of satisfied constraints.
+	 */
+	satisfiedConstraintSize(): number {
+		let n: number = 0;
+		for (const c of this.#cs) {
+			n += (c.isSatisfied() === 1) ? 1 : 0;
+		}
+		return n;
+	}
+
+	/**
+	 * Returns the number of violating constraints.
+	 * Undefined constraints are ignored.
+	 * @return Number of violating constraints.
+	 */
+	violatingConstraintSize(): number {
+		return this.#cs.length - this.satisfiedConstraintSize();
+	}
+
+	/**
+	 * Returns a list of satisfied constraints.
+	 * Undefined constraints are ignored.
+	 * @return Array of constraints.
+	 */
+	satisfiedConstraints(): Constraint[] {
+		const cs: Constraint[] = [];
+		for (const c of this.#cs) {
+			if (c.isSatisfied() === 1) {
+				cs.push(c);
+			}
+		}
+		return cs;
+	}
+
+	/**
+	 * Returns a list of violating constraints.
+	 * Undefined constraints are ignored.
+	 * @return Array of constraints.
+	 */
+	violatingConstraints(): Constraint[] {
+		const cs: Constraint[] = [];
+		for (const c of this.#cs) {
+			if (c.isSatisfied() !== 1) {
+				cs.push(c);
+			}
+		}
+		return cs;
 	}
 
 }

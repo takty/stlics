@@ -2,7 +2,7 @@
  * Relations.
  *
  * @author Takuto Yanagida
- * @version 2024-10-21
+ * @version 2024-12-17
  */
 
 import { CrispRelation, FuzzyRelation } from './relation';
@@ -11,11 +11,12 @@ import { Domain } from './domain';
 /**
  * Crisp relations defined by functions.
  */
-export class CrispRelationFunction implements CrispRelation {
+export class CrispRelationFunction extends CrispRelation {
 
 	#fn: (...vs: number[]) => -1 | 0 | 1;
 
 	constructor(fn: (...vs: number[]) => -1 | 0 | 1) {
+		super();
 		this.#fn = fn;
 	}
 
@@ -33,11 +34,12 @@ export class CrispRelationFunction implements CrispRelation {
 /**
  * Fuzzy relations defined by functions.
  */
-export class FuzzyRelationFunction implements FuzzyRelation {
+export class FuzzyRelationFunction extends FuzzyRelation {
 
 	#fn: (...vs: number[]) => number;
 
 	constructor(fn: (...vs: number[]) => number) {
+		super();
 		this.#fn = fn;
 	}
 
@@ -46,7 +48,7 @@ export class FuzzyRelationFunction implements FuzzyRelation {
 	 * @param vs Values of each variable
 	 * @return A satisfaction degree d (0 <= d <= 1).
 	 */
-	satisfactionDegree(...vs: number[]): number {
+	degree(...vs: number[]): number {
 		return this.#fn(...vs);
 	}
 
@@ -59,13 +61,14 @@ export class FuzzyRelationFunction implements FuzzyRelation {
 /**
  * Crisp relations defined by tables.
  */
-export class CrispTabledRelation implements CrispRelation {
+export class CrispTabledRelation extends CrispRelation {
 
 	#es: (0 | 1)[];
 	#ds: Domain[];
 	#ms: number[];
 
 	constructor(elms: (0 | 1)[], doms: Domain[]) {
+		super();
 		this.#es = [...elms];
 		this.#ds = [...doms];
 		this.#ms = new Array(doms.length);
@@ -73,7 +76,7 @@ export class CrispTabledRelation implements CrispRelation {
 		let m: number = 1;
 		for (let i: number = this.#ms.length - 1; i >= 0; --i) {
 			this.#ms[i] = m;
-			m *= doms[i].size();
+			m *= this.#ds[i].size();
 		}
 	}
 
@@ -98,13 +101,14 @@ export class CrispTabledRelation implements CrispRelation {
 /**
  * Fuzzy relations defined by tables.
  */
-export class FuzzyTabledRelation implements FuzzyRelation {
+export class FuzzyTabledRelation extends FuzzyRelation {
 
 	#es: number[];
 	#ds: Domain[];
 	#ms: number[];
 
 	constructor(elms: number[], doms: Domain[]) {
+		super();
 		this.#es = [...elms];
 		this.#ds = [...doms];
 		this.#ms = new Array(doms.length);
@@ -112,7 +116,7 @@ export class FuzzyTabledRelation implements FuzzyRelation {
 		let m: number = 1;
 		for (let i: number = this.#ms.length - 1; i >= 0; --i) {
 			this.#ms[i] = m;
-			m *= doms[i].size();
+			m *= this.#ds[i].size();
 		}
 	}
 
@@ -121,7 +125,7 @@ export class FuzzyTabledRelation implements FuzzyRelation {
 	 * @param vs Values of each variable
 	 * @return A satisfaction degree d (0 <= d <= 1).
 	 */
-	satisfactionDegree(...vs: number[]): number {
+	degree(...vs: number[]): number {
 		if (this.#ms.length !== vs.length) {
 			throw new RangeError();
 		}
@@ -138,36 +142,25 @@ export class FuzzyTabledRelation implements FuzzyRelation {
 // -----------------------------------------------------------------------------
 
 
-/**
- * Crisp relation views of fuzzy relations.
- */
-export class CrispRelationView implements CrispRelation {
+export class CrispFuzzyRelation extends CrispRelation {
 
-	#that: FuzzyRelation;
+	#th: number;
+	#fr: FuzzyRelation;
 
-	constructor(that: FuzzyRelation) {
-		this.#that = that;
+	constructor(fr: FuzzyRelation, th: number) {
+		super();
+		this.#fr = fr;
+		this.#th = th;
 	}
 
+	/**
+	 * Gets whether or not the relation is satisfied in this crisp relation.
+	 * @param vs Values of each variable
+	 * @return Whether or not it is satisfied.
+	 */
 	isSatisfied(...vs: number[]): -1 | 0 | 1 {
-		return this.#that.satisfactionDegree(...vs) === 1 ? 1 : 0;
-	}
-
-}
-
-/**
- * Fuzzy relation views of crisp relations.
- */
-export class FuzzyRelationView implements FuzzyRelation {
-
-	#that: CrispRelation;
-
-	constructor(that: CrispRelation) {
-		this.#that = that;
-	}
-
-	satisfactionDegree(...vs: number[]): number {
-		return this.#that.isSatisfied(...vs) ? 1 : 0;
+		const d: number = this.#fr.degree(...vs);
+		return (0 < d && d < this.#th) ? 0 : d as -1 | 0 | 1;
 	}
 
 }

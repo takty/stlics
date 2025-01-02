@@ -3,12 +3,12 @@
  * The constructor is not called directly, since it is created by the Problem.
  *
  * @author Takuto Yanagida
- * @version 2024-10-21
+ * @version 2024-12-17
  */
 
 import { Constraint } from './constraint';
-import { Variable } from './variable';
 import { Relation } from './relation';
+import { Variable } from './variable';
 
 export class Constraint1 extends Constraint {
 
@@ -21,35 +21,35 @@ export class Constraint1 extends Constraint {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * {@override}
 	 */
 	size(): number {
 		return 1;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * {@override}
 	 */
 	at(index: number): Variable | undefined {
 		return this.#xs.at(index);
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * {@override}
 	 */
 	has(x: Variable) {
 		return x === this.#xs[0];
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * {@override}
 	 */
 	indexOf(x: Variable): number {
 		return (x === this.#xs[0]) ? 0 : -1;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * {@override}
 	 */
 	neighbors(): Constraint[] {
 		const cs: Constraint[] = [];
@@ -63,7 +63,7 @@ export class Constraint1 extends Constraint {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * {@override}
 	 */
 	[Symbol.iterator](): Iterator<Variable> {
 		return this.#xs[Symbol.iterator]();
@@ -74,79 +74,79 @@ export class Constraint1 extends Constraint {
 
 
 	/**
-	 * {@inheritDoc}
+	 * {@override}
 	 */
 	emptyVariableSize(): number {
 		return this.#xs[0].isEmpty() ? 1 : 0;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * {@override}
 	 */
 	isDefined(): boolean {
 		return !this.#xs[0].isEmpty();
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * {@override}
 	 */
 	isSatisfied(): -1 | 0 | 1 {
 		if (this.#xs[0].isEmpty()) {
 			return Constraint.UNDEFINED;
 		}
-		return this.crispRelation().isSatisfied(this.#xs[0].value()) ? 1 : 0;
+		return this.rel.isSatisfied(this.#xs[0].value()) ? 1 : 0;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * {@override}
 	 */
-	satisfactionDegree(): number {
+	degree(): number {
 		if (this.#xs[0].isEmpty()) {
 			return Constraint.UNDEFINED;
 		}
-		return this.fuzzyRelation().satisfactionDegree(this.#xs[0].value());
+		return this.rel.degree(this.#xs[0].value());
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * {@override}
 	 */
 	highestConsistencyDegree(): number {
-		const sd: number = this.satisfactionDegree();
-		if (sd !== Constraint.UNDEFINED) {
-			return sd;
+		const d: number = this.degree();
+		if (d !== Constraint.UNDEFINED) {
+			return d;
 		}
 		let cd: number = 0;
-
+		const fn = (v: number): boolean => {
+			const d: number = this.rel.degree(v);
+			if (d > cd) {
+				cd = d;
+			}
+			return (cd === 1);
+		}
 		for (const v of this.#xs[0].domain()) {
-			const s: number = this.fuzzyRelation().satisfactionDegree(v);
-			if (s > cd) {
-				cd = s;
-			}
-			if (cd === 1) {
-				break;
-			}
+			if (fn(v)) break;
 		}
 		return cd;
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * {@override}
 	 */
 	lowestConsistencyDegree(): number {
-		const sd: number = this.satisfactionDegree();
-		if (sd !== Constraint.UNDEFINED) {
-			return sd;
+		const d: number = this.degree();
+		if (d !== Constraint.UNDEFINED) {
+			return d;
 		}
 		let cd: number = 1;
-
+		const fn = (v: number): boolean => {
+			const d: number = this.rel.degree(v);
+			if (d < cd) {
+				cd = d;
+			}
+			return (cd === 0);
+		}
 		for (const v of this.#xs[0].domain()) {
-			const s: number = this.fuzzyRelation().satisfactionDegree(v);
-			if (s < cd) {
-				cd = s;
-			}
-			if (cd === 0) {
-				break;
-			}
+			if (fn(v)) break;
 		}
 		return cd;
 	}

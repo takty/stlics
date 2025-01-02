@@ -2,13 +2,13 @@
  * The class represents a constraint.
  *
  * @author Takuto Yanagida
- * @version 2024-10-21
+ * @version 2024-12-17
  */
 
 import { Element } from './element';
 import { Variable } from './variable';
 import { Relation } from './relation';
-import { CrispRelation, FuzzyRelation } from './relation';
+import { FuzzyRelation } from './relation';
 
 export abstract class Constraint extends Element {
 
@@ -26,19 +26,11 @@ export abstract class Constraint extends Element {
 	}
 
 	/**
-	 * Returns the crisp relation between variables.
+	 * Returns the relation between variables.
 	 * @return Relation.
 	 */
-	crispRelation(): CrispRelation {
-		return this.rel as CrispRelation;
-	}
-
-	/**
-	 * Returns the fuzzy relation between variables.
-	 * @return Relation.
-	 */
-	fuzzyRelation(): FuzzyRelation {
-		return this.rel as FuzzyRelation;
+	relation(): Relation {
+		return this.rel;
 	}
 
 	/**
@@ -46,7 +38,7 @@ export abstract class Constraint extends Element {
 	 * @return True if it is fuzzy constraint.
 	 */
 	isFuzzy(): boolean {
-		return 'satisfactionDegree' in this.rel;
+		return this.rel instanceof FuzzyRelation;
 	}
 
 	/**
@@ -56,7 +48,7 @@ export abstract class Constraint extends Element {
 	toString(): string {
 		const n = this.name();
 		const np = n ? `(${n})` : '';
-		const s = this.satisfactionDegree();
+		const s = this.degree();
 		const sn = s === Constraint.UNDEFINED ? 'UNDEFINED' : ('' + s);
 
 		return `c${this.index()}${np} = ${sn}`;
@@ -128,12 +120,12 @@ export abstract class Constraint extends Element {
 	 * Gets the current satisfaction degree.
 	 * @return Degree 0 - 1, UNDEFINED if undefined.
 	 */
-	abstract satisfactionDegree(): number;
+	abstract degree(): number;
 
 	/**
 	 * Calculates the highest consistency degree.
 	 * That is, it seeks the highest satisfaction degree of the possible combinations of variable assignments for a given constraint.
-	 * When all associated variables have been assigned values, it returns the same value as getSatisfactionDegree().
+	 * When all associated variables have been assigned values, it returns the same value as degree().
 	 * @return The highest consistency degree.
 	 */
 	abstract highestConsistencyDegree(): number;
@@ -141,7 +133,7 @@ export abstract class Constraint extends Element {
 	/**
 	 * Calculates the lowest consistency degree.
 	 * That is, it seeks the lowest satisfaction degree of the possible combinations of variable assignments for a given constraint.
-	 * When all associated variables have been assigned values, it returns the same value as getSatisfactionDegree().
+	 * When all associated variables have been assigned values, it returns the same value as degree().
 	 * @return The lowest consistency degree.
 	 */
 	abstract lowestConsistencyDegree(): number;
