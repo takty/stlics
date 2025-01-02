@@ -96,10 +96,14 @@ export class ForwardChecking extends Solver {
 					break;
 				}
 			}
-			for (const dp of this.#dps) dp.recover(level);
+			for (const dp of this.#dps) {
+				dp.recover(level);
+			}
 		}
 		if (ret === null) {  // When searching back to the parent, undo the branch pruning here.
-			for (const dp of this.#dps) dp.recover(level);
+			for (const dp of this.#dps) {
+				dp.recover(level);
+			}
 			x.clear();
 		}
 		return ret;
