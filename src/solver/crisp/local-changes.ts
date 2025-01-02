@@ -2,7 +2,7 @@
  * Class implements the local changes method.
  *
  * @author Takuto Yanagida
- * @version 2024-12-31
+ * @version 2025-01-03
  */
 
 import { Problem } from '../../problem/problem';
@@ -15,11 +15,8 @@ export class LocalChanges extends Solver {
 
 	#globalReturn: boolean = false;
 
-	constructor(p: Problem, unassignAll: boolean = false) {
+	constructor(p: Problem) {
 		super(p);
-		if (unassignAll) {
-			this.pro.clearAllVariables();
-		}
 	}
 
 	name(): string {
