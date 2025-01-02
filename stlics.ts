@@ -2,7 +2,6 @@ export * from './src/problem/problem';
 export * from './src/problem/element';
 
 export * from './src/problem/variable';
-export * from './src/problem/variables';
 
 export * from './src/problem/domain';
 export * from './src/problem/domain-arbitrary';
@@ -21,7 +20,6 @@ export * from './src/problem/relation';
 
 
 export * from './src/solver/solver';
-export * from './src/solver/solver-factory-static';
 export * from './src/solver/monitor';
 
 export * from './src/solver/fuzzy/flexible-local-changes';
@@ -44,12 +42,16 @@ export * from './src/solver/filter/ac3';
 export * from './src/solver/filter/node-consistency';
 export * from './src/solver/filter/post-stabilizer';
 
+export * from './src/solver/misc/assignment';
+export * from './src/solver/misc/assignment-list';
+export * from './src/solver/misc/domain-pruner';
+
 
 // -----------------------------------------------------------------------------
 
 
-export * from './src/util/problems';
-export * from './src/util/assignment';
-export * from './src/util/assignment-list';
-export * from './src/util/domain-pruner';
 export * from './src/util/loop-detector';
+export * from './src/util/problems';
+export * from './src/util/variables';
+export * from './src/util/relations';
+export * from './src/util/solver-factory';
