@@ -6,8 +6,8 @@
  */
 
 import { Assignment } from './assignment';
-import { Variable } from '../problem/variable';
-import { Problem } from '../problem/problem';
+import { Variable } from '../../problem/variable';
+import { Problem } from '../../problem/problem';
 
 export class AssignmentList {
 

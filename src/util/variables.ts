@@ -2,12 +2,12 @@
  * Classes of utility variables.
  *
  * @author Takuto Yanagida
- * @version 2024-10-21
+ * @version 2025-01-02
  */
 
-import { Problem } from './problem';
-import { Variable } from './variable';
-import { Domain } from './domain';
+import { Problem } from '../problem/problem';
+import { Variable } from '../problem/variable';
+import { Domain } from '../problem/domain';
 
 /**
  * Class that represents an observable variable.

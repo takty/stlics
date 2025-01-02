@@ -2,7 +2,7 @@
  * The class for solvers for finding solutions to CSPs.
  *
  * @author Takuto Yanagida
- * @version 2024-12-31
+ * @version 2025-01-03
  */
 
 import { Problem } from '../problem/problem';
@@ -57,7 +57,7 @@ export class Solver {
 	 * The solve method calls this method and returns the return value of this method.
 	 * @return True if the algorithm succeeds,
 	 */
-	protected exec(): boolean {
+	exec(): boolean {
 		return false;
 	}
 

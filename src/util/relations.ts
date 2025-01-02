@@ -2,11 +2,11 @@
  * Relations.
  *
  * @author Takuto Yanagida
- * @version 2024-12-17
+ * @version 2025-01-02
  */
 
-import { CrispRelation, FuzzyRelation } from './relation';
-import { Domain } from './domain';
+import { CrispRelation, FuzzyRelation } from '../problem/relation';
+import { Domain } from '../problem/domain';
 
 /**
  * Crisp relations defined by functions.

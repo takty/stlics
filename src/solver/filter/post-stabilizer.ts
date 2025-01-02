@@ -2,13 +2,13 @@
  * Class of post-stabilization.
  *
  * @author Takuto Yanagida
- * @version 2024-12-23
+ * @version 2025-01-03
  */
 
 import { Problem } from '../../problem/problem';
 import { Variable } from '../../problem/variable';
-import { Assignment } from '../../util/assignment';
-import { AssignmentList } from '../../util/assignment-list';
+import { Assignment } from '../misc/assignment';
+import { AssignmentList } from '../misc/assignment-list';
 import { Solver } from '../solver';
 
 /**

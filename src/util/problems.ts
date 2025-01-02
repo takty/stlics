@@ -2,16 +2,16 @@
  * Utility class for constraint satisfaction problems.
  *
  * @author Takuto Yanagida
- * @version 2024-12-29
+ * @version 2025-01-02
  */
 
 import { Problem } from '../problem/problem';
 import { Variable } from '../problem/variable';
-import { ImaginaryVariable } from '../problem/variables';
 import { Constraint } from '../problem/constraint';
 import { Domain } from '../problem/domain';
 import { FuzzyRelation, Relation } from '../problem/relation';
-import { CrispFuzzyRelation } from '../problem/relations';
+import { ImaginaryVariable } from './variables';
+import { CrispFuzzyRelation } from './relations';
 
 /**
  * Create a table that caches constraints between two variables.

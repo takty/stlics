@@ -10,8 +10,8 @@ import { Problem } from '../../problem/problem';
 import { Variable } from '../../problem/variable';
 import { Constraint } from '../../problem/constraint';
 import { Domain } from '../../problem/domain';
-import { DomainPruner, indexOfVariableWithMRV } from '../../util/domain-pruner';
-import { AssignmentList } from '../../util/assignment-list';
+import { AssignmentList } from '../misc/assignment-list';
+import { DomainPruner, indexOfVariableWithMRV } from '../misc/domain-pruner';
 import { createRelatedConstraintTable } from '../../util/problems';
 import { Solver } from '../solver';
 

@@ -5,7 +5,7 @@
  * @version 2024-12-23
  */
 
-import { AssignmentList } from '../util/assignment-list';
+import { AssignmentList } from './misc/assignment-list';
 
 export class Monitor {
 

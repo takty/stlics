@@ -8,7 +8,7 @@
 import { Problem } from '../../problem/problem';
 import { Variable } from '../../problem/variable';
 import { Constraint } from '../../problem/constraint';
-import { AssignmentList } from '../../util/assignment-list';
+import { AssignmentList } from '../misc/assignment-list';
 import { Solver } from '../solver';
 
 export class LocalChanges extends Solver {

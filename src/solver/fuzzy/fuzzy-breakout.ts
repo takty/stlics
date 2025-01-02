@@ -2,14 +2,14 @@
  * Class implements a solver using the breakout method for fuzzy CSP.
  *
  * @author Takuto Yanagida
- * @version 2024-12-22
+ * @version 2025-01-03
  */
 
 import { Problem } from '../../problem/problem';
 import { Variable } from '../../problem/variable';
 import { Constraint } from '../../problem/constraint';
-import { Assignment } from '../../util/assignment';
-import { AssignmentList } from '../../util/assignment-list';
+import { Assignment } from '../misc/assignment';
+import { AssignmentList } from '../misc/assignment-list';
 import { Solver } from '../solver';
 
 export class FuzzyBreakout extends Solver {

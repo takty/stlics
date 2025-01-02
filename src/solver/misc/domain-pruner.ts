@@ -5,8 +5,8 @@
  * @version 2025-01-02
  */
 
-import { Variable } from '../problem/variable';
-import { Domain } from '../problem/domain';
+import { Variable } from '../../problem/variable';
+import { Domain } from '../../problem/domain';
 
 export class DomainPruner {
 

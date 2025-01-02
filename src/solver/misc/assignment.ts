@@ -5,7 +5,7 @@
  * @version 2025-01-02
  */
 
-import { Variable } from '../problem/variable';
+import { Variable } from '../../problem/variable';
 
 export class Assignment {
 

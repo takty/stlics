@@ -3,13 +3,13 @@
  * The implementation is optimized by converting recursive calls to loops.
  *
  * @author Takuto Yanagida
- * @version 2024-12-23
+ * @version 2025-01-03
  */
 
 import { Problem } from '../../problem/problem';
 import { Variable } from '../../problem/variable';
 import { Constraint } from '../../problem/constraint';
-import { AssignmentList } from '../../util/assignment-list';
+import { AssignmentList } from '../misc/assignment-list';
 import { Solver } from '../solver';
 
 export class FlexibleLocalChangesEx extends Solver {
@@ -293,7 +293,7 @@ export class FlexibleLocalChangesEx extends Solver {
 			}
 		}
 		result = this.pro.degree();
-		return result > wsd && result > 0 && (this.#globalReturn !== 0 || this.targetDeg === null);
+		return result > wsd && result > 0 && (this.#globalReturn !== 0 || this.monitor.getTarget() === null);
 	}
 
 }
