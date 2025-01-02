@@ -4,7 +4,7 @@
  * If two queens are in a position to be taken, the farther apart they are, the higher the satisfaction degree.
  *
  * @author Takuto Yanagida
- * @version 2024-10-21
+ * @version 2024-12-17
  */
 
 import { Problem } from '../problem/problem';
@@ -37,30 +37,34 @@ export class N_1_queens extends Model {
 	createProblem(p: Problem): Problem {
 		const xs: Variable[] = [];
 		for (let i: number = 0; i < this.#size; ++i) {
-			xs.push(p.createVariable({ name: `Queen ${i}`, domain: p.createDomain({ min: 1, max: this.#size - 1 }) as Domain, value: 1 }));
+			const x: Variable = p.createVariable({
+				domain: p.createDomain({ min: 1, max: this.#size - 1 }) as Domain,
+				value : 1,
+				name  : `Queen ${i}`,
+			});
+			xs.push(x);
 		}
 		for (let i: number = 0; i < this.#size; ++i) {
 			for (let j: number = i + 1; j < this.#size; ++j) {
-				p.createConstraint({ relation: new FuzzyQueenRelation(i, j, this.#size), variables: [xs[i], xs[j]] });
+				p.createConstraint({
+					relation : new FuzzyQueenRelation(i, j, this.#size),
+					variables: [xs[i], xs[j]],
+				});
 			}
 		}
 		return p;
 	}
 
-	printResult(p: Problem) {
+	printResult(p: Problem): void {
 		for (let y: number = 0; y < this.#size; ++y) {
 			let l: string = '';
 			if (p.variableAt(y).isEmpty()) {
-				for (let x: number = 0; x < this.#size; ++x) {
+				for (let x: number = 0; x < this.#size - 1; ++x) {
 					l += '- ';
 				}
 			} else {
-				for (let x: number = 0; x < this.#size; ++x) {
-					if (p.variableAt(y).value() - 1 === x) {
-						l += 'o ';
-					} else {
-						l += '- ';
-					}
+				for (let x: number = 0; x < this.#size - 1; ++x) {
+					l += (p.variableAt(y).value() - 1 === x) ? 'o ' : '- ';
 				}
 			}
 			this._debugOutput(l);
@@ -69,17 +73,18 @@ export class N_1_queens extends Model {
 
 }
 
-class FuzzyQueenRelation implements FuzzyRelation {
+class FuzzyQueenRelation extends FuzzyRelation {
 
 	#dist: number;
 	#size: number;
 
 	constructor(i: number, j: number, size: number) {
+		super();
 		this.#dist = j - i;
 		this.#size = size;
 	}
 
-	satisfactionDegree(v1: number, v2: number): number {
+	degree(v1: number, v2: number): number {
 		if ((v1 !== v2) && (v1 !== v2 + this.#dist) && (v1 !== v2 - this.#dist)) return 1;
 		return (this.#dist - 1) / (this.#size - 1);
 	}
