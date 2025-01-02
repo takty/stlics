@@ -2,31 +2,34 @@
  * This class holds the branch pruning states for a domain.
  *
  * @author Takuto Yanagida
- * @version 2023-03-25
+ * @version 2025-01-02
  */
+
+import { Variable } from '../problem/variable';
+import { Domain } from '../problem/domain';
 
 export class DomainPruner {
 
-	static #UNHIDDEN: number = -1;
+	static #UNPRUNED: number = Number.MIN_SAFE_INTEGER;
 
-	#hiddenLevels: number[];
-	#hiddenSize: number = 0;
+	#prunedLvs : number[];
+	#prunedSize: number = 0;
 
 	/**
 	 * Generates a class that holds branch pruning states for a domain.
 	 * @param size Size of the corresponding domain
 	 */
 	constructor(size: number) {
-		this.#hiddenLevels = new Array(size);
-		this.#hiddenLevels.fill(DomainPruner.#UNHIDDEN);
+		this.#prunedLvs = new Array(size);
+		this.#prunedLvs.fill(DomainPruner.#UNPRUNED);
 	}
 
 	/**
 	 * Returns the size of the erased element.
 	 * @return Size of the erased element.
 	 */
-	hiddenSize(): number {
-		return this.#hiddenSize;
+	prunedSize(): number {
+		return this.#prunedSize;
 	}
 
 	/**
@@ -34,11 +37,13 @@ export class DomainPruner {
 	 * @param index Index.
 	 * @param level Level.
 	 */
-	hide(index: number, level: number): void {
-		if (this.#hiddenLevels[index] === DomainPruner.#UNHIDDEN) {
-			++this.#hiddenSize;
+	prune(index: number, level: number): void {
+		if (this.#prunedLvs[index] === DomainPruner.#UNPRUNED) {
+			++this.#prunedSize;
+		} else {
+			throw new Error();
 		}
-		this.#hiddenLevels[index] = level;
+		this.#prunedLvs[index] = level;
 	}
 
 	/**
@@ -47,7 +52,7 @@ export class DomainPruner {
 	 * @return True if empty.
 	 */
 	isEmpty(): boolean {
-		return this.#hiddenLevels.length === this.#hiddenSize;
+		return this.#prunedLvs.length === this.#prunedSize;
 	}
 
 	/**
@@ -55,19 +60,19 @@ export class DomainPruner {
 	 * @param index Index.
 	 * @return True if erased.
 	 */
-	isValueHidden(index: number): boolean {
-		return this.#hiddenLevels[index] !== DomainPruner.#UNHIDDEN;
+	isPruned(index: number): boolean {
+		return this.#prunedLvs[index] !== DomainPruner.#UNPRUNED;
 	}
 
 	/**
 	 * Restores the value that had been erased, by specifying a level.
 	 * @param level Level
 	 */
-	reveal(level: number): void {
-		for (let i = 0; i < this.#hiddenLevels.length; ++i) {
-			if (this.#hiddenLevels[i] === level) {
-				this.#hiddenLevels[i] = DomainPruner.#UNHIDDEN;
-				--this.#hiddenSize;
+	recover(level: number): void {
+		for (let i: number = 0; i < this.#prunedLvs.length; ++i) {
+			if (this.#prunedLvs[i] === level) {
+				this.#prunedLvs[i] = DomainPruner.#UNPRUNED;
+				--this.#prunedSize;
 			}
 		}
 	}
@@ -75,9 +80,72 @@ export class DomainPruner {
 	/**
 	 * Restores all erased values.
 	 */
-	revealAll(): void {
-		this.#hiddenLevels.fill(DomainPruner.#UNHIDDEN);
-		this.#hiddenSize = 0;
+	recoverAll(): void {
+		this.#prunedLvs.fill(DomainPruner.#UNPRUNED);
+		this.#prunedSize = 0;
 	}
 
+}
+
+
+// -----------------------------------------------------------------------------
+
+
+/**
+ * Assigns a domain pruner to each variable.
+ * @param xs An array of variables.
+ */
+export function assignDomainPruner(xs: Variable[]): void {
+	for (const x of xs) {
+		x.solverObject = new DomainPruner(x.domain().size());
+	}
+}
+
+/**
+ * Un-assigns a domain pruner from each variable.
+ * @param xs An array of variables.
+ */
+export function unassignDomainPruner(xs: Variable[]): void {
+	for (const x of xs) {
+		x.solverObject = null;
+	}
+}
+
+/**
+ * Recovers all pruned values of each variable up to the specified level.
+ * @param xs An array of variables.
+ * @param level Level.
+ */
+export function recover(xs: Variable[], level: number): void {
+	for (const x of xs) {
+		x.solverObject.recover(level);
+	}
+}
+
+
+// -----------------------------------------------------------------------------
+
+
+/**
+ * Returns the index of the variable with the minimum remaining values (MRV).
+ * @param xs An array of variables.
+ * @return The index of the variable with the minimum remaining values.
+ */
+export function indexOfVariableWithMRV(xs: Variable[]): number {
+	let index: number = 0;
+	let size : number = Number.MAX_VALUE;
+
+	for (let i: number = 0; i < xs.length; ++i) {
+		const x: Variable = xs[i];
+		if (!x.isEmpty()) {
+			continue;
+		}
+		const d: Domain = x.domain();
+		const s: number = d.size() - x.solverObject.prunedSize();
+		if (s < size) {
+			size  = s;
+			index = i;
+		}
+	}
+	return index;
 }
