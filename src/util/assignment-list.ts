@@ -2,7 +2,7 @@
  * The class represents multiple variables and their assignments.
  *
  * @author Takuto Yanagida
- * @version 2024-10-22
+ * @version 2025-01-02
  */
 
 import { Assignment } from './assignment';
@@ -11,6 +11,11 @@ import { Problem } from '../problem/problem';
 
 export class AssignmentList {
 
+	/**
+	 * Creates an assignment list from variables.
+	 * @param xs Variables.
+	 * @return Assignment list.
+	 */
 	static fromVariables(xs: Iterable<Variable>): AssignmentList {
 		const al = new AssignmentList();
 		al.setVariables(xs);
@@ -22,6 +27,10 @@ export class AssignmentList {
 	constructor() {
 	}
 
+	/**
+	 * Sets a problem.
+	 * @param p Problem.
+	 */
 	setProblem(p: Problem): void {
 		this.#as.length = 0;
 		for (const x of p.variables()) {
@@ -29,6 +38,10 @@ export class AssignmentList {
 		}
 	}
 
+	/**
+	 * Sets assignments.
+	 * @param al Assignments.
+	 */
 	setAssignmentList(al: AssignmentList): void {
 		this.#as.length = 0;
 		for (const a of al) {
@@ -36,6 +49,10 @@ export class AssignmentList {
 		}
 	}
 
+	/**
+	 * Sets variables.
+	 * @param xs Variables.
+	 */
 	setVariables(xs: Iterable<Variable>): void {
 		this.#as.length = 0;
 		for (const x of xs) {
@@ -43,10 +60,18 @@ export class AssignmentList {
 		}
 	}
 
+	/**
+	 * Adds a variable and its value.
+	 * @param variable Variable.
+	 * @param value Value.
+	 */
 	addVariable(variable: Variable, value: number | null = null): void {
 		this.#as.push(new Assignment({ variable, value }));
 	}
 
+	/**
+	 * Applies all assignments.
+	 */
 	apply(): void {
 		for (const a of this.#as) a.apply();
 	}
@@ -74,6 +99,10 @@ export class AssignmentList {
 		return this.#as.length;
 	}
 
+	/**
+	 * Gets the number of different assignments.
+	 * @return Number of different assignments.
+	 */
 	differenceSize(): number {
 		let diff: number = 0;
 
