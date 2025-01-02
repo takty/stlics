@@ -1,4 +1,4 @@
-import { Problem, CrispProblem, Solver, SolverFactory } from '../../../stlics.ts';
+import { Problem, Solver, SolverFactory, Monitor } from '../../../stlics.ts';
 import { N_queens } from '../../_model/n-queens';
 import { createLogOutput } from '../util';
 
@@ -15,18 +15,23 @@ document.addEventListener('DOMContentLoaded', async (): Promise<void> => {
 
 	for (let i: number = 0; i < COUNT; ++i) {
 		const nq = new N_queens(QUEEN_NUM);
-		const p: Problem = nq.createProblem(new CrispProblem());
+		const p: Problem = nq.createProblem(new Problem());
 		const t: number = Date.now();  // Start time measurement
 
-		const s = await SolverFactory.createSolver(sn, p) as Solver;
-		// s.setTargetRate(null);
-		s.setTimeLimit(10000);
-		s.setDebugOutput(log);
-		const result: boolean = s.solve();
+		const mon = new Monitor();
+		mon.setTimeLimit(5000);
+		mon.setTarget(1);
+		mon.setDebugOutput(log);
+		mon.setDebugMode(true);
 
-		const time: number = Date.now() - t;  // Stop time measurement
-		const rate: number = (p as CrispProblem).satisfiedConstraintRate();
-		log(`solver: ${s.name()}   ${result ? 'success' : 'failure'}`);
+		const s = await SolverFactory.createSolver(sn, p) as Solver;
+		s.setMonitor(mon);
+
+		const res : boolean = s.solve();
+		const time: number  = Date.now() - t;  // Stop time measurement
+		const rate: number  = p.ratio();
+
+		log(`solver: ${s.name()}   ${res ? 'success' : 'failure'}`);
 		log(`trial: ${i + 1}   time: ${time}   rate: ${rate}`);
 		nq.setDebugOutput(log);
 		nq.printResult(p);

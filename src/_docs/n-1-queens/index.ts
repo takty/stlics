@@ -2,7 +2,7 @@ import { SolverFactory } from '../../../stlics.ts';
 import { waitFor, createLogOutput } from '../util.js';
 
 const COUNT       = 1;  // Interaction count
-const SOLVER_TYPE = 4;
+const SOLVER_TYPE = 0;
 const TARGET_RATE = 0.8;
 const QUEEN_NUM   = 20;
 
@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', async (): Promise<void> => {
 
 	function initialize(onFinish: () => void): Worker {
 		let sumTime: number = 0;
-		let sumDeg: number  = 0;
+		let sumEv: number  = 0;
 
 		const ww = new Worker(new URL('worker.ts', import.meta.url), { type: 'module' });
 		ww.onmessage = (e: MessageEvent<any>): void => {
@@ -92,16 +92,16 @@ document.addEventListener('DOMContentLoaded', async (): Promise<void> => {
 				const { x, y } = data.board;
 				(trs as HTMLTableRowElement[])[y].className = 'p' + x;
 			} else if ('result' in data) {
-				const { result, solver, time, deg } = data;
+				const { result, solver, time, ev } = data;
 				sumTime += time;
-				sumDeg  += deg;
+				sumEv   += ev;
 				count   += 1;
 
 				log(`solver: ${solver}   ${result ? 'success' : 'failure'}`);
-				log(`trial: ${count}   time: ${time}   degree: ${deg}`);
+				log(`trial: ${count}   time: ${time}   degree: ${ev}`);
 
 				if (COUNT <= count) {
-					log(`average time: ${sumTime / COUNT}   average rate: ${sumDeg / COUNT}`);
+					log(`average time: ${sumTime / COUNT}   average rate: ${sumEv / COUNT}`);
 					onFinish();
 				}
 			}

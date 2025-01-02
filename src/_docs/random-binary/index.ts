@@ -2,7 +2,7 @@ import { SolverFactory } from '../../../stlics.ts';
 import { waitFor, createLogOutput } from '../util.js';
 
 const COUNT         = 1;  // Interaction count
-const SOLVER_TYPE   = 4;
+const SOLVER_TYPE   = 0;
 const TARGET_RATE   = 0.8;
 const VAR_NUM       = 10;
 const DENSITY       = 0.5;

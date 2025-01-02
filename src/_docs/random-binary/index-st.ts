@@ -1,4 +1,4 @@
-import { Problem, Solver, SolverFactory } from '../../../stlics.ts';
+import { Problem, Solver, SolverFactory, Monitor } from '../../../stlics.ts';
 import { RandomBinary } from '../../_model/random-binary';
 
 const COUNT = 1;  // Interaction count
@@ -19,18 +19,23 @@ document.addEventListener('DOMContentLoaded', async (): Promise<void> => {
 		const p: Problem = rp.createProblem(new Problem());
 		const t: number = Date.now();  // Start time measurement
 
-		const s = await SolverFactory.createSolver(sn, p) as Solver;
-		// s.setTargetRate(null);
-		s.setTimeLimit(10000);
-		s.setDebugOutput(log);
-		const res: boolean = s.solve();
+		const mon = new Monitor();
+		mon.setTimeLimit(5000);
+		mon.setTarget(0.8);
+		mon.setDebugOutput(log);
+		mon.setDebugMode(true);
 
-		const ct: number = Date.now() - t;  // Stop time measurement
-		const cd: number = p.worstSatisfactionDegree();
+		const s = await SolverFactory.createSolver(sn, p) as Solver;
+		s.setMonitor(mon);
+
+		const res : boolean = s.solve();
+		const time: number  = Date.now() - t;  // Stop time measurement
+		const deg : number  = p.degree();
+
 		log(`solver: ${s.name()}   ${res ? 'success' : 'failure'}`);
-		log(`trial: ${i + 1}   time: ${ct}   degree: ${cd}`);
-		sum_time += ct;
-		sum_deg += cd;
+		log(`trial: ${i + 1}   time: ${time}   degree: ${deg}`);
+		sum_time += time;
+		sum_deg += deg;
 	}
 	log(`average time: ${sum_time / COUNT}   average degree: ${sum_deg / COUNT}`);
 });
