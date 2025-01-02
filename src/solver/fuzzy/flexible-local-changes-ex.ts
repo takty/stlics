@@ -3,28 +3,20 @@
  * The implementation is optimized by converting recursive calls to loops.
  *
  * @author Takuto Yanagida
- * @version 2024-12-10
+ * @version 2024-12-23
  */
 
+import { Problem } from '../../problem/problem';
+import { Variable } from '../../problem/variable';
 import { Constraint } from '../../problem/constraint';
 import { AssignmentList } from '../../util/assignment-list';
 import { Solver } from '../solver';
-import { Problem } from '../../problem/problem';
-import { Variable } from '../../problem/variable';
 
 export class FlexibleLocalChangesEx extends Solver {
-
-	static #setPlusElement<T>(s: Set<T>, e: T): Set<T> {
-		const sn = new Set(s);
-		sn.add(e);
-		return sn;
-	}
 
 	#lt: number = 0;
 	#lb: number = 0;
 
-	#iterCount: number = 0;
-	#endTime: number = 0;
 	#globalReturn: number = 0;
 
 	constructor(p: Problem) {
@@ -81,7 +73,7 @@ export class FlexibleLocalChangesEx extends Solver {
 	}
 
 	#computeHighestAndLowestConsistencyDegree(): void {
-		let low: number = 1;
+		let low : number = 1;
 		let high: number = 0;
 
 		for (const x of this.pro.variables()) {
@@ -98,7 +90,7 @@ export class FlexibleLocalChangesEx extends Solver {
 
 	#flcRepair(X1: Set<Variable>, X2: Set<Variable>, xi: Variable, consX1xi: number, consX12: number, cr: Set<Constraint>, rc: number): number {
 		const X3p: Set<Variable> = this.#choose(X2, cr);
-		const X1p: Set<Variable> = FlexibleLocalChangesEx.#setPlusElement(X1, xi);
+		const X1p: Set<Variable> = cloneAndAdd(X1, xi);
 		const X2p: Set<Variable> = X2.difference(X3p);
 		return this.#flcVariables(X1p, X2p, X3p, consX1xi, Math.min(consX12, consX1xi), rc);
 	}
@@ -151,24 +143,11 @@ export class FlexibleLocalChangesEx extends Solver {
 		X3 = new Set<Variable>(X3);  // Clone
 
 		while (true) {
-			this.debugOutput(`X1 ${X1.size}, X2' ${X2.size}, X3' ${X3.size}`);
+			this.monitor.outputDebugString(`X1 ${X1.size}, X2' ${X2.size}, X3' ${X3.size}`);
 
-			// Success if the degree improves from specified
-			if (this.targetDeg !== null && this.targetDeg <= this.pro.worstSatisfactionDegree()) {
-				this.debugOutput('stop: current degree is above the target');
-				this.#globalReturn = 1;
-				return consX12;
-			}
-			// Failure if repeated a specified number
-			if (this.iterLimit && this.iterLimit < this.#iterCount++) {
-				this.debugOutput('stop: number of iterations has reached the limit');
-				this.#globalReturn = 0;
-				return consX12;
-			}
-			// Failure if time limit is exceeded
-			if (this.#endTime < Date.now()) {
-				this.debugOutput('stop: time limit has been reached');
-				this.#globalReturn = 0;
+			const ret: boolean | null = this.monitor.check(this.pro.degree());
+			if (ret !== null) {
+				this.#globalReturn = ret ? 1 : 0;
 				return consX12;
 			}
 			if (X3.size === 0) {
@@ -199,7 +178,7 @@ export class FlexibleLocalChangesEx extends Solver {
 		}
 		let ret: number = 1;
 		for (const c of cs) {
-			const sd: number = c.satisfactionDegree();
+			const sd: number = c.degree();
 			if (sd === Constraint.UNDEFINED) {
 				continue;
 			}
@@ -227,7 +206,7 @@ export class FlexibleLocalChangesEx extends Solver {
 			}
 		}
 		for (const c of cs) {
-			const d: number = c.satisfactionDegree();
+			const d: number = c.degree();
 			if (d === Constraint.UNDEFINED) {
 				continue;
 			}
@@ -242,7 +221,7 @@ export class FlexibleLocalChangesEx extends Solver {
 		return cd;
 	}
 
-	#testX12(X1: Set<Variable>, X2: Set<Variable>, xi: Variable, consX1xi: number, consX12: number, cr: Set<Constraint>) {
+	#testX12(X1: Set<Variable>, X2: Set<Variable>, xi: Variable, consX1xi: number, consX12: number, cr: Set<Constraint>): number {
 		let csd: number = 1;
 		const cs = new Set<Constraint>();
 
@@ -259,7 +238,7 @@ export class FlexibleLocalChangesEx extends Solver {
 			}
 		}
 		for (const c of cs) {
-			const sd: number = c.satisfactionDegree();
+			const sd: number = c.degree();
 			if (sd === Constraint.UNDEFINED) {
 				continue;
 			}
@@ -268,7 +247,7 @@ export class FlexibleLocalChangesEx extends Solver {
 			}
 		}
 		for (const c of cs) {
-			const sd: number = c.satisfactionDegree();
+			const sd: number = c.degree();
 			if (sd === Constraint.UNDEFINED) {
 				continue;
 			}
@@ -280,11 +259,10 @@ export class FlexibleLocalChangesEx extends Solver {
 	}
 
 	exec(): boolean {
-		this.#endTime = (this.timeLimit === null) ? Number.MAX_VALUE : (Date.now() + this.timeLimit);
-		this.#iterCount = 0;
+		this.monitor.initialize();
 		this.#globalReturn = -1;
 
-		const wsd: number = this.pro.worstSatisfactionDegree();
+		const wsd: number = this.pro.degree();
 		if (this.pro.emptyVariableSize() === 0) {
 			this.pro.clearAllVariables();
 		}
@@ -314,8 +292,12 @@ export class FlexibleLocalChangesEx extends Solver {
 				initSol.apply();
 			}
 		}
-		result = this.pro.worstSatisfactionDegree();
+		result = this.pro.degree();
 		return result > wsd && result > 0 && (this.#globalReturn !== 0 || this.targetDeg === null);
 	}
 
+}
+
+function cloneAndAdd<T>(s: Set<T>, e: T): Set<T> {
+	return new Set<T>(s).add(e);
 }

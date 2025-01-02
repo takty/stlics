@@ -1,62 +1,40 @@
 /**
- * This class implements the forward checking method for fuzzy CSP.
+ * This class implements the forward checking method for fuzzy CSPs.
  * The minimum-remaining-values (MRV) heuristic can also be used by specifying the option.
- * Each variable must have its own domain because it hides domain elements as branch pruning.
- * Forward checking is also performed for problems with polynomial constraints.
  *
  * @author Takuto Yanagida
- * @version 2024-12-10
+ * @version 2025-01-02
  */
 
 import { Problem } from '../../problem/problem';
 import { Variable } from '../../problem/variable';
-import { Domain } from '../../problem/domain';
 import { Constraint } from '../../problem/constraint';
+import { Domain } from '../../problem/domain';
+import { DomainPruner, assignDomainPruner, unassignDomainPruner, recover, indexOfVariableWithMRV } from '../../util/domain-pruner';
 import { AssignmentList } from '../../util/assignment-list';
-import { DomainPruner } from '../../util/domain-pruner';
+import { createRelatedConstraintTable } from '../../util/problems';
 import { Solver } from '../solver';
 
 export class FuzzyForwardChecking extends Solver {
 
-	static CONTINUE: number = 0;
-	static TERMINATE: number = 1;
+	#xs : Variable[];
+	#rct: Constraint[][][] = [];  // Table to cache constraints between two variables.
+	#sol: AssignmentList   = new AssignmentList();
 
-	#xs: Variable[];
-	#sol: AssignmentList = new AssignmentList();
-	#relCons: Constraint[][][] = [];  // Table to cache constraints between two variables.
+	#useMRV: boolean = true;
 
-	#solWorstDeg: number = 0;  // Degree of existing solutions (no need to find a solution less than this).
-
-	#iterCount: number = 0;
-	#endTime: number = 0;
-	#useMRV: boolean = false;
-	#degInc: number = 0;
-
-	#sequence: Variable[];
-	#unaryCons: Constraint[];
-	#checkedCons: boolean[];
-	#pruneIntensively: boolean = false;
+	#minDeg   : number  = 0;  // Degree of existing solutions (no need to find a solution less than this).
+	#globalRet: boolean = false;
 
 	/**
 	 * Generates the solver given a fuzzy constraint satisfaction problem.
-	 * @param p A fuzzy problem.
-	 * @param worstSatisfactionDegree Worst satisfaction degree.
+	 * @param p A problem.
 	 */
-	constructor(p: Problem, worstSatisfactionDegree: number | null = null) {
+	constructor(p: Problem) {
 		super(p);
-		this.#xs = [...this.pro.variables()];
-		this.#sequence = new Array(this.pro.variableSize());
-		this.#initializeRelatedConstraintTable();
-		this.#checkedCons = new Array(this.pro.constraintSize());
 
-		const temp: Constraint[] = [];
-		for (const c of this.pro.constraints()) {
-			if (c.size() === 1) temp.push(c);
-		}
-		this.#unaryCons = [...temp];  // To make it even if it is empty.
-		if (worstSatisfactionDegree) {
-			this.#solWorstDeg = worstSatisfactionDegree;
-		}
+		this.#xs  = [...this.pro.variables()];
+		this.#rct = createRelatedConstraintTable(this.pro, this.#xs);
 	}
 
 	name(): string {
@@ -73,436 +51,128 @@ export class FuzzyForwardChecking extends Solver {
 		this.#useMRV = flag;
 	}
 
-	/**
-	 * If a solution is found and the search continues, it specifies how much the worst constraint satisfaction degree should be increased.
-	 * @param degree Increasing constraint satisfaction degree.
-	 */
-	setIncrementStepOfWorstSatisfactionDegree(degree: number): void {
-		this.#degInc = degree;
-	}
+	exec(): boolean {
+		this.monitor.initialize();
+		this.#minDeg = 0;
+		assignDomainPruner(this.#xs);
 
-	/**
-	 * Specifies whether or not to intensively prune branches when the problem contains 3- or n-ary constraints.
-	 * Depending on the problem, intensive pruning may increase processing time.
-	 * Default is false.
-	 * @param flag Whether or not to intensively prune branches.
-	 */
-	setIntensivePruning(flag: boolean): void {
-		this.#pruneIntensively = flag;
-	}
+		let ret: boolean | null = null;
+		while (ret === null) {
+			this.pro.clearAllVariables();
+			ret = this.#branch(0);
+			this.#sol.apply();
 
-	/**
-	 * Constraint satisfaction degree is set as an achievement goal that serves as a condition for stopping the solver.
-	 * The solver stops as successful when the specified degree is reached or exceeded.
-	 * The default (unset) is 0.8.
-	 * @param rate Degree. null indicates not set.
-	 */
-	setTargetRate(rate: number | null = null): void {
-		this.targetDeg = rate;
-		if (this.targetDeg === null) {
-			this.#solWorstDeg = 0;
-		} else {
-			// Find the worstSatisfactionDegree_ that is slightly smaller than the targetDegree_.
-			let e: number = Number.MIN_VALUE;
-			this.#solWorstDeg = this.targetDeg - e;
-			while (this.#solWorstDeg >= this.targetDeg) {
-				e *= 10;
-				this.#solWorstDeg = this.targetDeg - e;
-			}
+			this.#globalRet = false;
 		}
+
+		unassignDomainPruner(this.#xs);
+		return ret === true;
 	}
 
-	// Initializes a table that caches constraints between two variables.
-	#initializeRelatedConstraintTable(): void {
-		this.#relCons = [];
+	#branch(level: number, curDeg: number = 1): boolean | null {
+		if (level === this.pro.variableSize()) {
+			const ev: number = this.pro.degree();
+			this.#sol.setProblem(this.pro);
+			this.monitor.outputDebugString('\t' + `Evaluation ${ev}`);
 
-		for (let j: number = 0; j < this.#xs.length; ++j) {
-			this.#relCons.push(new Array(this.#xs.length));
+			if (this.#minDeg < ev) {
+				this.#minDeg    = ev;
+				this.#globalRet = true;
 
-			for (let i: number = 0; i < this.#xs.length; ++i) {
-				if (i < j) {
-					this.#relCons[j][i] = this.pro.constraintsBetween(this.#xs[i], this.#xs[j]);
+				if (this.monitor.solutionFound(this.#sol, ev)) {
+					return true;  // Success.
 				}
 			}
+			return this.monitor.check(ev);
 		}
-	}
-
-	// Retrieves an array of constraints from a table that caches constraints between two variables.
-	#getConstraintsBetween(vi_index: number, vj_index: number): Constraint[] {
-		if (vi_index < vj_index) {
-			return this.#relCons[vj_index][vi_index];
+		let ret: boolean | null = null;
+		if (null !== (ret = this.monitor.check())) {
+			return ret;  // Success or failure.
 		}
-		return this.#relCons[vi_index][vj_index];
-	}
 
-	// Prune elements of the domain that make the unary constraint worse than the current worst degree.
-	#pruneUnaryConstraints(): boolean {
-		for (const c of this.#unaryCons) {
-			const x = c.at(0) as Variable;
-			const orgVal: number = x.value();  // Save the value.
-			const d: Domain = x.domain();
-			const dp: DomainPruner = x.solverObject;
+		const x : Variable     = this.#xs[this.#useMRV ? indexOfVariableWithMRV(this.#xs) : level];
+		const d : Domain       = x.domain();
+		const dp: DomainPruner = x.solverObject;
 
-			for (let i: number = 0, n: number = d.size(); i < n; ++i) {
-				x.assign(d.at(i));
-				if (c.satisfactionDegree() <= this.#solWorstDeg) {
-					dp.hide(i, -1);  // Here's a branch pruning!
-				}
+		for (let i: number = 0, n: number = d.size(); i < n; ++i) {
+			if (dp.isPruned(i)) {
+				continue;
 			}
-			x.assign(orgVal);  // Restore the value.
-			if (dp.isEmpty()) return false;
-		}
-		return true;
-	}
+			x.assign(d.at(i));
 
-	// Check for consistency between the current variable and one future variable, and prune elements of the domain that are inconsistent (when there is one unassigned variable in the scope of the constraint).
-	#checkForwardConsistency(level: number, vi: Variable, c: Constraint): boolean {
-		const d_i: Domain = vi.domain();
-		const dp_i: DomainPruner = vi.solverObject;
-
-		for (let i: number = 0, n: number = d_i.size(); i < n; ++i) {
-			if (dp_i.isValueHidden(i)) continue;
-			vi.assign(d_i.at(i));
-			if (c.satisfactionDegree() <= this.#solWorstDeg) {  // It is not a solution when it is 'smaller than or equals'.
-				dp_i.hide(i, level);  // Here's a branch pruning!
+			const deg: number = Math.min(curDeg, this.#getWorstDegreeAround(x));
+			if (deg <= this.#minDeg) {  // A new solution is assumed when 'greater than'.
+				continue;
 			}
-		}
-		vi.clear();
-		return !dp_i.isEmpty();  // Succeeds if the domain di of the future variable vi is not empty.
-	}
-
-	// Check for consistency between the current variable and one future variable, and prune elements of the domain that are inconsistent (when there are two unassigned variables in the scope of the constraint).
-	#checkForwardConsistency2(level: number, vi: Variable, c: Constraint) {
-		const d_i: Domain = vi.domain();
-		const dp_i: DomainPruner = vi.solverObject;
-
-		let vj: Variable | null = null;
-
-		for (const x of c) {
-			if (x.isEmpty() && x !== vi) {
-				vj = x;
-				break;
-			}
-		}
-		const d_j: Domain = (vj as Variable).domain();
-		const dp_j: DomainPruner = (vj as Variable).solverObject;
-		loop_i: for (let i: number = 0, ni: number = d_i.size(); i < ni; ++i) {
-			if (dp_i.isValueHidden(i)) continue;
-			vi.assign(d_i.at(i));  // Tentative assignment to vi
-			for (let j: number = 0, nj: number = d_j.size(); j < nj; ++j) {
-				if (dp_j.isValueHidden(j)) continue;
-				(vj as Variable).assign(d_j.at(j));  // Tentative assignment to vj
-				const s: number = c.satisfactionDegree();
-				if (s > this.#solWorstDeg) continue loop_i;  // Tentative assignment to vi was OK -> next tentative assignment.
-			}
-			dp_i.hide(i, level);  // It is not a solution when it is 'smaller than or equals'.
-		}
-		(vj as Variable).clear();
-		vi.clear();
-		return !dp_i.isEmpty();  // Succeeds if the domain di of the future variable vi is not empty.
-	}
-
-	// Check for consistency between the current variable and one future variable, and prune elements of the domain that are inconsistent (when there are three unassigned variables in the scope of the constraint).
-	#checkForwardConsistency3(level: number, vi: Variable, c: Constraint): boolean {
-		const d_i: Domain = vi.domain();
-		const dp_i: DomainPruner = vi.solverObject;
-
-		let vj: Variable | null = null;
-		let vk: Variable | null = null;
-
-		for (const x of c) {
-			if (x.isEmpty() && x !== vi) {
-				if (vj === null) {
-					vj = x;
-				} else {
-					vk = x;
+			if (this.#checkForward(level, x)) {
+				ret = this.#branch(level + 1, deg);
+				if (null !== ret || this.#globalRet) {  // Success or failure.
 					break;
 				}
 			}
+			recover(this.#xs, level);
 		}
-		const d_j: Domain = (vj as Variable).domain();
-		const d_k: Domain = (vk as Variable).domain();
-		const dp_j: DomainPruner = (vj as Variable).solverObject;
-		const dp_k: DomainPruner = (vk as Variable).solverObject;
-
-		loop_i: for (let i: number = 0, ni: number = d_i.size(); i < ni; ++i) {
-			if (dp_i.isValueHidden(i)) continue;
-			vi.assign(d_i.at(i));  // Tentative assignment to vi
-			for (let j: number = 0, nj: number = d_j.size(); j < nj; ++j) {
-				if (dp_j.isValueHidden(j)) continue;
-				(vj as Variable).assign(d_j.at(j));  // Tentative assignment to vj
-				for (let k: number = 0, nk: number = d_k.size(); k < nk; ++k) {
-					if (dp_k.isValueHidden(k)) continue;
-					(vk as Variable).assign(d_k.at(k));  // Tentative assignment to vk
-					const s: number = c.satisfactionDegree();
-					if (s > this.#solWorstDeg) continue loop_i;  // Tentative assignment to vi was OK -> next tentative assignment.
-				}
-			}
-			dp_i.hide(i, level);  // It is not a solution when it is 'smaller than or equals'.
-		}
-		(vk as Variable).clear();
-		(vj as Variable).clear();
-		vi.clear();
-		return !dp_i.isEmpty();  // Succeeds if the domain di of the future variable vi is not empty.
-	}
-
-	// In the case of polynomial constraints and when there are four or more unassigned variables, all combinations of assignments of unassigned variables are examined and pruned.
-	#checkForwardConsistencyN(level: number, v_i: Variable, c: Constraint, emptySize: number): boolean {
-		const d_i: Domain = v_i.domain();
-		const dp_i: DomainPruner = v_i.solverObject;
-		const emp = new Array(emptySize - 1);
-		let j: number = 0;
-
-		for (const x of c) {
-			if (x.isEmpty() && x !== v_i) {
-				emp[j++] = x;
-			}
-		}
-		const indexes = new Array(emp.length);
-
-		loop_i: for (let i: number = 0, n: number = d_i.size(); i < n; ++i) {
-			if (dp_i.isValueHidden(i)) continue;
-			v_i.assign(d_i.at(i));  // Tentative assignment to vi
-			indexes.fill(0);
-
-			comLoop: while (true) {
-				let hidden: boolean = false;
-				for (let k: number = 0; k < emp.length; ++k) {
-					const d_k: Domain = emp[k].domain();
-					const dp_k: DomainPruner = emp[k].solverObject;
-					if (dp_k.isValueHidden(indexes[k])) {
-						hidden = true;
-						break;
-					}
-					emp[k].assign(d_k.at(indexes[k]));
-				}
-				if (!hidden) {
-					const s: number = c.satisfactionDegree();
-					if (s > this.#solWorstDeg) continue loop_i;  // Tentative assignment to vi was OK -> next tentative assignment.
-				}
-				for (let k: number = 0; k < emp.length; ++k) {
-					indexes[k] += 1;
-					if (indexes[k] < emp[k].domain().size()) break;
-					indexes[k] = 0;
-					if (k === emp.length - 1) break comLoop;
-				}
-			}
-			dp_i.hide(i, level);
-		}
-		for (const x of emp) {
+		if (ret === null) {  // When searching back to the parent, undo the branch pruning here.
+			recover(this.#xs, level);
 			x.clear();
 		}
-		v_i.clear();
-		return !dp_i.isEmpty();  // Succeeds if the domain di of the future variable vi is not empty.
+		return ret;
 	}
 
 	// Checks for possible assignment to a future variable from the current variable assignment.
-	#checkForward(level: number, index: number): boolean {
+	#checkForward(level: number, x: Variable): boolean {
 		for (const x_i of this.#xs) {
-			if (!x_i.isEmpty()) continue;  // If it is a past or present variable.
-
-			const cs: Constraint[] = this.#getConstraintsBetween(index, x_i.index());
-
-			for (const c of cs) {
-				const emptySize: number = c.emptyVariableSize();
-				if (emptySize === 1) {
-					if (!this.#checkForwardConsistency(level, x_i, c)) return false;
-				} else if (this.#pruneIntensively) {  // Depends on options
-					if (emptySize === 2) {
-						if (!this.#checkForwardConsistency2(level, x_i, c)) return false;
-					} else if (emptySize === 3) {
-						if (!this.#checkForwardConsistency3(level, x_i, c)) return false;
-					} else if (emptySize > 3) {
-						if (!this.#checkForwardConsistencyN(level, x_i, c, emptySize)) return false;
-					}
-				}
+			if (!x_i.isEmpty()) {
+				continue;  // If it is a past or present variable.
 			}
-		}
-		return true;
-	}
-
-	// Checks to see if the current variable assignment makes the degree of the past variable worse than the current worst degree.
-	#checkBackwardConsistency(vc: Variable): boolean {
-		this.#checkedCons.fill(false);  // Reuse.
-
-		for (let i: number = 0; i < this.#xs.length; ++i) {  // Find past variables.
-			const x_i: Variable = this.#xs[i];
-			if (x_i === vc || x_i.isEmpty()) continue;  // If it is a future variable or a present variable.
-			const cs: Constraint[] = this.#getConstraintsBetween(vc.index(), i);
+			const cs  : Constraint[] = this.#getConstraintsBetween(x.index(), x_i.index());
+			const dp_i: DomainPruner = x_i.solverObject;
+			const d_i : Domain       = x_i.domain();
 
 			for (const c of cs) {
-				if (this.#checkedCons[c.index()]) continue;  // Because of the possibility of duplication in polynomial constraints
-				const s: number = c.satisfactionDegree();
-				if (s !== Constraint.UNDEFINED && s <= this.#solWorstDeg) {  // It is not a solution when it is 'smaller than or equals'.
+				if (c.emptyVariableSize() !== 1) {
+					continue;
+				}
+				if (!this.#checkForwardConsistency(level, x_i, d_i, dp_i, c)) {
 					return false;
 				}
-				this.#checkedCons[c.index()] = true;
 			}
 		}
 		return true;
 	}
 
-	#refresh(): void {
-		for (let i: number = 0; i < this.#sequence.length; ++i) {
-			const index_x_i: number = this.#sequence[i].index();
-
-			for (let j: number = i + 1; j < this.#sequence.length; ++j) {
-				const x_j: Variable = this.#sequence[j];
-				const cs: Constraint[] = this.#getConstraintsBetween(index_x_i, x_j.index());
-
-				for (const c of cs) {
-					const orgVal: number = x_j.value();
-					const d_j: Domain = x_j.domain();
-					const dp_j: DomainPruner = x_j.solverObject;
-
-					for (let k: number = 0, n: number = d_j.size(); k < n; ++k) {
-						if (dp_j.isValueHidden(k)) continue;
-						x_j.assign(d_j.at(k));
-						if (c.satisfactionDegree() <= this.#solWorstDeg) {
-							dp_j.hide(k, i);  // Here's a branch pruning!
-						}
-					}
-					x_j.assign(orgVal);
-				}
-			}
-		}
+	// Retrieves an array of constraints from a table that caches constraints between two variables.
+	#getConstraintsBetween(i: number, j: number): Constraint[] {
+		return (i < j) ? this.#rct[j][i] : this.#rct[i][j];
 	}
 
-	// Returns the index of the smallest domain variable.
-	#indexOfVariableWithMRV(): number {
-		let index: number = 0;
-		let size: number = Number.MAX_VALUE;
-
-		for (let i: number = 0; i < this.#xs.length; ++i) {
-			const x: Variable = this.#xs[i];
-			if (!x.isEmpty()) {
+	// Check for consistency between the current variable and one future variable, and prune elements of the domain that are inconsistent (when there is one unassigned variable in the scope of the constraint).
+	#checkForwardConsistency(level: number, x: Variable, d: Domain, dp: DomainPruner, c: Constraint): boolean {
+		for (let i: number = 0, n: number = d.size(); i < n; ++i) {
+			if (dp.isPruned(i)) {
 				continue;
 			}
-			const d: Domain = x.domain();
-			const s: number = d.size() - x.solverObject.hiddenSize();
-			if (s < size) {
-				size = s;
-				index = i;
+			x.assign(d.at(i));
+
+			if (c.degree() <= this.#minDeg) {  // It is not a solution when it is 'smaller than or equals' (not even UNDEFINED).
+				dp.prune(i, level);
 			}
 		}
-		return index;
+		x.clear();
+		return !dp.isEmpty();  // Failure if the domain of one of the future variables is empty.
 	}
 
-	// Performs search one variable at a time.
-	#branch(level: number): number {
-		let bc: number = FuzzyForwardChecking.CONTINUE;
-		const xc_index: number = this.#useMRV ? this.#indexOfVariableWithMRV() : level;
-		const xc: Variable = this.#xs[xc_index];
-		const d: Domain = xc.domain();
-		const dp: DomainPruner = xc.solverObject;
-		this.#sequence[level] = xc;
+	// Find the number of constraint violations that have increased due to the current value of the variable x.
+	#getWorstDegreeAround(x: Variable): number {
+		let min: number = Number.MAX_VALUE;
 
-		for (let i: number = 0, n: number = d.size(); i < n; ++i) {
-			if (dp.isValueHidden(i)) {
-				continue;
-			}
-			if ((this.iterLimit && this.iterLimit < this.#iterCount++) || this.#endTime < Date.now()) {
-				bc = FuzzyForwardChecking.TERMINATE;  // Search terminated due to restrictions.
-				break;
-			}
-			xc.assign(d.at(i));
-
-			for (const x of this.#xs) x.solverObject.reveal(level);
-			if (!this.#checkBackwardConsistency(xc)) continue;
-			if (!this.#checkForward(level, xc_index)) continue;
-
-			const nextLevel: number = level + 1;
-			bc = (nextLevel === this.#xs.length - 1) ? this.#branchLast(nextLevel) : this.#branch(nextLevel);
-			if (bc === FuzzyForwardChecking.TERMINATE) break;
-		}
-		if (bc === FuzzyForwardChecking.CONTINUE) {  // When searching back to the parent, undo the branch pruning here.
-			for (const x of this.#xs) x.solverObject.reveal(level);
-		}
-		xc.clear();
-		return bc;
-	}
-
-	// Performs search on the last variable.
-	#branchLast(level: number): number {
-		let bc: number = FuzzyForwardChecking.CONTINUE;
-		const xc: Variable = this.#xs[this.#useMRV ? this.#indexOfVariableWithMRV() : level];
-		const d: Domain = xc.domain();
-		const dp: DomainPruner = xc.solverObject;
-		this.#sequence[level] = xc;
-
-		for (let i: number = 0, n: number = d.size(); i < n; ++i) {
-			if (dp.isValueHidden(i)) continue;
-			if ((this.iterLimit && this.iterLimit < this.#iterCount++) || this.#endTime < Date.now()) {
-				bc = FuzzyForwardChecking.TERMINATE;  // Search terminated due to restrictions.
-				break;
-			}
-			xc.assign(d.at(i));
-
-			const deg: number = this.pro.worstSatisfactionDegree();
-			if (deg > this.#solWorstDeg) {  // A new solution is assumed when 'greater than'.
-				this.#solWorstDeg = deg;
-				this.#sol.setProblem(this.pro);
-				bc = FuzzyForwardChecking.TERMINATE;
-				if (this.targetDeg !== null && this.targetDeg <= this.#solWorstDeg) {  // Search ends when target is reached
-					break;
-				}
-				this.#pruneUnaryConstraints();
-				this.#refresh();
+		for (const c of x) {
+			const deg: number = c.degree();
+			if (deg !== Constraint.UNDEFINED && deg < min) {
+				min = deg;
 			}
 		}
-		xc.clear();
-		return bc;
-	}
-
-	// Do search.
-	exec(): boolean {
-		this.#endTime = (this.timeLimit === null) ? Number.MAX_VALUE : (Date.now() + this.timeLimit);
-		this.#iterCount = 0;
-
-		for (const x of this.#xs) {
-			x.solverObject = new DomainPruner(x.domain().size());  // Generation of domain pruners.
-		}
-		this.pro.clearAllVariables();
-		if (!this.#pruneUnaryConstraints()) return false;  // Since _worstSatisfactionDegree_ has been updated, call this function.
-
-		let success: boolean = false;
-		while (true) {
-			const bc: number = this.#branch(0);
-			if (bc === FuzzyForwardChecking.TERMINATE) {
-				if (this.iterLimit && this.iterLimit < this.#iterCount++) {
-					this.debugOutput('stop: number of iterations has reached the limit');
-					break;
-				}
-				if (this.#endTime < Date.now()) {
-					this.debugOutput('stop: time limit has been reached');
-					break;
-				}
-			}
-			if (this.#sol.isEmpty()) {
-				break;
-			}
-			this.debugOutput(`\tfound a solution: ${this.#solWorstDeg}`);
-			if (this.foundSolution(this.#sol, this.#solWorstDeg)) {  // Call hook
-				success = true;
-				break;
-			}
-			if (this.targetDeg === null) {  // Degree not specified
-				success = true;
-				this.#solWorstDeg += this.#degInc;  // Find the next solution within the limit.
-			} else if (this.targetDeg <= this.#solWorstDeg) {  // The current degree exceeded the specified degree.
-				this.debugOutput('stop: current degree is above the target');
-				success = true;
-				break;
-			}
-			for (const x of this.#xs) {
-				x.solverObject.revealAll();
-			}
-		}
-		this.#sol.apply();
-		for (const x of this.#xs) {
-			x.solverObject = null;  // Delete branch pruner
-		}
-		return success;
+		return min;
 	}
 
 }

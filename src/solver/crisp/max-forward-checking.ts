@@ -1,191 +1,172 @@
 /**
  * This class that implements the forward checking method.
+ * The minimum-remaining-values (MRV) heuristic can also be used by specifying the option.
  * Find the solution to the problem as the maximum CSP.
  * Each variable must have its own domain because it hides domain elements as branch pruning.
  *
  * @author Takuto Yanagida
- * @version 2024-12-10
+ * @version 2025-01-02
  */
 
 import { Problem } from '../../problem/problem';
-import { CrispProblem } from '../../problem/problem-crisp';
 import { Variable } from '../../problem/variable';
-import { Domain } from '../../problem/domain';
 import { Constraint } from '../../problem/constraint';
+import { Domain } from '../../problem/domain';
+import { DomainPruner, assignDomainPruner, unassignDomainPruner, recover, indexOfVariableWithMRV } from '../../util/domain-pruner';
 import { AssignmentList } from '../../util/assignment-list';
-import { DomainPruner } from '../../util/domain-pruner';
+import { createRelatedConstraintTable } from '../../util/problems';
 import { Solver } from '../solver';
 
 export class MaxForwardChecking extends Solver {
 
-	#xs: Variable[];
-	#sol: AssignmentList = new AssignmentList();
+	#xs : Variable[];
+	#rct: Constraint[][][] = [];  // Table to cache constraints between two variables.
+	#sol: AssignmentList   = new AssignmentList();
 
-	#maxVioCount: number;
-	#vioCount: number = 0;
-	#checkedCs: Set<Constraint> = new Set();
-	#cs: Constraint[] = [];
+	#useMRV: boolean = true;
 
-	#iterCount: number = 0;
-	#endTime: number = 0;
+	#maxVc: number = 0;
 
 	/**
 	 * Generates a solver given a constraint satisfaction problem.
-	 * @param p A crisp problem.
+	 * @param p A problem.
 	 */
-	constructor(p: CrispProblem) {
-		super(p as Problem);
+	constructor(p: Problem) {
+		super(p);
 
-		this.#xs = [...this.pro.variables()];
-		for (const x of this.#xs) {
-			x.solverObject = new DomainPruner(x.domain().size());
-		}
-		this.#maxVioCount = this.pro.constraintSize();
+		this.#xs  = [...this.pro.variables()];
+		this.#rct = createRelatedConstraintTable(this.pro, this.#xs);
 	}
 
 	name(): string {
 		return 'Forward Checking for Max CSPs';
 	}
 
-	#branch(level: number, vioCount: number): boolean {
-		// Failure if repeated a specified number.
-		if (this.iterLimit && this.iterLimit < this.#iterCount++) {
-			return false;
-		}
-		// Failure if time limit is exceeded.
-		if (this.#endTime < Date.now()) {
-			return false;
-		}
+	/**
+	 * Specify whether to use the minimum-remaining-values (MRV) heuristic.
+	 * Use of MRV may increase processing time for some problems.
+	 * Default is false.
+	 * @param flag Use MRV if true.
+	 */
+	setUsingMinimumRemainingValuesHeuristics(flag: boolean): void {
+		this.#useMRV = flag;
+	}
 
-		const p = this.pro as CrispProblem;
+	exec(): boolean {
+		this.monitor.initialize();
+		this.#maxVc = this.pro.constraintSize();
+		assignDomainPruner(this.#xs);
 
-		if (level === p.variableSize()) {
-			const vcs: number = p.violatingConstraintSize();
+		this.pro.clearAllVariables();
+		const ret: boolean | null = this.#branch(0);
+		this.#sol.apply();
 
-			if (vcs < this.#maxVioCount) {
-				this.#maxVioCount = vcs;
-				this.#sol.setProblem(this.pro);
-				this.debugOutput(`   refreshed ${this.#maxVioCount}`);
-				if ((this.targetDeg ?? 1) <= p.satisfiedConstraintRate()) {
-					return true;
+		unassignDomainPruner(this.#xs);
+		return ret === true;
+	}
+
+	#branch(level: number, curVc: number = 0): boolean | null {
+		if (level === this.pro.variableSize()) {
+			const ev: number = this.pro.ratio();
+			this.#sol.setProblem(this.pro);
+			this.monitor.outputDebugString('\t' + `Evaluation ${ev}`);
+
+			if (curVc < this.#maxVc) {
+				this.#maxVc = curVc;
+
+				if (this.monitor.solutionFound(this.#sol, ev)) {
+					return true;  // Success.
 				}
 			}
-			return false;
+			return this.monitor.check(ev);
 		}
-		const xc: Variable = this.#xs[level];
-		const d: Domain = xc.domain();
-		const dp: DomainPruner = xc.solverObject as DomainPruner;
+		let ret: boolean | null = null;
+		if (null !== (ret = this.monitor.check())) {
+			return ret;  // Success or failure.
+		}
+
+		const x : Variable     = this.#xs[this.#useMRV ? indexOfVariableWithMRV(this.#xs) : level];
+		const d : Domain       = x.domain();
+		const dp: DomainPruner = x.solverObject;
 
 		for (let i: number = 0, n: number = d.size(); i < n; ++i) {
-			if (dp.isValueHidden(i)) {
+			if (dp.isPruned(i)) {
 				continue;
 			}
-			xc.assign(d.at(i));
+			x.assign(d.at(i));
 
-			this.#vioCount = vioCount + this.#getAdditionalViolationCount(level, xc);  // for max begin
-			if (this.#vioCount > this.#maxVioCount) {
-				continue;  // for max end
+			const vc: number = curVc + this.#getViolationCountAround(x);
+			if (this.#maxVc <= vc) {
+				continue;
 			}
-
-			if (this.#checkForward(level) && this.#branch(level + 1, this.#vioCount)) {
-				return true;
+			if (curVc + 1 < this.#maxVc || this.#checkForward(level, x)) {
+				ret = this.#branch(level + 1, vc);
+				if (null !== ret) {  // Success or failure.
+					break;
+				}
 			}
-			for (const x of this.#xs) {
-				(x.solverObject as DomainPruner).reveal(level);
-			}
+			recover(this.#xs, level);
 		}
-		xc.clear();
-		return false;
+		if (ret === null) {  // When searching back to the parent, undo the branch pruning here.
+			recover(this.#xs, level);
+			x.clear();
+		}
+		return ret;
 	}
 
 	// Checks for possible assignment to a future variable from the current variable assignment.
-	#checkForward(level: number): boolean {
-		const xc: Variable = this.#xs[level];
+	#checkForward(level: number, x: Variable): boolean {
+		for (const x_i of this.#xs) {
+			if (!x_i.isEmpty()) {
+				continue;  // If it is a past or present variable.
+			}
+			const cs  : Constraint[] = this.#getConstraintsBetween(x.index(), x_i.index());
+			const dp_i: DomainPruner = x_i.solverObject;
+			const d_i : Domain       = x_i.domain();
 
-		for (let i: number = level + 1; i < this.#xs.length; ++i) {
-			const future: Variable = this.#xs[i];
-			this.#cs = this.pro.constraintsBetween(xc, future);
-
-			for (const c of this.#cs) {
+			for (const c of cs) {
 				if (c.emptyVariableSize() !== 1) {
 					continue;
 				}
-				if (this.#revise(future, c, level)) {
-					if ((future.solverObject as DomainPruner).isEmpty()) {
-						return false;  // Failure if the domain of one of the future variables is empty.
-					}
+				if (!this.#checkForwardConsistency(level, x_i, d_i, dp_i, c)) {
+					return false;
 				}
 			}
 		}
 		return true;
 	}
 
-	// Find the number of constraint violations that have increased due to the current value of the variable vc.
-	#getAdditionalViolationCount(level: number, xc: Variable): number {
-		let avc: number = 0;
-		this.#checkedCs.clear();  // Reuse.
-
-		for (let i: number = 0; i < level; ++i) {
-			this.#cs = this.pro.constraintsBetween(xc, this.#xs[i]);
-
-			for (const c of this.#cs) {
-				if (this.#checkedCs.has(c)) {
-					// Because of the possibility of duplication in polynomial constraints
-					continue;
-				}
-				if (c.isSatisfied() === 0) {
-					// Neither satisfied nor undefined.
-					++avc;
-				}
-				this.#checkedCs.add(c);
-			}
-		}
-		return avc;
+	// Retrieves an array of constraints from a table that caches constraints between two variables.
+	#getConstraintsBetween(i: number, j: number): Constraint[] {
+		return (i < j) ? this.#rct[j][i] : this.#rct[i][j];
 	}
 
-	// Remove values from the domain of v1 that do not correspond to v2. That is, match v1 with v2.
-	#revise(x1: Variable, c: Constraint, level: number): boolean {
-		let deleted: boolean = false;
-
-		const d: Domain = x1.domain();
-		const dp: DomainPruner = x1.solverObject as DomainPruner;
-
-		for (let k: number = 0, n: number = d.size(); k < n; ++k) {
-			if (dp.isValueHidden(k)) {
+	// Check for consistency between the current variable and one future variable, and prune elements of the domain that are inconsistent (when there is one unassigned variable in the scope of the constraint).
+	#checkForwardConsistency(level: number, x: Variable, d: Domain, dp: DomainPruner, c: Constraint): boolean {
+		for (let i: number = 0, n: number = d.size(); i < n; ++i) {
+			if (dp.isPruned(i)) {
 				continue;
 			}
-			x1.assign(d.at(k));
+			x.assign(d.at(i));
 
-			if (c.isSatisfied() === 0 && this.#vioCount + 1 > this.#maxVioCount) {
-				dp.hide(k, level);
-				deleted = true;
+			if (c.isSatisfied() === 0) {  // Do hide when in violation (not even UNDEFINED).
+				dp.prune(i, level);
 			}
 		}
-		return deleted;
+		x.clear();
+		return !dp.isEmpty();  // Failure if the domain of one of the future variables is empty.
 	}
 
-	exec(): boolean {
-		this.#endTime = (this.timeLimit === null) ? Number.MAX_VALUE : (Date.now() + this.timeLimit);
-		this.#iterCount = 0;
+	// Find the number of constraint violations that have increased due to the current value of the variable x.
+	#getViolationCountAround(x: Variable): number {
+		let vc: number = 0;
 
-		this.pro.clearAllVariables();
-		const r: boolean = this.#branch(0, 0);
-		if (r) {
-			this.debugOutput('stop: current degree is above the target');
-		} else {
-			if (this.iterLimit && this.iterLimit < this.#iterCount) {
-				this.debugOutput('stop: number of iterations has reached the limit');
-			}
-			if (this.#endTime < Date.now()) {
-				this.debugOutput('stop: time limit has been reached');
+		for (const c of x) {
+			if (c.isSatisfied() === 0) {  // Neither satisfied nor UNDEFINED.
+				++vc;
 			}
 		}
-
-		for (const a of this.#sol) {
-			a.apply();
-			(a.variable().solverObject as DomainPruner).revealAll();
-		}
-		return r;
+		return vc;
 	}
 
 }

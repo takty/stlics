@@ -2,12 +2,11 @@
  * Solver factory class.
  *
  * @author Takuto Yanagida
- * @version 2024-10-22
+ * @version 2024-12-27
  */
 
 import { Solver } from './solver';
 import { Problem } from '../problem/problem';
-import { CrispProblem } from '../problem/problem-crisp';
 
 import { ForwardChecking } from './crisp/forward-checking';
 import { MaxForwardChecking } from './crisp/max-forward-checking';
@@ -16,14 +15,14 @@ import { LocalChangesEx } from './crisp/local-changes-ex';
 import { Breakout } from './crisp/breakout';
 import { GENET } from './crisp/genet';
 import { CrispSRS3 } from './crisp/crisp-srs3';
+import { FullChecking } from './fuzzy/full-checking';
 import { FuzzyForwardChecking } from './fuzzy/fuzzy-forward-checking';
-import { FuzzyForwardCheckingBc } from './fuzzy/fuzzy-forward-checking-bc';
 import { FlexibleLocalChanges } from './fuzzy/flexible-local-changes';
 import { FlexibleLocalChangesEx } from './fuzzy/flexible-local-changes-ex';
 import { FuzzyBreakout } from './fuzzy/fuzzy-breakout';
 import { FuzzyGENET } from './fuzzy/fuzzy-genet';
 import { SRS3 } from './fuzzy/srs3';
-import { SRS3_PF } from './fuzzy/srs3-pf';
+import { wrapWithPostStabilizer } from './filter/post-stabilizer.js';
 
 export class SolverFactory {
 
@@ -35,25 +34,25 @@ export class SolverFactory {
 			/* 3 */ 'Local Changes Ex',
 			/* 4 */ 'Breakout',
 			/* 5 */ 'GENET',
-			/* 6 */ 'Crisp SRS 3',
+			/* 6 */ 'Crisp SRS3',
 		];
 	}
 
 	static fuzzySolverNames(): string[] {
 		return [
-			/* 0 */ 'Fuzzy Forward Checking',
-			/* 1 */ 'Fuzzy Forward Checking Bc',
+			/* 0 */ 'Full Checking',
+			/* 1 */ 'Fuzzy Forward Checking',
 			/* 2 */ 'Flexible Local Changes',
 			/* 3 */ 'Flexible Local Changes Ex',
 			/* 4 */ 'Fuzzy Breakout',
 			/* 5 */ 'Fuzzy GENET',
-			/* 6 */ 'SRS 3',
-			/* 7 */ 'SRS 3 PF',
+			/* 6 */ 'SRS3',
+			/* 7 */ 'SRS3 PF',
 		];
 	}
 
 	static async createSolver(type: string, p: Problem): Promise<Solver | null> {
-		const cs: Solver | null = await SolverFactory.createCrispSolver(type, p as CrispProblem);
+		const cs: Solver | null = await SolverFactory.createCrispSolver(type, p);
 		if (cs) {
 			return cs;
 		}
@@ -64,7 +63,7 @@ export class SolverFactory {
 		return null;
 	}
 
-	static async createCrispSolver(type: string, p: CrispProblem): Promise<Solver | null> {
+	static async createCrispSolver(type: string, p: Problem): Promise<Solver | null> {
 		switch (type.replaceAll(' ', '')) {
 			case 'ForwardChecking':
 			case 'forward-checking':
@@ -93,12 +92,12 @@ export class SolverFactory {
 
 	static async createFuzzySolver(type: string, p: Problem): Promise<Solver | null> {
 		switch (type.replaceAll(' ', '')) {
+			case 'FullChecking':
+			case 'full-checking':
+				return new FullChecking(p);
 			case 'FuzzyForwardChecking':
 			case 'fuzzy-forward-checking':
 				return new FuzzyForwardChecking(p);
-			case 'FuzzyForwardCheckingBc':
-			case 'fuzzy-forward-checking-bc':
-				return new FuzzyForwardCheckingBc(p);
 			case 'FlexibleLocalChanges':
 			case 'flexible-local-changes':
 				return new FlexibleLocalChanges(p);
@@ -117,7 +116,7 @@ export class SolverFactory {
 			case 'SRS3PF':
 			case 'SRS3_PF':
 			case 'srs3-pf':
-				return new SRS3_PF(p);
+				return wrapWithPostStabilizer(p, new SRS3(p));
 		}
 		return null;
 	}

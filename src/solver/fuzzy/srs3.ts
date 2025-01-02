@@ -1,8 +1,8 @@
 /**
- * This class implements the SRS algorithm.
+ * This class implements the SRS3 algorithm.
  *
  * @author Takuto Yanagida
- * @version 2024-12-10
+ * @version 2024-12-23
  */
 
 import { Problem } from '../../problem/problem';
@@ -13,206 +13,31 @@ import { Solver } from '../solver';
 
 export class SRS3 extends Solver {
 
-	// Threshold for adopting a candidate assignment at repair time (should be 0 if strictly following SRS 3)
-	static REPAIR_THRESHOLD = 0;
-
-	#closedList: Set<TreeNode> = new Set<TreeNode>();
-	#openList: Set<TreeNode> = new Set<TreeNode>();  // LinkedHashSet is used in the original implementation.
-	#nodes: TreeNode[] = [];
-	#neighborConstraints: (Constraint[] | null)[] = [];  // Cache
-
-	#c_stars: Set<TreeNode> = new Set<TreeNode>();  // ArrayList is used in the original implementation.
-
-	#iterCount: number = 0;
-	#endTime: number = 0;
 	#isRandom: boolean = true;
+	#ws      : number[];
 
+	#closedList: Set<TreeNode> = new Set();
+	#openList  : Set<TreeNode> = new Set();  // LinkedHashSet is used in the original implementation.
+	#nodes     : TreeNode[] = [];
+	#neighbors : (TreeNode[] | null)[] = [];  // Cache
+
+	/**
+	 * Generates a solver given a constraint satisfaction problem.
+	 * @param p A problem.
+	 */
 	constructor(p: Problem) {
 		super(p);
 
 		for (const c of this.pro.constraints()) {
 			this.#nodes.push(new TreeNode(c));
-			this.#neighborConstraints.push(null);
+			this.#neighbors.push(null);
 		}
+		this.#ws = new Array(this.pro.constraintSize());
+		this.#ws.fill(1);
 	}
 
 	name(): string {
-		return 'SRS 3';
-	}
-
-	#getNeighborConstraints(c: Constraint): Constraint[] {
-		const i: number = c.index();
-
-		if (this.#neighborConstraints[i] === null) {
-			this.#neighborConstraints[i] = c.neighbors();
-		}
-		return this.#neighborConstraints[i];
-	}
-
-	#repair(c0: Constraint): boolean {
-		this.debugOutput('repair');
-
-		const canList = new AssignmentList();
-		const minDeg0: number = c0.satisfactionDegree();  // Target c0 should certainly be an improvement over this.
-		const min: number = this.pro.worstSatisfactionDegree();  // Lower bound of neighborhood constraints.
-		let maxDeg0: number = c0.satisfactionDegree();  // Satisfaction degree of target c0 for the most improvement so far.
-
-		// If a candidate satisfying the condition is stronger than the previous candidates,
-		// it is replaced, and if no candidate is found until the end, it fails.
-		for (const x of c0) {
-			const x_v: number = x.value();  // Save the value
-
-			out: for (const v of x.domain()) {
-				if (x_v === v) {
-					continue;
-				}
-				x.assign(v);
-				const deg0: number = c0.satisfactionDegree();
-				// If target c0 cannot be improved, the assignment is rejected.
-				if (minDeg0 > deg0 || maxDeg0 - deg0 > SRS3.REPAIR_THRESHOLD) {
-					continue;
-				}
-				for (const c of x) {
-					if (c === c0) {
-						continue;
-					}
-					const deg: number = c.satisfactionDegree();
-					// If one of the neighborhood constraints c is less than or equal to the worst, the assignment is rejected.
-					if (deg !== Constraint.UNDEFINED && deg < min) {
-						continue out;
-					}
-				}
-				if (deg0 > maxDeg0) {
-					maxDeg0 = deg0;
-					canList.clear();
-				}
-				canList.addVariable(x, v);
-			}
-			x.assign(x_v);  // Restore the value
-		}
-		if (canList.size() > 0) {
-			const a: Assignment = this.#isRandom ? canList.random() : canList.at(0);
-			a.apply();
-			this.debugOutput('\t' + a);
-			return true;
-		}
-		return false;
-	}
-
-	#shrink(node: TreeNode): void {
-		this.debugOutput('shrink');
-
-		let removeCStar: boolean = false;
-		while (true) {
-			node = node.parent() as TreeNode;
-			if (this.#c_stars.delete(node)) {
-				removeCStar = true;
-				break;
-			}
-			if (!this.#repair((node.parent() as TreeNode).getObject())) break;
-		}
-		const temp: TreeNode[] = [];
-		node.getDescendants(temp);  // temp contains node.
-
-		for (const n of temp) {
-			n.clear();  // Prepare for reuse
-			this.#openList.delete(n);
-			this.#closedList.delete(n);
-		}
-
-		if (!removeCStar) {
-			this.#openList.add(node);
-		}
-	}
-
-	#spread(node: TreeNode): void {
-		this.debugOutput('spread');
-		this.#closedList.add(node);
-
-		for (const c of this.#getNeighborConstraints(node.getObject())) {
-			const tnc: TreeNode = this.#nodes[c.index()];
-
-			if (!this.#closedList.has(tnc) && !this.#openList.has(tnc)) {  // For constraints that are not included in Open or Closed.
-				node.add(tnc);
-				this.#openList.add(tnc);
-			}
-		}
-	}
-
-	#srs(): boolean {
-		this.debugOutput('srs');
-
-		const [wsd_cs,] = this.pro.constraintsWithWorstSatisfactionDegree();
-		for (const c of wsd_cs) {
-			const cn: TreeNode = this.#nodes[c.index()];
-			cn.setParent(null);
-			this.#c_stars.add(cn);
-		}
-		this.#closedList.clear();
-		this.#openList.clear();
-		for (const n of this.#c_stars) {
-			this.#openList.add(n);
-		}
-
-		while (this.#c_stars.size && this.#openList.size) {
-			if (this.iterLimit && this.iterLimit < this.#iterCount++) {  // Failure if repeated a specified number
-				this.debugOutput('stop: number of iterations has reached the limit');
-				return false;
-			}
-			if (this.#endTime < Date.now()) {  // Failure if time limit is exceeded
-				this.debugOutput('stop: time limit has been reached');
-				return false;
-			}
-
-			const node = this.#openList.values().next().value as TreeNode;
-			this.#openList.delete(node);
-
-			if (this.#repair(node.getObject())) {
-				if (this.#c_stars.delete(node)) continue;  // If the repaired node is included in C* (to be deleted)
-				if (this.#repair((node.parent() as TreeNode).getObject())) {
-					this.#shrink(node);  // When its improvement leads to the improvement of its parents
-					continue;
-				}
-			}
-			this.#spread(node);
-		}
-		return true;
-	}
-
-	exec(): boolean {
-		this.#endTime = (this.timeLimit === null) ? Number.MAX_VALUE : (Date.now() + this.timeLimit);
-		this.#iterCount = 0;
-		if (this.targetDeg && this.targetDeg <= this.pro.worstSatisfactionDegree()) {
-			return true;
-		}
-		const sol = new AssignmentList();
-
-		let success: boolean = false;
-		while (true) {
-			const ret: boolean = this.#srs();
-			if (!ret || this.#c_stars.size) {
-				break;
-			}
-			const solutionWorstDeg: number = this.pro.worstSatisfactionDegree();
-			if (-1 === solutionWorstDeg) {
-				continue;
-			}
-			this.debugOutput(`\tfound a solution: ${solutionWorstDeg}\t${this.targetDeg}`);
-			sol.setProblem(this.pro);
-
-			if (this.foundSolution(sol, solutionWorstDeg)) {  // Call hook
-				success = true;
-				break;
-			}
-			if (this.targetDeg === null) {  // Satisfaction degree is not specified
-				success = true;
-			} else if (this.targetDeg <= solutionWorstDeg) {  // The current degree exceeded the specified degree.
-				this.debugOutput('stop: current degree is above the target');
-				success = true;
-				break;
-			}
-		}
-		return success;
+		return 'SRS3';
 	}
 
 	/**
@@ -224,29 +49,336 @@ export class SRS3 extends Solver {
 		this.#isRandom = flag;
 	}
 
+	exec(): boolean {
+		for (const x of this.pro.variables()) {
+			if (x.isEmpty()) {
+				x.assign(x.domain().at(0));
+			}
+		}
+		const defEv: number         = this.pro.degree();
+		const sol  : AssignmentList = new AssignmentList();
+		let solEv  : number         = defEv;
+
+		this.monitor.initialize();
+
+		let ret: boolean | null = null;
+
+		while (true) {
+			const [cs, ev] = this.pro.constraintsWithDegree();
+			this.monitor.outputDebugString(`Evaluation: ${ev}`);
+
+			if (solEv < ev) {
+				sol.setProblem(this.pro);
+				solEv = ev;
+
+				if (this.monitor.solutionFound(sol, solEv)) {
+					return true;
+				}
+			}
+			if (null !== (ret = this.monitor.check(ev))) {
+				break;
+			}
+
+			for (const tn of this.#nodes) {
+				tn.clear();
+			}
+			const c_stars = new Set<TreeNode>();
+			for (const c of cs) {
+				const tn: TreeNode = this.#nodes[c.index()];
+				c_stars.add(tn);
+			}
+			this.#srs(c_stars);
+		}
+
+		if (false === ret && !this.monitor.isTargetAssigned() && defEv < solEv) {
+			sol.apply();
+			ret = true;
+		}
+		return ret;
+	}
+
+	#srs(c_stars: Set<TreeNode>): boolean {
+		this.monitor.outputDebugString('SRS');
+
+		this.#closedList.clear();
+		this.#openList.clear();
+		for (const tn of c_stars) {
+			this.#openList.add(tn);
+		}
+
+		while (c_stars.size && this.#openList.size) {
+			const node: TreeNode = this.#getElementFromSet(this.#openList);
+			this.#openList.delete(node);
+
+			if (!this.#repair(node.constraint())) {
+				this.#spread(node);
+			} else if (c_stars.delete(node)) {
+				// If the repaired node is included in C* (to be deleted)
+			} else if (node.parent() && this.#repair((node.parent() as TreeNode).constraint())) {
+				this.#shrink(node, c_stars);  // When its improvement leads to the improvement of its parents
+			} else {
+				this.#spread(node);
+			}
+		}
+		return c_stars.size === 0;
+	}
+
+	#spread(tn: TreeNode): void {
+		this.monitor.outputDebugString('Spread');
+		this.#closedList.add(tn);
+
+		for (const n of this.#getNeighbors(tn)) {
+			// For constraints that are not included in Open or Closed.
+			if (!this.#closedList.has(n) && !this.#openList.has(n)) {
+				n.clear();
+				tn.append(n);
+				this.#openList.add(n);
+			}
+		}
+	}
+
+	// #repair(c0: Constraint): boolean {
+	// 	this.monitor.outputDebugString('Repair');
+	// 	this.#ws[c0.index()] += 1;
+
+	// 	const canList: AssignmentList = new AssignmentList();
+	// 	const defD0  : number         = c0.degree();  // Target c0 should certainly be an improvement over this.
+
+	// 	// If a candidate satisfying the condition is stronger than the previous candidates,
+	// 	// it is replaced, and if no candidate is found until the end, it fails.
+	// 	for (const x of c0) {
+	// 		const x_v: number = x.value();  // Save the value
+
+	// 		out: for (const v of x.domain()) {
+	// 			if (x_v === v) {
+	// 				continue;
+	// 			}
+	// 			x.assign(v);
+	// 			const d0: number = c0.degree();
+	// 			// If target c0 cannot be improved, the assignment is rejected.
+	// 			if (d0 <= defD0) {
+	// 				continue;
+	// 			}
+	// 			for (const c of x) {
+	// 				if (c === c0) {
+	// 					continue;
+	// 				}
+	// 				const d: number = c.degree();
+	// 				// If one of the neighborhood constraints c is less than or equal to the worst, the assignment is rejected.
+	// 				if (d < defD0) {
+	// 					continue out;
+	// 				}
+	// 			}
+	// 			canList.addVariable(x, v);
+	// 		}
+	// 		x.assign(x_v);  // Restore the value
+	// 	}
+	// 	if (0 < canList.size()) {
+	// 		const a: Assignment = this.#isRandom ? canList.random() : canList.at(0);
+	// 		a.apply();
+	// 		this.monitor.outputDebugString('\t' + a);
+	// 		return true;
+	// 	}
+	// 	return false;
+	// }
+
+	#repair(c0: Constraint): boolean {
+		this.monitor.outputDebugString('Repair');
+		this.#ws[c0.index()] += 1;
+
+		const defD0: number = c0.degree();  // Target c0 should certainly be an improvement over this.
+		const canList = new AssignmentList();
+		let maxDiff: number = 0;
+
+		for (const x of c0) {
+			const x_v: number = x.value();  // Save the value
+
+			let nowEv: number = 0;
+			for (const c of x) {
+				nowEv += (1 - c.degree()) * this.#ws[c.index()];
+			}
+			out: for (const v of x.domain()) {
+				if (x_v === v) {
+					continue;
+				}
+				x.assign(v);
+				if (c0.degree() <= defD0) {
+					continue;
+				}
+				let diff: number = nowEv;
+
+				for (const c of x) {
+					diff -= (1 - c.degree()) * this.#ws[c.index()];
+					// If the improvement is less than the previous improvement, try the next variable.
+					if (diff < maxDiff) {
+						continue out;
+					}
+				}
+				if (maxDiff < diff) {  // An assignment that are better than ever before is found.
+					maxDiff = diff;
+					canList.clear();
+					canList.addVariable(x, v);
+				} else if (maxDiff !== 0) {  // An assignments that can be improved to the same level as before is found.
+					canList.addVariable(x, v);
+				}
+			}
+			x.assign(x_v);  // Restore the value
+		}
+		if (0 < canList.size()) {
+			const a: Assignment = this.#isRandom ? canList.random() : canList.at(0);
+			a.apply();
+			this.monitor.outputDebugString('\t' + a);
+			return true;
+		}
+		return false;
+	}
+
+	#shrink(node: TreeNode, c_stars: Set<TreeNode>): void {
+		this.monitor.outputDebugString('Shrink');
+
+		let cur         : TreeNode = node;
+		let curIsRemoved: boolean  = false;
+
+		while (true) {
+			cur = cur.parent() as TreeNode;
+			if (c_stars.delete(cur)) {
+				curIsRemoved = true;
+				break;
+			}
+			if (!cur.parent() || !this.#repair((cur.parent() as TreeNode).constraint())) {
+				break;
+			}
+		}
+		const temp: TreeNode[] = [];
+		cur.getDescendants(temp);  // temp contains node.
+		cur.clear();  // Prepare for reuse
+
+		for (const n of temp) {
+			this.#openList.delete(n);
+			this.#closedList.delete(n);
+		}
+		if (!curIsRemoved) {
+			this.#openList.add(cur);
+		}
+	}
+
+	// #shrink(node: TreeNode, c_stars: Set<TreeNode>): void {
+	// 	this.debugOutput('Shrink');
+
+	// 	const temp: TreeNode[] = [];
+	// 	let cur: TreeNode = node;
+
+	// 	while (true) {  // This procedure is originally a recursive call, but converted to a loop
+	// 		cur = cur.parent() as TreeNode;
+	// 		temp.length = 0;
+	// 		cur.getDescendants(temp);
+	// 		cur.clear();
+
+	// 		for (const n of temp) {
+	// 			this.#openList.delete(n);
+	// 			this.#closedList.delete(n);
+	// 		}
+	// 		if (c_stars.delete(cur)) {
+	// 		} else {
+	// 			this.#openList.add(cur);
+	// 			if (!cur.parent() || !this.#repair((cur.parent() as TreeNode).constraint())) {
+	// 				break;
+	// 			}
+	// 		}
+	// 	}
+	// }
+
+	#getNeighbors(tn: TreeNode): TreeNode[] {
+		const c: Constraint = tn.constraint();
+		const i: number     = c.index();
+
+		if (this.#neighbors[i] === null) {
+			const ns: TreeNode[] = [];
+			for (const d of c.neighbors()) {
+				ns.push(this.#nodes[d.index()]);
+			}
+			this.#neighbors[i] = ns;
+		}
+		return this.#neighbors[i];
+	}
+
+	#getElementFromSet(set: Set<TreeNode>): TreeNode {
+		const ms : TreeNode[] = this.#selectLightestNode(this.#selectNearestNode(set));
+		return this.#isRandom ? ms[Math.floor(Math.random() * ms.length)] : ms[0];
+	}
+
+	#selectLightestNode(set: Iterable<TreeNode>): TreeNode[] {
+		let curW: number     = Number.MAX_VALUE;
+		let ms  : TreeNode[] = [];
+
+		for (const tn of set) {
+			const w: number = this.#ws[tn.constraint().index()];
+			if (w < curW) {
+				curW = w;
+				ms.length = 0;
+				ms.push(tn);
+			} else if (w === curW) {
+				ms.push(tn);
+			}
+		}
+		return ms;
+	}
+
+	#selectNearestNode(set: Iterable<TreeNode>): TreeNode[] {
+		let curD: number     = Number.MAX_VALUE;
+		let ms  : TreeNode[] = [];
+
+		for (const tn of set) {
+			const d: number = tn.depth();
+			if (d < curD) {
+				curD = d;
+				ms.length = 0;
+				ms.push(tn);
+			} else if (d === curD) {
+				ms.push(tn);
+			}
+		}
+		return ms;
+	}
+
 }
 
 class TreeNode {
 
+	#c       : Constraint;
+	#depth   : number = 0;
+	#parent  : TreeNode | null = null;
 	#children: TreeNode[] = [];
-	#parent: TreeNode | null;
-	#obj: any;
 
-	constructor(obj: any) {
-		this.#parent = null;
-		this.#obj = obj;
+	constructor(c: Constraint) {
+		this.#c = c;
 	}
 
-	add(tn: TreeNode): void {
+	append(tn: TreeNode): void {
 		tn.#parent = this;
+		tn.#depth  = this.#depth + 1;
 		this.#children.push(tn);
 	}
 
 	clear(): void {
+		this.#parent = null;
+		this.#depth  = 0;
 		for (const tn of this.#children) {
-			tn.#parent = null;
+			tn.clear();
 		}
 		this.#children.length = 0;
+	}
+
+	constraint(): Constraint {
+		return this.#c;
+	}
+
+	depth(): number {
+		return this.#depth;
+	}
+
+	parent(): TreeNode | null {
+		return this.#parent;
 	}
 
 	getDescendants(tns: TreeNode[]): void {
@@ -255,18 +387,6 @@ class TreeNode {
 		for (const tn of this.#children) {
 			tn.getDescendants(tns);
 		}
-	}
-
-	getObject(): any {
-		return this.#obj;
-	}
-
-	parent(): TreeNode | null {
-		return this.#parent;
-	}
-
-	setParent(p: TreeNode | null): void {
-		this.#parent = p;
 	}
 
 }

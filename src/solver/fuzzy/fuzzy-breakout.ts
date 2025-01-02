@@ -2,7 +2,7 @@
  * Class implements a solver using the breakout method for fuzzy CSP.
  *
  * @author Takuto Yanagida
- * @version 2024-12-16
+ * @version 2024-12-22
  */
 
 import { Problem } from '../../problem/problem';
@@ -15,9 +15,7 @@ import { Solver } from '../solver';
 export class FuzzyBreakout extends Solver {
 
 	#isRandom: boolean = true;
-
-	#ws: number[];
-	#lastSolDeg: number = 0;
+	#ws      : number[];
 
 	/**
 	 * Generates a solver given a constraint satisfaction problem.
@@ -43,35 +41,91 @@ export class FuzzyBreakout extends Solver {
 		this.#isRandom = flag;
 	}
 
-	#findCandidates(worstXs: Iterable<Variable>, canList: AssignmentList): void {
+	exec(): boolean {
+		for (const x of this.pro.variables()) {
+			if (x.isEmpty()) {
+				x.assign(x.domain().at(0));
+			}
+		}
+		const defEv: number         = this.pro.degree();
+		const sol  : AssignmentList = new AssignmentList();
+		let solEv  : number         = defEv;
+
+		this.monitor.initialize();
+
+		const canList = new AssignmentList();
+		let ret: boolean | null = null;
+
+		while (true) {
+			const [cs, ev] = this.pro.constraintsWithDegree();
+			this.monitor.outputDebugString(`Evaluation: ${ev}`);
+
+			if (solEv < ev) {
+				sol.setProblem(this.pro);
+				solEv = ev;
+
+				if (this.monitor.solutionFound(sol, solEv)) {
+					return true;
+				}
+			}
+			if (null !== (ret = this.monitor.check(ev))) {
+				break;
+			}
+			this.#next(cs, canList);
+		}
+
+		if (false === ret && !this.monitor.isTargetAssigned() && defEv < solEv) {
+			sol.apply();
+			ret = true;
+		}
+		return ret;
+	}
+
+	#next(cs: Constraint[], canList: AssignmentList): void {
+		this.#findCandidates(this.#listTargetVariables(cs), canList);
+
+		if (0 < canList.size()) {
+			const a: Assignment = this.#isRandom ? canList.random() : canList.at(0);
+			a.apply();
+			canList.clear();
+			this.monitor.outputDebugString('\t' + a);
+		} else {
+			for (const c of cs) {
+				this.#ws[c.index()] += 1;
+			}
+			this.monitor.outputDebugString('Breakout');
+		}
+	}
+
+	#findCandidates(tarXs: Variable[], canList: AssignmentList): void {
 		let maxDiff: number = 0;
 
-		for (const x of worstXs) {
+		for (const x of tarXs) {
 			const x_v: number = x.value();  // Save the value
 
-			let nowVio: number = 0;
+			let nowEv: number = 0;
 			for (const c of x) {
-				nowVio += (1 - c.satisfactionDegree()) * this.#ws[c.index()];
+				nowEv += (1 - c.degree()) * this.#ws[c.index()];
 			}
 			out: for (const v of x.domain()) {
 				if (x_v === v) {
 					continue;
 				}
 				x.assign(v);
-				let diff: number = nowVio;
+				let diff: number = nowEv;
 
 				for (const c of x) {
-					diff -= (1 - c.satisfactionDegree()) * this.#ws[c.index()];
+					diff -= (1 - c.degree()) * this.#ws[c.index()];
 					// If the improvement is less than the previous improvement, try the next variable.
 					if (diff < maxDiff) {
 						continue out;
 					}
 				}
-				if (diff > maxDiff) {  // Found assignments that are better than ever before.
+				if (maxDiff < diff) {  // An assignment that are better than ever before is found.
 					maxDiff = diff;
 					canList.clear();
 					canList.addVariable(x, v);
-				} else if (maxDiff !== 0) {  // Found assignments that can be improved to the same level as before.
+				} else if (maxDiff !== 0) {  // An assignments that can be improved to the same level as before is found.
 					canList.addVariable(x, v);
 				}
 			}
@@ -79,79 +133,15 @@ export class FuzzyBreakout extends Solver {
 		}
 	}
 
-	#listWorstVariables(worstCs: Iterable<Constraint>): Variable[] {
+	#listTargetVariables(tarCs: Constraint[]): Variable[] {
 		const xs = new Set<Variable>();
 
-		for (const c of worstCs) {
+		for (const c of tarCs) {
 			for (const x of c) {
 				xs.add(x);
 			}
 		}
 		return Array.from<Variable>(xs);
-	}
-
-	exec(): boolean {
-		const endTime: number = (this.timeLimit === null) ? Number.MAX_VALUE : (Date.now() + this.timeLimit);
-		let iterCount: number = 0;
-
-		for (const x of this.pro.variables()) {
-			if (x.isEmpty()) {
-				x.assign(x.domain().at(0));
-			}
-		}
-
-		const deg: number = this.pro.worstSatisfactionDegree();
-		const canList = new AssignmentList();
-
-		const sol = new AssignmentList();
-
-		while (true) {
-			const [vcs, wsd] = this.pro.constraintsWithWorstSatisfactionDegree();
-			this.debugOutput(`worst satisfaction degree: ${wsd}`);
-
-			// Failure if repeated a specified number
-			if (this.iterLimit && this.iterLimit < iterCount++) {
-				this.debugOutput('stop: number of iterations has reached the limit');
-				break;
-			}
-			// Failure if time limit is exceeded
-			if (endTime < Date.now()) {
-				this.debugOutput('stop: time limit has been reached');
-				break;
-			}
-
-			if (this.#lastSolDeg < wsd) {
-				sol.setProblem(this.pro);
-				this.#lastSolDeg = wsd;
-
-				if (this.foundSolution(sol, this.#lastSolDeg)) {  // Call hook
-					return true;
-				}
-			}
-			// Success if the degree improves from specified
-			if (this.targetDeg && this.targetDeg <= wsd) {
-				this.debugOutput('stop: current degree is above the target');
-				return true;
-			}
-
-			this.#findCandidates(this.#listWorstVariables(vcs), canList);
-
-			if (0 < canList.size()) {
-				const a: Assignment = this.#isRandom ? canList.random() : canList.at(0);
-				a.apply();
-				canList.clear();
-				this.debugOutput('\t' + a);
-			} else {
-				for (const c of vcs) {
-					this.#ws[c.index()] += 1;
-				}
-				this.debugOutput('breakout');
-			}
-		}
-		if (this.targetDeg === null && deg < this.pro.worstSatisfactionDegree()) {
-			return true;
-		}
-		return false;
 	}
 
 }

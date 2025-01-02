@@ -3,11 +3,10 @@
  * The implementation is optimized by converting recursive calls to loops.
  *
  * @author Takuto Yanagida
- * @version 2024-12-10
+ * @version 2024-12-23
  */
 
 import { Problem } from '../../problem/problem';
-import { CrispProblem } from '../../problem/problem-crisp';
 import { Variable } from '../../problem/variable';
 import { Constraint } from '../../problem/constraint';
 import { AssignmentList } from '../../util/assignment-list';
@@ -15,12 +14,6 @@ import { Solver } from '../solver';
 
 export class LocalChangesEx extends Solver {
 
-	static #setPlusElement<T>(s: Set<T>, e: T): Set<T> {
-		return new Set(s).add(e);
-	}
-
-	#iterCount: number = 0;
-	#endTime: number = 0;
 	#globalReturn: boolean = false;
 
 	constructor(p: Problem, unassignAll: boolean = false) {
@@ -34,29 +27,90 @@ export class LocalChangesEx extends Solver {
 		return 'Local Changes Ex';
 	}
 
-	#createNewV3(X1_X2: Set<Variable>, x: Variable, v: number): Set<Variable> {
-		const newX3 = new Set<Variable>();
-		const cs = new Set<Constraint>();
+	exec(): boolean {
+		if (this.pro.emptyVariableSize() === 0) {
+			this.pro.clearAllVariables();
+		}
+		this.#globalReturn = false;
 
-		for (const xa of X1_X2) {
-			const temp: Constraint[] = this.pro.constraintsBetween(x, xa);
-			for (const c of temp) {
-				cs.add(c);
+		const notFixed   = new Set<Variable>();
+		const unassigned = new Set<Variable>();
+		for (const x of this.pro.variables()) {
+			(!x.isEmpty() ? notFixed : unassigned).add(x);
+		}
+
+		this.monitor.initialize();
+
+		const sol: AssignmentList = new AssignmentList();
+		const ret: boolean        = this.#lcVariables(new Set(), notFixed, unassigned);
+
+		const ev: number = this.pro.ratio();
+		this.monitor.outputDebugString(`Evaluation: ${ev}`);
+
+		if (ret) {
+			sol.setProblem(this.pro);
+
+			if (this.monitor.solutionFound(sol, ev)) {
+				return true;
 			}
 		}
-		const origV: number = x.value();  // Save the value.
-		x.assign(v);
+		return ret;
+	}
 
-		for (const c of cs) {
-			if (c.isSatisfied() === 0) {
-				for (const xi of c) {
-					newX3.add(xi);
-				}
+	#lcVariables(X1: Set<Variable>, X2: Set<Variable>, X3: Set<Variable>): boolean {
+		X2 = new Set(X2);  // Clone
+		X3 = new Set(X3);  // Clone
+
+		while (true) {
+			this.monitor.outputDebugString(`X1 ${X1.size}, X2' ${X2.size}, X3' ${X3.size}`);
+
+			const r: boolean | null = this.monitor.check(this.pro.degree());
+			if (r !== null) {
+				this.#globalReturn = true;
+				return r;
 			}
+			if (X3.size === 0) {
+				return true;
+			}
+			const x = X3.values().next().value as Variable;
+			const ret: boolean = this.#lcVariable(X1, X2, x);
+
+			if (!ret || this.#globalReturn) {
+				return ret;
+			}
+			X2.add(x);
+			X3.delete(x);
 		}
-		x.assign(origV);  // Restore the value.
-		newX3.delete(x);
-		return newX3;
+	}
+
+	#lcVariable(X1: Set<Variable>, X2: Set<Variable>, x: Variable): boolean {
+		for (const v of x.domain()) {
+			const al: AssignmentList = AssignmentList.fromVariables(X2);
+			x.assign(v);
+
+			const ret: boolean = this.#lcValue(X1, X2, x);
+			if (ret || this.#globalReturn) {
+				return ret;
+			}
+			x.clear();
+			al.apply();
+		}
+		return false;
+	}
+
+	#lcValue(X1: Set<Variable>, X2: Set<Variable>, x: Variable): boolean {
+		if (!this.#isConsistent(X1, x, x.value())) {
+			return false;
+		}
+		const X12: Set<Variable> = X1.union(X2);
+		if (this.#isConsistent(X12, x, x.value())) {
+			return true;
+		}
+		const X3: Set<Variable> = this.#createX3(X12, x, x.value());
+
+		X1 = cloneAndAdd(X1, x);
+		X2 = X2.difference(X3);
+		return this.#lcVariables(X1, X2, X3);
 	}
 
 	#isConsistent(A: Set<Variable>, x: Variable, v: number): boolean {
@@ -72,7 +126,7 @@ export class LocalChangesEx extends Solver {
 		x.assign(v);
 
 		for (const c of cs) {
-			if (c.isSatisfied() === 0) {
+			if (c.isSatisfied() !== 1) {
 				x.assign(origV);  // Restore the value.
 				return false;
 			}
@@ -81,91 +135,32 @@ export class LocalChangesEx extends Solver {
 		return true;
 	}
 
-	#lcValue(X1: Set<Variable>, X2: Set<Variable>, x: Variable): boolean {
-		if (!this.#isConsistent(X1, x, x.value())) {
-			return false;
-		}
-		const X1_X2: Set<Variable> = X1.union(X2);
-		if (this.#isConsistent(X1_X2, x, x.value())) {
-			return true;
-		}
-		const X3: Set<Variable> = this.#createNewV3(X1_X2, x, x.value());
+	#createX3(X12: Set<Variable>, x: Variable, v: number): Set<Variable> {
+		const newX3 = new Set<Variable>();
+		const cs    = new Set<Constraint>();
 
-		X1 = LocalChangesEx.#setPlusElement(X1, x);
-		X2 = X2.difference(X3);
-		return this.#lcVariables(X1, X2, X3);
+		for (const xa of X12) {
+			for (const c of this.pro.constraintsBetween(x, xa)) {
+				cs.add(c);
+			}
+		}
+		const origV: number = x.value();  // Save the value.
+		x.assign(v);
+
+		for (const c of cs) {
+			if (c.isSatisfied() !== 1) {
+				for (const xi of c) {
+					newX3.add(xi);
+				}
+			}
+		}
+		x.assign(origV);  // Restore the value.
+		newX3.delete(x);
+		return newX3;
 	}
 
-	#lcVariable(X1: Set<Variable>, X2: Set<Variable>, x: Variable): boolean {
-		for (const v of x.domain()) {
-			const al: AssignmentList = AssignmentList.fromVariables(X2);
-			x.assign(v);
+}
 
-			const ret: boolean = this.#lcValue(X1, X2, x);
-			if (ret || this.#globalReturn) {
-				return ret;
-			}
-
-			x.clear();
-			al.apply();
-		}
-		return false;
-	}
-
-	#lcVariables(X1: Set<Variable>, X2: Set<Variable>, X3: Set<Variable>): boolean {
-		X2 = new Set(X2);  // Clone
-		X3 = new Set(X3);  // Clone
-
-		while (true) {
-			this.debugOutput(`X1 ${X1.size}, X2' ${X2.size}, X3' ${X3.size}`);
-
-			// Success if violation rate improves from specified
-			if ((this.targetDeg ?? 1) <= (this.pro as CrispProblem).satisfiedConstraintRate()) {
-				this.debugOutput('stop: current degree is above the target');
-				this.#globalReturn = true;
-				return true;
-			}
-			// Failure if repeated a specified number
-			if (this.iterLimit && this.iterLimit < this.#iterCount++) {
-				this.debugOutput('stop: number of iterations has reached the limit');
-				this.#globalReturn = true;
-				return false;
-			}
-			// Failure if time limit is exceeded
-			if (this.#endTime < Date.now()) {
-				this.debugOutput('stop: time limit has been reached');
-				this.#globalReturn = true;
-				return false;
-			}
-
-			if (X3.size === 0) {
-				return true;
-			}
-			const x = X3.values().next().value as Variable;
-			const ret: boolean = this.#lcVariable(X1, X2, x);
-
-			if (!ret || this.#globalReturn) {
-				return ret;
-			}
-			X2.add(x);
-			X3.delete(x);
-		}
-	}
-
-	exec(): boolean {
-		this.#endTime = (this.timeLimit === null) ? Number.MAX_VALUE : (Date.now() + this.timeLimit);
-		this.#iterCount = 0;
-		this.#globalReturn = false;
-
-		if (this.pro.emptyVariableSize() === 0) {
-			this.pro.clearAllVariables();
-		}
-		const notFixed = new Set<Variable>();
-		const unassigned = new Set<Variable>();
-		for (const x of this.pro.variables()) {
-			(!x.isEmpty() ? notFixed : unassigned).add(x);
-		}
-		return this.#lcVariables(new Set(), notFixed, unassigned);
-	}
-
+function cloneAndAdd<T>(s: Set<T>, e: T): Set<T> {
+	return new Set<T>(s).add(e);
 }

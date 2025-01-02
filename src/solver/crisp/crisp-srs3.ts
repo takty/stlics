@@ -1,15 +1,12 @@
 /**
- * This class implements the SRS algorithm for crisp CSP.
+ * This class implements the SRS3 algorithm for crisp CSP.
  * The given crisp CSP is treated as the maximum CSP.
- * Similar to SRS 3, the repair algorithm searches for an assignment that
- * satisfies itself without reducing the number of satisfactions of its neighbors.
  *
  * @author Takuto Yanagida
- * @version 2024-12-10
+ * @version 2024-12-23
  */
 
 import { Problem } from '../../problem/problem';
-import { CrispProblem } from '../../problem/problem-crisp';
 import { Constraint } from '../../problem/constraint';
 import { Assignment } from '../../util/assignment';
 import { AssignmentList } from '../../util/assignment-list';
@@ -18,27 +15,30 @@ import { Solver } from '../solver';
 export class CrispSRS3 extends Solver {
 
 	#isRandom: boolean = true;
+	#ws      : number[];
 
 	#closedList: Set<TreeNode> = new Set();
-	#openList: Set<TreeNode> = new Set();  // LinkedHashSet is used in the original implementation.
-	#nodes: TreeNode[] = [];
-	#neighborConstraints: (Constraint[] | null)[] = [];  // Cache
+	#openList  : Set<TreeNode> = new Set();  // LinkedHashSet is used in the original implementation.
+	#nodes     : TreeNode[] = [];
+	#neighbors : (TreeNode[] | null)[] = [];  // Cache
 
 	/**
 	 * Generates a solver given a constraint satisfaction problem.
-	 * @param p A crisp problem.
+	 * @param p A problem.
 	 */
-	constructor(p: CrispProblem) {
-		super(p as Problem);
+	constructor(p: Problem) {
+		super(p);
 
 		for (const c of this.pro.constraints()) {
 			this.#nodes.push(new TreeNode(c));
-			this.#neighborConstraints.push(null);
+			this.#neighbors.push(null);
 		}
+		this.#ws = new Array(this.pro.constraintSize());
+		this.#ws.fill(1);
 	}
 
 	name(): string {
-		return 'SRS 3 for Crisp CSPs';
+		return 'SRS3 for Crisp CSPs';
 	}
 
 	/**
@@ -50,17 +50,98 @@ export class CrispSRS3 extends Solver {
 		this.#isRandom = flag;
 	}
 
-	#getNeighborConstraints(c: Constraint): Constraint[] {
-		const i: number = c.index();
-
-		if (this.#neighborConstraints[i] === null) {
-			this.#neighborConstraints[i] = c.neighbors();
+	exec(): boolean {
+		for (const x of this.pro.variables()) {
+			if (x.isEmpty()) {
+				x.assign(x.domain().at(0));
+			}
 		}
-		return this.#neighborConstraints[i];
+		const defEv: number         = this.pro.degree();
+		const sol  : AssignmentList = new AssignmentList();
+		let solEv  : number         = defEv;
+
+		this.monitor.initialize();
+
+		let ret: boolean | null = null;
+
+		while (true) {
+			const cs: Constraint[] = this.pro.violatingConstraints();
+			const ev: number = this.pro.ratio();
+			this.monitor.outputDebugString(`Evaluation: ${ev}`);
+
+			if (solEv < ev) {
+				sol.setProblem(this.pro);
+				solEv = ev;
+
+				if (this.monitor.solutionFound(sol, solEv)) {
+					return true;
+				}
+			}
+			if (null !== (ret = this.monitor.check(ev))) {
+				break;
+			}
+
+			for (const tn of this.#nodes) {
+				tn.clear();
+			}
+			const c_stars = new Set<TreeNode>();
+			for (const c of cs) {
+				const tn: TreeNode = this.#nodes[c.index()];
+				c_stars.add(tn);
+			}
+			this.#srs(c_stars);
+		}
+
+		if (false === ret && !this.monitor.isTargetAssigned() && defEv < solEv) {
+			sol.apply();
+			ret = true;
+		}
+		return ret;
+	}
+
+	#srs(c_stars: Set<TreeNode>): boolean {
+		this.monitor.outputDebugString('SRS');
+
+		this.#closedList.clear();
+		this.#openList.clear();
+		for (const tn of c_stars) {
+			this.#openList.add(tn);
+		}
+
+		while (c_stars.size && this.#openList.size) {
+			const node: TreeNode = this.#getElementFromSet(this.#openList);
+			this.#openList.delete(node);
+
+			if (!this.#repair(node.constraint())) {
+				this.#spread(node);
+			} else if (c_stars.delete(node)) {
+				// If the repaired node is included in C* (to be deleted)
+			} else if (node.parent() && this.#repair((node.parent() as TreeNode).constraint())) {
+				this.#shrink(node, c_stars);  // When its improvement leads to the improvement of its parents
+			} else {
+				this.#spread(node);
+			}
+		}
+		return c_stars.size === 0;
+	}
+
+	#spread(tn: TreeNode): void {
+		this.monitor.outputDebugString('Spread');
+		this.#closedList.add(tn);
+
+		for (const n of this.#getNeighbors(tn)) {
+			// For constraints that are not included in Open or Closed.
+			if (!this.#closedList.has(n) && !this.#openList.has(n)) {
+				n.clear();
+				tn.append(n);
+				this.#openList.add(n);
+			}
+		}
 	}
 
 	#repair(c0: Constraint): boolean {
-		this.debugOutput('repair');
+		this.monitor.outputDebugString('Repair');
+		this.#ws[c0.index()] += 1;
 
 		const canList = new AssignmentList();
 		let maxDiff: number = 0;
@@ -68,9 +149,9 @@ export class CrispSRS3 extends Solver {
 		for (const x of c0) {
 			const x_v: number = x.value();  // Save the value
 
-			let nowVio: number = 0;
+			let nowEv: number = 0;
 			for (const c of x) {
-				nowVio += (1 - c.isSatisfied());
+				nowEv += (1 - c.isSatisfied()) * this.#ws[c.index()];
 			}
 			out: for (const v of x.domain()) {
 				if (x_v === v) {
@@ -78,16 +159,18 @@ export class CrispSRS3 extends Solver {
 				}
 				x.assign(v);
 				if (c0.isSatisfied() !== 1) {
-					continue;  // Assuming c0 improvement
+					continue;
 				}
-				let diff: number = nowVio;
+				let diff: number = nowEv;
+
 				for (const c of x) {
-					diff -= (1 - c.isSatisfied());
+					diff -= (1 - c.isSatisfied()) * this.#ws[c.index()];
+					// If the improvement is less than the previous improvement, try the next variable.
 					if (diff < maxDiff) {
-						continue out;  // If the improvement is less than the previous improvement, try the next variable.
+						continue out;
 					}
 				}
-				if (diff > maxDiff) {  // An assignment that are better than ever before is found.
+				if (maxDiff < diff) {  // An assignment that are better than ever before is found.
 					maxDiff = diff;
 					canList.clear();
 					canList.addVariable(x, v);
@@ -97,136 +180,161 @@ export class CrispSRS3 extends Solver {
 			}
 			x.assign(x_v);  // Restore the value
 		}
-		if (canList.size() > 0) {
+		if (0 < canList.size()) {
 			const a: Assignment = this.#isRandom ? canList.random() : canList.at(0);
 			a.apply();
-			this.debugOutput('\t' + a);
+			this.monitor.outputDebugString('\t' + a);
 			return true;
 		}
 		return false;
 	}
 
 	#shrink(node: TreeNode, c_stars: Set<TreeNode>): void {
-		const temp: TreeNode[] = [];
-		let cur: TreeNode = node;
+		this.monitor.outputDebugString('Shrink');
 
-		while (true) {  // This procedure is originally a recursive call, but converted to a loop
+		let cur         : TreeNode = node;
+		let curIsRemoved: boolean  = false;
+
+		while (true) {
 			cur = cur.parent() as TreeNode;
-			temp.length = 0;
-			cur.getDescendants(temp);
-			cur.clear();
-
-			for (const n of c_stars) {
-				this.#openList.delete(n);
-				this.#closedList.delete(n);
-			}
-
 			if (c_stars.delete(cur)) {
+				curIsRemoved = true;
 				break;
 			}
+			if (!cur.parent() || !this.#repair((cur.parent() as TreeNode).constraint())) {
+				break;
+			}
+		}
+		const temp: TreeNode[] = [];
+		cur.getDescendants(temp);  // temp contains node.
+		cur.clear();  // Prepare for reuse
+
+		for (const n of temp) {
+			this.#openList.delete(n);
+			this.#closedList.delete(n);
+		}
+		if (!curIsRemoved) {
 			this.#openList.add(cur);
-			if (cur.parent() !== null && !this.#repair((cur.parent() as TreeNode).getObject())) {
-				break;
-			}
 		}
 	}
 
-	#spread(n: TreeNode): void {
-		this.debugOutput('spread');
-		this.#closedList.add(n);
+	// #shrink(node: TreeNode, c_stars: Set<TreeNode>): void {
+	// 	this.debugOutput('Shrink');
 
-		for (const c of this.#getNeighborConstraints(n.getObject())) {
-			const tnc: TreeNode = this.#nodes[c.index()];
+	// 	const temp: TreeNode[] = [];
+	// 	let cur: TreeNode = node;
 
-			if (!this.#closedList.has(tnc) && !this.#openList.has(tnc)) {  // For constraints that are not included in Open or Closed
-				tnc.clear();  // Because of its reuse, it may have had children when it was used before.
-				n.add(tnc);
-				this.#openList.add(tnc);
+	// 	while (true) {  // This procedure is originally a recursive call, but converted to a loop
+	// 		cur = cur.parent() as TreeNode;
+	// 		temp.length = 0;
+	// 		cur.getDescendants(temp);
+	// 		cur.clear();
+
+	// 		for (const n of temp) {
+	// 			this.#openList.delete(n);
+	// 			this.#closedList.delete(n);
+	// 		}
+	// 		if (c_stars.delete(cur)) {
+	// 		} else {
+	// 			this.#openList.add(cur);
+	// 			if (!cur.parent() || !this.#repair((cur.parent() as TreeNode).constraint())) {
+	// 				break;
+	// 			}
+	// 		}
+	// 	}
+	// }
+
+	#getNeighbors(tn: TreeNode): TreeNode[] {
+		const c: Constraint = tn.constraint();
+		const i: number     = c.index();
+
+		if (this.#neighbors[i] === null) {
+			const ns: TreeNode[] = [];
+			for (const d of c.neighbors()) {
+				ns.push(this.#nodes[d.index()]);
 			}
+			this.#neighbors[i] = ns;
 		}
+		return this.#neighbors[i];
 	}
 
-	#srs(c_stars: Set<TreeNode>): boolean {
-		this.debugOutput('srs');
-		const endTime: number = (this.timeLimit === null) ? Number.MAX_VALUE : (Date.now() + this.timeLimit);
-		let iterCount: number = 0;
-
-		this.#closedList.clear();
-		this.#openList.clear();
-		for (const n of c_stars) {
-			this.#openList.add(n);
-		}
-		const p = this.pro as CrispProblem;
-
-		while (c_stars.size && this.#openList.size) {
-			if ((this.targetDeg ?? 1) <= p.satisfiedConstraintRate()) {  // Success if violation rate improves from specified
-				this.debugOutput('stop: current degree is above the target');
-				return true;
-			}
-			if (this.iterLimit && this.iterLimit < iterCount++) {  // Failure if repeated a specified number
-				this.debugOutput('stop: number of iterations has reached the limit');
-				return false;
-			}
-			if (endTime < Date.now()) {  // Failure if time limit is exceeded
-				this.debugOutput('stop: time limit has been reached');
-				return false;
-			}
-
-			const node: TreeNode = this.#openList.values().next().value as TreeNode;
-			this.#openList.delete(node);
-
-			if (this.#repair(node.getObject())) {
-				if (!c_stars.delete(node)) {  // If the repaired node is included in C* (to be deleted)
-					if (node.parent() !== null && this.#repair((node.parent() as TreeNode).getObject() as Constraint)) {  // When its improvement leads to the improvement of its parents
-						this.#shrink(node, c_stars);
-					} else {
-						this.#spread(node);
-					}
-				}
-			} else {  // In case of repair failure
-				this.#spread(node);
-			}
-		}
-		return false;
+	#getElementFromSet(set: Set<TreeNode>): TreeNode {
+		const ms : TreeNode[] = this.#selectLightestNode(this.#selectNearestNode(set));
+		return this.#isRandom ? ms[Math.floor(Math.random() * ms.length)] : ms[0];
 	}
 
-	exec(): boolean {
-		const vcs: Constraint[] = (this.pro as CrispProblem).violatingConstraints();
-		const c_stars = new Set<TreeNode>();
+	#selectLightestNode(set: Iterable<TreeNode>): TreeNode[] {
+		let curW: number     = Number.MAX_VALUE;
+		let ms  : TreeNode[] = [];
 
-		for (const c of vcs) {
-			const tnc: TreeNode = this.#nodes[c.index()];
-			c_stars.add(tnc);
+		for (const tn of set) {
+			const w: number = this.#ws[tn.constraint().index()];
+			if (w < curW) {
+				curW = w;
+				ms.length = 0;
+				ms.push(tn);
+			} else if (w === curW) {
+				ms.push(tn);
+			}
 		}
-		if (this.#srs(c_stars)) {
-			return true;
+		return ms;
+	}
+
+	#selectNearestNode(set: Iterable<TreeNode>): TreeNode[] {
+		let curD: number     = Number.MAX_VALUE;
+		let ms  : TreeNode[] = [];
+
+		for (const tn of set) {
+			const d: number = tn.depth();
+			if (d < curD) {
+				curD = d;
+				ms.length = 0;
+				ms.push(tn);
+			} else if (d === curD) {
+				ms.push(tn);
+			}
 		}
-		return c_stars.size === 0;
+		return ms;
 	}
 
 }
 
 class TreeNode {
 
+	#c       : Constraint;
+	#depth   : number = 0;
+	#parent  : TreeNode | null = null;
 	#children: TreeNode[] = [];
-	#parent: TreeNode | null;
-	#obj: any;
 
-	constructor(obj: any) {
-		this.#parent = null;
-		this.#obj = obj;
+	constructor(c: Constraint) {
+		this.#c = c;
 	}
 
-	add(tn: TreeNode): void {
+	append(tn: TreeNode): void {
 		tn.#parent = this;
+		tn.#depth  = this.#depth + 1;
 		this.#children.push(tn);
 	}
 
 	clear(): void {
+		this.#parent = null;
+		this.#depth  = 0;
 		for (const tn of this.#children) {
-			tn.#parent = null;
+			tn.clear();
 		}
 		this.#children.length = 0;
+	}
+
+	constraint(): Constraint {
+		return this.#c;
+	}
+
+	depth(): number {
+		return this.#depth;
+	}
+
+	parent(): TreeNode | null {
+		return this.#parent;
 	}
 
 	getDescendants(tns: TreeNode[]): void {
@@ -235,14 +343,6 @@ class TreeNode {
 		for (const tn of this.#children) {
 			tn.getDescendants(tns);
 		}
-	}
-
-	getObject(): any {
-		return this.#obj;
-	}
-
-	parent(): TreeNode | null {
-		return this.#parent;
 	}
 
 }
