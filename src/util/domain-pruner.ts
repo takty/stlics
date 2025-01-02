@@ -92,46 +92,12 @@ export class DomainPruner {
 
 
 /**
- * Assigns a domain pruner to each variable.
- * @param xs An array of variables.
- */
-export function assignDomainPruner(xs: Variable[]): void {
-	for (const x of xs) {
-		x.solverObject = new DomainPruner(x.domain().size());
-	}
-}
-
-/**
- * Un-assigns a domain pruner from each variable.
- * @param xs An array of variables.
- */
-export function unassignDomainPruner(xs: Variable[]): void {
-	for (const x of xs) {
-		x.solverObject = null;
-	}
-}
-
-/**
- * Recovers all pruned values of each variable up to the specified level.
- * @param xs An array of variables.
- * @param level Level.
- */
-export function recover(xs: Variable[], level: number): void {
-	for (const x of xs) {
-		x.solverObject.recover(level);
-	}
-}
-
-
-// -----------------------------------------------------------------------------
-
-
-/**
  * Returns the index of the variable with the minimum remaining values (MRV).
  * @param xs An array of variables.
+ * @param dps An array of domain pruners.
  * @return The index of the variable with the minimum remaining values.
  */
-export function indexOfVariableWithMRV(xs: Variable[]): number {
+export function indexOfVariableWithMRV(xs: Variable[], dps: DomainPruner[]): number {
 	let index: number = 0;
 	let size : number = Number.MAX_VALUE;
 
@@ -141,7 +107,7 @@ export function indexOfVariableWithMRV(xs: Variable[]): number {
 			continue;
 		}
 		const d: Domain = x.domain();
-		const s: number = d.size() - x.solverObject.prunedSize();
+		const s: number = d.size() - dps[x.index()].prunedSize();
 		if (s < size) {
 			size  = s;
 			index = i;

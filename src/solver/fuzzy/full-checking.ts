@@ -12,7 +12,7 @@ import { Problem } from '../../problem/problem';
 import { Variable } from '../../problem/variable';
 import { Constraint } from '../../problem/constraint';
 import { Domain } from '../../problem/domain';
-import { DomainPruner, assignDomainPruner, unassignDomainPruner, recover, indexOfVariableWithMRV } from '../../util/domain-pruner';
+import { DomainPruner, indexOfVariableWithMRV } from '../../util/domain-pruner';
 import { AssignmentList } from '../../util/assignment-list';
 import { createRelatedConstraintTable } from '../../util/problems';
 import { Solver } from '../solver';
@@ -20,8 +20,9 @@ import { Solver } from '../solver';
 export class FullChecking extends Solver {
 
 	#xs : Variable[];
-	#rct: Constraint[][][] = [];  // Table to cache constraints between two variables.
-	#sol: AssignmentList   = new AssignmentList();
+	#rct: Constraint[][][];  // Table to cache constraints between two variables.
+	#dps: DomainPruner[];
+	#sol: AssignmentList = new AssignmentList();
 
 	#useMRV: boolean = true;
 
@@ -42,6 +43,7 @@ export class FullChecking extends Solver {
 
 		this.#xs  = [...this.pro.variables()];
 		this.#rct = createRelatedConstraintTable(this.pro, this.#xs);
+		this.#dps = Array.from(this.#xs, (x: Variable): DomainPruner => new DomainPruner(x.domain().size()));
 
 		this.#sequence = new Array(this.pro.variableSize());
 		this.#unaryCs  = this.pro.constraints().filter((c: Constraint): boolean => c.size() === 1);
@@ -74,7 +76,6 @@ export class FullChecking extends Solver {
 	exec(): boolean {
 		this.monitor.initialize();
 		this.#minDeg = 0;
-		assignDomainPruner(this.#xs);
 
 		let ret: boolean | null = null;
 		while (ret === null) {
@@ -89,7 +90,6 @@ export class FullChecking extends Solver {
 			this.#globalRet = false;
 		}
 
-		unassignDomainPruner(this.#xs);
 		return ret === true;
 	}
 
@@ -99,7 +99,7 @@ export class FullChecking extends Solver {
 			const x    : Variable     = c.at(0) as Variable;
 			const origV: number       = x.value();  // Save the value.
 			const d    : Domain       = x.domain();
-			const dp   : DomainPruner = x.solverObject;
+			const dp   : DomainPruner = this.#dps[x.index()];
 
 			for (let i: number = 0, n: number = d.size(); i < n; ++i) {
 				x.assign(d.at(i));
@@ -136,9 +136,9 @@ export class FullChecking extends Solver {
 			return ret;  // Success or failure.
 		}
 
-		const x : Variable     = this.#xs[this.#useMRV ? indexOfVariableWithMRV(this.#xs) : level];
+		const x : Variable     = this.#xs[this.#useMRV ? indexOfVariableWithMRV(this.#xs, this.#dps) : level];
 		const d : Domain       = x.domain();
-		const dp: DomainPruner = x.solverObject;
+		const dp: DomainPruner = this.#dps[x.index()];
 
 		this.#sequence[level] = x;
 
@@ -158,10 +158,10 @@ export class FullChecking extends Solver {
 					break;
 				}
 			}
-			recover(this.#xs, level);
+			for (const dp of this.#dps) dp.recover(level);
 		}
 		if (ret === null) {  // When searching back to the parent, undo the branch pruning here.
-			recover(this.#xs, level);
+			for (const dp of this.#dps) dp.recover(level);
 			x.clear();
 		}
 		return ret;
@@ -174,7 +174,7 @@ export class FullChecking extends Solver {
 				continue;  // If it is a past or present variable.
 			}
 			const cs  : Constraint[] = this.#getConstraintsBetween(x.index(), x_i.index());
-			const dp_i: DomainPruner = x_i.solverObject;
+			const dp_i: DomainPruner = this.#dps[x_i.index()];
 			const d_i : Domain       = x_i.domain();
 
 			for (const c of cs) {
@@ -235,7 +235,7 @@ export class FullChecking extends Solver {
 			}
 		}
 		const d_j : Domain       = x_j!.domain();
-		const dp_j: DomainPruner = x_j!.solverObject;
+		const dp_j: DomainPruner = this.#dps[x_j!.index()];
 
 		loop_i: for (let i: number = 0, ni: number = d_i.size(); i < ni; ++i) {
 			if (dp_i.isPruned(i)) {
@@ -277,8 +277,8 @@ export class FullChecking extends Solver {
 		}
 		const d_j : Domain       = x_j!.domain();
 		const d_k : Domain       = x_k!.domain();
-		const dp_j: DomainPruner = x_j!.solverObject;
-		const dp_k: DomainPruner = x_k!.solverObject;
+		const dp_j: DomainPruner = this.#dps[x_j!.index()];
+		const dp_k: DomainPruner = this.#dps[x_k!.index()];
 
 		loop_i: for (let i: number = 0, ni: number = d_i.size(); i < ni; ++i) {
 			if (dp_i.isPruned(i)) {
@@ -335,7 +335,7 @@ export class FullChecking extends Solver {
 
 				for (let k: number = 0; k < x_.length; ++k) {
 					const d_k : Domain       = x_[k].domain();
-					const dp_k: DomainPruner = x_[k].solverObject;
+					const dp_k: DomainPruner = this.#dps[x_[k].index()];
 
 					if (dp_k.isPruned(indexes[k])) {
 						hidden = true;

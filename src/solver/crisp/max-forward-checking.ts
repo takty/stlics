@@ -12,7 +12,7 @@ import { Problem } from '../../problem/problem';
 import { Variable } from '../../problem/variable';
 import { Constraint } from '../../problem/constraint';
 import { Domain } from '../../problem/domain';
-import { DomainPruner, assignDomainPruner, unassignDomainPruner, recover, indexOfVariableWithMRV } from '../../util/domain-pruner';
+import { DomainPruner, indexOfVariableWithMRV } from '../../util/domain-pruner';
 import { AssignmentList } from '../../util/assignment-list';
 import { createRelatedConstraintTable } from '../../util/problems';
 import { Solver } from '../solver';
@@ -20,8 +20,9 @@ import { Solver } from '../solver';
 export class MaxForwardChecking extends Solver {
 
 	#xs : Variable[];
-	#rct: Constraint[][][] = [];  // Table to cache constraints between two variables.
-	#sol: AssignmentList   = new AssignmentList();
+	#rct: Constraint[][][];  // Table to cache constraints between two variables.
+	#dps: DomainPruner[];
+	#sol: AssignmentList = new AssignmentList();
 
 	#useMRV: boolean = true;
 
@@ -36,6 +37,7 @@ export class MaxForwardChecking extends Solver {
 
 		this.#xs  = [...this.pro.variables()];
 		this.#rct = createRelatedConstraintTable(this.pro, this.#xs);
+		this.#dps = Array.from(this.#xs, (x: Variable): DomainPruner => new DomainPruner(x.domain().size()));
 	}
 
 	name(): string {
@@ -55,13 +57,11 @@ export class MaxForwardChecking extends Solver {
 	exec(): boolean {
 		this.monitor.initialize();
 		this.#maxVc = this.pro.constraintSize();
-		assignDomainPruner(this.#xs);
 
 		this.pro.clearAllVariables();
 		const ret: boolean | null = this.#branch(0);
 		this.#sol.apply();
 
-		unassignDomainPruner(this.#xs);
 		return ret === true;
 	}
 
@@ -85,9 +85,9 @@ export class MaxForwardChecking extends Solver {
 			return ret;  // Success or failure.
 		}
 
-		const x : Variable     = this.#xs[this.#useMRV ? indexOfVariableWithMRV(this.#xs) : level];
+		const x : Variable     = this.#xs[this.#useMRV ? indexOfVariableWithMRV(this.#xs, this.#dps) : level];
 		const d : Domain       = x.domain();
-		const dp: DomainPruner = x.solverObject;
+		const dp: DomainPruner = this.#dps[x.index()];
 
 		for (let i: number = 0, n: number = d.size(); i < n; ++i) {
 			if (dp.isPruned(i)) {
@@ -105,10 +105,10 @@ export class MaxForwardChecking extends Solver {
 					break;
 				}
 			}
-			recover(this.#xs, level);
+			for (const dp of this.#dps) dp.recover(level);
 		}
 		if (ret === null) {  // When searching back to the parent, undo the branch pruning here.
-			recover(this.#xs, level);
+			for (const dp of this.#dps) dp.recover(level);
 			x.clear();
 		}
 		return ret;
@@ -121,7 +121,7 @@ export class MaxForwardChecking extends Solver {
 				continue;  // If it is a past or present variable.
 			}
 			const cs  : Constraint[] = this.#getConstraintsBetween(x.index(), x_i.index());
-			const dp_i: DomainPruner = x_i.solverObject;
+			const dp_i: DomainPruner = this.#dps[x_i.index()];
 			const d_i : Domain       = x_i.domain();
 
 			for (const c of cs) {

@@ -2,23 +2,18 @@
  * The common class of variables and constraints.
  *
  * @author Takuto Yanagida
- * @version 2024-10-21
+ * @version 2025-01-02
  */
 
 export class Element {
 
 	#index: number = -1;
-	#name: string = '';
+	#name : string = '';
 
 	/**
 	 * It is used when the user wishes to associate an arbitrary object with each element.
 	 */
 	userObject: any = null;
-
-	/**
-	 * Used when the solver wants to associate an arbitrary object with each element.
-	 */
-	solverObject: any = null;
 
 	// Called only from Problem.
 	setIndex(index: number): void {
