@@ -3,10 +3,9 @@
  * The minimum-remaining-values (MRV) heuristic can also be used by specifying the option.
  *
  * @author Takuto Yanagida
- * @version 2025-01-02
+ * @version 2025-01-03
  */
 
-import { Problem } from '../../problem/problem';
 import { Variable } from '../../problem/variable';
 import { Constraint } from '../../problem/constraint';
 import { Domain } from '../../problem/domain';
@@ -17,30 +16,21 @@ import { Solver } from '../solver';
 
 export class FuzzyForwardChecking extends Solver {
 
-	#xs : Variable[];
-	#rct: Constraint[][][];  // Table to cache constraints between two variables.
-	#dps: DomainPruner[];
-	#sol: AssignmentList = new AssignmentList();
+	#xs! : Variable[];
+	#rct!: Constraint[][][];  // Table to cache constraints between two variables.
+	#dps!: DomainPruner[];
+	#sol!: AssignmentList;
+
+	#minDeg!   : number;  // Degree of existing solutions (no need to find a solution less than this).
+	#globalRet!: boolean;
 
 	#useMRV: boolean = true;
 
-	#minDeg   : number  = 0;  // Degree of existing solutions (no need to find a solution less than this).
-	#globalRet: boolean = false;
-
 	/**
-	 * Generates the solver given a fuzzy constraint satisfaction problem.
-	 * @param p A problem.
+	 * Generates a solver.
 	 */
-	constructor(p: Problem) {
-		super(p);
-
-		this.#xs  = [...this.pro.variables()];
-		this.#rct = createRelatedConstraintTable(this.pro, this.#xs);
-		this.#dps = Array.from(this.#xs, (x: Variable): DomainPruner => new DomainPruner(x.domain().size()));
-	}
-
-	name(): string {
-		return 'Forward Checking for Fuzzy CSPs';
+	constructor() {
+		super();
 	}
 
 	/**
@@ -53,17 +43,37 @@ export class FuzzyForwardChecking extends Solver {
 		this.#useMRV = flag;
 	}
 
-	exec(): boolean {
-		this.monitor.initialize();
-		this.#minDeg = 0;
+	/**
+	 * {@override}
+	 */
+	name(): string {
+		return 'Forward Checking for Fuzzy CSPs';
+	}
 
+	/**
+	 * {@override}
+	 */
+	protected preprocess(): void {
+		this.#xs  = [...this.pro.variables()];
+		this.#rct = createRelatedConstraintTable(this.pro, this.#xs);
+		this.#dps = Array.from(this.#xs, (x: Variable): DomainPruner => new DomainPruner(x.domain().size()));
+		this.#sol = new AssignmentList();
+
+		this.#minDeg = 0;
+		this.monitor.initialize();
+	}
+
+	/**
+	 * {@override}
+	 */
+	protected exec(): boolean {
 		let ret: boolean | null = null;
 		while (ret === null) {
+			this.#globalRet = false;
 			this.pro.clearAllVariables();
+
 			ret = this.#branch(0);
 			this.#sol.apply();
-
-			this.#globalRet = false;
 		}
 
 		return ret === true;

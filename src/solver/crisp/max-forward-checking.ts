@@ -5,10 +5,9 @@
  * Each variable must have its own domain because it hides domain elements as branch pruning.
  *
  * @author Takuto Yanagida
- * @version 2025-01-02
+ * @version 2025-01-03
  */
 
-import { Problem } from '../../problem/problem';
 import { Variable } from '../../problem/variable';
 import { Constraint } from '../../problem/constraint';
 import { Domain } from '../../problem/domain';
@@ -19,29 +18,20 @@ import { Solver } from '../solver';
 
 export class MaxForwardChecking extends Solver {
 
-	#xs : Variable[];
-	#rct: Constraint[][][];  // Table to cache constraints between two variables.
-	#dps: DomainPruner[];
-	#sol: AssignmentList = new AssignmentList();
+	#xs! : Variable[];
+	#rct!: Constraint[][][];  // Table to cache constraints between two variables.
+	#dps!: DomainPruner[];
+	#sol!: AssignmentList;
+
+	#maxVc!: number;
 
 	#useMRV: boolean = true;
 
-	#maxVc: number = 0;
-
 	/**
-	 * Generates a solver given a constraint satisfaction problem.
-	 * @param p A problem.
+	 * Generates a solver.
 	 */
-	constructor(p: Problem) {
-		super(p);
-
-		this.#xs  = [...this.pro.variables()];
-		this.#rct = createRelatedConstraintTable(this.pro, this.#xs);
-		this.#dps = Array.from(this.#xs, (x: Variable): DomainPruner => new DomainPruner(x.domain().size()));
-	}
-
-	name(): string {
-		return 'Forward Checking for Max CSPs';
+	constructor() {
+		super();
 	}
 
 	/**
@@ -54,11 +44,32 @@ export class MaxForwardChecking extends Solver {
 		this.#useMRV = flag;
 	}
 
-	exec(): boolean {
-		this.monitor.initialize();
+	/**
+	 * {@override}
+	 */
+	name(): string {
+		return 'Forward Checking for Max CSPs';
+	}
+
+	/**
+	 * {@override}
+	 */
+	protected preprocess(): void {
+		this.#xs  = [...this.pro.variables()];
+		this.#rct = createRelatedConstraintTable(this.pro, this.#xs);
+		this.#dps = Array.from(this.#xs, (x: Variable): DomainPruner => new DomainPruner(x.domain().size()));
+		this.#sol = new AssignmentList();
+
 		this.#maxVc = this.pro.constraintSize();
 
 		this.pro.clearAllVariables();
+		this.monitor.initialize();
+	}
+
+	/**
+	 * {@override}
+	 */
+	protected exec(): boolean {
 		const ret: boolean | null = this.#branch(0);
 		this.#sol.apply();
 

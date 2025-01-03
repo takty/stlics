@@ -3,10 +3,9 @@
  * CSPs and FCSPs (but only Binary (F)CSPs) is supported.
  *
  * @author Takuto Yanagida
- * @version 2024-12-21
+ * @version 2025-01-03
  */
 
-import { Problem } from '../../problem/problem';
 import { Variable } from '../../problem/variable';
 import { Constraint } from '../../problem/constraint';
 import { AssignmentList } from '../misc/assignment-list';
@@ -14,34 +13,56 @@ import { Solver } from '../solver';
 
 export class FuzzyGENET extends Solver {
 
-	#clusters   : Cluster[]    = [];
-	#connections: Connection[] = [];
-	#degree     : number;
+	#clusters!   : Cluster[];
+	#connections!: Connection[];
+	#thDeg!      : number;
 
 	/**
-	 * Generates a solver given a constraint satisfaction problem.
-	 * @param p A problem.
+	 * Generates a solver.
 	 */
-	constructor(p: Problem, degree: number = 1) {
-		super(p);
-		this.#degree = degree;
+	constructor() {
+		super();
 	}
 
+	/**
+	 * Sets a threshold.
+	 *
+	 * @param threshold A threshold
+	 */
+	setThreshold(threshold: number): void {
+		this.#thDeg = threshold;
+	}
+
+	/**
+	 * {@override}
+	 */
 	name(): string {
 		return 'Fuzzy GENET';
 	}
 
-	exec(): boolean {
+	/**
+	 * {@override}
+	 */
+	protected preprocess(): void {
+		this.#clusters    = [];
+		this.#connections = [];
+		this.#thDeg	      = 1;
+
 		if (!this.#createNetwork()) {
 			throw new Error();
 		}
+		this.monitor.initialize();
+	}
+
+	/**
+	 * {@override}
+	 */
+	protected exec(): boolean {
 		const order: number[] = [...Array(this.#clusters.length).keys()];
 
 		const defEv: number         = this.pro.degree();
 		const sol  : AssignmentList = new AssignmentList();
 		let solEv  : number         = defEv;
-
-		this.monitor.initialize();
 
 		let ret: boolean | null = null;
 
@@ -89,7 +110,7 @@ export class FuzzyGENET extends Solver {
 					const origV: number = x.value();  // Save the value.
 					x.assign(n._value);
 
-					if (c.degree() <= this.#degree) {
+					if (c.degree() <= this.#thDeg) {
 						cons.push(new Connection(c, n));
 					}
 					x.assign(origV);  // Restore the value.
@@ -108,7 +129,7 @@ export class FuzzyGENET extends Solver {
 						const origV2: number = x2.value();  // Save the value.
 						x2.assign(n_s._value);
 
-						if (c.degree() <= this.#degree) {
+						if (c.degree() <= this.#thDeg) {
 							cons.push(new Connection(c, n_f, n_s));
 						}
 						x2.assign(origV2);  // Restore the value.

@@ -6,7 +6,6 @@
  * @version 2025-01-03
  */
 
-import { Problem } from '../../problem/problem';
 import { Variable } from '../../problem/variable';
 import { Constraint } from '../../problem/constraint';
 import { AssignmentList } from '../misc/assignment-list';
@@ -14,18 +13,74 @@ import { Solver } from '../solver';
 
 export class FlexibleLocalChangesEx extends Solver {
 
-	#lt: number = 0;
-	#lb: number = 0;
+	#lt!: number;
+	#lb!: number;
 
-	#globalReturn: number = 0;
+	#wsd!      : number;
+	#globalRet!: number;
 
-	constructor(p: Problem) {
-		super(p);
-		this.#computeHighestAndLowestConsistencyDegree();
+	/**
+	 * Generates a solver.
+	 */
+	constructor() {
+		super();
 	}
 
+	/**
+	 * {@override}
+	 */
 	name(): string {
 		return 'Flexible Local Changes Ex';
+	}
+
+	/**
+	 * {@override}
+	 */
+	protected preprocess(): void {
+		this.#computeHighestAndLowestConsistencyDegree();
+		this.#wsd = this.pro.degree();
+		if (this.pro.emptyVariableSize() === 0) {
+			this.pro.clearAllVariables();
+		}
+		this.#globalRet = -1;
+
+		this.monitor.initialize();
+	}
+
+	/**
+	 * {@override}
+	 */
+	protected exec(): boolean {
+		const X1 = new Set<Variable>();
+		const X2 = new Set<Variable>();  // Currently assigned variables.
+		const X3 = new Set<Variable>();  // Currently unassigned variables.
+
+		for (const x of this.pro.variables()) {
+			(!x.isEmpty() ? X2 : X3).add(x);
+		}
+
+		const cr               = new Set<Constraint>();
+		const initCons: number = this.#initTest(X2, cr);
+		let rc     : number;
+		let initSol: AssignmentList | null = null;
+
+		if (X3.size === 0) {
+			rc      = initCons;
+			initSol = AssignmentList.fromVariables(X2);
+		} else {
+			rc = this.#lb;
+		}
+		const X3p: Set<Variable> = this.#choose(X2, cr).union(X3);
+		const X2p: Set<Variable> = X2.difference(X3p);
+
+		let result: number = this.#flcVariables(X1, X2p, X3p, this.#lt, this.#lt, rc);
+		if (result < rc) {
+			if (initSol !== null) {
+				initSol.apply();
+			}
+		}
+		result = this.pro.degree();
+		return result > this.#wsd && result > 0 && (this.#globalRet !== 0 || this.monitor.getTarget() === null);
 	}
 
 	#choose(x2: Set<Variable>, cr: Set<Constraint>): Set<Variable> {
@@ -80,7 +135,7 @@ export class FlexibleLocalChangesEx extends Solver {
 			for (const c of x) {
 				const l: number = c.lowestConsistencyDegree();
 				const h: number = c.highestConsistencyDegree();
-				if (l < low) low = l;
+				if (l < low)  low  = l;
 				if (h > high) high = h;
 			}
 		}
@@ -100,8 +155,8 @@ export class FlexibleLocalChangesEx extends Solver {
 		if (xi.domain().size() === 0) {
 			return bestCons;
 		}
-		let bestX2: AssignmentList = AssignmentList.fromVariables(X2);
-		let bestDij: number = xi.domain().at(0);
+		let bestX2 : AssignmentList = AssignmentList.fromVariables(X2);
+		let bestDij: number         = xi.domain().at(0);
 
 		const x2Store: AssignmentList = AssignmentList.fromVariables(X2);
 
@@ -111,23 +166,23 @@ export class FlexibleLocalChangesEx extends Solver {
 			const consX1_xi: number = Math.min(consX1, this.#testX1(X1, xi, bestCons, rc));
 
 			if (consX1_xi > Math.max(bestCons, rc)) {
-				const crNew = new Set<Constraint>();
+				const crNew              = new Set<Constraint>();
 				const consX12_xi: number = Math.min(Math.min(consX1_xi, consX12), this.#testX12(X1, X2, xi, consX1_xi, consX12, crNew));
 
 				if (consX12_xi > bestCons) {
 					bestCons = consX12_xi;
-					bestDij = dij;
-					bestX2 = AssignmentList.fromVariables(X2);
+					bestDij  = dij;
+					bestX2   = AssignmentList.fromVariables(X2);
 				}
 				if (crNew.size) {
 					const repairCons: number = this.#flcRepair(X1, X2, xi, consX1_xi, consX12, crNew, Math.max(rc, bestCons));
-					if (this.#globalReturn !== -1) {
+					if (this.#globalRet !== -1) {
 						return bestCons;
 					}
 					if (repairCons > bestCons) {
 						bestCons = repairCons;
-						bestDij = dij;
-						bestX2 = AssignmentList.fromVariables(X2);
+						bestDij  = dij;
+						bestX2   = AssignmentList.fromVariables(X2);
 					}
 					x2Store.apply();
 				}
@@ -147,16 +202,16 @@ export class FlexibleLocalChangesEx extends Solver {
 
 			const ret: boolean | null = this.monitor.check(this.pro.degree());
 			if (ret !== null) {
-				this.#globalReturn = ret ? 1 : 0;
+				this.#globalRet = ret ? 1 : 0;
 				return consX12;
 			}
 			if (X3.size === 0) {
 				return consX12;
 			}
-			const xi = X3.values().next().value as Variable;
+			const xi                = X3.values().next().value as Variable;
 			const consX12xi: number = this.#flcVariable(X1, X2, xi, consX1, consX12, rc);
 
-			if (this.#globalReturn !== -1) {
+			if (this.#globalRet !== -1) {
 				return consX12;
 			}
 			if (consX12xi < rc) {
@@ -256,44 +311,6 @@ export class FlexibleLocalChangesEx extends Solver {
 			}
 		}
 		return csd;
-	}
-
-	exec(): boolean {
-		this.monitor.initialize();
-		this.#globalReturn = -1;
-
-		const wsd: number = this.pro.degree();
-		if (this.pro.emptyVariableSize() === 0) {
-			this.pro.clearAllVariables();
-		}
-		const X1 = new Set<Variable>();
-		const X2 = new Set<Variable>();  // Currently assigned variables.
-		const X3 = new Set<Variable>();  // Currently unassigned variables.
-		for (const x of this.pro.variables()) {
-			(!x.isEmpty() ? X2 : X3).add(x);
-		}
-
-		const cr = new Set<Constraint>();
-		const initCons: number = this.#initTest(X2, cr);
-		let rc;
-		let initSol: AssignmentList | null = null;
-
-		if (X3.size === 0) {
-			rc = initCons;
-			initSol = AssignmentList.fromVariables(X2);
-		} else {
-			rc = this.#lb;
-		}
-		const X3p: Set<Variable> = this.#choose(X2, cr).union(X3);
-		const X2p: Set<Variable> = X2.difference(X3p);
-		let result: number = this.#flcVariables(X1, X2p, X3p, this.#lt, this.#lt, rc);
-		if (result < rc) {
-			if (initSol !== null) {
-				initSol.apply();
-			}
-		}
-		result = this.pro.degree();
-		return result > wsd && result > 0 && (this.#globalReturn !== 0 || this.monitor.getTarget() === null);
 	}
 
 }

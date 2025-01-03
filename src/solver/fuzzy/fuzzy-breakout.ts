@@ -5,7 +5,6 @@
  * @version 2025-01-03
  */
 
-import { Problem } from '../../problem/problem';
 import { Variable } from '../../problem/variable';
 import { Constraint } from '../../problem/constraint';
 import { Assignment } from '../misc/assignment';
@@ -15,21 +14,13 @@ import { Solver } from '../solver';
 export class FuzzyBreakout extends Solver {
 
 	#isRandom: boolean = true;
-	#ws      : number[];
+	#ws!     : number[];
 
 	/**
-	 * Generates a solver given a constraint satisfaction problem.
-	 * @param p A problem.
+	 * Generates a solver.
 	 */
-	constructor(p: Problem) {
-		super(p);
-
-		this.#ws = new Array(this.pro.constraintSize());
-		this.#ws.fill(1);
-	}
-
-	name(): string {
-		return 'Fuzzy Breakout';
+	constructor() {
+		super();
 	}
 
 	/**
@@ -41,17 +32,35 @@ export class FuzzyBreakout extends Solver {
 		this.#isRandom = flag;
 	}
 
-	exec(): boolean {
+	/**
+	 * {@override}
+	 */
+	name(): string {
+		return 'Fuzzy Breakout';
+	}
+
+	/**
+	 * {@override}
+	 */
+	protected preprocess(): void {
+		this.#ws = new Array(this.pro.constraintSize());
+		this.#ws.fill(1);
+
 		for (const x of this.pro.variables()) {
 			if (x.isEmpty()) {
 				x.assign(x.domain().at(0));
 			}
 		}
+		this.monitor.initialize();
+	}
+
+	/**
+	 * {@override}
+	 */
+	protected exec(): boolean {
 		const defEv: number         = this.pro.degree();
 		const sol  : AssignmentList = new AssignmentList();
 		let solEv  : number         = defEv;
-
-		this.monitor.initialize();
 
 		const canList = new AssignmentList();
 		let ret: boolean | null = null;

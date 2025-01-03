@@ -6,7 +6,6 @@
  * @version 2025-01-03
  */
 
-import { Problem } from '../../problem/problem';
 import { Variable } from '../../problem/variable';
 import { Constraint } from '../../problem/constraint';
 import { AssignmentList } from '../misc/assignment-list';
@@ -14,29 +13,43 @@ import { Solver } from '../solver';
 
 export class LocalChangesEx extends Solver {
 
-	#globalReturn: boolean = false;
+	#globalRet!: boolean;
 
-	constructor(p: Problem) {
-		super(p);
+	/**
+	 * Generates a solver.
+	 */
+	constructor() {
+		super();
 	}
 
+	/**
+	 * {@override}
+	 */
 	name(): string {
 		return 'Local Changes Ex';
 	}
 
-	exec(): boolean {
+	/**
+	 * {@override}
+	 */
+	protected preprocess(): void {
 		if (this.pro.emptyVariableSize() === 0) {
 			this.pro.clearAllVariables();
 		}
-		this.#globalReturn = false;
+		this.#globalRet = false;
 
+		this.monitor.initialize();
+	}
+
+	/**
+	 * {@override}
+	 */
+	protected exec(): boolean {
 		const notFixed   = new Set<Variable>();
 		const unassigned = new Set<Variable>();
 		for (const x of this.pro.variables()) {
 			(!x.isEmpty() ? notFixed : unassigned).add(x);
 		}
-
-		this.monitor.initialize();
 
 		const sol: AssignmentList = new AssignmentList();
 		const ret: boolean        = this.#lcVariables(new Set(), notFixed, unassigned);
@@ -63,7 +76,7 @@ export class LocalChangesEx extends Solver {
 
 			const r: boolean | null = this.monitor.check(this.pro.degree());
 			if (r !== null) {
-				this.#globalReturn = true;
+				this.#globalRet = true;
 				return r;
 			}
 			if (X3.size === 0) {
@@ -72,7 +85,7 @@ export class LocalChangesEx extends Solver {
 			const x = X3.values().next().value as Variable;
 			const ret: boolean = this.#lcVariable(X1, X2, x);
 
-			if (!ret || this.#globalReturn) {
+			if (!ret || this.#globalRet) {
 				return ret;
 			}
 			X2.add(x);
@@ -86,7 +99,7 @@ export class LocalChangesEx extends Solver {
 			x.assign(v);
 
 			const ret: boolean = this.#lcValue(X1, X2, x);
-			if (ret || this.#globalReturn) {
+			if (ret || this.#globalRet) {
 				return ret;
 			}
 			x.clear();

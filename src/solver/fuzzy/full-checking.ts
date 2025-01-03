@@ -5,10 +5,9 @@
  * Forward checking is also performed for problems with polynomial constraints.
  *
  * @author Takuto Yanagida
- * @version 2025-01-02
+ * @version 2025-01-03
  */
 
-import { Problem } from '../../problem/problem';
 import { Variable } from '../../problem/variable';
 import { Constraint } from '../../problem/constraint';
 import { Domain } from '../../problem/domain';
@@ -19,38 +18,26 @@ import { Solver } from '../solver';
 
 export class FullChecking extends Solver {
 
-	#xs : Variable[];
-	#rct: Constraint[][][];  // Table to cache constraints between two variables.
-	#dps: DomainPruner[];
-	#sol: AssignmentList = new AssignmentList();
+	#xs! : Variable[];
+	#rct!: Constraint[][][];  // Table to cache constraints between two variables.
+	#dps!: DomainPruner[];
+	#sol!: AssignmentList;
 
-	#useMRV: boolean = true;
+	#checkedCs!: Set<Constraint>;
+	#sequence! : Variable[];
+	#unaryCs!  : Constraint[];
 
-	#minDeg   : number  = 0;  // Degree of existing solutions (no need to find a solution less than this).
-	#globalRet: boolean = false;
+	#minDeg!   : number;  // Degree of existing solutions (no need to find a solution less than this).
+	#globalRet!: boolean;
 
-	#checkedCs       : Set<Constraint> = new Set();
-	#sequence        : Variable[];
-	#unaryCs         : Constraint[]    = [];
-	#pruneIntensively: boolean         = false;
+	#useMRV          : boolean = true;
+	#pruneIntensively: boolean = false;
 
 	/**
-	 * Generates the solver given a fuzzy constraint satisfaction problem.
-	 * @param p A problem.
+	 * Generates a solver.
 	 */
-	constructor(p: Problem) {
-		super(p);
-
-		this.#xs  = [...this.pro.variables()];
-		this.#rct = createRelatedConstraintTable(this.pro, this.#xs);
-		this.#dps = Array.from(this.#xs, (x: Variable): DomainPruner => new DomainPruner(x.domain().size()));
-
-		this.#sequence = new Array(this.pro.variableSize());
-		this.#unaryCs  = this.pro.constraints().filter((c: Constraint): boolean => c.size() === 1);
-	}
-
-	name(): string {
-		return 'Full Checking for Fuzzy CSPs';
+	constructor() {
+		super();
 	}
 
 	/**
@@ -73,21 +60,45 @@ export class FullChecking extends Solver {
 		this.#pruneIntensively = flag;
 	}
 
-	exec(): boolean {
-		this.monitor.initialize();
-		this.#minDeg = 0;
+	/**
+	 * {@override}
+	 */
+	name(): string {
+		return 'Full Checking for Fuzzy CSPs';
+	}
 
+	/**
+	 * {@override}
+	 */
+	protected preprocess(): void {
+		this.#xs  = [...this.pro.variables()];
+		this.#rct = createRelatedConstraintTable(this.pro, this.#xs);
+		this.#dps = Array.from(this.#xs, (x: Variable): DomainPruner => new DomainPruner(x.domain().size()));
+		this.#sol = new AssignmentList();
+
+		this.#checkedCs = new Set();
+		this.#sequence  = new Array(this.pro.variableSize());
+		this.#unaryCs   = this.pro.constraints().filter((c: Constraint): boolean => c.size() === 1);
+
+		this.#minDeg = 0;
+		this.monitor.initialize();
+	}
+
+	/**
+	 * {@override}
+	 */
+	protected exec(): boolean {
 		let ret: boolean | null = null;
 		while (ret === null) {
+			this.#globalRet = false;
+			this.pro.clearAllVariables();
+
 			if (!this.#pruneUnaryConstraints()) {
 				ret = false;
 				break;
 			}
-			this.pro.clearAllVariables();
 			ret = this.#branch(0);
 			this.#sol.apply();
-
-			this.#globalRet = false;
 		}
 
 		return ret === true;

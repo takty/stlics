@@ -4,10 +4,9 @@
  * Find the solution to the problem as the maximum CSP.
  *
  * @author Takuto Yanagida
- * @version 2024-12-21
+ * @version 2025-01-03
  */
 
-import { Problem } from '../../problem/problem';
 import { Variable } from '../../problem/variable';
 import { Constraint } from '../../problem/constraint';
 import { AssignmentList } from '../misc/assignment-list';
@@ -15,32 +14,45 @@ import { Solver } from '../solver';
 
 export class GENET extends Solver {
 
-	#clusters   : Cluster[]    = [];
-	#connections: Connection[] = [];
+	#clusters!   : Cluster[];
+	#connections!: Connection[];
 
 	/**
-	 * Generates a solver given a constraint satisfaction problem.
-	 * @param p A problem.
+	 * Generates a solver.
 	 */
-	constructor(p: Problem) {
-		super(p);
+	constructor() {
+		super();
 	}
 
+	/**
+	 * {@override}
+	 */
 	name(): string {
 		return 'GENET';
 	}
 
-	exec(): boolean {
+	/**
+	 * {@override}
+	 */
+	protected preprocess(): void {
+		this.#clusters    = [];
+		this.#connections = [];
+
 		if (!this.#createNetwork()) {
 			throw new Error();
 		}
+		this.monitor.initialize();
+	}
+
+	/**
+	 * {@override}
+	 */
+	protected exec(): boolean {
 		const order: number[] = [...Array(this.#clusters.length).keys()];
 
 		const defEv: number         = this.pro.ratio();
 		const sol  : AssignmentList = new AssignmentList();
 		let solEv  : number         = defEv;
-
-		this.monitor.initialize();
 
 		let ret: boolean | null = null;
 

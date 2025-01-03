@@ -55,12 +55,11 @@ export function applyPostStabilization(p: Problem, orig: AssignmentList, log: (e
 /**
  * Wrap the solver with post-stabilizer.
  *
- * @param p      Problem.
  * @param solver Solver.
  * @return Wrapped solver.
  */
-export function wrapWithPostStabilizer(p: Problem, solver: Solver): Solver {
-	return new PostStabilizerWrapper(p, solver);
+export function wrapWithPostStabilizer(solver: Solver): Solver {
+	return new PostStabilizerWrapper(solver);
 }
 
 /**
@@ -70,17 +69,22 @@ export class PostStabilizerWrapper extends Solver {
 
 	#solver: Solver;
 
-	constructor(p: Problem, solver: Solver) {
-		super(p);
+	constructor(solver: Solver) {
+		super();
 		this.#solver = solver;
-		this.setMonitor(solver.getMonitor());
 	}
 
+	/**
+	 * {@override}
+	 */
 	name(): string {
 		return this.#solver.name() + ' + PF';
 	}
 
-	exec(): boolean {
+	/**
+	 * {@override}
+	 */
+	protected exec(): boolean {
 		let ev : number = 0;
 		let evs: number = 0;
 		if (this.monitor.isDebugMode()) {
@@ -90,7 +94,7 @@ export class PostStabilizerWrapper extends Solver {
 		const orig = new AssignmentList();
 		orig.setProblem(this.pro);
 
-		const res: boolean = this.#solver.exec();
+		const res: boolean = this.#solver.solve(this.pro, this.monitor);
 		if (res) {
 			applyPostStabilization(this.pro, orig, this.monitor.outputDebugString.bind(this.monitor));
 		}

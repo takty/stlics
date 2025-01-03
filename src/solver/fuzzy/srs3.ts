@@ -5,7 +5,6 @@
  * @version 2025-01-03
  */
 
-import { Problem } from '../../problem/problem';
 import { Constraint } from '../../problem/constraint';
 import { Assignment } from '../misc/assignment';
 import { AssignmentList } from '../misc/assignment-list';
@@ -13,31 +12,20 @@ import { Solver } from '../solver';
 
 export class SRS3 extends Solver {
 
-	#isRandom: boolean = true;
-	#ws      : number[];
+	#ws!: number[];
 
-	#closedList: Set<TreeNode> = new Set();
-	#openList  : Set<TreeNode> = new Set();  // LinkedHashSet is used in the original implementation.
-	#nodes     : TreeNode[] = [];
-	#neighbors : (TreeNode[] | null)[] = [];  // Cache
+	#closedList!: Set<TreeNode>;
+	#openList!  : Set<TreeNode>;  // LinkedHashSet is used in the original implementation.
+	#nodes!     : TreeNode[];
+	#neighbors! : (TreeNode[] | null)[];  // Cache
+
+	#isRandom: boolean = true;
 
 	/**
-	 * Generates a solver given a constraint satisfaction problem.
-	 * @param p A problem.
+	 * Generates a solver.
 	 */
-	constructor(p: Problem) {
-		super(p);
-
-		for (const c of this.pro.constraints()) {
-			this.#nodes.push(new TreeNode(c));
-			this.#neighbors.push(null);
-		}
-		this.#ws = new Array(this.pro.constraintSize());
-		this.#ws.fill(1);
-	}
-
-	name(): string {
-		return 'SRS3';
+	constructor() {
+		super();
 	}
 
 	/**
@@ -49,17 +37,45 @@ export class SRS3 extends Solver {
 		this.#isRandom = flag;
 	}
 
-	exec(): boolean {
+	/**
+	 * {@override}
+	 */
+	name(): string {
+		return 'SRS3';
+	}
+
+	/**
+	 * {@override}
+	 */
+	protected preprocess(): void {
+		this.#ws = new Array(this.pro.constraintSize());
+		this.#ws.fill(1);
+
+		this.#closedList = new Set();
+		this.#openList   = new Set();
+		this.#nodes      = [];
+		this.#neighbors  = [];
+
+		for (const c of this.pro.constraints()) {
+			this.#nodes.push(new TreeNode(c));
+			this.#neighbors.push(null);
+		}
+
 		for (const x of this.pro.variables()) {
 			if (x.isEmpty()) {
 				x.assign(x.domain().at(0));
 			}
 		}
+		this.monitor.initialize();
+	}
+
+	/**
+	 * {@override}
+	 */
+	protected exec(): boolean {
 		const defEv: number         = this.pro.degree();
 		const sol  : AssignmentList = new AssignmentList();
 		let solEv  : number         = defEv;
-
-		this.monitor.initialize();
 
 		let ret: boolean | null = null;
 
