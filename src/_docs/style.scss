@@ -51,3 +51,20 @@ table#board {
 table.small#board {
 	--cell-size: 0.5rem;
 }
+
+label {
+	user-select: none;
+}
+
+.solver-options {
+	display  : flex;
+	flex-wrap: wrap;
+	gap      : 1rem;
+}
+
+.switchable:not(:has(input:checked)) {
+	input[type="number"] {
+		opacity: 0.5;
+		pointer-events: none;
+	}
+}

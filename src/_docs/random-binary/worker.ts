@@ -8,7 +8,7 @@ onmessage = async (e: MessageEvent<any>): Promise<void> => {
 			create(...(args as [number, number, number]));
 			break;
 		case 'solve':
-			solve(...(args as [string, number]));
+			solve(...(args as [string, number, number]));
 			break;
 	}
 };
@@ -22,13 +22,13 @@ function create(varNum: number, density: number, aveTightness: number): void {
 	p = m.createProblem(new Problem());
 }
 
-async function solve(type: string, target: number): Promise<void> {
+async function solve(type: string, target: number, timeLimit: number): Promise<void> {
 	const t : number = Date.now();  // Start time measurement
 	const sn: string = SolverFactory.fuzzySolverNames()[type];
 
 	const mon = new Monitor();
-	mon.setTimeLimit(5000);
-	mon.setTarget(target);
+	mon.setTarget(target === -1 ? null : target);
+	mon.setTimeLimit(timeLimit === -1 ? null : timeLimit);
 	mon.setDebugOutput(log);
 	mon.setDebugMode(true);
 
