@@ -1,9 +1,9 @@
 import { Problem, Solver, SolverFactory, Monitor } from '../../../stlics.ts';
 import { RandomBinary } from '../../_model/random-binary';
 
-const COUNT = 1;  // Interaction count
-const VAR_NUM = 10;  // Number of variables
-const DENSITY = 0.5;
+const COUNT         = 1;  // Interaction count
+const VAR_NUM       = 10;  // Number of variables
+const DENSITY       = 0.5;
 const AVE_TIGHTNESS = 0.5;
 
 document.addEventListener('DOMContentLoaded', async (): Promise<void> => {
@@ -12,12 +12,12 @@ document.addEventListener('DOMContentLoaded', async (): Promise<void> => {
 	const sn: string = SolverFactory.fuzzySolverNames()[1];
 
 	let sum_time: number = 0;
-	let sum_deg: number = 0;
+	let sum_deg : number = 0;
 
 	for (let i: number = 0; i < COUNT; ++i) {
-		const rp = new RandomBinary(VAR_NUM, DENSITY, AVE_TIGHTNESS);
+		const rp         = new RandomBinary(VAR_NUM, DENSITY, AVE_TIGHTNESS);
 		const p: Problem = rp.createProblem(new Problem());
-		const t: number = Date.now();  // Start time measurement
+		const t: number  = Date.now();  // Start time measurement
 
 		const mon = new Monitor();
 		mon.setTimeLimit(5000);
@@ -25,10 +25,9 @@ document.addEventListener('DOMContentLoaded', async (): Promise<void> => {
 		mon.setDebugOutput(log);
 		mon.setDebugMode(true);
 
-		const s = await SolverFactory.createSolver(sn, p) as Solver;
-		s.setMonitor(mon);
+		const s = await SolverFactory.createSolver(sn) as Solver;
 
-		const res : boolean = s.solve();
+		const res : boolean = s.solve(p, mon);
 		const time: number  = Date.now() - t;  // Stop time measurement
 		const deg : number  = p.degree();
 

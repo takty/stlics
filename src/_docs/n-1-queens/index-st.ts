@@ -14,9 +14,9 @@ document.addEventListener('DOMContentLoaded', async (): Promise<void> => {
 	let sum_deg : number = 0;
 
 	for (let i: number = 0; i < COUNT; ++i) {
-		const nq = new N_1_queens(QUEEN_NUM);
+		const nq         = new N_1_queens(QUEEN_NUM);
 		const p: Problem = nq.createProblem(new Problem());
-		const t: number = Date.now();  // Start time measurement
+		const t: number  = Date.now();  // Start time measurement
 
 		const mon = new Monitor();
 		mon.setTimeLimit(5000);
@@ -24,10 +24,9 @@ document.addEventListener('DOMContentLoaded', async (): Promise<void> => {
 		mon.setDebugOutput(log);
 		mon.setDebugMode(true);
 
-		const s = await SolverFactory.createSolver(sn, p) as Solver;
-		s.setMonitor(mon);
+		const s = await SolverFactory.createSolver(sn) as Solver;
 
-		const res : boolean = s.solve();
+		const res : boolean = s.solve(p, mon);
 		const time: number  = Date.now() - t;  // Stop time measurement
 		const deg : number  = p.degree();
 

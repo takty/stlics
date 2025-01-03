@@ -14,7 +14,7 @@ onmessage = async (e: MessageEvent<any>): Promise<void> => {
 };
 
 let m: RandomBinary | null = null;
-let p: Problem | null = null;
+let p: Problem | null      = null;
 
 function create(varNum: number, density: number, aveTightness: number): void {
 	m = new RandomBinary(varNum, density, aveTightness);
@@ -32,10 +32,9 @@ async function solve(type: string, target: number): Promise<void> {
 	mon.setDebugOutput(log);
 	mon.setDebugMode(true);
 
-	const s = await SolverFactory.createSolver(sn, p as Problem) as Solver;
-	s.setMonitor(mon);
+	const s = await SolverFactory.createSolver(sn) as Solver;
 
-	const res : boolean = s.solve();
+	const res : boolean = s.solve(p as Problem, mon);
 	const time: number  = Date.now() - t;  // Stop time measurement
 	const deg : number  = (p as Problem).degree();
 

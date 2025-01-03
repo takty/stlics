@@ -18,4 +18,7 @@ export default defineConfig({
 		}
 	},
 	plugins: [],
+	worker: {
+		format: 'es',
+	},
 });

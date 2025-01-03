@@ -2,8 +2,8 @@ import { Problem, Solver, SolverFactory, Monitor } from '../../../stlics.ts';
 import { N_queens } from '../../_model/n-queens';
 import { createLogOutput } from '../util';
 
-const COUNT = 1;   // Interaction count
-const QUEEN_NUM = 20;  // Number of queens
+const COUNT       = 1;   // Interaction count
+const QUEEN_NUM   = 20;  // Number of queens
 const SOLVER_TYPE = 4;
 
 document.addEventListener('DOMContentLoaded', async (): Promise<void> => {
@@ -14,9 +14,9 @@ document.addEventListener('DOMContentLoaded', async (): Promise<void> => {
 	let sum_rate: number = 0;
 
 	for (let i: number = 0; i < COUNT; ++i) {
-		const nq = new N_queens(QUEEN_NUM);
+		const nq         = new N_queens(QUEEN_NUM);
 		const p: Problem = nq.createProblem(new Problem());
-		const t: number = Date.now();  // Start time measurement
+		const t: number  = Date.now();  // Start time measurement
 
 		const mon = new Monitor();
 		mon.setTimeLimit(5000);
@@ -24,10 +24,9 @@ document.addEventListener('DOMContentLoaded', async (): Promise<void> => {
 		mon.setDebugOutput(log);
 		mon.setDebugMode(true);
 
-		const s = await SolverFactory.createSolver(sn, p) as Solver;
-		s.setMonitor(mon);
+		const s = await SolverFactory.createSolver(sn) as Solver;
 
-		const res : boolean = s.solve();
+		const res : boolean = s.solve(p, mon);
 		const time: number  = Date.now() - t;  // Stop time measurement
 		const rate: number  = p.ratio();
 

@@ -37,10 +37,9 @@ async function solve(type: string, target: number): Promise<void> {
 	mon.setDebugOutput(log);
 	mon.setDebugMode(true);
 
-	const s = await SolverFactory.createSolver(sn, p as Problem) as Solver;
-	s.setMonitor(mon);
+	const s = await SolverFactory.createSolver(sn) as Solver;
 
-	const res : boolean = s.solve();
+	const res : boolean = s.solve(p as Problem, mon);
 	const time: number  = Date.now() - t;  // Stop time measurement
 	const ev  : number  = (p as Problem).ratio();
 
