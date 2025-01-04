@@ -2,7 +2,7 @@
  * A class that implements the flexible local changes method.
  *
  * @author Takuto Yanagida
- * @version 2025-01-03
+ * @version 2025-01-04
  */
 
 import { Variable } from '../../problem/variable';
@@ -36,7 +36,7 @@ export class FlexibleLocalChanges extends Solver {
 	 * {@override}
 	 */
 	protected preprocess(): void {
-		this.#computeHighestAndLowestConsistencyDegree();
+		[this.#lb, this.#lt] = this.#computeHighestAndLowestConsistencyDegree();
 		this.#wsd = this.pro.degree();
 		if (this.pro.emptyVariableSize() === 0) {
 			this.pro.clearAllVariables();
@@ -80,6 +80,21 @@ export class FlexibleLocalChanges extends Solver {
 		}
 		result = this.pro.degree();
 		return result > this.#wsd && result > 0 && (this.#globalRet !== 0 || this.monitor.getTarget() === null);
+	}
+
+	#computeHighestAndLowestConsistencyDegree(): [number, number] {
+		let low : number = 1;
+		let high: number = 0;
+
+		for (const x of this.pro.variables()) {
+			for (const c of x) {
+				const l: number = c.lowestConsistencyDegree();
+				const h: number = c.highestConsistencyDegree();
+				if (l < low)  low  = l;
+				if (h > high) high = h;
+			}
+		}
+		return [low, high];
 	}
 
 	#choose(x2: Set<Variable>, cr: Set<Constraint>): Set<Variable> {
@@ -126,27 +141,31 @@ export class FlexibleLocalChanges extends Solver {
 		return ret;
 	}
 
-	#computeHighestAndLowestConsistencyDegree(): void {
-		let low : number = 1;
-		let high: number = 0;
+	#flcVariables(X1: Set<Variable>, X2: Set<Variable>, X3: Set<Variable>, consX1: number, consX12: number, rc: number): number {
+		{
+			this.monitor.outputDebugString(`X1 ${X1.size}, X2' ${X2.size}, X3' ${X3.size}`);
 
-		for (const x of this.pro.variables()) {
-			for (const c of x) {
-				const l: number = c.lowestConsistencyDegree();
-				const h: number = c.highestConsistencyDegree();
-				if (l < low)  low  = l;
-				if (h > high) high = h;
+			const ret: boolean | null = this.monitor.check(this.pro.degree());
+			if (ret !== null) {
+				this.#globalRet = ret ? 1 : 0;
+				return consX12;
 			}
-		}
-		this.#lb = low;
-		this.#lt = high;
-	}
+			if (X3.size === 0) {
+				return consX12;
+			}
+			const xi                = X3.values().next().value as Variable;
+			const consX12xi: number = this.#flcVariable(X1, X2, xi, consX1, consX12, rc);
 
-	#flcRepair(X1: Set<Variable>, X2: Set<Variable>, xi: Variable, consX1xi: number, consX12: number, cr: Set<Constraint>, rc: number): number {
-		const X3p: Set<Variable> = this.#choose(X2, cr);
-		const X1p: Set<Variable> = cloneAndAdd(X1, xi);
-		const X2p: Set<Variable> = X2.difference(X3p);
-		return this.#flcVariables(X1p, X2p, X3p, consX1xi, Math.min(consX12, consX1xi), rc);
+			if (this.#globalRet !== -1) {
+				return consX12;
+			}
+			if (consX12xi < rc) {
+				return this.#lb;
+			}
+			X2 = cloneAndAdd(X2, xi);
+			X3 = cloneAndDelete(X3, xi);
+			return this.#flcVariables(X1, X2, X3, consX1, consX12xi, rc);
+		}
 	}
 
 	#flcVariable(X1: Set<Variable>, X2: Set<Variable>, xi: Variable, consX1: number, consX12: number, rc: number): number {
@@ -192,31 +211,11 @@ export class FlexibleLocalChanges extends Solver {
 		return bestCons;
 	}
 
-	#flcVariables(X1: Set<Variable>, X2: Set<Variable>, X3: Set<Variable>, consX1: number, consX12: number, rc: number): number {
-		{
-			this.monitor.outputDebugString(`X1 ${X1.size}, X2' ${X2.size}, X3' ${X3.size}`);
-
-			const ret: boolean | null = this.monitor.check(this.pro.degree());
-			if (ret !== null) {
-				this.#globalRet = ret ? 1 : 0;
-				return consX12;
-			}
-			if (X3.size === 0) {
-				return consX12;
-			}
-			const xi                = X3.values().next().value as Variable;
-			const consX12xi: number = this.#flcVariable(X1, X2, xi, consX1, consX12, rc);
-
-			if (this.#globalRet !== -1) {
-				return consX12;
-			}
-			if (consX12xi < rc) {
-				return this.#lb;
-			}
-			X2 = cloneAndAdd(X2, xi);
-			X3 = cloneAndDelete(X3, xi);
-			return this.#flcVariables(X1, X2, X3, consX1, consX12xi, rc);
-		}
+	#flcRepair(X1: Set<Variable>, X2: Set<Variable>, xi: Variable, consX1xi: number, consX12: number, cr: Set<Constraint>, rc: number): number {
+		const X3p: Set<Variable> = this.#choose(X2, cr);
+		const X1p: Set<Variable> = cloneAndAdd(X1, xi);
+		const X2p: Set<Variable> = X2.difference(X3p);
+		return this.#flcVariables(X1p, X2p, X3p, consX1xi, Math.min(consX12, consX1xi), rc);
 	}
 
 	#initTest(X: Set<Variable>, cr: Set<Constraint>): number {
