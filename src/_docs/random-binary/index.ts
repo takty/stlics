@@ -80,7 +80,7 @@ document.addEventListener('DOMContentLoaded', async (): Promise<void> => {
 
 	function initialize(onFinish): Worker {
 		let sumTime: number = 0;
-		let sumDeg : number = 0;
+		let sumEv  : number = 0;
 		count = 0;
 
 		const maxCount: number = parseInt(iterNum.value);
@@ -93,15 +93,15 @@ document.addEventListener('DOMContentLoaded', async (): Promise<void> => {
 			} else if ('result' in data) {
 				const { result, solver, time, deg } = data;
 				sumTime += time;
-				sumDeg  += deg;
+				sumEv   += deg;
 				count   += 1;
 
 				log(`Solver: ${solver}    ${result ? 'Success' : 'Failure'}`);
 				log(`Trial: ${count}    time: ${time}    degree: ${deg}`);
 
 				if (maxCount <= count) {
-					log(`Avg. time: ${sumTime / maxCount}    Avg. degree: ${sumDeg / maxCount}`);
-					indicator.innerHTML = `Avg. time: ${Math.round(10 * sumTime / maxCount) / 10}&emsp;Avg. degree: ${Math.round(10000 * sumDeg / maxCount) / 10000}`;
+					log(`Avg. time: ${sumTime / maxCount}    Avg. degree: ${sumEv / maxCount}`);
+					indicator.innerHTML = `Avg. time: ${(sumTime / maxCount).toFixed(1)}&emsp;Avg. degree: ${(sumEv / maxCount).toFixed(4)}`;
 					onFinish();
 				}
 			}

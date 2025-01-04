@@ -126,7 +126,7 @@ document.addEventListener('DOMContentLoaded', async (): Promise<void> => {
 
 				if (maxCount <= count) {
 					log(`Avg. time: ${sumTime / maxCount}    Avg. degree: ${sumEv / maxCount}`);
-					indicator.innerHTML = `Avg. time: ${Math.round(10 * sumTime / maxCount) / 10}&emsp;Avg. degree: ${Math.round(10000 * sumEv / maxCount) / 10000}`;
+					indicator.innerHTML = `Avg. time: ${(sumTime / maxCount).toFixed(1)}&emsp;Avg. degree: ${(sumEv / maxCount).toFixed(4)}`;
 					onFinish();
 				}
 			}
