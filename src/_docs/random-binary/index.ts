@@ -26,6 +26,8 @@ document.addEventListener('DOMContentLoaded', async (): Promise<void> => {
 	density.value      = '' + DENSITY;
 	const aveTightness = document.getElementById('ave-tightness') as HTMLInputElement;
 	aveTightness.value = '' + AVE_TIGHTNESS;
+	const iterNum = document.getElementById('iter-num') as HTMLInputElement;
+	iterNum.value = '' + COUNT;
 
 	const target = document.getElementById('target') as HTMLInputElement;
 	target.value = '' + TARGET;
@@ -35,8 +37,12 @@ document.addEventListener('DOMContentLoaded', async (): Promise<void> => {
 	timeLimit.value = '' + TIME_LIMIT;
 	const timeLimitOn = document.getElementById('time-limit-on') as HTMLInputElement;
 
+	const debugOn = document.getElementById('debug-on') as HTMLInputElement;
+
 	const output = document.getElementById('output') as HTMLOutputElement;
 	const log: (e: any) => void = createLogOutput();
+
+	const indicator = document.getElementById('indicator') as HTMLInputElement;
 
 	let worker: Worker|null = null;
 
@@ -54,6 +60,7 @@ document.addEventListener('DOMContentLoaded', async (): Promise<void> => {
 			parseInt(solTypeSel.value),
 			targetOn.checked ? parseFloat(target.value) : -1,
 			timeLimitOn.checked ? parseInt(timeLimit.value) : -1,
+			debugOn.checked,
 			parseFloat(varNum.value),
 			parseFloat(density.value),
 			parseFloat(aveTightness.value)
@@ -69,11 +76,14 @@ document.addEventListener('DOMContentLoaded', async (): Promise<void> => {
 	// -------------------------------------------------------------------------
 
 
-	let count = 0;
+	let count: number = 0;
 
 	function initialize(onFinish): Worker {
 		let sumTime: number = 0;
-		let sumDeg: number  = 0;
+		let sumDeg : number = 0;
+		count = 0;
+
+		const maxCount: number = parseInt(iterNum.value);
 
 		const ww = new Worker(new URL('worker.ts', import.meta.url), { type: 'module' });
 		ww.onmessage = (e: MessageEvent<any>): void => {
@@ -86,11 +96,12 @@ document.addEventListener('DOMContentLoaded', async (): Promise<void> => {
 				sumDeg  += deg;
 				count   += 1;
 
-				log(`solver: ${solver}   ${result ? 'success' : 'failure'}`);
-				log(`trial: ${count}   time: ${time}   degree: ${deg}`);
+				log(`Solver: ${solver}    ${result ? 'Success' : 'Failure'}`);
+				log(`Trial: ${count}    time: ${time}    degree: ${deg}`);
 
-				if (COUNT <= count) {
-					log(`average time: ${sumTime / COUNT}   average rate: ${sumDeg / COUNT}`);
+				if (maxCount <= count) {
+					log(`Avg. time: ${sumTime / maxCount}    Avg. degree: ${sumDeg / maxCount}`);
+					indicator.innerHTML = `Avg. time: ${Math.round(10 * sumTime / maxCount) / 10}&emsp;Avg. degree: ${Math.round(10000 * sumDeg / maxCount) / 10000}`;
 					onFinish();
 				}
 			}
@@ -98,11 +109,13 @@ document.addEventListener('DOMContentLoaded', async (): Promise<void> => {
 		return ww;
 	}
 
-	async function start(ww: Worker, solverType: number, target: number, timeLimit: number, varNum: number, density: number, aveTightness: number) {
-		for (let i: number = 0; i < COUNT; ++i) {
+	async function start(ww: Worker, solverType: number, target: number, timeLimit: number, debug: boolean, varNum: number, density: number, aveTightness: number) {
+		const maxCount: number = parseInt(iterNum.value);
+
+		for (let i: number = 0; i < maxCount; ++i) {
 			const now: number = count;
 			ww.postMessage({ task: 'create', args: [varNum, density, aveTightness] });
-			ww.postMessage({ task: 'solve', args: [solverType, target, timeLimit] });
+			ww.postMessage({ task: 'solve', args: [solverType, target, timeLimit, debug] });
 			await waitFor((): boolean => (count !== now));
 		}
 	}

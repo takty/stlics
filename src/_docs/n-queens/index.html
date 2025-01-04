@@ -43,16 +43,21 @@
 			</div>
 			<div class="solver-options">
 				<label>Solver Type: <select id="solver-type"></select></label>
+				<output id="indicator"></output>
+			</div>
+			<div class="solver-options">
 				<span class="switchable"><label><input type="checkbox" id="target-on" checked> Target:</label> <input id="target" type="number" min="0.1" max="1" step="0.1"></span>
 				<span class="switchable"><label><input type="checkbox" id="time-limit-on" checked> Time limit:</label> <input id="time-limit" type="number" min="100" max="10000"></span>
+				<label><input type="checkbox" id="debug-on" checked> Debug mode</label>
 			</div>
-			<div>
+			<div class="solver-options">
 				<button id="solver-start">Start</button>
 				<button id="solver-stop" disabled>Stop</button>
+				<label>Iteration: <input id="iter-num" type="number" min="1" max="100"></label>
 			</div>
 		</aside>
 		<table id="board"></table>
-		<textarea id="output" rows="32"></textarea>
+		<textarea id="output" rows="24"></textarea>
 	</main>
 </body>
 
