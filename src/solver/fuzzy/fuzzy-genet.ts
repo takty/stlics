@@ -3,11 +3,12 @@
  * CSPs and FCSPs (but only Binary (F)CSPs) is supported.
  *
  * @author Takuto Yanagida
- * @version 2025-01-03
+ * @version 2025-01-04
  */
 
 import { Variable } from '../../problem/variable';
 import { Constraint } from '../../problem/constraint';
+import { Relation } from '../../problem/relation';
 import { AssignmentList } from '../misc/assignment-list';
 import { Solver } from '../solver';
 
@@ -103,8 +104,8 @@ export class FuzzyGENET extends Solver {
 		}
 		for (const c of this.pro.constraints()) {
 			if (c.size() === 1) {  // In the case of unary constraints.
-				const x: Variable = c.at(0) as Variable;
-				const cl: Cluster = this.#clusters[x.index()];
+				const x : Variable = c.at(0) as Variable;
+				const cl: Cluster  = this.#clusters[x.index()];
 
 				for (const n of cl) {
 					const origV: number = x.value();  // Save the value.
@@ -116,10 +117,10 @@ export class FuzzyGENET extends Solver {
 					x.assign(origV);  // Restore the value.
 				}
 			} else {  // In the case of binary constraints.
-				const x1: Variable  = c.at(0) as Variable;
-				const x2: Variable  = c.at(1) as Variable;
-				const cl_f: Cluster = this.#clusters[x1.index()];
-				const cl_s: Cluster = this.#clusters[x2.index()];
+				const x1  : Variable = c.at(0) as Variable;
+				const x2  : Variable = c.at(1) as Variable;
+				const cl_f: Cluster  = this.#clusters[x1.index()];
+				const cl_s: Cluster  = this.#clusters[x2.index()];
 
 				for (const n_f of cl_f) {
 					const origV1: number = x1.value();  // Save the value.
@@ -138,11 +139,6 @@ export class FuzzyGENET extends Solver {
 				}
 			}
 		}
-		for (const cl of this.#clusters) {
-			for (const n of cl._neurons) {
-				n.lockConnections();
-			}
-		}
 		this.#connections = cons;
 		this.monitor.outputDebugString('End of Network Generation');
 		return true;
@@ -159,6 +155,7 @@ export class FuzzyGENET extends Solver {
 			for (const con of this.#connections) {
 				con.refreshWeight(); // Update weights for all connections
 			}
+			this.monitor.outputDebugString('\tRefresh weights');
 		} else {
 			for (const clu of this.#clusters) {
 				clu.applyToVariable();
@@ -167,11 +164,9 @@ export class FuzzyGENET extends Solver {
 	}
 
 	#shuffle(is: number[]): number[] {
-		for (let i: number = is.length; i > 1; --i) {
-			const j   : number = nextInt(i);
-			const temp: number = is[i - 1];
-			is[i - 1] = is[j];
-			is[j]     = temp;
+		for (let i: number = is.length - 1; i > 0; --i) {
+			const j: number = Math.floor(Math.random() * (i + 1));
+			[is[i], is[j]] = [is[j], is[i]];
 		}
 		return is;
 	}
@@ -180,101 +175,102 @@ export class FuzzyGENET extends Solver {
 
 class Cluster {
 
-	#x         : Variable;  // For avoiding a bug(?) of parcel.
-	#index     : number   = 0;
-	#maxNeurons: number[] = [];
-	_neurons   : Neuron[] = [];
+	#x    : Variable;  // For avoiding a bug(?) of parcel.
+	#index: number   = 0;
+	#maxNs: number[] = [];
+	_ns   : Neuron[] = [];
 
 	constructor(x: Variable) {
 		this.#x = x;
 
 		for (const v of x.domain()) {
-			this._neurons.push(new Neuron(v));
+			this._ns.push(new Neuron(v));
 		}
-		this.#setActivity(nextInt(this._neurons.length));
+		this.#setActivity(nextInt(this._ns.length));
 	}
 
 	#setActivity(index: number): void {
-		for (const n of this._neurons) {
+		for (const n of this._ns) {
 			n._isActive = false;
 		}
-		this._neurons[index]._isActive = true;
+		this._ns[index]._isActive = true;
 		this.#index = index;
 	}
 
 	applyToVariable(): void {
-		this.#x.assign(this._neurons[this.#index]._value);
+		this.#x.assign(this._ns[this.#index]._value);
 	}
 
 	// Turn on the node with the largest input.
 	setActivityMaximumInput(): boolean {
-		this.#maxNeurons.length = 0;
+		this.#maxNs.length = 0;
 
-		let max: number = Number.NEGATIVE_INFINITY;
+		let max      : number  = Number.NEGATIVE_INFINITY;
 		let alreadyOn: boolean = false;
 
-		for (let i: number = 0; i < this._neurons.length; ++i) {
-			const input: number = this._neurons[i].getInput();
+		for (let i: number = 0; i < this._ns.length; ++i) {
+			const input: number = this._ns[i].getInput();
 
 			if (max <= input) {
 				if (max < input) {
 					max = input;
-					this.#maxNeurons.length = 0;
+					this.#maxNs.length = 0;
 					alreadyOn = false;
 				}
-				this.#maxNeurons.push(i);
+				this.#maxNs.push(i);
 				if (this.#index === i) {
 					alreadyOn = true;
 				}
 			}
 		}
-		if (alreadyOn || this.#maxNeurons.length === 0) {
+		if (alreadyOn || this.#maxNs.length === 0) {
 			return false;
 		}
-		this.#setActivity(this.#maxNeurons[nextInt(this.#maxNeurons.length)]);
+		this.#setActivity(this.#maxNs[nextInt(this.#maxNs.length)]);
 		return true;
 	}
 
 	[Symbol.iterator](): Iterator<Neuron> {
-		return this._neurons[Symbol.iterator]();
+		return this._ns[Symbol.iterator]();
 	}
 
 }
 
 class Connection {
 
-	#c     : Constraint;
-	#first : Neuron;
-	#second: Neuron | null;
-	_weight: number;  // Direct reference (read) allowed.
+	#c : Constraint;
+	#n0: Neuron;
+	#n1: Neuron | null;
+	_w : number;  // Direct reference (read) allowed.
 
 	// Order of neurons must be the same as the order of variables that the constraint has.
 	constructor(c: Constraint, first: Neuron, second: Neuron | null = null) {
-		this.#c      = c;
-		this.#first  = first;
-		this.#second = second;
-		this._weight = c.degree() - 1;
+		this.#c  = c;
+		this.#n0 = first;
+		this.#n1 = second;
+		this._w  = c.degree() - 1;
 
-		this.#first.addConnection(this);
-		if (this.#second) {
-			this.#second.addConnection(this);
+		this.#n0.addConnection(this);
+		if (this.#n1) {
+			this.#n1.addConnection(this);
 		}
 	}
 
 	getNeuron(self: Neuron): Neuron | null {
-		if (self === this.#first) return this.#second;
-		if (self === this.#second) return this.#first;
+		if (self === this.#n0) return this.#n1;
+		if (self === this.#n1) return this.#n0;
 		return null;
 	}
 
 	refreshWeight(): void {
-		if (!this.#first._isActive || (this.#second !== null && !this.#second._isActive)) {
+		if (!this.#n0._isActive || (this.#n1 !== null && !this.#n1._isActive)) {
 			return;
 		}
+		const rel: Relation = this.#c.relation();
 		if (this.#c.size() === 1) {
-			this._weight += (this.#c.relation().degree(this.#first._value) - 1);
+			this._w += (rel.degree(this.#n0._value) - 1);
 		} else {
-			this._weight += (this.#c.relation().degree(this.#first._value, (this.#second as Neuron)._value) - 1);
+			this._w += (rel.degree(this.#n0._value, (this.#n1 as Neuron)._value) - 1);
 		}
 	}
 
@@ -283,7 +279,6 @@ class Connection {
 class Neuron {
 
 	#connections: Connection[] = [];
-	#conTemp    : Connection[] | null = [];
 
 	_value   : number;  // Direct reference (read) allowed.
 	_isActive: boolean = false;  // Direct reference (read, write) allowed.
@@ -293,12 +288,7 @@ class Neuron {
 	}
 
 	addConnection(c: Connection): void {
-		(this.#conTemp as Connection[]).push(c);
-	}
-
-	lockConnections(): void {
-		this.#connections = [...this.#conTemp as Connection[]];
-		this.#conTemp     = null;  // No longer being used.
+		this.#connections.push(c);
 	}
 
 	getInput(): number {
@@ -306,7 +296,7 @@ class Neuron {
 
 		for (const c of this.#connections) {
 			const n: Neuron | null = c.getNeuron(this);  // If n is null, then the unary constraint.
-			ret += c._weight * ((n === null || n._isActive) ? 1 : 0);
+			ret += c._w * ((n === null || n._isActive) ? 1 : 0);
 		}
 		return ret;
 	}
