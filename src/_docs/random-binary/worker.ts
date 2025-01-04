@@ -16,6 +16,8 @@ onmessage = async (e: MessageEvent<any>): Promise<void> => {
 let m: RandomBinary | null = null;
 let p: Problem | null      = null;
 
+let pm: boolean = false;
+
 function create(varNum: number, density: number, aveTightness: number): void {
 	m = new RandomBinary(varNum, density, aveTightness);
 	m.setDebugOutput(log);
@@ -34,13 +36,15 @@ async function solve(type: string, target: number, timeLimit: number, debug: boo
 
 	const s = await SolverFactory.createSolver(sn) as Solver;
 
+	pm = debug;
 	const res : boolean = s.solve(p as Problem, mon);
 	const time: number  = Date.now() - t;  // Stop time measurement
 	const ev  : number  = (p as Problem).degree();
+	pm = true;
 
 	postMessage({ result: res, time, ev, solver: s.name() });
 }
 
 function log(e: any): void {
-	postMessage({ log: e });
+	if (pm) postMessage({ log: e });
 }

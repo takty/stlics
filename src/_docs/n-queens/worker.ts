@@ -16,6 +16,8 @@ onmessage = async (e: MessageEvent<any>): Promise<void> => {
 let m: N_queens | null = null;
 let p: Problem | null  = null;
 
+let pm: boolean = false;
+
 function create(num: number): void {
 	m = new N_queens(num);
 	m.setDebugOutput(log);
@@ -39,18 +41,21 @@ async function solve(type: string, target: number, timeLimit: number, debug: boo
 
 	const s = await SolverFactory.createSolver(sn) as Solver;
 
+	pm = debug;
 	const res : boolean = s.solve(p as Problem, mon);
 	const time: number  = Date.now() - t;  // Stop time measurement
 	const ev  : number  = (p as Problem).ratio();
+	pm = true;
 
 	(m as N_queens).printResult(p as Problem);
+	for (const x of (p as Problem).variables()) x.assign(x.value());
 	postMessage({ result: res, time, ev, solver: s.name() });
 }
 
 function log(e: any): void {
-	postMessage({ log: e });
+	if (pm) postMessage({ log: e });
 }
 
 function board(x: number, y: number): void {
-	postMessage({ board: { x, y } });
+	if (pm) postMessage({ board: { x, y } });
 }
