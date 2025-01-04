@@ -10,8 +10,8 @@ document.addEventListener('DOMContentLoaded', async (): Promise<void> => {
 	const log: (e: any) => void = createLogOutput();
 	const sn: string = SolverFactory.crispSolverNames()[SOLVER_TYPE];
 
-	let sum_time: number = 0;
-	let sum_rate: number = 0;
+	let sumTime: number = 0;
+	let sumEv  : number = 0;
 
 	for (let i: number = 0; i < COUNT; ++i) {
 		const nq         = new N_queens(QUEEN_NUM);
@@ -28,14 +28,14 @@ document.addEventListener('DOMContentLoaded', async (): Promise<void> => {
 
 		const res : boolean = s.solve(p, mon);
 		const time: number  = Date.now() - t;  // Stop time measurement
-		const rate: number  = p.ratio();
+		const ev  : number  = p.ratio();
 
-		log(`solver: ${s.name()}   ${res ? 'success' : 'failure'}`);
-		log(`trial: ${i + 1}   time: ${time}   rate: ${rate}`);
+		log(`Solver: ${s.name()}    ${res ? 'Success' : 'Failure'}`);
+		log(`Trial: ${i + 1}    time: ${time}    rate: ${ev}`);
 		nq.setDebugOutput(log);
 		nq.printResult(p);
-		sum_time += time;
-		sum_rate += rate;
+		sumTime += time;
+		sumEv   += ev;
 	}
-	log(`average time: ${sum_time / COUNT}   average rate: ${sum_rate / COUNT}`);
+	log(`Avg. time: ${sumTime / COUNT}   Avg. rate: ${sumEv / COUNT}`);
 });

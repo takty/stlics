@@ -11,8 +11,8 @@ document.addEventListener('DOMContentLoaded', async (): Promise<void> => {
 	const log: (e: any) => string = (e: any): string => output.value += `${e}\n`;
 	const sn: string = SolverFactory.fuzzySolverNames()[1];
 
-	let sum_time: number = 0;
-	let sum_deg : number = 0;
+	let sumTime: number = 0;
+	let sumEv  : number = 0;
 
 	for (let i: number = 0; i < COUNT; ++i) {
 		const rp         = new RandomBinary(VAR_NUM, DENSITY, AVE_TIGHTNESS);
@@ -29,12 +29,12 @@ document.addEventListener('DOMContentLoaded', async (): Promise<void> => {
 
 		const res : boolean = s.solve(p, mon);
 		const time: number  = Date.now() - t;  // Stop time measurement
-		const deg : number  = p.degree();
+		const ev  : number  = p.degree();
 
-		log(`solver: ${s.name()}   ${res ? 'success' : 'failure'}`);
-		log(`trial: ${i + 1}   time: ${time}   degree: ${deg}`);
-		sum_time += time;
-		sum_deg += deg;
+		log(`Solver: ${s.name()}    ${res ? 'Success' : 'Failure'}`);
+		log(`Trial: ${i + 1}    time: ${time}    degree: ${ev}`);
+		sumTime += time;
+		sumEv   += ev;
 	}
-	log(`average time: ${sum_time / COUNT}   average degree: ${sum_deg / COUNT}`);
+	log(`average time: ${sumTime / COUNT}   average degree: ${sumEv / COUNT}`);
 });

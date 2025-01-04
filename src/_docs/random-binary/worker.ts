@@ -36,9 +36,9 @@ async function solve(type: string, target: number, timeLimit: number, debug: boo
 
 	const res : boolean = s.solve(p as Problem, mon);
 	const time: number  = Date.now() - t;  // Stop time measurement
-	const deg : number  = (p as Problem).degree();
+	const ev  : number  = (p as Problem).degree();
 
-	postMessage({ result: res, time, deg, solver: s.name() });
+	postMessage({ result: res, time, ev, solver: s.name() });
 }
 
 function log(e: any): void {

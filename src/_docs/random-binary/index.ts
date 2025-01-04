@@ -91,13 +91,13 @@ document.addEventListener('DOMContentLoaded', async (): Promise<void> => {
 			if ('log' in data) {
 				log(data.log);
 			} else if ('result' in data) {
-				const { result, solver, time, deg } = data;
+				const { result, solver, time, ev } = data;
 				sumTime += time;
-				sumEv   += deg;
+				sumEv   += ev;
 				count   += 1;
 
 				log(`Solver: ${solver}    ${result ? 'Success' : 'Failure'}`);
-				log(`Trial: ${count}    time: ${time}    degree: ${deg}`);
+				log(`Trial: ${count}    time: ${time}    degree: ${ev}`);
 
 				if (maxCount <= count) {
 					log(`Avg. time: ${sumTime / maxCount}    Avg. degree: ${sumEv / maxCount}`);

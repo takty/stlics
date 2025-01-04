@@ -10,8 +10,8 @@ document.addEventListener('DOMContentLoaded', async (): Promise<void> => {
 	const log: (e: any) => void = createLogOutput();
 	const sn: string = SolverFactory.fuzzySolverNames()[SOLVER_TYPE];
 
-	let sum_time: number = 0;
-	let sum_deg : number = 0;
+	let sumTime: number = 0;
+	let sumEv  : number = 0;
 
 	for (let i: number = 0; i < COUNT; ++i) {
 		const nq         = new N_1_queens(QUEEN_NUM);
@@ -28,14 +28,14 @@ document.addEventListener('DOMContentLoaded', async (): Promise<void> => {
 
 		const res : boolean = s.solve(p, mon);
 		const time: number  = Date.now() - t;  // Stop time measurement
-		const deg : number  = p.degree();
+		const ev  : number  = p.degree();
 
-		log(`solver: ${s.name()}   ${res ? 'success' : 'failure'}`);
-		log(`trial: ${i + 1}   time: ${time}   degree: ${deg}`);
+		log(`Solver: ${s.name()}    ${res ? 'Success' : 'Failure'}`);
+		log(`Trial: ${i + 1}    time: ${time}    degree: ${ev}`);
 		nq.setDebugOutput(log);
 		nq.printResult(p);
-		sum_time += time;
-		sum_deg  += deg;
+		sumTime += time;
+		sumEv   += ev;
 	}
-	log(`average time: ${sum_time / COUNT}   average degree: ${sum_deg / COUNT}`);
+	log(`Avg. time: ${sumTime / COUNT}    Avg. degree: ${sumEv / COUNT}`);
 });
