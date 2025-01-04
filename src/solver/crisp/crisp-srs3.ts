@@ -3,7 +3,7 @@
  * The given crisp CSP is treated as the maximum CSP.
  *
  * @author Takuto Yanagida
- * @version 2025-01-03
+ * @version 2025-01-04
  */
 
 import { Constraint } from '../../problem/constraint';
@@ -42,7 +42,7 @@ export class CrispSRS3 extends Solver {
 	 * {@override}
 	 */
 	name(): string {
-		return 'SRS3 for Crisp CSPs';
+		return 'Crisp SRS3';
 	}
 
 	/**

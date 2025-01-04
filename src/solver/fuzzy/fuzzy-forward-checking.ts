@@ -3,7 +3,7 @@
  * The minimum-remaining-values (MRV) heuristic can also be used by specifying the option.
  *
  * @author Takuto Yanagida
- * @version 2025-01-03
+ * @version 2025-01-04
  */
 
 import { Variable } from '../../problem/variable';
@@ -47,7 +47,7 @@ export class FuzzyForwardChecking extends Solver {
 	 * {@override}
 	 */
 	name(): string {
-		return 'Forward Checking for Fuzzy CSPs';
+		return 'Fuzzy Forward Checking';
 	}
 
 	/**

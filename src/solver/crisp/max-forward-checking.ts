@@ -5,7 +5,7 @@
  * Each variable must have its own domain because it hides domain elements as branch pruning.
  *
  * @author Takuto Yanagida
- * @version 2025-01-03
+ * @version 2025-01-04
  */
 
 import { Variable } from '../../problem/variable';
@@ -48,7 +48,7 @@ export class MaxForwardChecking extends Solver {
 	 * {@override}
 	 */
 	name(): string {
-		return 'Forward Checking for Max CSPs';
+		return 'Max Forward Checking';
 	}
 
 	/**
