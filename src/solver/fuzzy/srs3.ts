@@ -2,7 +2,7 @@
  * This class implements the SRS3 algorithm.
  *
  * @author Takuto Yanagida
- * @version 2025-01-03
+ * @version 2025-01-04
  */
 
 import { Constraint } from '../../problem/constraint';
@@ -153,51 +153,6 @@ export class SRS3 extends Solver {
 		}
 	}
 
-	// #repair(c0: Constraint): boolean {
-	// 	this.monitor.outputDebugString('Repair');
-	// 	this.#ws[c0.index()] += 1;
-
-	// 	const canList: AssignmentList = new AssignmentList();
-	// 	const defD0  : number         = c0.degree();  // Target c0 should certainly be an improvement over this.
-
-	// 	// If a candidate satisfying the condition is stronger than the previous candidates,
-	// 	// it is replaced, and if no candidate is found until the end, it fails.
-	// 	for (const x of c0) {
-	// 		const x_v: number = x.value();  // Save the value
-
-	// 		out: for (const v of x.domain()) {
-	// 			if (x_v === v) {
-	// 				continue;
-	// 			}
-	// 			x.assign(v);
-	// 			const d0: number = c0.degree();
-	// 			// If target c0 cannot be improved, the assignment is rejected.
-	// 			if (d0 <= defD0) {
-	// 				continue;
-	// 			}
-	// 			for (const c of x) {
-	// 				if (c === c0) {
-	// 					continue;
-	// 				}
-	// 				const d: number = c.degree();
-	// 				// If one of the neighborhood constraints c is less than or equal to the worst, the assignment is rejected.
-	// 				if (d < defD0) {
-	// 					continue out;
-	// 				}
-	// 			}
-	// 			canList.addVariable(x, v);
-	// 		}
-	// 		x.assign(x_v);  // Restore the value
-	// 	}
-	// 	if (0 < canList.size()) {
-	// 		const a: Assignment = this.#isRandom ? canList.random() : canList.at(0);
-	// 		a.apply();
-	// 		this.monitor.outputDebugString('\t' + a);
-	// 		return true;
-	// 	}
-	// 	return false;
-	// }
-
 	#repair(c0: Constraint): boolean {
 		this.monitor.outputDebugString('Repair');
 		this.#ws[c0.index()] += 1;
@@ -277,32 +232,6 @@ export class SRS3 extends Solver {
 			this.#openList.add(cur);
 		}
 	}
-
-	// #shrink(node: TreeNode, c_stars: Set<TreeNode>): void {
-	// 	this.debugOutput('Shrink');
-
-	// 	const temp: TreeNode[] = [];
-	// 	let cur: TreeNode = node;
-
-	// 	while (true) {  // This procedure is originally a recursive call, but converted to a loop
-	// 		cur = cur.parent() as TreeNode;
-	// 		temp.length = 0;
-	// 		cur.getDescendants(temp);
-	// 		cur.clear();
-
-	// 		for (const n of temp) {
-	// 			this.#openList.delete(n);
-	// 			this.#closedList.delete(n);
-	// 		}
-	// 		if (c_stars.delete(cur)) {
-	// 		} else {
-	// 			this.#openList.add(cur);
-	// 			if (!cur.parent() || !this.#repair((cur.parent() as TreeNode).constraint())) {
-	// 				break;
-	// 			}
-	// 		}
-	// 	}
-	// }
 
 	#getNeighbors(tn: TreeNode): TreeNode[] {
 		const c: Constraint = tn.constraint();

@@ -234,32 +234,6 @@ export class CrispSRS3 extends Solver {
 		}
 	}
 
-	// #shrink(node: TreeNode, c_stars: Set<TreeNode>): void {
-	// 	this.debugOutput('Shrink');
-
-	// 	const temp: TreeNode[] = [];
-	// 	let cur: TreeNode = node;
-
-	// 	while (true) {  // This procedure is originally a recursive call, but converted to a loop
-	// 		cur = cur.parent() as TreeNode;
-	// 		temp.length = 0;
-	// 		cur.getDescendants(temp);
-	// 		cur.clear();
-
-	// 		for (const n of temp) {
-	// 			this.#openList.delete(n);
-	// 			this.#closedList.delete(n);
-	// 		}
-	// 		if (c_stars.delete(cur)) {
-	// 		} else {
-	// 			this.#openList.add(cur);
-	// 			if (!cur.parent() || !this.#repair((cur.parent() as TreeNode).constraint())) {
-	// 				break;
-	// 			}
-	// 		}
-	// 	}
-	// }
-
 	#getNeighbors(tn: TreeNode): TreeNode[] {
 		const c: Constraint = tn.constraint();
 		const i: number     = c.index();
