@@ -2,7 +2,7 @@
  * Sample implementation of a random binary problem.
  *
  * @author Takuto Yanagida
- * @version 2024-12-23
+ * @version 2025-01-16
  */
 
 import { Problem } from '../problem/problem';
@@ -99,7 +99,7 @@ export class RandomBinary extends Model {
 		}
 		for (let i: number = 0; i < this.#sig; ++i) {
 			for (let j: number = 0; j < this.#sig; ++j) {
-				const q: number = (this.#t === 0) ? Number.MAX_VALUE : (1 - this.#t) / this.#t;
+				const q: number = (0 === this.#t) ? Number.MAX_VALUE : (1 - this.#t) / this.#t;
 				tab[i][j] = random(1, q);
 			}
 		}

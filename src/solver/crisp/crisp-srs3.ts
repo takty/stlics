@@ -3,7 +3,7 @@
  * The given crisp CSP is treated as the maximum CSP.
  *
  * @author Takuto Yanagida
- * @version 2025-01-04
+ * @version 2025-01-16
  */
 
 import { Constraint } from '../../problem/constraint';
@@ -138,7 +138,7 @@ export class CrispSRS3 extends Solver {
 				this.#spread(node);
 			}
 		}
-		return c_stars.size === 0;
+		return 0 === c_stars.size;
 	}
 
 	#spread(tn: TreeNode): void {

@@ -2,7 +2,7 @@
  * This class implements the SRS3 algorithm.
  *
  * @author Takuto Yanagida
- * @version 2025-01-04
+ * @version 2025-01-16
  */
 
 import { Constraint } from '../../problem/constraint';
@@ -136,7 +136,7 @@ export class SRS3 extends Solver {
 				this.#spread(node);
 			}
 		}
-		return c_stars.size === 0;
+		return 0 === c_stars.size;
 	}
 
 	#spread(tn: TreeNode): void {
@@ -157,7 +157,7 @@ export class SRS3 extends Solver {
 		this.monitor.outputDebugString('Repair');
 		this.#ws[c0.index()] += 1;
 
-		const defD0: number = c0.degree();  // Target c0 should certainly be an improvement over this.
+		const defEv0: number = c0.degree();  // Target c0 should certainly be an improvement over this.
 		const canList = new AssignmentList();
 		let maxDiff: number = 0;
 
@@ -173,7 +173,7 @@ export class SRS3 extends Solver {
 					continue;
 				}
 				x.assign(v);
-				if (c0.degree() <= defD0) {
+				if (c0.degree() <= defEv0) {
 					continue;
 				}
 				let diff: number = nowEv;

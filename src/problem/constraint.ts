@@ -13,13 +13,13 @@ import { FuzzyRelation } from './relation';
 export abstract class Constraint extends Element {
 
 	static create(r: Relation, xs: Variable[]): Constraint {
-		if (xs.length === 1) {
+		if (1 === xs.length) {
 			return new Constraint1(r, xs[0]);
 		}
-		if (xs.length === 2) {
+		if (2 === xs.length) {
 			return new Constraint2(r, xs[0], xs[1]);
 		}
-		if (xs.length === 3) {
+		if (3 === xs.length) {
 			return new Constraint3(r, xs[0], xs[1], xs[2]);
 		}
 		return new ConstraintN(r, ...xs);
@@ -56,8 +56,8 @@ export abstract class Constraint extends Element {
 	toString(): string {
 		const n : string = this.name();
 		const np: string = n ? `(${n})` : '';
-		const d : number = this.degree();
-		const sn: string = d < 0 /* d === UNDEFINED */ ? 'UNDEFINED' : ('' + d);
+		const ev: number = this.degree();
+		const sn: string = ev < 0 /* ev === UNDEFINED */ ? 'UNDEFINED' : ('' + ev);
 
 		return `c${this.index()}${np} = ${sn}`;
 	}

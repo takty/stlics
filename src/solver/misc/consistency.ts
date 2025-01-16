@@ -37,9 +37,9 @@ export function consistencyDegreeOfProblem(p: Problem): [number, number] {
  */
 export function highestConsistencyDegree(c: Constraint): number {
 	const s: number = c.size();
-	if (s === 1) return highestConsistencyDegree1(c);
-	if (s === 2) return highestConsistencyDegree2(c);
-	if (s === 3) return highestConsistencyDegree3(c);
+	if (1 === s) return highestConsistencyDegree1(c);
+	if (2 === s) return highestConsistencyDegree2(c);
+	if (3 === s) return highestConsistencyDegree3(c);
 	return highestConsistencyDegreeN(c);
 }
 
@@ -52,9 +52,9 @@ export function highestConsistencyDegree(c: Constraint): number {
  */
 export function lowestConsistencyDegree(c: Constraint): number {
 	const s: number = c.size();
-	if (s === 1) return lowestConsistencyDegree1(c);
-	if (s === 2) return lowestConsistencyDegree2(c);
-	if (s === 3) return lowestConsistencyDegree3(c);
+	if (1 === s) return lowestConsistencyDegree1(c);
+	if (2 === s) return lowestConsistencyDegree2(c);
+	if (3 === s) return lowestConsistencyDegree3(c);
 	return lowestConsistencyDegreeN(c);
 }
 
@@ -64,18 +64,18 @@ export function lowestConsistencyDegree(c: Constraint): number {
  * @return The highest consistency degree.
  */
 function highestConsistencyDegree1(c: Constraint): number {
-	const d: number = c.degree();
-	if (0 <= d) {  // d !== UNDEFINED
-		return d;
+	const ev: number = c.degree();
+	if (0 <= ev) {  // ev !== UNDEFINED
+		return ev;
 	}
 	const x: Variable = (c.at(0) as Variable);
 	let cd: number = 0;
 	for (const v of x.domain()) {
-		const d: number = c.rel.degree(v);
-		if (cd < d) {
-			cd = d;
+		const ev: number = c.rel.degree(v);
+		if (cd < ev) {
+			cd = ev;
 		}
-		if (cd === 1) return 1;
+		if (1 === cd) return 1;
 	}
 	return cd;
 }
@@ -86,18 +86,18 @@ function highestConsistencyDegree1(c: Constraint): number {
  * @return The lowest consistency degree.
  */
 function lowestConsistencyDegree1(c: Constraint): number {
-	const d: number = c.degree();
-	if (0 <= d) {  // d !== UNDEFINED
-		return d;
+	const ev: number = c.degree();
+	if (0 <= ev) {  // ev !== UNDEFINED
+		return ev;
 	}
 	const x: Variable = (c.at(0) as Variable);
 	let cd: number = 1;
 	for (const v of x.domain()) {
-		const d: number = c.rel.degree(v);
-		if (d < cd) {
-			cd = d;
+		const ev: number = c.rel.degree(v);
+		if (ev < cd) {
+			cd = ev;
 		}
-		if (cd === 0) return 0;
+		if (0 === cd) return 0;
 	}
 	return cd;
 }
@@ -108,17 +108,17 @@ function lowestConsistencyDegree1(c: Constraint): number {
  * @return The highest consistency degree.
  */
 function highestConsistencyDegree2(c: Constraint): number {
-	const d: number = c.degree();
-	if (0 <= d) {  // d !== UNDEFINED
-		return d;
+	const ev: number = c.degree();
+	if (0 <= ev) {  // ev !== UNDEFINED
+		return ev;
 	}
 	let cd: number = 0;
 	const fn = (v0: number, v1: number): boolean => {
-		const d: number = c.rel.degree(v0, v1);
-		if (cd < d) {
-			cd = d;
+		const ev: number = c.rel.degree(v0, v1);
+		if (cd < ev) {
+			cd = ev;
 		}
-		return (cd === 1);
+		return (1 === cd);
 	}
 	const x0: Variable = (c.at(0) as Variable);
 	const x1: Variable = (c.at(1) as Variable);
@@ -152,17 +152,17 @@ function highestConsistencyDegree2(c: Constraint): number {
  * @return The lowest consistency degree.
  */
 function lowestConsistencyDegree2(c: Constraint): number {
-	const d: number = c.degree();
-	if (0 <= d) {  // d !== UNDEFINED
-		return d;
+	const ev: number = c.degree();
+	if (0 <= ev) {  // ev !== UNDEFINED
+		return ev;
 	}
 	let cd: number = 1;
 	const fn = (v0: number, v1: number): boolean => {
-		const d: number = c.rel.degree(v0, v1);
-		if (d < cd) {
-			cd = d;
+		const ev: number = c.rel.degree(v0, v1);
+		if (ev < cd) {
+			cd = ev;
 		}
-		return (cd === 0);
+		return (0 === cd);
 	}
 	const x0: Variable = (c.at(0) as Variable);
 	const x1: Variable = (c.at(1) as Variable);
@@ -196,17 +196,17 @@ function lowestConsistencyDegree2(c: Constraint): number {
  * @return The highest consistency degree.
  */
 function highestConsistencyDegree3(c: Constraint): number {
-	const d: number = c.degree();
-	if (0 <= d) {  // d !== UNDEFINED
-		return d;
+	const ev: number = c.degree();
+	if (0 <= ev) {  // ev !== UNDEFINED
+		return ev;
 	}
 	let cd: number = 0;
 	const fn = (v0: number, v1: number, v2: number): boolean => {
-		const d: number = c.rel.degree(v0, v1, v2);
-		if (cd < d) {
-			cd = d;
+		const ev: number = c.rel.degree(v0, v1, v2);
+		if (cd < ev) {
+			cd = ev;
 		}
-		return (cd === 1);
+		return (1 === cd);
 	}
 	const x0: Variable = (c.at(0) as Variable);
 	const x1: Variable = (c.at(1) as Variable);
@@ -267,17 +267,17 @@ function highestConsistencyDegree3(c: Constraint): number {
  * @return The lowest consistency degree.
  */
 function lowestConsistencyDegree3(c: Constraint): number {
-	const d: number = c.degree();
-	if (0 <= d) {  // d !== UNDEFINED
-		return d;
+	const ev: number = c.degree();
+	if (0 <= ev) {  // ev !== UNDEFINED
+		return ev;
 	}
 	let cd: number = 1;
 	const fn = (v0: number, v1: number, v2: number): boolean => {
-		const d: number = c.rel.degree(v0, v1, v2);
-		if (d < cd) {
-			cd = d;
+		const ev: number = c.rel.degree(v0, v1, v2);
+		if (ev < cd) {
+			cd = ev;
 		}
-		return (cd === 0);
+		return (0 === cd);
 	}
 	const x0: Variable = (c.at(0) as Variable);
 	const x1: Variable = (c.at(1) as Variable);
@@ -338,9 +338,9 @@ function lowestConsistencyDegree3(c: Constraint): number {
  * @return The highest consistency degree.
  */
 function highestConsistencyDegreeN(c: Constraint): number {
-	const d: number = c.degree();
-	if (0 <= d) {  // d !== UNDEFINED
-		return d;
+	const ev: number = c.degree();
+	if (0 <= ev) {  // ev !== UNDEFINED
+		return ev;
 	}
 	const emptyIndices = new Array(c.emptyVariableSize());
 	let j: number = 0;
@@ -363,9 +363,9 @@ function highestConsistencyDegreeN(c: Constraint): number {
  * @return The lowest consistency degree.
  */
 function lowestConsistencyDegreeN(c: Constraint): number {
-	const d: number = c.degree();
-	if (0 <= d) {  // d !== UNDEFINED
-		return d;
+	const ev: number = c.degree();
+	if (0 <= ev) {  // ev !== UNDEFINED
+		return ev;
 	}
 	const emptyIndices = new Array(c.emptyVariableSize());
 	let j: number = 0;
@@ -389,11 +389,11 @@ function checkHCD(c: Constraint, vs: number[], emptyIndices: number[], currentSt
 	if (currentStep === emptyIndices.length - 1) {
 		for (const v of d) {
 			vs[index] = v;
-			const s: number = c.rel.degree(...vs);
-			if (cd < s) {
-				cd = s;
+			const ev: number = c.rel.degree(...vs);
+			if (cd < ev) {
+				cd = ev;
 			}
-			if (cd === 1) {
+			if (1 === cd) {
 				return 1;
 			}
 		}
@@ -413,11 +413,11 @@ function checkLCD(c: Constraint, vs: number[], emptyIndices: number[], currentSt
 	if (currentStep === emptyIndices.length - 1) {
 		for (const v of d) {
 			vs[index] = v;
-			const s: number = c.rel.degree(...vs);
-			if (s < cd) {
-				cd = s;
+			const ev: number = c.rel.degree(...vs);
+			if (ev < cd) {
+				cd = ev;
 			}
-			if (cd === 0) {
+			if (0 === cd) {
 				return 0;
 			}
 		}

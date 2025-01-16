@@ -2,7 +2,7 @@
  * Gamma Distribution.
  *
  * @author Takuto Yanagida
- * @version 2024-12-17
+ * @version 2025-01-16
  */
 
 /**
@@ -22,15 +22,15 @@ export function random(a: number, b: number): number {
  * Generates a gamma-distributed random number for a given shape parameter `a`.
  *
  * The implementation handles two cases:
- * - If `a > 1`, it uses a rejection sampling algorithm with a transformation.
- * - If `a <= 1`, it employs a mixture of exponential and logarithmic transformations.
+ * - If `1 < a`, it uses a rejection sampling algorithm with a transformation.
+ * - Else, it employs a mixture of exponential and logarithmic transformations.
  *
  * @param a - The shape parameter of the gamma distribution (must be a positive number).
  * @returns A gamma-distributed random number.
  */
 function gamma(a: number): number {
 	let t: number, x: number, y: number, u: number, r: number;
-	if (a > 1) {
+	if (1 < a) {
 		t = Math.sqrt(2 * a - 1);
 		do {
 			do {
@@ -38,7 +38,7 @@ function gamma(a: number): number {
 					do {
 						x = Math.random();
 						y = 2 * Math.random() - 1;
-					} while ((x * x + y * y >= 1) || (x === 0));
+					} while ((1 <= x * x + y * y) || (0 === x));
 					y = y / x;
 					x = t * y + a - 1;
 				} while (x <= 0);
@@ -52,7 +52,7 @@ function gamma(a: number): number {
 				x = 0;
 				y = 1;
 				r = Math.random();
-				if (r > 0) {
+				if (0 < r) {
 					x = Math.exp(Math.log(r) / a);
 					y = Math.exp(-x);
 				}
@@ -60,7 +60,7 @@ function gamma(a: number): number {
 				r = Math.random();
 				x = 1;
 				y = 0;
-				if (r > 0) {
+				if (0 < r) {
 					x = 1 - Math.log(r);
 					y = Math.exp((a - 1) * Math.log(x));
 				}

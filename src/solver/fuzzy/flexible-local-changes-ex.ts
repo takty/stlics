@@ -65,7 +65,7 @@ export class FlexibleLocalChangesEx extends Solver {
 		let rc     : number;
 		let initSol: AssignmentList | null = null;
 
-		if (X3.size === 0) {
+		if (0 === X3.size) {
 			rc      = initCons;
 			initSol = AssignmentList.fromVariables(X2);
 		} else {
@@ -81,7 +81,7 @@ export class FlexibleLocalChangesEx extends Solver {
 			}
 		}
 		result = this.pro.degree();
-		return result > this.#wsd && result > 0 && (this.#globalRet !== 0 || this.monitor.getTarget() === null);
+		return this.#wsd < result && 0 < result && (this.#globalRet !== 0 || this.monitor.getTarget() === null);
 	}
 
 	#choose(x2: Set<Variable>, cr: Set<Constraint>): Set<Variable> {
@@ -107,7 +107,7 @@ export class FlexibleLocalChangesEx extends Solver {
 			if (res.has(o2)) res2 = res.get(o2) ?? 0;
 
 			if (res1 < res2) return 1;
-			if (res1 > res2) return -1;
+			if (res2 < res1) return -1;
 			return 0;
 		});
 
@@ -140,7 +140,7 @@ export class FlexibleLocalChangesEx extends Solver {
 				this.#globalRet = ret ? 1 : 0;
 				return consX12;
 			}
-			if (X3.size === 0) {
+			if (0 === X3.size) {
 				return consX12;
 			}
 			const xi                = X3.values().next().value as Variable;
@@ -173,11 +173,11 @@ export class FlexibleLocalChangesEx extends Solver {
 			xi.assign(dij);
 			const consX1_xi: number = Math.min(consX1, this.#testX1(X1, xi, bestCons, rc));
 
-			if (consX1_xi > Math.max(bestCons, rc)) {
+			if (Math.max(bestCons, rc) < consX1_xi) {
 				const crNew              = new Set<Constraint>();
 				const consX12_xi: number = Math.min(Math.min(consX1_xi, consX12), this.#testX12(X1, X2, xi, consX1_xi, consX12, crNew));
 
-				if (consX12_xi > bestCons) {
+				if (bestCons < consX12_xi) {
 					bestCons = consX12_xi;
 					bestDij  = dij;
 					bestX2   = AssignmentList.fromVariables(X2);
@@ -187,7 +187,7 @@ export class FlexibleLocalChangesEx extends Solver {
 					if (this.#globalRet !== -1) {
 						return bestCons;
 					}
-					if (repairCons > bestCons) {
+					if (bestCons < repairCons) {
 						bestCons = repairCons;
 						bestDij  = dij;
 						bestX2   = AssignmentList.fromVariables(X2);

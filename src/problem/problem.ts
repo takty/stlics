@@ -365,17 +365,17 @@ export class Problem {
 	 * @return Worst satisfaction degree.
 	 */
 	degree(): number {
-		let wd: number = 1;
+		let cur: number = 1;
 		for (const c of this.#cs) {
-			const d: number = c.degree();
-			if (d < 0) {  // d === UNDEFINED
-				return d;
+			const ev: number = c.degree();
+			if (ev < 0) {  // ev === UNDEFINED
+				return ev;
 			}
-			if (d < wd) {
-				wd = d;
+			if (ev < cur) {
+				cur = ev;
 			}
 		}
-		return wd;
+		return cur;
 	}
 
 	/**
@@ -386,12 +386,12 @@ export class Problem {
 		const cs: Constraint[] = [];
 		let cur: number = 1;
 		for (const c of this.#cs) {
-			const s: number = c.degree();
-			if (s < cur) {
-				cur = s;
+			const ev: number = c.degree();
+			if (ev < cur) {
+				cur = ev;
 				cs.length = 0;
 				cs.push(c);
-			} else if (s - cur < Number.MIN_VALUE * 10) {
+			} else if (ev - cur < Number.MIN_VALUE * 10) {
 				cs.push(c);
 			}
 		}

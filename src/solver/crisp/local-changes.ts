@@ -2,7 +2,7 @@
  * Class implements the local changes method.
  *
  * @author Takuto Yanagida
- * @version 2025-01-03
+ * @version 2025-01-16
  */
 
 import { Variable } from '../../problem/variable';
@@ -75,7 +75,7 @@ export class LocalChanges extends Solver {
 				this.#globalRet = true;
 				return r;
 			}
-			if (X3.size === 0) {
+			if (0 === X3.size) {
 				return true;
 			}
 			const x = X3.values().next().value as Variable;

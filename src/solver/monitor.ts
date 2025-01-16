@@ -2,7 +2,7 @@
  * The class for monitoring solvers.
  *
  * @author Takuto Yanagida
- * @version 2024-12-23
+ * @version 2025-01-16
  */
 
 import { AssignmentList } from './misc/assignment-list';
@@ -42,7 +42,7 @@ export class Monitor {
 	/**
 	 * Number of times the evaluation value is the same before stopping the solver.
 	 */
-	#sameEvaluationLimit: number | null = null;
+	#sameEvLimit: number | null = null;
 
 	/**
 	 * End time.
@@ -98,9 +98,9 @@ export class Monitor {
 			this.outputDebugString('Stop: Time limit has been reached');
 			return false;
 		}
-		if (null !== evaluation && this.#sameEvaluationLimit !== null) {
+		if (null !== evaluation && null !== this.#sameEvLimit) {
 			if (evaluation !== -1 && this.#lastEv === evaluation) {
-				if (this.#sameEvCount++ > this.#sameEvaluationLimit) {
+				if (this.#sameEvLimit < this.#sameEvCount++) {
 					this.outputDebugString('Stop: Evaluation value has not changed for a certain number of times');
 					return false;
 				}
@@ -190,7 +190,7 @@ export class Monitor {
 	 * @param count Count; null means not set.
 	 */
 	setSameEvaluationLimit(count: number | null = null): void {
-		this.#sameEvaluationLimit = count;
+		this.#sameEvLimit = count;
 	}
 
 

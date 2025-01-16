@@ -4,7 +4,7 @@
  * Find the solution to the problem as the maximum CSP.
  *
  * @author Takuto Yanagida
- * @version 2025-01-04
+ * @version 2025-01-16
  */
 
 import { Variable } from '../../problem/variable';
@@ -154,7 +154,7 @@ export class GENET extends Solver {
 	}
 
 	#shuffle(is: number[]): number[] {
-		for (let i: number = is.length - 1; i > 0; --i) {
+		for (let i: number = is.length - 1; 0 < i; --i) {
 			const j: number = Math.floor(Math.random() * (i + 1));
 			[is[i], is[j]] = [is[j], is[i]];
 		}
@@ -213,7 +213,7 @@ class Cluster {
 				}
 			}
 		}
-		if (alreadyOn || this.#maxNs.length === 0) {
+		if (alreadyOn || 0 === this.#maxNs.length) {
 			return false;
 		}
 		this.#setActivity(this.#maxNs[nextInt(this.#maxNs.length)]);

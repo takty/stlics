@@ -2,7 +2,7 @@
  * Utility class for constraint satisfaction problems.
  *
  * @author Takuto Yanagida
- * @version 2025-01-02
+ * @version 2025-01-16
  */
 
 import { Problem } from '../problem/problem';
@@ -76,7 +76,7 @@ export function averagePathLength(p: Problem, x: Variable): number {
 			sum += ls[i];
 		}
 	}
-	if (connectedSize === 0) {
+	if (0 === connectedSize) {
 		return 0;
 	}
 	return sum / connectedSize;

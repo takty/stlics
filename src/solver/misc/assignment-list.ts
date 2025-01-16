@@ -2,7 +2,7 @@
  * The class represents multiple variables and their assignments.
  *
  * @author Takuto Yanagida
- * @version 2025-01-02
+ * @version 2025-01-16
  */
 
 import { Assignment } from './assignment';
@@ -88,7 +88,7 @@ export class AssignmentList {
 	 * @return True if empty.
 	 */
 	isEmpty(): boolean {
-		return this.#as.length === 0;
+		return 0 === this.#as.length;
 	}
 
 	/**

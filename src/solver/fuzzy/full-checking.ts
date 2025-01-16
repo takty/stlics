@@ -194,20 +194,20 @@ export class FullChecking extends Solver {
 
 			for (const c of cs) {
 				const evs: number = c.emptyVariableSize();
-				if (evs === 1) {
+				if (1 === evs) {
 					if (!this.#checkForwardConsistency(level, x_i, d_i, dp_i, c)) {
 						return false;
 					}
 				} else if (this.#pruneIntensively) {  // Depends on options
-					if (evs === 2) {
+					if (2 === evs) {
 						if (!this.#checkForwardConsistency2(level, x_i, d_i, dp_i, c)) {
 							return false;
 						}
-					} else if (evs === 3) {
+					} else if (3 === evs) {
 						if (!this.#checkForwardConsistency3(level, x_i, d_i, dp_i, c)) {
 							return false;
 						}
-					} else if (evs > 3) {
+					} else if (3 < evs) {
 						if (!this.#checkForwardConsistencyN(level, x_i, d_i, dp_i, c, evs)) {
 							return false;
 						}
@@ -264,7 +264,7 @@ export class FullChecking extends Solver {
 				}
 				x_j!.assign(d_j.at(j));  // Tentative assignment to x_j
 
-				if (c.degree() > this.#minDeg) {
+				if (this.#minDeg < c.degree()) {
 					continue loop_i;  // Tentative assignment to x_i was OK -> next tentative assignment.
 				}
 			}
@@ -313,7 +313,7 @@ export class FullChecking extends Solver {
 					}
 					x_k!.assign(d_k.at(k));  // Tentative assignment to x_k
 
-					if (c.degree() > this.#minDeg) {
+					if (this.#minDeg < c.degree()) {
 						continue loop_i;  // Tentative assignment to x_i was OK -> next tentative assignment.
 					}
 				}
@@ -359,7 +359,7 @@ export class FullChecking extends Solver {
 					x_[k].assign(d_k.at(indexes[k]));
 				}
 				if (!hidden) {
-					if (c.degree() > this.#minDeg) {
+					if (this.#minDeg < c.degree()) {
 						continue loop_i;  // Tentative assignment to x_i was OK -> next tentative assignment.
 					}
 				}
@@ -396,9 +396,9 @@ export class FullChecking extends Solver {
 
 			for (const c of cs) {
 				if (!this.#checkedCs.has(c)) {  // Because of the possibility of duplication in polynomial constraints
-					const deg: number = c.degree();
-					if (0 <= deg /* d !== UNDEFINED */ && deg < min) {  // It is not a solution when it is 'smaller than or equals'.
-						min = deg;
+					const ev: number = c.degree();
+					if (0 <= ev /* ev !== UNDEFINED */ && ev < min) {  // It is not a solution when it is 'smaller than or equals'.
+						min = ev;
 					}
 					this.#checkedCs.add(c);
 				}

@@ -181,9 +181,9 @@ export class FuzzyForwardChecking extends Solver {
 		let min: number = Number.MAX_VALUE;
 
 		for (const c of x) {
-			const deg: number = c.degree();
-			if (0 <= deg /* deg !== UNDEFINED */ && deg < min) {
-				min = deg;
+			const ev: number = c.degree();
+			if (0 <= ev /* ev !== UNDEFINED */ && ev < min) {
+				min = ev;
 			}
 		}
 		return min;
