@@ -2,7 +2,7 @@
  * The class represents a constraint.
  *
  * @author Takuto Yanagida
- * @version 2024-12-17
+ * @version 2025-01-16
  */
 
 import { Element } from './element';
@@ -46,10 +46,10 @@ export abstract class Constraint extends Element {
 	 * @return A string representation.
 	 */
 	toString(): string {
-		const n = this.name();
-		const np = n ? `(${n})` : '';
-		const s = this.degree();
-		const sn = s === Constraint.UNDEFINED ? 'UNDEFINED' : ('' + s);
+		const n : string = this.name();
+		const np: string = n ? `(${n})` : '';
+		const s : number = this.degree();
+		const sn: string = s === Constraint.UNDEFINED ? 'UNDEFINED' : ('' + s);
 
 		return `c${this.index()}${np} = ${sn}`;
 	}
@@ -121,21 +121,5 @@ export abstract class Constraint extends Element {
 	 * @return Degree 0 - 1, UNDEFINED if undefined.
 	 */
 	abstract degree(): number;
-
-	/**
-	 * Calculates the highest consistency degree.
-	 * That is, it seeks the highest satisfaction degree of the possible combinations of variable assignments for a given constraint.
-	 * When all associated variables have been assigned values, it returns the same value as degree().
-	 * @return The highest consistency degree.
-	 */
-	abstract highestConsistencyDegree(): number;
-
-	/**
-	 * Calculates the lowest consistency degree.
-	 * That is, it seeks the lowest satisfaction degree of the possible combinations of variable assignments for a given constraint.
-	 * When all associated variables have been assigned values, it returns the same value as degree().
-	 * @return The lowest consistency degree.
-	 */
-	abstract lowestConsistencyDegree(): number;
 
 }

@@ -44,6 +44,7 @@ export * from './src/solver/filter/post-stabilizer';
 
 export * from './src/solver/misc/assignment';
 export * from './src/solver/misc/assignment-list';
+export * from './src/solver/misc/consistency';
 export * from './src/solver/misc/domain-pruner';
 
 

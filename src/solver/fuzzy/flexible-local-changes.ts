@@ -2,12 +2,13 @@
  * A class that implements the flexible local changes method.
  *
  * @author Takuto Yanagida
- * @version 2025-01-04
+ * @version 2025-01-16
  */
 
 import { Variable } from '../../problem/variable';
 import { Constraint } from '../../problem/constraint';
 import { AssignmentList } from '../misc/assignment-list';
+import { consistencyDegreeOfProblem, lowestConsistencyDegree } from '../misc/consistency';
 import { Solver } from '../solver';
 
 export class FlexibleLocalChanges extends Solver {
@@ -36,7 +37,7 @@ export class FlexibleLocalChanges extends Solver {
 	 * {@override}
 	 */
 	protected preprocess(): void {
-		[this.#lb, this.#lt] = this.#computeHighestAndLowestConsistencyDegree();
+		[this.#lb, this.#lt] = consistencyDegreeOfProblem(this.pro);
 		this.#wsd = this.pro.degree();
 		if (this.pro.emptyVariableSize() === 0) {
 			this.pro.clearAllVariables();
@@ -80,21 +81,6 @@ export class FlexibleLocalChanges extends Solver {
 		}
 		result = this.pro.degree();
 		return result > this.#wsd && result > 0 && (this.#globalRet !== 0 || this.monitor.getTarget() === null);
-	}
-
-	#computeHighestAndLowestConsistencyDegree(): [number, number] {
-		let low : number = 1;
-		let high: number = 0;
-
-		for (const x of this.pro.variables()) {
-			for (const c of x) {
-				const l: number = c.lowestConsistencyDegree();
-				const h: number = c.highestConsistencyDegree();
-				if (l < low)  low  = l;
-				if (h > high) high = h;
-			}
-		}
-		return [low, high];
 	}
 
 	#choose(x2: Set<Variable>, cr: Set<Constraint>): Set<Variable> {
@@ -237,7 +223,7 @@ export class FlexibleLocalChanges extends Solver {
 			}
 		}
 		for (const c of this.pro.constraints()) {
-			const cd: number = c.lowestConsistencyDegree();
+			const cd: number = lowestConsistencyDegree(c);
 			if (cd < this.#lt) {
 				cr.add(c);
 			}

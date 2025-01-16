@@ -3,13 +3,12 @@
  * The constructor is not called directly, since it is created by the Problem.
  *
  * @author Takuto Yanagida
- * @version 2024-12-17
+ * @version 2025-01-16
  */
 
 import { Constraint } from './constraint';
 import { Relation } from './relation';
 import { Variable } from './variable';
-import { Domain } from './domain';
 
 export class Constraint3 extends Constraint {
 
@@ -116,136 +115,6 @@ export class Constraint3 extends Constraint {
 			return Constraint.UNDEFINED;
 		}
 		return this.rel.degree(this.#xs[0].value(), this.#xs[1].value(), this.#xs[2].value());
-	}
-
-	/**
-	 * {@override}
-	 */
-	highestConsistencyDegree(): number {
-		const d: number = this.degree();
-		if (d !== Constraint.UNDEFINED) {
-			return d;
-		}
-		let cd: number = 0;
-		const fn = (v1: number, v2: number, v3: number): boolean => {
-			const d: number = this.rel.degree(v1, v2, v3);
-			if (d > cd) {
-				cd = d;
-			}
-			return (cd === 1);
-		}
-		const v1: number = this.#xs[0].value();
-		const v2: number = this.#xs[1].value();
-		const v3: number = this.#xs[2].value();
-		const d1: Domain = this.#xs[0].domain();
-		const d2: Domain = this.#xs[1].domain();
-		const d3: Domain = this.#xs[2].domain();
-
-		if (this.#xs[0].isEmpty() && !this.#xs[1].isEmpty() && !this.#xs[2].isEmpty()) {
-			for (const v1 of d1) {
-				if (fn(v1, v2, v3)) break;
-			}
-		} else if (!this.#xs[0].isEmpty() && this.#xs[1].isEmpty() && !this.#xs[2].isEmpty()) {
-			for (const v2 of d2) {
-				if (fn(v1, v2, v3)) break;
-			}
-		} else if (!this.#xs[0].isEmpty() && !this.#xs[1].isEmpty() && this.#xs[2].isEmpty()) {
-			for (const v3 of d3) {
-				if (fn(v1, v2, v3)) break;
-			}
-		} else if (this.#xs[0].isEmpty() && this.#xs[1].isEmpty() && !this.#xs[2].isEmpty()) {
-			for (const v1 of d1) {
-				for (const v2 of d2) {
-					if (fn(v1, v2, v3)) break;
-				}
-			}
-		} else if (this.#xs[0].isEmpty() && !this.#xs[1].isEmpty() && this.#xs[2].isEmpty()) {
-			for (const v1 of d1) {
-				for (const v3 of d3) {
-					if (fn(v1, v2, v3)) break;
-				}
-			}
-		} else if (!this.#xs[0].isEmpty() && this.#xs[1].isEmpty() && this.#xs[2].isEmpty()) {
-			for (const v2 of d2) {
-				for (const v3 of d3) {
-					if (fn(v1, v2, v3)) break;
-				}
-			}
-		} else {
-			for (const v1 of d1) {
-				for (const v2 of d2) {
-					for (const v3 of d3) {
-						if (fn(v1, v2, v3)) break;
-					}
-				}
-			}
-		}
-		return cd;
-	}
-
-	/**
-	 * {@override}
-	 */
-	lowestConsistencyDegree(): number {
-		const d: number = this.degree();
-		if (d !== Constraint.UNDEFINED) {
-			return d;
-		}
-		let cd: number = 1;
-		const fn = (v1: number, v2: number, v3: number): boolean => {
-			const d: number = this.rel.degree(v1, v2, v3);
-			if (d < cd) {
-				cd = d;
-			}
-			return (cd === 0);
-		}
-		const v1: number = this.#xs[0].value();
-		const v2: number = this.#xs[1].value();
-		const v3: number = this.#xs[2].value();
-		const d1: Domain = this.#xs[0].domain();
-		const d2: Domain = this.#xs[1].domain();
-		const d3: Domain = this.#xs[2].domain();
-
-		if (this.#xs[0].isEmpty() && !this.#xs[1].isEmpty() && !this.#xs[2].isEmpty()) {
-			for (const v1 of d1) {
-				if (fn(v1, v2, v3)) break;
-			}
-		} else if (!this.#xs[0].isEmpty() && this.#xs[1].isEmpty() && !this.#xs[2].isEmpty()) {
-			for (const v2 of d2) {
-				if (fn(v1, v2, v3)) break;
-			}
-		} else if (!this.#xs[0].isEmpty() && !this.#xs[1].isEmpty() && this.#xs[2].isEmpty()) {
-			for (const v3 of d3) {
-				if (fn(v1, v2, v3)) break;
-			}
-		} else if (this.#xs[0].isEmpty() && this.#xs[1].isEmpty() && !this.#xs[2].isEmpty()) {
-			for (const v1 of d1) {
-				for (const v2 of d2) {
-					if (fn(v1, v2, v3)) break;
-				}
-			}
-		} else if (this.#xs[0].isEmpty() && !this.#xs[1].isEmpty() && this.#xs[2].isEmpty()) {
-			for (const v1 of d1) {
-				for (const v3 of d3) {
-					if (fn(v1, v2, v3)) break;
-				}
-			}
-		} else if (!this.#xs[0].isEmpty() && this.#xs[1].isEmpty() && this.#xs[2].isEmpty()) {
-			for (const v2 of d2) {
-				for (const v3 of d3) {
-					if (fn(v1, v2, v3)) break;
-				}
-			}
-		} else {
-			for (const v1 of d1) {
-				for (const v2 of d2) {
-					for (const v3 of d3) {
-						if (fn(v1, v2, v3)) break;
-					}
-				}
-			}
-		}
-		return cd;
 	}
 
 }

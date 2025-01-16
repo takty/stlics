@@ -3,7 +3,7 @@
  * The constructor is not called directly, since it is created by the Problem.
  *
  * @author Takuto Yanagida
- * @version 2024-12-17
+ * @version 2025-01-16
  */
 
 import { Constraint } from './constraint';
@@ -37,7 +37,7 @@ export class Constraint1 extends Constraint {
 	/**
 	 * {@override}
 	 */
-	has(x: Variable) {
+	has(x: Variable): boolean {
 		return x === this.#xs[0];
 	}
 
@@ -105,50 +105,6 @@ export class Constraint1 extends Constraint {
 			return Constraint.UNDEFINED;
 		}
 		return this.rel.degree(this.#xs[0].value());
-	}
-
-	/**
-	 * {@override}
-	 */
-	highestConsistencyDegree(): number {
-		const d: number = this.degree();
-		if (d !== Constraint.UNDEFINED) {
-			return d;
-		}
-		let cd: number = 0;
-		const fn = (v: number): boolean => {
-			const d: number = this.rel.degree(v);
-			if (d > cd) {
-				cd = d;
-			}
-			return (cd === 1);
-		}
-		for (const v of this.#xs[0].domain()) {
-			if (fn(v)) break;
-		}
-		return cd;
-	}
-
-	/**
-	 * {@override}
-	 */
-	lowestConsistencyDegree(): number {
-		const d: number = this.degree();
-		if (d !== Constraint.UNDEFINED) {
-			return d;
-		}
-		let cd: number = 1;
-		const fn = (v: number): boolean => {
-			const d: number = this.rel.degree(v);
-			if (d < cd) {
-				cd = d;
-			}
-			return (cd === 0);
-		}
-		for (const v of this.#xs[0].domain()) {
-			if (fn(v)) break;
-		}
-		return cd;
 	}
 
 }
