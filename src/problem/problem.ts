@@ -7,8 +7,6 @@
 
 import { Variable } from './variable';
 import { Domain } from './domain';
-import { DomainRanged } from './domain-ranged';
-import { DomainArbitrary } from './domain-arbitrary';
 import { Constraint } from './constraint';
 import { Constraint1 } from './constraint-1';
 import { Constraint2 } from './constraint-2';
@@ -79,9 +77,9 @@ export class Problem {
 	 */
 	createDomain(args: { values: number[]; } | { min: number, max: number; }): Domain | null {
 		if ('values' in args) {
-			return new DomainArbitrary(args.values);
+			return Domain.createArbitraryDomain(args.values);
 		} else if ('min' in args && 'max' in args) {
-			return new DomainRanged(args.min, args.max);
+			return Domain.createRangedDomain(args.min, args.max);
 		}
 		return null;
 	}

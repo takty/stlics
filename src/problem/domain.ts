@@ -3,10 +3,18 @@
  * The domain is immutable.
  *
  * @author Takuto Yanagida
- * @version 2024-10-21
+ * @version 2025-01-16
  */
 
 export abstract class Domain {
+
+	static createRangedDomain(min: number, max: number): Domain {
+		return new DomainRanged(min, max);
+	}
+
+	static createArbitraryDomain(values: number[]): Domain {
+		return new DomainArbitrary(values);
+	}
 
 	/**
 	 * Checks whether the specified value is included as an element of the domain.
@@ -51,6 +59,118 @@ export abstract class Domain {
 	 */
 	random(): number {
 		return this.at(Math.floor(Math.random() * this.size()));
+	}
+
+}
+
+
+// -----------------------------------------------------------------------------
+
+
+class DomainArbitrary extends Domain {
+
+	#vs: number[];
+
+	constructor(vs: number[]) {
+		super();
+		this.#vs = [...vs];
+	}
+
+	/**
+	 * {@override}
+	 */
+	contains(v: number): boolean {
+		return this.#vs.includes(v);
+	}
+
+	/**
+	 * {@override}
+	 */
+	indexOf(v: number): number {
+		return this.#vs.indexOf(v);
+	}
+
+	/**
+	 * {@override}
+	 */
+	size(): number {
+		return this.#vs.length;
+	}
+
+	/**
+	 * {@override}
+	 */
+	at(index: number): number {
+		return this.#vs[index];
+	}
+
+	/**
+	 * {@override}
+	 */
+	[Symbol.iterator](): Iterator<number> {
+		return this.#vs[Symbol.iterator]();
+	}
+
+}
+
+
+// -----------------------------------------------------------------------------
+
+
+class DomainRanged extends Domain {
+
+	#min: number;
+	#max: number;
+
+	constructor(min: number, max: number) {
+		super();
+		this.#min = min | 0;
+		this.#max = max | 0;
+	}
+
+	/**
+	 * {@override}
+	 */
+	contains(v: number): boolean {
+		return this.#min <= v && v <= this.#max;
+	}
+
+	/**
+	 * {@override}
+	 */
+	indexOf(v: number): number {
+		return (this.#min <= v && v <= this.#max) ? (v - this.#min) : -1;
+	}
+
+	/**
+	 * {@override}
+	 */
+	size(): number {
+		return this.#max - this.#min + 1;
+	}
+
+	/**
+	 * {@override}
+	 */
+	at(index: number): number {
+		return this.#min + index;
+	}
+
+	/**
+	 * {@override}
+	 */
+	[Symbol.iterator](): Iterator<number> {
+		let v: number = this.#min;
+		const max: number = this.#max;
+		return {
+			next(): IteratorResult<number> {
+				if (v <= max) {
+					return { value: v++, done: false };
+				} else {
+					return { value: null, done: true };
+				}
+			},
+		};
 	}
 
 }

@@ -2,10 +2,7 @@ export * from './src/problem/problem';
 export * from './src/problem/element';
 
 export * from './src/problem/variable';
-
 export * from './src/problem/domain';
-export * from './src/problem/domain-arbitrary';
-export * from './src/problem/domain-ranged';
 
 export * from './src/problem/constraint';
 export * from './src/problem/constraint-1';
