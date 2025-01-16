@@ -7,8 +7,8 @@
 
 import { Problem } from '../../problem/problem';
 import { Variable } from '../../problem/variable';
-import { Constraint } from '../../problem/constraint';
 import { Domain } from '../../problem/domain';
+import { Constraint } from '../../problem/constraint';
 
 /**
  * Calculates the highest and lowest consistency degrees.
@@ -23,7 +23,7 @@ export function consistencyDegreeOfProblem(p: Problem): [number, number] {
 		const l: number = lowestConsistencyDegree(c);
 		const h: number = highestConsistencyDegree(c);
 		if (l < L) L = l;
-		if (h > H) H = h;
+		if (H < h) H = h;
 	}
 	return [L, H];
 }
@@ -59,53 +59,53 @@ export function lowestConsistencyDegree(c: Constraint): number {
 }
 
 /**
- * {@override}
+ * Calculates the highest consistency degree of a unary constraint.
+ * @param c A constraint.
+ * @return The highest consistency degree.
  */
 function highestConsistencyDegree1(c: Constraint): number {
 	const d: number = c.degree();
 	if (d !== Constraint.UNDEFINED) {
 		return d;
 	}
+	const x: Variable = (c.at(0) as Variable);
 	let cd: number = 0;
-	const fn = (v: number): boolean => {
+	for (const v of x.domain()) {
 		const d: number = c.rel.degree(v);
-		if (d > cd) {
+		if (cd < d) {
 			cd = d;
 		}
-		return (cd === 1);
-	}
-	const x1: Variable = (c.at(0) as Variable);
-	for (const v of x1.domain()) {
-		if (fn(v)) break;
+		if (cd === 1) return 1;
 	}
 	return cd;
 }
 
 /**
- * {@override}
+ * Calculates the lowest consistency degree of a unary constraint.
+ * @param c A constraint.
+ * @return The lowest consistency degree.
  */
 function lowestConsistencyDegree1(c: Constraint): number {
 	const d: number = c.degree();
 	if (d !== Constraint.UNDEFINED) {
 		return d;
 	}
+	const x: Variable = (c.at(0) as Variable);
 	let cd: number = 1;
-	const fn = (v: number): boolean => {
+	for (const v of x.domain()) {
 		const d: number = c.rel.degree(v);
 		if (d < cd) {
 			cd = d;
 		}
-		return (cd === 0);
-	}
-	const x1: Variable = (c.at(0) as Variable);
-	for (const v of x1.domain()) {
-		if (fn(v)) break;
+		if (cd === 0) return 0;
 	}
 	return cd;
 }
 
 /**
- * {@override}
+ * Calculates the highest consistency degree of a binary constraint.
+ * @param c A constraint.
+ * @return The highest consistency degree.
  */
 function highestConsistencyDegree2(c: Constraint): number {
 	const d: number = c.degree();
@@ -113,33 +113,33 @@ function highestConsistencyDegree2(c: Constraint): number {
 		return d;
 	}
 	let cd: number = 0;
-	const fn = (v1: number, v2: number): boolean => {
-		const d: number = c.rel.degree(v1, v2);
-		if (d > cd) {
+	const fn = (v0: number, v1: number): boolean => {
+		const d: number = c.rel.degree(v0, v1);
+		if (cd < d) {
 			cd = d;
 		}
 		return (cd === 1);
 	}
-	const x1: Variable = (c.at(0) as Variable);
-	const x2: Variable = (c.at(1) as Variable);
+	const x0: Variable = (c.at(0) as Variable);
+	const x1: Variable = (c.at(1) as Variable);
 
+	const v0: number = x0.value();
 	const v1: number = x1.value();
-	const v2: number = x2.value();
+	const d0: Domain = x0.domain();
 	const d1: Domain = x1.domain();
-	const d2: Domain = x2.domain();
 
-	if (x1.isEmpty() && !x2.isEmpty()) {
-		for (const v1 of d1) {
-			if (fn(v1, v2)) break;
+	if (x0.isEmpty() && !x1.isEmpty()) {
+		for (const v0 of d0) {
+			if (fn(v0, v1)) return 1;
 		}
-	} else if (!x1.isEmpty() && x2.isEmpty()) {
-		for (const v2 of d2) {
-			if (fn(v1, v2)) break;
+	} else if (!x0.isEmpty() && x1.isEmpty()) {
+		for (const v1 of d1) {
+			if (fn(v0, v1)) return 1;
 		}
 	} else {
-		for (const v1 of d1) {
-			for (const v2 of d2) {
-				if (fn(v1, v2)) break;
+		for (const v0 of d0) {
+			for (const v1 of d1) {
+				if (fn(v0, v1)) return 1;
 			}
 		}
 	}
@@ -147,7 +147,9 @@ function highestConsistencyDegree2(c: Constraint): number {
 }
 
 /**
- * {@override}
+ * Calculates the lowest consistency degree of a binary constraint.
+ * @param c A constraint.
+ * @return The lowest consistency degree.
  */
 function lowestConsistencyDegree2(c: Constraint): number {
 	const d: number = c.degree();
@@ -155,33 +157,33 @@ function lowestConsistencyDegree2(c: Constraint): number {
 		return d;
 	}
 	let cd: number = 1;
-	const fn = (v1: number, v2: number): boolean => {
-		const d: number = c.rel.degree(v1, v2);
+	const fn = (v0: number, v1: number): boolean => {
+		const d: number = c.rel.degree(v0, v1);
 		if (d < cd) {
 			cd = d;
 		}
 		return (cd === 0);
 	}
-	const x1: Variable = (c.at(0) as Variable);
-	const x2: Variable = (c.at(1) as Variable);
+	const x0: Variable = (c.at(0) as Variable);
+	const x1: Variable = (c.at(1) as Variable);
 
+	const v0: number = x0.value();
 	const v1: number = x1.value();
-	const v2: number = x2.value();
+	const d0: Domain = x0.domain();
 	const d1: Domain = x1.domain();
-	const d2: Domain = x2.domain();
 
-	if (x1.isEmpty() && !x2.isEmpty()) {
-		for (const v1 of d1) {
-			if (fn(v1, v2)) break;
+	if (x0.isEmpty() && !x1.isEmpty()) {
+		for (const v0 of d0) {
+			if (fn(v0, v1)) return 0;
 		}
-	} else if (!x1.isEmpty() && x2.isEmpty()) {
-		for (const v2 of d2) {
-			if (fn(v1, v2)) break;
+	} else if (!x0.isEmpty() && x1.isEmpty()) {
+		for (const v1 of d1) {
+			if (fn(v0, v1)) return 0;
 		}
 	} else {
-		for (const v1 of d1) {
-			for (const v2 of d2) {
-				if (fn(v1, v2)) break;
+		for (const v0 of d0) {
+			for (const v1 of d1) {
+				if (fn(v0, v1)) return 0;
 			}
 		}
 	}
@@ -189,7 +191,9 @@ function lowestConsistencyDegree2(c: Constraint): number {
 }
 
 /**
- * {@override}
+ * Calculates the highest consistency degree of a trinary constraint.
+ * @param c A constraint.
+ * @return The highest consistency degree.
  */
 function highestConsistencyDegree3(c: Constraint): number {
 	const d: number = c.degree();
@@ -197,59 +201,59 @@ function highestConsistencyDegree3(c: Constraint): number {
 		return d;
 	}
 	let cd: number = 0;
-	const fn = (v1: number, v2: number, v3: number): boolean => {
-		const d: number = c.rel.degree(v1, v2, v3);
-		if (d > cd) {
+	const fn = (v0: number, v1: number, v2: number): boolean => {
+		const d: number = c.rel.degree(v0, v1, v2);
+		if (cd < d) {
 			cd = d;
 		}
 		return (cd === 1);
 	}
-	const x1: Variable = (c.at(0) as Variable);
-	const x2: Variable = (c.at(1) as Variable);
-	const x3: Variable = (c.at(2) as Variable);
+	const x0: Variable = (c.at(0) as Variable);
+	const x1: Variable = (c.at(1) as Variable);
+	const x2: Variable = (c.at(2) as Variable);
 
+	const v0: number = x0.value();
 	const v1: number = x1.value();
 	const v2: number = x2.value();
-	const v3: number = x3.value();
+	const d0: Domain = x0.domain();
 	const d1: Domain = x1.domain();
 	const d2: Domain = x2.domain();
-	const d3: Domain = x3.domain();
 
-	if (x1.isEmpty() && !x2.isEmpty() && !x3.isEmpty()) {
+	if (x0.isEmpty() && !x1.isEmpty() && !x2.isEmpty()) {
+		for (const v0 of d0) {
+			if (fn(v0, v1, v2)) return 1;
+		}
+	} else if (!x0.isEmpty() && x1.isEmpty() && !x2.isEmpty()) {
 		for (const v1 of d1) {
-			if (fn(v1, v2, v3)) break;
+			if (fn(v0, v1, v2)) return 1;
 		}
-	} else if (!x1.isEmpty() && x2.isEmpty() && !x3.isEmpty()) {
+	} else if (!x0.isEmpty() && !x1.isEmpty() && x2.isEmpty()) {
 		for (const v2 of d2) {
-			if (fn(v1, v2, v3)) break;
+			if (fn(v0, v1, v2)) return 1;
 		}
-	} else if (!x1.isEmpty() && !x2.isEmpty() && x3.isEmpty()) {
-		for (const v3 of d3) {
-			if (fn(v1, v2, v3)) break;
+	} else if (x0.isEmpty() && x1.isEmpty() && !x2.isEmpty()) {
+		for (const v0 of d0) {
+			for (const v1 of d1) {
+				if (fn(v0, v1, v2)) return 1;
+			}
 		}
-	} else if (x1.isEmpty() && x2.isEmpty() && !x3.isEmpty()) {
+	} else if (x0.isEmpty() && !x1.isEmpty() && x2.isEmpty()) {
+		for (const v0 of d0) {
+			for (const v2 of d2) {
+				if (fn(v0, v1, v2)) return 1;
+			}
+		}
+	} else if (!x0.isEmpty() && x1.isEmpty() && x2.isEmpty()) {
 		for (const v1 of d1) {
 			for (const v2 of d2) {
-				if (fn(v1, v2, v3)) break;
-			}
-		}
-	} else if (x1.isEmpty() && !x2.isEmpty() && x3.isEmpty()) {
-		for (const v1 of d1) {
-			for (const v3 of d3) {
-				if (fn(v1, v2, v3)) break;
-			}
-		}
-	} else if (!x1.isEmpty() && x2.isEmpty() && x3.isEmpty()) {
-		for (const v2 of d2) {
-			for (const v3 of d3) {
-				if (fn(v1, v2, v3)) break;
+				if (fn(v0, v1, v2)) return 1;
 			}
 		}
 	} else {
-		for (const v1 of d1) {
-			for (const v2 of d2) {
-				for (const v3 of d3) {
-					if (fn(v1, v2, v3)) break;
+		for (const v0 of d0) {
+			for (const v1 of d1) {
+				for (const v2 of d2) {
+					if (fn(v0, v1, v2)) return 1;
 				}
 			}
 		}
@@ -258,7 +262,9 @@ function highestConsistencyDegree3(c: Constraint): number {
 }
 
 /**
- * {@override}
+ * Calculates the lowest consistency degree of a trinary constraint.
+ * @param c A constraint.
+ * @return The lowest consistency degree.
  */
 function lowestConsistencyDegree3(c: Constraint): number {
 	const d: number = c.degree();
@@ -266,59 +272,59 @@ function lowestConsistencyDegree3(c: Constraint): number {
 		return d;
 	}
 	let cd: number = 1;
-	const fn = (v1: number, v2: number, v3: number): boolean => {
-		const d: number = c.rel.degree(v1, v2, v3);
+	const fn = (v0: number, v1: number, v2: number): boolean => {
+		const d: number = c.rel.degree(v0, v1, v2);
 		if (d < cd) {
 			cd = d;
 		}
 		return (cd === 0);
 	}
-	const x1: Variable = (c.at(0) as Variable);
-	const x2: Variable = (c.at(1) as Variable);
-	const x3: Variable = (c.at(2) as Variable);
+	const x0: Variable = (c.at(0) as Variable);
+	const x1: Variable = (c.at(1) as Variable);
+	const x2: Variable = (c.at(2) as Variable);
 
+	const v0: number = x0.value();
 	const v1: number = x1.value();
 	const v2: number = x2.value();
-	const v3: number = x3.value();
+	const d0: Domain = x0.domain();
 	const d1: Domain = x1.domain();
 	const d2: Domain = x2.domain();
-	const d3: Domain = x3.domain();
 
-	if (x1.isEmpty() && !x2.isEmpty() && !x3.isEmpty()) {
+	if (x0.isEmpty() && !x1.isEmpty() && !x2.isEmpty()) {
+		for (const v0 of d0) {
+			if (fn(v0, v1, v2)) return 0;
+		}
+	} else if (!x0.isEmpty() && x1.isEmpty() && !x2.isEmpty()) {
 		for (const v1 of d1) {
-			if (fn(v1, v2, v3)) break;
+			if (fn(v0, v1, v2)) return 0;
 		}
-	} else if (!x1.isEmpty() && x2.isEmpty() && !x3.isEmpty()) {
+	} else if (!x0.isEmpty() && !x1.isEmpty() && x2.isEmpty()) {
 		for (const v2 of d2) {
-			if (fn(v1, v2, v3)) break;
+			if (fn(v0, v1, v2)) return 0;
 		}
-	} else if (!x1.isEmpty() && !x2.isEmpty() && x3.isEmpty()) {
-		for (const v3 of d3) {
-			if (fn(v1, v2, v3)) break;
+	} else if (x0.isEmpty() && x1.isEmpty() && !x2.isEmpty()) {
+		for (const v0 of d0) {
+			for (const v1 of d1) {
+				if (fn(v0, v1, v2)) return 0;
+			}
 		}
-	} else if (x1.isEmpty() && x2.isEmpty() && !x3.isEmpty()) {
+	} else if (x0.isEmpty() && !x1.isEmpty() && x2.isEmpty()) {
+		for (const v0 of d0) {
+			for (const v2 of d2) {
+				if (fn(v0, v1, v2)) return 0;
+			}
+		}
+	} else if (!x0.isEmpty() && x1.isEmpty() && x2.isEmpty()) {
 		for (const v1 of d1) {
 			for (const v2 of d2) {
-				if (fn(v1, v2, v3)) break;
-			}
-		}
-	} else if (x1.isEmpty() && !x2.isEmpty() && x3.isEmpty()) {
-		for (const v1 of d1) {
-			for (const v3 of d3) {
-				if (fn(v1, v2, v3)) break;
-			}
-		}
-	} else if (!x1.isEmpty() && x2.isEmpty() && x3.isEmpty()) {
-		for (const v2 of d2) {
-			for (const v3 of d3) {
-				if (fn(v1, v2, v3)) break;
+				if (fn(v0, v1, v2)) return 0;
 			}
 		}
 	} else {
-		for (const v1 of d1) {
-			for (const v2 of d2) {
-				for (const v3 of d3) {
-					if (fn(v1, v2, v3)) break;
+		for (const v0 of d0) {
+			for (const v1 of d1) {
+				for (const v2 of d2) {
+					if (fn(v0, v1, v2)) return 0;
 				}
 			}
 		}
@@ -327,7 +333,9 @@ function lowestConsistencyDegree3(c: Constraint): number {
 }
 
 /**
- * {@override}
+ * Calculates the highest consistency degree of a N-ary constraint.
+ * @param c A constraint.
+ * @return The highest consistency degree.
  */
 function highestConsistencyDegreeN(c: Constraint): number {
 	const d: number = c.degree();
@@ -350,7 +358,9 @@ function highestConsistencyDegreeN(c: Constraint): number {
 }
 
 /**
- * {@override}
+ * Calculates the lowest consistency degree of a N-ary constraint.
+ * @param c A constraint.
+ * @return The lowest consistency degree.
  */
 function lowestConsistencyDegreeN(c: Constraint): number {
 	const d: number = c.degree();
@@ -380,11 +390,11 @@ function checkHCD(c: Constraint, vs: number[], emptyIndices: number[], currentSt
 		for (const v of d) {
 			vs[index] = v;
 			const s: number = c.rel.degree(...vs);
-			if (s > cd) {
+			if (cd < s) {
 				cd = s;
 			}
 			if (cd === 1) {
-				break;
+				return 1;
 			}
 		}
 	} else {
@@ -408,7 +418,7 @@ function checkLCD(c: Constraint, vs: number[], emptyIndices: number[], currentSt
 				cd = s;
 			}
 			if (cd === 0) {
-				break;
+				return 0;
 			}
 		}
 	} else {
