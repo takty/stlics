@@ -8,31 +8,16 @@
 import { Variable } from './variable';
 import { Domain } from './domain';
 import { Constraint } from './constraint';
-import { Constraint1 } from './constraint-1';
-import { Constraint2 } from './constraint-2';
-import { Constraint3 } from './constraint-3';
-import { ConstraintN } from './constraint-n';
 import { Relation } from './relation';
 
 export class Problem {
 
 	#fv: (o: Problem, d: Domain) => Variable = (o: Problem, d: Domain): Variable => new Variable(o, d);
-	#fc: (r: Relation, xs: Variable[]) => Constraint = (r: Relation, xs: Variable[]): Constraint => {
-		if (xs.length === 1) {
-			return new Constraint1(r, xs[0]);
-		}
-		if (xs.length === 2) {
-			return new Constraint2(r, xs[0], xs[1]);
-		}
-		if (xs.length === 3) {
-			return new Constraint3(r, xs[0], xs[1], xs[2]);
-		}
-		return new ConstraintN(r, ...xs);
-	};
+	#fc: (r: Relation, xs: Variable[]) => Constraint = (r: Relation, xs: Variable[]): Constraint => Constraint.create(r, xs);
 
-	#isFuzzy: boolean = false;
-	#xs: Variable[] = [];
-	#cs: Constraint[] = [];
+	#isFuzzy: boolean      = false;
+	#xs     : Variable[]   = [];
+	#cs     : Constraint[] = [];
 
 
 	// Methods for Modifying Factories -----------------------------------------
@@ -478,7 +463,7 @@ export class Problem {
 	violatingConstraints(): Constraint[] {
 		const cs: Constraint[] = [];
 		for (const c of this.#cs) {
-			if (c.isSatisfied() !== 1) {
+			if (c.isSatisfied() === 0) {
 				cs.push(c);
 			}
 		}

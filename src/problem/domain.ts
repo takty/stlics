@@ -76,37 +76,22 @@ class DomainArbitrary extends Domain {
 		this.#vs = [...vs];
 	}
 
-	/**
-	 * {@override}
-	 */
 	contains(v: number): boolean {
 		return this.#vs.includes(v);
 	}
 
-	/**
-	 * {@override}
-	 */
 	indexOf(v: number): number {
 		return this.#vs.indexOf(v);
 	}
 
-	/**
-	 * {@override}
-	 */
 	size(): number {
 		return this.#vs.length;
 	}
 
-	/**
-	 * {@override}
-	 */
 	at(index: number): number {
 		return this.#vs[index];
 	}
 
-	/**
-	 * {@override}
-	 */
 	[Symbol.iterator](): Iterator<number> {
 		return this.#vs[Symbol.iterator]();
 	}
@@ -128,37 +113,22 @@ class DomainRanged extends Domain {
 		this.#max = max | 0;
 	}
 
-	/**
-	 * {@override}
-	 */
 	contains(v: number): boolean {
 		return this.#min <= v && v <= this.#max;
 	}
 
-	/**
-	 * {@override}
-	 */
 	indexOf(v: number): number {
 		return (this.#min <= v && v <= this.#max) ? (v - this.#min) : -1;
 	}
 
-	/**
-	 * {@override}
-	 */
 	size(): number {
 		return this.#max - this.#min + 1;
 	}
 
-	/**
-	 * {@override}
-	 */
 	at(index: number): number {
 		return this.#min + index;
 	}
 
-	/**
-	 * {@override}
-	 */
 	[Symbol.iterator](): Iterator<number> {
 		let v: number = this.#min;
 		const max: number = this.#max;
