@@ -2,7 +2,7 @@
  * The class represents a constraint satisfaction problem.
  *
  * @author Takuto Yanagida
- * @version 2024-12-17
+ * @version 2025-01-16
  */
 
 import { Variable } from './variable';
@@ -385,7 +385,7 @@ export class Problem {
 		let wd: number = 1;
 		for (const c of this.#cs) {
 			const d: number = c.degree();
-			if (d === Constraint.UNDEFINED) {
+			if (d < 0) {  // d === UNDEFINED
 				return d;
 			}
 			if (d < wd) {

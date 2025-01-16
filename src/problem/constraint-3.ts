@@ -102,7 +102,7 @@ export class Constraint3 extends Constraint {
 	 */
 	isSatisfied(): -1 | 0 | 1 {
 		if (this.#xs[0].isEmpty() || this.#xs[1].isEmpty() || this.#xs[2].isEmpty()) {
-			return Constraint.UNDEFINED;
+			return -1;  // UNDEFINED
 		}
 		return this.rel.isSatisfied(this.#xs[0].value(), this.#xs[1].value(), this.#xs[2].value()) ? 1 : 0;
 	}
@@ -112,7 +112,7 @@ export class Constraint3 extends Constraint {
 	 */
 	degree(): number {
 		if (this.#xs[0].isEmpty() || this.#xs[1].isEmpty() || this.#xs[2].isEmpty()) {
-			return Constraint.UNDEFINED;
+			return -1;  // UNDEFINED
 		}
 		return this.rel.degree(this.#xs[0].value(), this.#xs[1].value(), this.#xs[2].value());
 	}

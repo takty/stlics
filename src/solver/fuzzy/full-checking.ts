@@ -5,7 +5,7 @@
  * Forward checking is also performed for problems with polynomial constraints.
  *
  * @author Takuto Yanagida
- * @version 2025-01-04
+ * @version 2025-01-16
  */
 
 import { Variable } from '../../problem/variable';
@@ -397,7 +397,7 @@ export class FullChecking extends Solver {
 			for (const c of cs) {
 				if (!this.#checkedCs.has(c)) {  // Because of the possibility of duplication in polynomial constraints
 					const deg: number = c.degree();
-					if (deg !== Constraint.UNDEFINED && deg < min) {  // It is not a solution when it is 'smaller than or equals'.
+					if (0 <= deg /* d !== UNDEFINED */ && deg < min) {  // It is not a solution when it is 'smaller than or equals'.
 						min = deg;
 					}
 					this.#checkedCs.add(c);

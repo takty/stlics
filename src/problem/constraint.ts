@@ -12,11 +12,6 @@ import { FuzzyRelation } from './relation';
 
 export abstract class Constraint extends Element {
 
-	/**
-	 * The constant indicating that the satisfaction degree is not defined.
-	 */
-	static UNDEFINED: -1 = -1;
-
 	rel: Relation;
 
 	// Called only from Problem.
@@ -48,8 +43,8 @@ export abstract class Constraint extends Element {
 	toString(): string {
 		const n : string = this.name();
 		const np: string = n ? `(${n})` : '';
-		const s : number = this.degree();
-		const sn: string = s === Constraint.UNDEFINED ? 'UNDEFINED' : ('' + s);
+		const d : number = this.degree();
+		const sn: string = d < 0 /* d === UNDEFINED */ ? 'UNDEFINED' : ('' + d);
 
 		return `c${this.index()}${np} = ${sn}`;
 	}

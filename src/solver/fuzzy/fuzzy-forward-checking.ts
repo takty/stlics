@@ -3,7 +3,7 @@
  * The minimum-remaining-values (MRV) heuristic can also be used by specifying the option.
  *
  * @author Takuto Yanagida
- * @version 2025-01-04
+ * @version 2025-01-16
  */
 
 import { Variable } from '../../problem/variable';
@@ -182,7 +182,7 @@ export class FuzzyForwardChecking extends Solver {
 
 		for (const c of x) {
 			const deg: number = c.degree();
-			if (deg !== Constraint.UNDEFINED && deg < min) {
+			if (0 <= deg /* deg !== UNDEFINED */ && deg < min) {
 				min = deg;
 			}
 		}

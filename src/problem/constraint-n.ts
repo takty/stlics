@@ -108,7 +108,7 @@ export class ConstraintN extends Constraint {
 		for (let i: number = 0; i < this.#xs.length; ++i) {
 			const x: Variable = this.#xs[i];
 			if (x.isEmpty()) {
-				return Constraint.UNDEFINED;
+				return -1;  // UNDEFINED
 			}
 			this.#vs[i] = x.value();
 		}
@@ -122,7 +122,7 @@ export class ConstraintN extends Constraint {
 		for (let i: number = 0; i < this.#xs.length; ++i) {
 			const x: Variable = this.#xs[i];
 			if (x.isEmpty()) {
-				return Constraint.UNDEFINED;
+				return -1;  // UNDEFINED
 			}
 			this.#vs[i] = x.value();
 		}

@@ -65,7 +65,7 @@ export function lowestConsistencyDegree(c: Constraint): number {
  */
 function highestConsistencyDegree1(c: Constraint): number {
 	const d: number = c.degree();
-	if (d !== Constraint.UNDEFINED) {
+	if (0 <= d) {  // d !== UNDEFINED
 		return d;
 	}
 	const x: Variable = (c.at(0) as Variable);
@@ -87,7 +87,7 @@ function highestConsistencyDegree1(c: Constraint): number {
  */
 function lowestConsistencyDegree1(c: Constraint): number {
 	const d: number = c.degree();
-	if (d !== Constraint.UNDEFINED) {
+	if (0 <= d) {  // d !== UNDEFINED
 		return d;
 	}
 	const x: Variable = (c.at(0) as Variable);
@@ -109,7 +109,7 @@ function lowestConsistencyDegree1(c: Constraint): number {
  */
 function highestConsistencyDegree2(c: Constraint): number {
 	const d: number = c.degree();
-	if (d !== Constraint.UNDEFINED) {
+	if (0 <= d) {  // d !== UNDEFINED
 		return d;
 	}
 	let cd: number = 0;
@@ -153,7 +153,7 @@ function highestConsistencyDegree2(c: Constraint): number {
  */
 function lowestConsistencyDegree2(c: Constraint): number {
 	const d: number = c.degree();
-	if (d !== Constraint.UNDEFINED) {
+	if (0 <= d) {  // d !== UNDEFINED
 		return d;
 	}
 	let cd: number = 1;
@@ -197,7 +197,7 @@ function lowestConsistencyDegree2(c: Constraint): number {
  */
 function highestConsistencyDegree3(c: Constraint): number {
 	const d: number = c.degree();
-	if (d !== Constraint.UNDEFINED) {
+	if (0 <= d) {  // d !== UNDEFINED
 		return d;
 	}
 	let cd: number = 0;
@@ -268,7 +268,7 @@ function highestConsistencyDegree3(c: Constraint): number {
  */
 function lowestConsistencyDegree3(c: Constraint): number {
 	const d: number = c.degree();
-	if (d !== Constraint.UNDEFINED) {
+	if (0 <= d) {  // d !== UNDEFINED
 		return d;
 	}
 	let cd: number = 1;
@@ -339,7 +339,7 @@ function lowestConsistencyDegree3(c: Constraint): number {
  */
 function highestConsistencyDegreeN(c: Constraint): number {
 	const d: number = c.degree();
-	if (d !== Constraint.UNDEFINED) {
+	if (0 <= d) {  // d !== UNDEFINED
 		return d;
 	}
 	const emptyIndices = new Array(c.emptyVariableSize());
@@ -364,7 +364,7 @@ function highestConsistencyDegreeN(c: Constraint): number {
  */
 function lowestConsistencyDegreeN(c: Constraint): number {
 	const d: number = c.degree();
-	if (d !== Constraint.UNDEFINED) {
+	if (0 <= d) {  // d !== UNDEFINED
 		return d;
 	}
 	const emptyIndices = new Array(c.emptyVariableSize());

@@ -219,7 +219,7 @@ export class FlexibleLocalChangesEx extends Solver {
 		let ret: number = 1;
 		for (const c of cs) {
 			const sd: number = c.degree();
-			if (sd === Constraint.UNDEFINED) {
+			if (sd < 0) {  // sd === UNDEFINED
 				continue;
 			}
 			if (sd < ret) {
@@ -247,7 +247,7 @@ export class FlexibleLocalChangesEx extends Solver {
 		}
 		for (const c of cs) {
 			const d: number = c.degree();
-			if (d === Constraint.UNDEFINED) {
+			if (d < 0) {  // d === UNDEFINED
 				continue;
 			}
 			if (d < cd) {
@@ -279,7 +279,7 @@ export class FlexibleLocalChangesEx extends Solver {
 		}
 		for (const c of cs) {
 			const sd: number = c.degree();
-			if (sd === Constraint.UNDEFINED) {
+			if (sd < 0) {  // sd === UNDEFINED
 				continue;
 			}
 			if (sd < csd) {
@@ -288,7 +288,7 @@ export class FlexibleLocalChangesEx extends Solver {
 		}
 		for (const c of cs) {
 			const sd: number = c.degree();
-			if (sd === Constraint.UNDEFINED) {
+			if (sd < 0) {  // sd === UNDEFINED
 				continue;
 			}
 			if (sd < consX1xi || sd < consX12) {
