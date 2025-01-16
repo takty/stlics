@@ -2,7 +2,7 @@
  * Class that represents a variable.
  *
  * @author Takuto Yanagida
- * @version 2024-10-21
+ * @version 2025-01-16
  */
 
 import { Problem } from './problem';
@@ -24,7 +24,7 @@ export class Variable extends Element {
 	constructor(owner: Problem, d: Domain) {
 		super();
 		this.#owner = owner;
-		this.#d = d;
+		this.#d     = d;
 	}
 
 	/**
@@ -32,9 +32,9 @@ export class Variable extends Element {
 	 * @return A string representation.
 	 */
 	toString(): string {
-		const n = this.name();
-		const np = n ? `(${n})` : '';
-		const v = this.isEmpty() ? '<empty>' : ('' + this.value());
+		const n : string = this.name();
+		const np: string = n ? `(${n})` : '';
+		const v : string = this.isEmpty() ? '<empty>' : ('' + this.value());
 
 		return `x${this.index()}${np} = ${v}`;
 	}
