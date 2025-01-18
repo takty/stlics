@@ -24,6 +24,6 @@
 		"removeComments": true,
 	},
 	"files": [
-		"stlics.ts"
+		"stlics.ts", "src/solver/crisp/_orig/local-changes.ts"
 	]
 }
