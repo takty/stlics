@@ -2,7 +2,7 @@
  * Utilities for calculating consistency degree.
  *
  * @author Takuto Yanagida
- * @version 2025-01-16
+ * @version 2025-01-18
  */
 
 import { Problem } from '../../problem/problem';
@@ -112,35 +112,20 @@ function highestConsistencyDegree2(c: Constraint): number {
 	if (0 <= ev) {  // ev !== UNDEFINED
 		return ev;
 	}
+	const x0: Variable = c.at(0) as Variable;
+	const x1: Variable = c.at(1) as Variable;
+
+	const d0: Iterable<number> = x0.isEmpty() ? x0.domain() : [x0.value()];
+	const d1: Iterable<number> = x1.isEmpty() ? x1.domain() : [x1.value()];
+
 	let cd: number = 0;
-	const fn = (v0: number, v1: number): boolean => {
-		const ev: number = c.rel.degree(v0, v1);
-		if (cd < ev) {
-			cd = ev;
-		}
-		return (1 === cd);
-	}
-	const x0: Variable = (c.at(0) as Variable);
-	const x1: Variable = (c.at(1) as Variable);
-
-	const v0: number = x0.value();
-	const v1: number = x1.value();
-	const d0: Domain = x0.domain();
-	const d1: Domain = x1.domain();
-
-	if (x0.isEmpty() && !x1.isEmpty()) {
-		for (const v0 of d0) {
-			if (fn(v0, v1)) return 1;
-		}
-	} else if (!x0.isEmpty() && x1.isEmpty()) {
+	for (const v0 of d0) {
 		for (const v1 of d1) {
-			if (fn(v0, v1)) return 1;
-		}
-	} else {
-		for (const v0 of d0) {
-			for (const v1 of d1) {
-				if (fn(v0, v1)) return 1;
+			const ev: number = c.rel.degree(v0, v1);
+			if (cd < ev) {
+				cd = ev;
 			}
+			if (1 === cd) return 1
 		}
 	}
 	return cd;
@@ -156,35 +141,20 @@ function lowestConsistencyDegree2(c: Constraint): number {
 	if (0 <= ev) {  // ev !== UNDEFINED
 		return ev;
 	}
+	const x0: Variable = c.at(0) as Variable;
+	const x1: Variable = c.at(1) as Variable;
+
+	const d0: Iterable<number> = x0.isEmpty() ? x0.domain() : [x0.value()];
+	const d1: Iterable<number> = x1.isEmpty() ? x1.domain() : [x1.value()];
+
 	let cd: number = 1;
-	const fn = (v0: number, v1: number): boolean => {
-		const ev: number = c.rel.degree(v0, v1);
-		if (ev < cd) {
-			cd = ev;
-		}
-		return (0 === cd);
-	}
-	const x0: Variable = (c.at(0) as Variable);
-	const x1: Variable = (c.at(1) as Variable);
-
-	const v0: number = x0.value();
-	const v1: number = x1.value();
-	const d0: Domain = x0.domain();
-	const d1: Domain = x1.domain();
-
-	if (x0.isEmpty() && !x1.isEmpty()) {
-		for (const v0 of d0) {
-			if (fn(v0, v1)) return 0;
-		}
-	} else if (!x0.isEmpty() && x1.isEmpty()) {
+	for (const v0 of d0) {
 		for (const v1 of d1) {
-			if (fn(v0, v1)) return 0;
-		}
-	} else {
-		for (const v0 of d0) {
-			for (const v1 of d1) {
-				if (fn(v0, v1)) return 0;
+			const ev: number = c.rel.degree(v0, v1);
+			if (ev < cd) {
+				cd = ev;
 			}
+			if (0 === cd) return 0;
 		}
 	}
 	return cd;
@@ -200,61 +170,23 @@ function highestConsistencyDegree3(c: Constraint): number {
 	if (0 <= ev) {  // ev !== UNDEFINED
 		return ev;
 	}
+	const x0: Variable = c.at(0) as Variable;
+	const x1: Variable = c.at(1) as Variable;
+	const x2: Variable = c.at(2) as Variable;
+
+	const d0: Iterable<number> = x0.isEmpty() ? x0.domain() : [x0.value()];
+	const d1: Iterable<number> = x1.isEmpty() ? x1.domain() : [x1.value()];
+	const d2: Iterable<number> = x2.isEmpty() ? x2.domain() : [x2.value()];
+
 	let cd: number = 0;
-	const fn = (v0: number, v1: number, v2: number): boolean => {
-		const ev: number = c.rel.degree(v0, v1, v2);
-		if (cd < ev) {
-			cd = ev;
-		}
-		return (1 === cd);
-	}
-	const x0: Variable = (c.at(0) as Variable);
-	const x1: Variable = (c.at(1) as Variable);
-	const x2: Variable = (c.at(2) as Variable);
-
-	const v0: number = x0.value();
-	const v1: number = x1.value();
-	const v2: number = x2.value();
-	const d0: Domain = x0.domain();
-	const d1: Domain = x1.domain();
-	const d2: Domain = x2.domain();
-
-	if (x0.isEmpty() && !x1.isEmpty() && !x2.isEmpty()) {
-		for (const v0 of d0) {
-			if (fn(v0, v1, v2)) return 1;
-		}
-	} else if (!x0.isEmpty() && x1.isEmpty() && !x2.isEmpty()) {
-		for (const v1 of d1) {
-			if (fn(v0, v1, v2)) return 1;
-		}
-	} else if (!x0.isEmpty() && !x1.isEmpty() && x2.isEmpty()) {
-		for (const v2 of d2) {
-			if (fn(v0, v1, v2)) return 1;
-		}
-	} else if (x0.isEmpty() && x1.isEmpty() && !x2.isEmpty()) {
-		for (const v0 of d0) {
-			for (const v1 of d1) {
-				if (fn(v0, v1, v2)) return 1;
-			}
-		}
-	} else if (x0.isEmpty() && !x1.isEmpty() && x2.isEmpty()) {
-		for (const v0 of d0) {
-			for (const v2 of d2) {
-				if (fn(v0, v1, v2)) return 1;
-			}
-		}
-	} else if (!x0.isEmpty() && x1.isEmpty() && x2.isEmpty()) {
+	for (const v0 of d0) {
 		for (const v1 of d1) {
 			for (const v2 of d2) {
-				if (fn(v0, v1, v2)) return 1;
-			}
-		}
-	} else {
-		for (const v0 of d0) {
-			for (const v1 of d1) {
-				for (const v2 of d2) {
-					if (fn(v0, v1, v2)) return 1;
+				const ev: number = c.rel.degree(v0, v1, v2);
+				if (cd < ev) {
+					cd = ev;
 				}
+				if (1 === cd) return 1;
 			}
 		}
 	}
@@ -271,61 +203,23 @@ function lowestConsistencyDegree3(c: Constraint): number {
 	if (0 <= ev) {  // ev !== UNDEFINED
 		return ev;
 	}
+	const x0: Variable = c.at(0) as Variable;
+	const x1: Variable = c.at(1) as Variable;
+	const x2: Variable = c.at(2) as Variable;
+
+	const d0: Iterable<number> = x0.isEmpty() ? x0.domain() : [x0.value()];
+	const d1: Iterable<number> = x1.isEmpty() ? x1.domain() : [x1.value()];
+	const d2: Iterable<number> = x2.isEmpty() ? x2.domain() : [x2.value()];
+
 	let cd: number = 1;
-	const fn = (v0: number, v1: number, v2: number): boolean => {
-		const ev: number = c.rel.degree(v0, v1, v2);
-		if (ev < cd) {
-			cd = ev;
-		}
-		return (0 === cd);
-	}
-	const x0: Variable = (c.at(0) as Variable);
-	const x1: Variable = (c.at(1) as Variable);
-	const x2: Variable = (c.at(2) as Variable);
-
-	const v0: number = x0.value();
-	const v1: number = x1.value();
-	const v2: number = x2.value();
-	const d0: Domain = x0.domain();
-	const d1: Domain = x1.domain();
-	const d2: Domain = x2.domain();
-
-	if (x0.isEmpty() && !x1.isEmpty() && !x2.isEmpty()) {
-		for (const v0 of d0) {
-			if (fn(v0, v1, v2)) return 0;
-		}
-	} else if (!x0.isEmpty() && x1.isEmpty() && !x2.isEmpty()) {
-		for (const v1 of d1) {
-			if (fn(v0, v1, v2)) return 0;
-		}
-	} else if (!x0.isEmpty() && !x1.isEmpty() && x2.isEmpty()) {
-		for (const v2 of d2) {
-			if (fn(v0, v1, v2)) return 0;
-		}
-	} else if (x0.isEmpty() && x1.isEmpty() && !x2.isEmpty()) {
-		for (const v0 of d0) {
-			for (const v1 of d1) {
-				if (fn(v0, v1, v2)) return 0;
-			}
-		}
-	} else if (x0.isEmpty() && !x1.isEmpty() && x2.isEmpty()) {
-		for (const v0 of d0) {
-			for (const v2 of d2) {
-				if (fn(v0, v1, v2)) return 0;
-			}
-		}
-	} else if (!x0.isEmpty() && x1.isEmpty() && x2.isEmpty()) {
+	for (const v0 of d0) {
 		for (const v1 of d1) {
 			for (const v2 of d2) {
-				if (fn(v0, v1, v2)) return 0;
-			}
-		}
-	} else {
-		for (const v0 of d0) {
-			for (const v1 of d1) {
-				for (const v2 of d2) {
-					if (fn(v0, v1, v2)) return 0;
+				const ev: number = c.rel.degree(v0, v1, v2);
+				if (ev < cd) {
+					cd = ev;
 				}
+				if (0 === cd) return 0;
 			}
 		}
 	}
