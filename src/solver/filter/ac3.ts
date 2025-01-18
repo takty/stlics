@@ -2,7 +2,7 @@
  * The class implements AC-3, one of the arc consistency algorithms.
  *
  * @author Takuto Yanagida
- * @version 2024-10-21
+ * @version 2025-01-18
  */
 
 import { Problem } from '../../problem/problem';
@@ -27,7 +27,7 @@ export class AC3 {
 		const v_i: number = x_i.value();
 		const v_j: number = x_j.value();  // Save the value.
 		const d_i: Domain = x_i.domain();
-		const temp: number[] = [];
+		const vs : number[] = [];
 
 		const cs: Constraint[] = p.constraintsBetween(x_i, x_j);
 
@@ -38,13 +38,13 @@ export class AC3 {
 				if (c.size() !== 2) continue;  // Check the next constraint
 				if (!AC3.#checkConsistency(c, x_j)) continue vs;   // Since there is no partner satisfying the constraint, check the next value.
 			}
-			temp.push(v);
+			vs.push(v);
 		}
 		x_i.assign(v_i);  // Restore the value.
 		x_j.assign(v_j);  // Restore the value.
 
-		if (temp.length !== d_i.size()) {
-			const nd = p.createDomain({ values: temp }) as Domain;
+		if (vs.length !== d_i.size()) {
+			const nd = p.createDomain(vs) as Domain;
 			x_i.domain(nd);
 			console.log(d_i.size() + ' -> ' + nd.size());
 			return true;

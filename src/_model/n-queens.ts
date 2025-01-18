@@ -2,12 +2,11 @@
  * A sample implementation of the N queens problem.
  *
  * @author Takuto Yanagida
- * @version 2024-12-17
+ * @version 2025-01-18
  */
 
 import { Problem } from '../problem/problem';
 import { Variable } from '../problem/variable';
-import { Domain } from '../problem/domain';
 import { CrispRelation } from '../problem/relation';
 import { Model } from './model';
 
@@ -35,19 +34,12 @@ export class N_queens extends Model {
 	createProblem(p: Problem): Problem {
 		const xs: Variable[] = [];
 		for (let i: number = 0; i < this.#size; ++i) {
-			const x: Variable = p.createVariable({
-				domain: p.createDomain({ min: 1, max: this.#size }) as Domain,
-				value : 1,
-				name  : `Queen ${i}`,
-			});
+			const x: Variable = p.createVariable(p.createDomain(1, this.#size), 1, `Queen ${i}`);
 			xs.push(x);
 		}
 		for (let i: number = 0; i < this.#size; ++i) {
 			for (let j: number = i + 1; j < this.#size; ++j) {
-				p.createConstraint({
-					relation : new CrispQueenRelation(i, j),
-					variables: [xs[i], xs[j]],
-				});
+				p.createConstraint(new CrispQueenRelation(i, j), [xs[i], xs[j]]);
 			}
 		}
 		return p;

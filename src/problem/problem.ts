@@ -2,7 +2,7 @@
  * The class represents a constraint satisfaction problem.
  *
  * @author Takuto Yanagida
- * @version 2025-01-16
+ * @version 2025-01-18
  */
 
 import { Variable } from './variable';
@@ -52,81 +52,92 @@ export class Problem {
 
 	/**
 	 * Generates a domain.
-	 * @param args {
-	 *   @type Array 'values' Multiple values.
-	 *
-	 *   @type Number 'min' Minimum value.
-	 *   @type Number 'max' Maximum value.
-	 * }
+	 * @param vs Multiple values.
 	 * @return A domain.
 	 */
-	createDomain(args: { values: number[]; } | { min: number, max: number; }): Domain | null {
-		if ('values' in args) {
-			return Domain.createArbitraryDomain(args.values);
-		} else if ('min' in args && 'max' in args) {
-			return Domain.createRangedDomain(args.min, args.max);
+	createDomain(vs: number[]): Domain;
+
+	/**
+	 * Generates a domain.
+	 * @param min Minimum value.
+	 * @param max Maximum value.
+	 * @return A domain.
+	 */
+	createDomain(min: number, max: number): Domain;
+
+	createDomain(vs_min: number[] | number, max: number | null = null): Domain {
+		if (Array.isArray(vs_min)) {
+			return Domain.createArbitraryDomain(vs_min);
+		} else if (null !== max) {
+			return Domain.createRangedDomain(vs_min, max);
 		}
-		return null;
+		throw new RangeError();
 	}
 
 	/**
 	 * Generates a variable.
-	 * @param Array args {
-	 *   @type string 'name'   Display name.
-	 *   @type Domain 'domain' A domain.
-	 *   @type *      'value'  A value.
-	 * }
+	 * @param variable A Variable.
 	 * @return A variable.
 	 */
-	createVariable(args: { name: string, domain: Domain, value?: number; } | { variable: Variable; }): Variable {
-		if ('variable' in args) {
-			const x: Variable = this.#fv(this, args.variable.domain());
+	createVariable(variable: Variable): Variable;
+
+	/**
+	 * Generates a variable.
+	 * @param domain A domain.
+	 * @param value A value.
+	 * @param name Display name.
+	 * @return A variable.
+	 */
+	createVariable(domain: Domain, value: number | null, name?: string): Variable;
+
+	createVariable(x_d: Variable | Domain, value: number | null = null, name?: string): Variable {
+		if (x_d instanceof Variable) {
+			const x: Variable = this.#fv(this, (x_d as Variable).domain());
 			this.addVariable(x);
 			x.setName(x.name());
 			x.assign(x.value());
 			return x;
-		} else {
-			if (args.value !== undefined && !args.domain.contains(args.value)) {
+		} else if (x_d instanceof Domain) {
+			if (value !== null && !x_d.contains(value)) {
 				throw new Error();
 			}
-			const x: Variable = this.#fv(this, args.domain);
+			const x: Variable = this.#fv(this, x_d);
 			this.addVariable(x);
-			if (args.name) {
-				x.setName(args.name);
+			if (value !== null) {
+				x.assign(value);
 			}
-			if (args.value) {
-				x.assign(args.value);
+			if (name) {
+				x.setName(name);
 			}
 			return x;
 		}
+		throw new RangeError();
 	}
 
 	/**
 	 * Generates a constraint.
-	 * @param Array args {
-	 *   @type string   'name'      Display name.
-	 *   @type Array    'variables' Variables.
-	 *   @type Relation 'relation'  A relation.
-	 * }
+	 * @param relation A relation.
+	 * @param xs       Variables.
+	 * @param name     Display name.
 	 * @return A constraint.
 	 */
-	createConstraint(args: { name?: string, variables: Variable[], relation: Relation; }): Constraint | null {
-		for (const x of args.variables) {
+	createConstraint(relation: Relation, xs: Variable[], name?: string): Constraint {
+		for (const x of xs) {
 			if (x.owner() !== this) {
-				return null;
+				throw new RangeError();
 			}
 		}
-		const c: Constraint = this.#fc(args.relation, args.variables);
+		const c: Constraint = this.#fc(relation, xs);
 		c.setIndex(this.#cs.length);
 		this.#cs.push(c);
-		for (const x of args.variables) {
+		for (const x of xs) {
 			x.connect(c);
 		}
 		if (c.isFuzzy()) {
 			this.#isFuzzy = true;
 		}
-		if ('name' in args) {
-			c.setName(args.name as string);
+		if (name) {
+			c.setName(name);
 		}
 		return c;
 	}

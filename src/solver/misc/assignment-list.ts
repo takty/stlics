@@ -2,7 +2,7 @@
  * The class represents multiple variables and their assignments.
  *
  * @author Takuto Yanagida
- * @version 2025-01-16
+ * @version 2025-01-18
  */
 
 import { Assignment } from './assignment';
@@ -34,7 +34,7 @@ export class AssignmentList {
 	setProblem(p: Problem): void {
 		this.#as.length = 0;
 		for (const x of p.variables()) {
-			this.#as.push(new Assignment({ variable: x, value: x.value() }));
+			this.#as.push(new Assignment(x));
 		}
 	}
 
@@ -45,7 +45,7 @@ export class AssignmentList {
 	setAssignmentList(al: AssignmentList): void {
 		this.#as.length = 0;
 		for (const a of al) {
-			this.#as.push(new Assignment({ variable: a.variable(), value: a.value() }));
+			this.#as.push(new Assignment(a));
 		}
 	}
 
@@ -56,17 +56,17 @@ export class AssignmentList {
 	setVariables(xs: Iterable<Variable>): void {
 		this.#as.length = 0;
 		for (const x of xs) {
-			this.#as.push(new Assignment({ variable: x, value: x.value() }));
+			this.#as.push(new Assignment(x));
 		}
 	}
 
 	/**
 	 * Adds a variable and its value.
-	 * @param variable Variable.
+	 * @param x Variable.
 	 * @param value Value.
 	 */
-	addVariable(variable: Variable, value: number | null = null): void {
-		this.#as.push(new Assignment({ variable, value }));
+	addVariable(x: Variable, value: number | null = null): void {
+		this.#as.push(new Assignment(x, value));
 	}
 
 	/**

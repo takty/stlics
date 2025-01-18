@@ -2,7 +2,7 @@
  * The class represents a pair of variables and the values to be assigned to them.
  *
  * @author Takuto Yanagida
- * @version 2025-01-02
+ * @version 2025-01-18
  */
 
 import { Variable } from '../../problem/variable';
@@ -13,16 +13,25 @@ export class Assignment {
 	#v: number;
 
 	/**
-	 * Creates an assignment.
-	 * @param args Arguments.
+	 * Create an assignment.
+	 * @param a_x An assignment or a variable.
 	 */
-	constructor(args: { assignment: Assignment; } | { variable: Variable; value?: number|null }) {
-		if ('assignment' in args) {
-			this.#x = args.assignment.variable();
-			this.#v = args.assignment.value();
-		} else if ('variable' in args) {
-			this.#x = args.variable;
-			this.#v = args.value ?? args.variable.value();
+	constructor(a_x: Assignment | Variable);
+
+	/**
+	 * Create an assignment.
+	 * @param x Variable.
+	 * @param value A value to be assigned.
+	 */
+	constructor(x: Variable, value: number | null);
+
+	constructor(a_x: Assignment | Variable, value: number | null = null) {
+		if (a_x instanceof Assignment) {
+			this.#x = (a_x as Assignment).variable();
+			this.#v = (a_x as Assignment).value();
+		} else if (a_x instanceof Variable) {
+			this.#x = (a_x as Variable);
+			this.#v = value ?? (a_x as Variable).value();
 		} else {
 			throw new RangeError();
 		}

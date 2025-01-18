@@ -4,12 +4,11 @@
  * If two queens are in a position to be taken, the farther apart they are, the higher the satisfaction degree.
  *
  * @author Takuto Yanagida
- * @version 2024-12-17
+ * @version 2025-01-18
  */
 
 import { Problem } from '../problem/problem';
 import { Variable } from '../problem/variable';
-import { Domain } from '../problem/domain';
 import { FuzzyRelation } from '../problem/relation';
 import { Model } from './model';
 
@@ -37,19 +36,12 @@ export class N_1_queens extends Model {
 	createProblem(p: Problem): Problem {
 		const xs: Variable[] = [];
 		for (let i: number = 0; i < this.#size; ++i) {
-			const x: Variable = p.createVariable({
-				domain: p.createDomain({ min: 1, max: this.#size - 1 }) as Domain,
-				value : 1,
-				name  : `Queen ${i}`,
-			});
+			const x: Variable = p.createVariable(p.createDomain(1, this.#size - 1), 1, `Queen ${i}`);
 			xs.push(x);
 		}
 		for (let i: number = 0; i < this.#size; ++i) {
 			for (let j: number = i + 1; j < this.#size; ++j) {
-				p.createConstraint({
-					relation : new FuzzyQueenRelation(i, j, this.#size),
-					variables: [xs[i], xs[j]],
-				});
+				p.createConstraint(new FuzzyQueenRelation(i, j, this.#size), [xs[i], xs[j]]);
 			}
 		}
 		return p;

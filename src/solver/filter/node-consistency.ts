@@ -2,7 +2,7 @@
  * Utility class that performs node consistency.
  *
  * @author Takuto Yanagida
- * @version 2024-12-17
+ * @version 2025-01-18
  */
 
 import { Problem } from '../../problem/problem';
@@ -19,7 +19,7 @@ export function applyNodeConsistencyToProblem(p: Problem, threshold: number): bo
 	for (const x of p.variables()) {
 		const d    : Domain   = x.domain();
 		const origV: number   = x.value();  // Save the value.
-		const elms : number[] = [];
+		const vs   : number[] = [];
 
 		for (const c of x) {
 			if (c.size() !== 1) {
@@ -29,16 +29,16 @@ export function applyNodeConsistencyToProblem(p: Problem, threshold: number): bo
 				x.assign(v);
 
 				if (threshold <= c.degree()) {
-					elms.push(v);
+					vs.push(v);
 				}
 			}
 			p.removeConstraint(c);
 		}
 		x.assign(origV);  // Restore the value.
-		if (0 === elms.length) {
+		if (0 === vs.length) {
 			return false;
 		}
-		x.domain(p.createDomain({ values: elms }) as Domain);
+		x.domain(p.createDomain(vs) as Domain);
 	}
 	return true;
 }
@@ -53,7 +53,7 @@ export function applyNodeConsistencyToCrispProblem(p: Problem): boolean {
 	for (const x of p.variables()) {
 		const d    : Domain   = x.domain();
 		const origV: number   = x.value();  // Save the value.
-		const elms : number[] = [];
+		const vs   : number[] = [];
 
 		for (const c of x) {
 			if (c.size() !== 1) {
@@ -63,16 +63,16 @@ export function applyNodeConsistencyToCrispProblem(p: Problem): boolean {
 				x.assign(v);
 
 				if (c.isSatisfied() === 1) {
-					elms.push(v);
+					vs.push(v);
 				}
 			}
 			p.removeConstraint(c);
 		}
 		x.assign(origV);  // Restore the value.
-		if (0 === elms.length) {
+		if (0 === vs.length) {
 			return false;
 		}
-		x.domain(p.createDomain({ values: elms }) as Domain);
+		x.domain(p.createDomain(vs) as Domain);
 	}
 	return true;
 }

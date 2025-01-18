@@ -2,13 +2,12 @@
  * Sample implementation of a random binary problem.
  *
  * @author Takuto Yanagida
- * @version 2025-01-16
+ * @version 2025-01-18
  */
 
 import { Problem } from '../problem/problem';
 import { Variable } from '../problem/variable';
 import { Constraint } from '../problem/constraint';
-import { Domain } from '../problem/domain';
 import { FuzzyRelation } from '../problem/relation';
 import { random } from './beta';
 import { Model } from './model';
@@ -68,11 +67,7 @@ export class RandomBinary extends Model {
 		const r: number = (this.#den * ((this.#size * this.#size - this.#size) / 2)) | 0;
 		const xs: Variable[] = [];
 		for (let i: number = 0; i < this.#size; ++i) {
-			const x: Variable = p.createVariable({
-				domain: p.createDomain({ min: 0, max: this.#sig - 1 }) as Domain,
-				value : 0,
-				name  : ''
-			});
+			const x: Variable = p.createVariable(p.createDomain(0, this.#sig - 1), 0);
 			xs.push(x);
 		}
 		while (p.constraintSize() < r) {
@@ -82,10 +77,7 @@ export class RandomBinary extends Model {
 			if (i !== j) {
 				const temp: Constraint[] = p.constraintsBetween(xs[i], xs[j]);
 				if (0 === temp.length) {
-					p.createConstraint({
-						relation : new TableRelation(this.#getRelationTable()),
-						variables: [xs[i], xs[j]],
-					});
+					p.createConstraint(new TableRelation(this.#getRelationTable()), [xs[i], xs[j]]);
 				}
 			}
 		}
