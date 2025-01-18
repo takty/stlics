@@ -1,8 +1,9 @@
 /**
  * A class that implements the flexible local changes method.
+ * The implementation is optimized by converting recursive calls to loops.
  *
  * @author Takuto Yanagida
- * @version 2025-01-16
+ * @version 2025-01-18
  */
 
 import { Variable } from '../../problem/variable';
@@ -128,7 +129,10 @@ export class FlexibleLocalChanges extends Solver {
 	}
 
 	#flcVariables(X1: Set<Variable>, X2: Set<Variable>, X3: Set<Variable>, consX1: number, consX12: number, rc: number): number {
-		{
+		X2 = new Set<Variable>(X2);  // Clone
+		X3 = new Set<Variable>(X3);  // Clone
+
+		while (true) {
 			this.monitor.outputDebugString(`X1 ${X1.size}, X2' ${X2.size}, X3' ${X3.size}`);
 
 			const ret: boolean | null = this.monitor.check(this.pro.degree());
@@ -148,9 +152,9 @@ export class FlexibleLocalChanges extends Solver {
 			if (consX12xi < rc) {
 				return this.#lb;
 			}
-			X2 = cloneAndAdd(X2, xi);
-			X3 = cloneAndDelete(X3, xi);
-			return this.#flcVariables(X1, X2, X3, consX1, consX12xi, rc);
+			X2.add(xi);
+			X3.delete(xi);
+			consX12 = consX12xi;
 		}
 	}
 
@@ -298,10 +302,4 @@ export class FlexibleLocalChanges extends Solver {
 
 function cloneAndAdd<T>(s: Set<T>, e: T): Set<T> {
 	return new Set<T>(s).add(e);
-}
-
-function cloneAndDelete<T>(s: Set<T>, e: T): Set<T> {
-	const sn = new Set<T>(s);
-	sn.delete(e);
-	return sn;
 }

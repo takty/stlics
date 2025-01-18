@@ -2,10 +2,10 @@
  * Solver factory class.
  *
  * @author Takuto Yanagida
- * @version 2025-01-03
+ * @version 2025-01-18
  */
 
-import { Solver } from '../solver/solver.js';
+import { Solver } from '../solver/solver';
 
 export class SolverFactory {
 
@@ -14,10 +14,9 @@ export class SolverFactory {
 			/* 0 */ 'Forward Checking',
 			/* 1 */ 'Max Forward Checking',
 			/* 2 */ 'Local Changes',
-			/* 3 */ 'Local Changes Ex',
-			/* 4 */ 'Breakout',
-			/* 5 */ 'GENET',
-			/* 6 */ 'Crisp SRS3',
+			/* 3 */ 'Breakout',
+			/* 4 */ 'GENET',
+			/* 5 */ 'Crisp SRS3',
 		];
 	}
 
@@ -26,11 +25,10 @@ export class SolverFactory {
 			/* 0 */ 'Full Checking',
 			/* 1 */ 'Fuzzy Forward Checking',
 			/* 2 */ 'Flexible Local Changes',
-			/* 3 */ 'Flexible Local Changes Ex',
-			/* 4 */ 'Fuzzy Breakout',
-			/* 5 */ 'Fuzzy GENET',
-			/* 6 */ 'SRS3',
-			/* 7 */ 'SRS3 PF',
+			/* 3 */ 'Fuzzy Breakout',
+			/* 4 */ 'Fuzzy GENET',
+			/* 5 */ 'SRS3',
+			/* 6 */ 'SRS3 PF',
 		];
 	}
 
@@ -50,31 +48,27 @@ export class SolverFactory {
 		switch (type.replaceAll(' ', '')) {
 			case 'ForwardChecking':
 			case 'forward-checking':
-				const { ForwardChecking } = await import('../solver/crisp/forward-checking.js');
+				const { ForwardChecking } = await import('../solver/crisp/forward-checking');
 				return new ForwardChecking();
 			case 'MaxForwardChecking':
 			case 'max-forward-checking':
-				const { MaxForwardChecking } = await import('../solver/crisp/max-forward-checking.js');
+				const { MaxForwardChecking } = await import('../solver/crisp/max-forward-checking');
 				return new MaxForwardChecking();
 			case 'LocalChanges':
 			case 'local-changes':
-				const { LocalChanges } = await import('../solver/crisp/local-changes.js');
+				const { LocalChanges } = await import('../solver/crisp/local-changes');
 				return new LocalChanges();
-			case 'LocalChangesEx':
-			case 'local-changes-ex':
-				const { LocalChangesEx } = await import('../solver/crisp/local-changes-ex.js');
-				return new LocalChangesEx();
 			case 'Breakout':
 			case 'breakout':
-				const { Breakout } = await import('../solver/crisp/breakout.js');
+				const { Breakout } = await import('../solver/crisp/breakout');
 				return new Breakout();
 			case 'GENET':
 			case 'genet':
-				const { GENET } = await import('../solver/crisp/genet.js');
+				const { GENET } = await import('../solver/crisp/genet');
 				return new GENET();
 			case 'CrispSRS3':
 			case 'crisp-srs3':
-				const { CrispSRS3 } = await import('../solver/crisp/crisp-srs3.js');
+				const { CrispSRS3 } = await import('../solver/crisp/crisp-srs3');
 				return new CrispSRS3();
 		}
 		return null;
@@ -84,37 +78,33 @@ export class SolverFactory {
 		switch (type.replaceAll(' ', '')) {
 			case 'FullChecking':
 			case 'full-checking':
-				const { FullChecking } = await import('../solver/fuzzy/full-checking.js');
+				const { FullChecking } = await import('../solver/fuzzy/full-checking');
 				return new FullChecking();
 			case 'FuzzyForwardChecking':
 			case 'fuzzy-forward-checking':
-				const { FuzzyForwardChecking } = await import('../solver/fuzzy/fuzzy-forward-checking.js');
+				const { FuzzyForwardChecking } = await import('../solver/fuzzy/fuzzy-forward-checking');
 				return new FuzzyForwardChecking();
 			case 'FlexibleLocalChanges':
 			case 'flexible-local-changes':
-				const { FlexibleLocalChanges } = await import('../solver/fuzzy/flexible-local-changes.js');
+				const { FlexibleLocalChanges } = await import('../solver/fuzzy/flexible-local-changes');
 				return new FlexibleLocalChanges();
-			case 'FlexibleLocalChangesEx':
-			case 'flexible-local-changes-ex':
-				const { FlexibleLocalChangesEx } = await import('../solver/fuzzy/flexible-local-changes-ex.js');
-				return new FlexibleLocalChangesEx();
 			case 'FuzzyBreakout':
 			case 'fuzzy-breakout':
-				const { FuzzyBreakout } = await import('../solver/fuzzy/fuzzy-breakout.js');
+				const { FuzzyBreakout } = await import('../solver/fuzzy/fuzzy-breakout');
 				return new FuzzyBreakout();
 			case 'FuzzyGENET':
 			case 'fuzzy-genet':
-				const { FuzzyGENET } = await import('../solver/fuzzy/fuzzy-genet.js');
+				const { FuzzyGENET } = await import('../solver/fuzzy/fuzzy-genet');
 				return new FuzzyGENET();
 			case 'SRS3':
 			case 'srs3':
-				const { SRS3 } = await import('../solver/fuzzy/srs3.js');
+				const { SRS3 } = await import('../solver/fuzzy/srs3');
 				return new SRS3();
 			case 'SRS3PF':
 			case 'SRS3_PF':
 			case 'srs3-pf': {
-				const { SRS3 } = await import('../solver/fuzzy/srs3.js');
-				const { wrapWithPostStabilizer } = await import('../solver/filter/post-stabilizer.js');
+				const { SRS3 } = await import('../solver/fuzzy/srs3');
+				const { wrapWithPostStabilizer } = await import('../solver/filter/post-stabilizer');
 				return wrapWithPostStabilizer(new SRS3());
 			}
 		}

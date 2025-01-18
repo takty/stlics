@@ -1,8 +1,9 @@
 /**
  * Class implements the local changes method.
+ * The implementation is optimized by converting recursive calls to loops.
  *
  * @author Takuto Yanagida
- * @version 2025-01-16
+ * @version 2025-01-18
  */
 
 import { Variable } from '../../problem/variable';
@@ -64,10 +65,13 @@ export class LocalChanges extends Solver {
 			}
 		}
 		return ret;
-}
+	}
 
 	#lcVariables(X1: Set<Variable>, X2: Set<Variable>, X3: Set<Variable>): boolean {
-		{
+		X2 = new Set(X2);  // Clone
+		X3 = new Set(X3);  // Clone
+
+		while (true) {
 			this.monitor.outputDebugString(`X1 ${X1.size}, X2' ${X2.size}, X3' ${X3.size}`);
 
 			const r: boolean | null = this.monitor.check(this.pro.degree());
@@ -79,43 +83,40 @@ export class LocalChanges extends Solver {
 				return true;
 			}
 			const x = X3.values().next().value as Variable;
-			const ret: boolean = this.#lcVariable(X1, X2, x, cloneDomain(x));
+			const ret: boolean = this.#lcVariable(X1, X2, x);
 
 			if (!ret || this.#globalRet) {
 				return ret;
 			}
-			X2 = cloneAndAdd(X2, x);
-			X3 = cloneAndDelete(X3, x);
-			return this.#lcVariables(X1, X2, X3);
+			X2.add(x);
+			X3.delete(x);
 		}
 	}
 
-	#lcVariable(X1: Set<Variable>, X2: Set<Variable>, x: Variable, d: Set<number>): boolean {
-		if (d.size) {
-			const v = d.values().next().value as number;
+	#lcVariable(X1: Set<Variable>, X2: Set<Variable>, x: Variable): boolean {
+		for (const v of x.domain()) {
 			const al: AssignmentList = AssignmentList.fromVariables(X2);
 			x.assign(v);
 
-			const ret: boolean = this.#lcValue(X1, X2, x, v);
+			const ret: boolean = this.#lcValue(X1, X2, x);
 			if (ret || this.#globalRet) {
 				return ret;
 			}
 			x.clear();
 			al.apply();
-			return this.#lcVariable(X1, X2, x, cloneAndDelete(d, v));
 		}
 		return false;
 	}
 
-	#lcValue(X1: Set<Variable>, X2: Set<Variable>, x: Variable, v: number): boolean {
-		if (!this.#isConsistent(X1, x, v)) {
+	#lcValue(X1: Set<Variable>, X2: Set<Variable>, x: Variable): boolean {
+		if (!this.#isConsistent(X1, x, x.value())) {
 			return false;
 		}
 		const X12: Set<Variable> = X1.union(X2);
-		if (this.#isConsistent(X12, x, v)) {
+		if (this.#isConsistent(X12, x, x.value())) {
 			return true;
 		}
-		const X3: Set<Variable> = this.#createX3(X12, x, v);
+		const X3: Set<Variable> = this.#createX3(X12, x, x.value());
 
 		X1 = cloneAndAdd(X1, x);
 		X2 = X2.difference(X3);
@@ -172,14 +173,4 @@ export class LocalChanges extends Solver {
 
 function cloneAndAdd<T>(s: Set<T>, e: T): Set<T> {
 	return new Set<T>(s).add(e);
-}
-
-function cloneAndDelete<T>(s: Set<T>, e: T): Set<T> {
-	const sn = new Set<T>(s);
-	sn.delete(e);
-	return sn;
-}
-
-function cloneDomain(x: Variable): Set<number> {
-	return new Set<number>(x.domain());
 }
