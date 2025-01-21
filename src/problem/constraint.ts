@@ -1,8 +1,8 @@
 /**
- * The class represents a constraint.
+ * The class that represents a constraint.
  *
  * @author Takuto Yanagida
- * @version 2025-01-16
+ * @version 2025-01-21
  */
 
 import { Element } from './element';
@@ -25,32 +25,17 @@ export abstract class Constraint extends Element {
 		return new ConstraintN(r, ...xs);
 	}
 
-	rel: Relation;
+	protected r : Relation;
+	protected xs: Variable[] = [];
 
 	// Called only from Problem.
 	constructor(r: Relation) {
 		super();
-		this.rel = r;
+		this.r = r;
 	}
 
 	/**
-	 * Returns the relation between variables.
-	 * @return Relation.
-	 */
-	relation(): Relation {
-		return this.rel;
-	}
-
-	/**
-	 * Returns whether this is a fuzzy constraint.
-	 * @return True if it is fuzzy constraint.
-	 */
-	isFuzzy(): boolean {
-		return this.rel instanceof FuzzyRelation;
-	}
-
-	/**
-	 * Returns a string representation.
+	 * Gets a string representation.
 	 * @return A string representation.
 	 */
 	toString(): string {
@@ -63,24 +48,30 @@ export abstract class Constraint extends Element {
 	}
 
 	/**
-	 * Returns the order of the constraint, i.e., the number of (associated) variables in the scope.
+	 * Gets the order of the constraint, i.e., the number of (associated) variables in the scope.
 	 * @return Order.
 	 */
-	abstract size(): number;
+	size(): number {
+		return this.xs.length;
+	}
 
 	/**
 	 * Gets the associated variable by specifying its index.
 	 * @param index Index.
 	 * @return A variable.
 	 */
-	abstract at(index: number): Variable | undefined;
+	at(index: number): Variable | undefined {
+		return this.xs.at(index);
+	}
 
 	/**
-	 * Returns whether the specified variable is associated or not.
+	 * Checks whether or not the specified variable is associated.
 	 * @param x A variable.
-	 * @return True if it is associated.
+	 * @return True if associated.
 	 */
-	abstract has(x: Variable): boolean;
+	has(x: Variable): boolean {
+		return this.xs.includes(x);
+	}
 
 	/**
 	 * Gets the index of a specified variable.
@@ -88,22 +79,53 @@ export abstract class Constraint extends Element {
 	 * @param x A variable.
 	 * @return Index.
 	 */
-	abstract indexOf(x: Variable): number;
+	indexOf(x: Variable): number {
+		return this.xs.indexOf(x);
+	}
 
 	/**
-	 * Returns the set of constraints connected via the associated variables.
-	 * @return A set of constraints.
+	 * Collects the constraints connected via the associated variables.
+	 * @return An array of constraints.
 	 */
-	abstract neighbors(): Constraint[];
+	neighbors(): Constraint[] {
+		const cs: Constraint[] = [];
+
+		for (const x of this.xs) {
+			for (const c of x) {
+				if (c !== this) {
+					cs.push(c);
+				}
+			}
+		}
+		return cs;
+	}
 
 	/**
 	 * Gets the iterator of the associated variables.
 	 */
-	abstract [Symbol.iterator](): Iterator<Variable>;
+	[Symbol.iterator](): Iterator<Variable> {
+		return this.xs[Symbol.iterator]();
+	}
 
 
 	// ----
 
+
+	/**
+	 * Returns the relation between variables.
+	 * @return Relation.
+	 */
+	relation(): Relation {
+		return this.r;
+	}
+
+	/**
+	 * Returns whether this is a fuzzy constraint.
+	 * @return True if it is fuzzy constraint.
+	 */
+	isFuzzy(): boolean {
+		return this.r instanceof FuzzyRelation;
+	}
 
 	/**
 	 * Returns the number of scope variables that have not been assigned a value.
@@ -138,69 +160,32 @@ export abstract class Constraint extends Element {
 
 class Constraint1 extends Constraint {
 
-	#xs: [Variable] = [] as unknown as [Variable];
-
 	// Called only from Problem.
 	constructor(r: Relation, x: Variable) {
 		super(r);
-		this.#xs = [x];
+		this.xs = [x];
 	}
-
-	size(): number {
-		return 1;
-	}
-
-	at(index: number): Variable | undefined {
-		return this.#xs.at(index);
-	}
-
-	has(x: Variable): boolean {
-		return x === this.#xs[0];
-	}
-
-	indexOf(x: Variable): number {
-		return (x === this.#xs[0]) ? 0 : -1;
-	}
-
-	neighbors(): Constraint[] {
-		const cs: Constraint[] = [];
-
-		for (const c of this.#xs[0]) {
-			if (c !== this) {
-				cs.push(c);
-			}
-		}
-		return cs;
-	}
-
-	[Symbol.iterator](): Iterator<Variable> {
-		return this.#xs[Symbol.iterator]();
-	}
-
-
-	// ----
-
 
 	emptyVariableSize(): number {
-		return this.#xs[0].isEmpty() ? 1 : 0;
+		return this.xs[0].isEmpty() ? 1 : 0;
 	}
 
 	isDefined(): boolean {
-		return !this.#xs[0].isEmpty();
+		return !this.xs[0].isEmpty();
 	}
 
 	isSatisfied(): -1 | 0 | 1 {
-		if (this.#xs[0].isEmpty()) {
+		if (this.xs[0].isEmpty()) {
 			return -1;  // UNDEFINED
 		}
-		return this.rel.isSatisfied(this.#xs[0].value()) ? 1 : 0;
+		return this.r.isSatisfied(this.xs[0].value()) ? 1 : 0;
 	}
 
 	degree(): number {
-		if (this.#xs[0].isEmpty()) {
+		if (this.xs[0].isEmpty()) {
 			return -1;  // UNDEFINED
 		}
-		return this.rel.degree(this.#xs[0].value());
+		return this.r.degree(this.xs[0].value());
 	}
 
 }
@@ -211,76 +196,35 @@ class Constraint1 extends Constraint {
 
 class Constraint2 extends Constraint {
 
-	#xs: [Variable, Variable] = [] as unknown as [Variable, Variable];
-
 	// Called only from Problem.
 	constructor(r: Relation, x1: Variable, x2: Variable) {
 		super(r);
-		this.#xs = [x1, x2];
+		this.xs = [x1, x2];
 	}
-
-	size(): number {
-		return 2;
-	}
-
-	at(index: number): Variable | undefined {
-		return this.#xs.at(index);
-	}
-
-	has(x: Variable): boolean {
-		return this.#xs[0] === x || this.#xs[1] === x;
-	}
-
-	indexOf(x: Variable): number {
-		if (x === this.#xs[0]) return 0;
-		if (x === this.#xs[1]) return 1;
-		return -1;
-	}
-
-	neighbors(): Constraint[] {
-		const cs: Constraint[] = [];
-
-		for (const x of this.#xs) {
-			for (const c of x) {
-				if (c !== this) {
-					cs.push(c);
-				}
-			}
-		}
-		return cs;
-	}
-
-	[Symbol.iterator](): Iterator<Variable> {
-		return this.#xs[Symbol.iterator]();
-	}
-
-
-	// ----
-
 
 	emptyVariableSize(): number {
 		let n: number = 0;
-		if (this.#xs[0].isEmpty()) ++n;
-		if (this.#xs[1].isEmpty()) ++n;
+		if (this.xs[0].isEmpty()) ++n;
+		if (this.xs[1].isEmpty()) ++n;
 		return n;
 	}
 
 	isDefined(): boolean {
-		return !this.#xs[0].isEmpty() && !this.#xs[1].isEmpty();
+		return !this.xs[0].isEmpty() && !this.xs[1].isEmpty();
 	}
 
 	isSatisfied(): -1 | 0 | 1 {
-		if (this.#xs[0].isEmpty() || this.#xs[1].isEmpty()) {
+		if (this.xs[0].isEmpty() || this.xs[1].isEmpty()) {
 			return -1;  // UNDEFINED
 		}
-		return this.rel.isSatisfied(this.#xs[0].value(), this.#xs[1].value()) ? 1 : 0;
+		return this.r.isSatisfied(this.xs[0].value(), this.xs[1].value()) ? 1 : 0;
 	}
 
 	degree(): number {
-		if (this.#xs[0].isEmpty() || this.#xs[1].isEmpty()) {
+		if (this.xs[0].isEmpty() || this.xs[1].isEmpty()) {
 			return -1;  // UNDEFINED
 		}
-		return this.rel.degree(this.#xs[0].value(), this.#xs[1].value());
+		return this.r.degree(this.xs[0].value(), this.xs[1].value());
 	}
 
 }
@@ -291,78 +235,36 @@ class Constraint2 extends Constraint {
 
 class Constraint3 extends Constraint {
 
-	#xs: [Variable, Variable, Variable] = [] as unknown as [Variable, Variable, Variable];
-
 	// Called only from Problem.
 	constructor(r: Relation, x1: Variable, x2: Variable, x3: Variable) {
 		super(r);
-		this.#xs = [x1, x2, x3];
+		this.xs = [x1, x2, x3];
 	}
-
-	size(): number {
-		return 3;
-	}
-
-	at(index: number): Variable | undefined {
-		return this.#xs.at(index);
-	}
-
-	has(x: Variable): boolean {
-		return this.#xs[0] === x || this.#xs[1] === x || this.#xs[2] === x;
-	}
-
-	indexOf(x: Variable): number {
-		if (x === this.#xs[0]) return 0;
-		if (x === this.#xs[1]) return 1;
-		if (x === this.#xs[2]) return 2;
-		return -1;
-	}
-
-	neighbors(): Constraint[] {
-		const cs: Constraint[] = [];
-
-		for (const x of this.#xs) {
-			for (const c of x) {
-				if (c !== this) {
-					cs.push(c);
-				}
-			}
-		}
-		return cs;
-	}
-
-	[Symbol.iterator](): Iterator<Variable> {
-		return this.#xs[Symbol.iterator]();
-	}
-
-
-	// ----
-
 
 	emptyVariableSize(): number {
 		let n: number = 0;
-		if (this.#xs[0].isEmpty()) ++n;
-		if (this.#xs[1].isEmpty()) ++n;
-		if (this.#xs[2].isEmpty()) ++n;
+		if (this.xs[0].isEmpty()) ++n;
+		if (this.xs[1].isEmpty()) ++n;
+		if (this.xs[2].isEmpty()) ++n;
 		return n;
 	}
 
 	isDefined(): boolean {
-		return !this.#xs[0].isEmpty() && !this.#xs[1].isEmpty() && !this.#xs[2].isEmpty();
+		return !this.xs[0].isEmpty() && !this.xs[1].isEmpty() && !this.xs[2].isEmpty();
 	}
 
 	isSatisfied(): -1 | 0 | 1 {
-		if (this.#xs[0].isEmpty() || this.#xs[1].isEmpty() || this.#xs[2].isEmpty()) {
+		if (this.xs[0].isEmpty() || this.xs[1].isEmpty() || this.xs[2].isEmpty()) {
 			return -1;  // UNDEFINED
 		}
-		return this.rel.isSatisfied(this.#xs[0].value(), this.#xs[1].value(), this.#xs[2].value()) ? 1 : 0;
+		return this.r.isSatisfied(this.xs[0].value(), this.xs[1].value(), this.xs[2].value()) ? 1 : 0;
 	}
 
 	degree(): number {
-		if (this.#xs[0].isEmpty() || this.#xs[1].isEmpty() || this.#xs[2].isEmpty()) {
+		if (this.xs[0].isEmpty() || this.xs[1].isEmpty() || this.xs[2].isEmpty()) {
 			return -1;  // UNDEFINED
 		}
-		return this.rel.degree(this.#xs[0].value(), this.#xs[1].value(), this.#xs[2].value());
+		return this.r.degree(this.xs[0].value(), this.xs[1].value(), this.xs[2].value());
 	}
 
 }
@@ -373,63 +275,25 @@ class Constraint3 extends Constraint {
 
 class ConstraintN extends Constraint {
 
-	#xs: Variable[];
 	#vs: number[];  // For reuse.
 
 	// Called only from Problem.
 	constructor(r: Relation, ...xs: Variable[]) {
 		super(r);
-		this.#xs = [...xs];
-		this.#vs = new Array(this.#xs.length);
+		this.xs = [...xs];
+		this.#vs = new Array(this.xs.length);
 	}
-
-	size(): number {
-		return this.#xs.length;
-	}
-
-	at(index: number): Variable | undefined {
-		return this.#xs.at(index);
-	}
-
-	has(x: Variable): boolean {
-		return this.#xs.includes(x);
-	}
-
-	indexOf(x: Variable): number {
-		return this.#xs.indexOf(x);
-	}
-
-	neighbors(): Constraint[] {
-		const cs: Constraint[] = [];
-
-		for (const x of this.#xs) {
-			for (const c of x) {
-				if (c !== this) {
-					cs.push(c);
-				}
-			}
-		}
-		return cs;
-	}
-
-	[Symbol.iterator](): Iterator<Variable> {
-		return this.#xs[Symbol.iterator]();
-	}
-
-
-	// ----
-
 
 	emptyVariableSize(): number {
 		let n: number = 0;
-		for (const x of this.#xs) {
+		for (const x of this.xs) {
 			n += x.isEmpty() ? 1 : 0;
 		}
 		return n;
 	}
 
 	isDefined(): boolean {
-		for (const x of this.#xs) {
+		for (const x of this.xs) {
 			if (x.isEmpty()) {
 				return false;
 			}
@@ -438,25 +302,25 @@ class ConstraintN extends Constraint {
 	}
 
 	isSatisfied(): -1 | 0 | 1 {
-		for (let i: number = 0; i < this.#xs.length; ++i) {
-			const x: Variable = this.#xs[i];
+		for (let i: number = 0; i < this.xs.length; ++i) {
+			const x: Variable = this.xs[i];
 			if (x.isEmpty()) {
 				return -1;  // UNDEFINED
 			}
 			this.#vs[i] = x.value();
 		}
-		return this.rel.isSatisfied(...this.#vs) ? 1 : 0;
+		return this.r.isSatisfied(...this.#vs) ? 1 : 0;
 	}
 
 	degree(): number {
-		for (let i: number = 0; i < this.#xs.length; ++i) {
-			const x: Variable = this.#xs[i];
+		for (let i: number = 0; i < this.xs.length; ++i) {
+			const x: Variable = this.xs[i];
 			if (x.isEmpty()) {
 				return -1;  // UNDEFINED
 			}
 			this.#vs[i] = x.value();
 		}
-		return this.rel.degree(...this.#vs);
+		return this.r.degree(...this.#vs);
 	}
 
 }

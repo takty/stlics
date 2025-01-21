@@ -1,8 +1,8 @@
 /**
- * Class that represents a variable.
+ * The class that represents a variable.
  *
  * @author Takuto Yanagida
- * @version 2025-01-16
+ * @version 2025-01-21
  */
 
 import { Problem } from './problem';
@@ -16,8 +16,8 @@ export class Variable extends Element {
 
 	#owner: Problem;
 
-	#d: Domain;
-	#v: number = Variable.#INVALID;
+	#d : Domain;
+	#v : number = Variable.#INVALID;
 	#cs: Constraint[] = [];
 
 	// Called only from Problem.
@@ -34,9 +34,9 @@ export class Variable extends Element {
 	toString(): string {
 		const n : string = this.name();
 		const np: string = n ? `(${n})` : '';
-		const v : string = this.isEmpty() ? '<empty>' : ('' + this.value());
+		const sn: string = this.isEmpty() ? '<empty>' : ('' + this.value());
 
-		return `x${this.index()}${np} = ${v}`;
+		return `x${this.index()}${np} = ${sn}`;
 	}
 
 	/**
@@ -48,7 +48,7 @@ export class Variable extends Element {
 	}
 
 	/**
-	 * Gets the associated constraints by specifying their indices.
+	 * Gets the associated constraint by specifying its index.
 	 * @param index Index.
 	 * @return A constraint.
 	 */
@@ -57,7 +57,7 @@ export class Variable extends Element {
 	}
 
 	/**
-	 * Checks whether or not the variable is associated with the specified constraint.
+	 * Checks whether or not the specified constraint is associated.
 	 * @param c A constraint.
 	 * @return True if associated.
 	 */
