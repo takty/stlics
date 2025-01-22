@@ -2,7 +2,7 @@
  * The class represents a constraint satisfaction problem.
  *
  * @author Takuto Yanagida
- * @version 2025-01-18
+ * @version 2025-01-22
  */
 
 import { Variable } from './variable';
@@ -15,9 +15,8 @@ export class Problem {
 	#fv: (o: Problem, d: Domain) => Variable = (o: Problem, d: Domain): Variable => new Variable(o, d);
 	#fc: (r: Relation, xs: Variable[]) => Constraint = (r: Relation, xs: Variable[]): Constraint => Constraint.create(r, xs);
 
-	#isFuzzy: boolean      = false;
-	#xs     : Variable[]   = [];
-	#cs     : Constraint[] = [];
+	#xs: Variable[]   = [];
+	#cs: Constraint[] = [];
 
 
 	// Methods for Modifying Factories -----------------------------------------
@@ -133,9 +132,6 @@ export class Problem {
 		for (const x of xs) {
 			x.connect(c);
 		}
-		if (c.isFuzzy()) {
-			this.#isFuzzy = true;
-		}
 		if (name) {
 			c.setName(name);
 		}
@@ -158,13 +154,6 @@ export class Problem {
 		}
 		for (const x of c) {
 			x.disconnect(c);
-		}
-		this.#isFuzzy = false;
-		for (const c of this.#cs) {
-			if (c.isFuzzy()) {
-				this.#isFuzzy = true;
-				break;
-			}
 		}
 	}
 
@@ -327,14 +316,6 @@ export class Problem {
 
 	// State acquisition methods -----------------------------------------------
 
-
-	/**
-	 * Returns whether the problem is a fuzzy constraint satisfaction problem, i.e., whether it contains fuzzy constraints.
-	 * @return True if it is a fuzzy constraint satisfaction problem.
-	 */
-	isFuzzy(): boolean {
-		return this.#isFuzzy;
-	}
 
 	/**
 	 * Gets the constraint density (number of constraints/number of variables).

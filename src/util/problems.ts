@@ -9,7 +9,6 @@ import { Problem } from '../problem/problem';
 import { Variable } from '../problem/variable';
 import { Constraint } from '../problem/constraint';
 import { Domain } from '../problem/domain';
-import { FuzzyRelation, Relation } from '../problem/relation';
 import { ImaginaryVariable } from './variables';
 import { CrispFuzzyRelation } from './relations';
 
@@ -178,11 +177,7 @@ export function toViewAsCrispProblem(p: Problem, threshold: number): CrispFuzzyP
 		for (const x of c) {
 			xs.push(cp.variableAt(x.index()));
 		}
-		let r: Relation = c.relation();
-		if (c.isFuzzy()) {
-			r = new CrispFuzzyRelation(r as FuzzyRelation, threshold);
-		}
-		cp.createConstraint(r, xs);
+		cp.createConstraint(new CrispFuzzyRelation(c.relation(), threshold), xs);
 	}
 	return cp;
 }

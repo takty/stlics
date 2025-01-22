@@ -8,7 +8,6 @@
 import { Element } from './element';
 import { Variable } from './variable';
 import { Relation } from './relation';
-import { FuzzyRelation } from './relation';
 
 export abstract class Constraint extends Element {
 
@@ -117,14 +116,6 @@ export abstract class Constraint extends Element {
 	 */
 	relation(): Relation {
 		return this.r;
-	}
-
-	/**
-	 * Returns whether this is a fuzzy constraint.
-	 * @return True if it is fuzzy constraint.
-	 */
-	isFuzzy(): boolean {
-		return this.r instanceof FuzzyRelation;
 	}
 
 	/**
