@@ -12,6 +12,7 @@ import { FuzzyRelation } from './relation';
 
 export abstract class Constraint extends Element {
 
+	// Called only from Problem.
 	static create(r: Relation, xs: Variable[]): Constraint {
 		if (1 === xs.length) {
 			return new Constraint1(r, xs[0]);
@@ -28,8 +29,7 @@ export abstract class Constraint extends Element {
 	protected r : Relation;
 	protected xs: Variable[] = [];
 
-	// Called only from Problem.
-	constructor(r: Relation) {
+	protected constructor(r: Relation) {
 		super();
 		this.r = r;
 	}
@@ -160,7 +160,6 @@ export abstract class Constraint extends Element {
 
 class Constraint1 extends Constraint {
 
-	// Called only from Problem.
 	constructor(r: Relation, x: Variable) {
 		super(r);
 		this.xs = [x];
@@ -178,7 +177,7 @@ class Constraint1 extends Constraint {
 		if (this.xs[0].isEmpty()) {
 			return -1;  // UNDEFINED
 		}
-		return this.r.isSatisfied(this.xs[0].value()) ? 1 : 0;
+		return 1 === this.r.isSatisfied(this.xs[0].value()) ? 1 : 0;
 	}
 
 	degree(): number {
@@ -196,7 +195,6 @@ class Constraint1 extends Constraint {
 
 class Constraint2 extends Constraint {
 
-	// Called only from Problem.
 	constructor(r: Relation, x1: Variable, x2: Variable) {
 		super(r);
 		this.xs = [x1, x2];
@@ -217,7 +215,7 @@ class Constraint2 extends Constraint {
 		if (this.xs[0].isEmpty() || this.xs[1].isEmpty()) {
 			return -1;  // UNDEFINED
 		}
-		return this.r.isSatisfied(this.xs[0].value(), this.xs[1].value()) ? 1 : 0;
+		return 1 === this.r.isSatisfied(this.xs[0].value(), this.xs[1].value()) ? 1 : 0;
 	}
 
 	degree(): number {
@@ -235,7 +233,6 @@ class Constraint2 extends Constraint {
 
 class Constraint3 extends Constraint {
 
-	// Called only from Problem.
 	constructor(r: Relation, x1: Variable, x2: Variable, x3: Variable) {
 		super(r);
 		this.xs = [x1, x2, x3];
@@ -257,7 +254,7 @@ class Constraint3 extends Constraint {
 		if (this.xs[0].isEmpty() || this.xs[1].isEmpty() || this.xs[2].isEmpty()) {
 			return -1;  // UNDEFINED
 		}
-		return this.r.isSatisfied(this.xs[0].value(), this.xs[1].value(), this.xs[2].value()) ? 1 : 0;
+		return 1 === this.r.isSatisfied(this.xs[0].value(), this.xs[1].value(), this.xs[2].value()) ? 1 : 0;
 	}
 
 	degree(): number {
@@ -277,7 +274,6 @@ class ConstraintN extends Constraint {
 
 	#vs: number[];  // For reuse.
 
-	// Called only from Problem.
 	constructor(r: Relation, ...xs: Variable[]) {
 		super(r);
 		this.xs = [...xs];
@@ -309,7 +305,7 @@ class ConstraintN extends Constraint {
 			}
 			this.#vs[i] = x.value();
 		}
-		return this.r.isSatisfied(...this.#vs) ? 1 : 0;
+		return 1 === this.r.isSatisfied(...this.#vs) ? 1 : 0;
 	}
 
 	degree(): number {
