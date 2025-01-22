@@ -10,7 +10,7 @@ import { Variable } from '../problem/variable';
 import { Constraint } from '../problem/constraint';
 import { Domain } from '../problem/domain';
 import { ImaginaryVariable } from './variables';
-import { CrispFuzzyRelation } from './relations';
+import { createCrispFuzzyRelation } from './relations';
 
 /**
  * Create a table that caches constraints between two variables.
@@ -177,7 +177,7 @@ export function toViewAsCrispProblem(p: Problem, threshold: number): CrispFuzzyP
 		for (const x of c) {
 			xs.push(cp.variableAt(x.index()));
 		}
-		cp.createConstraint(new CrispFuzzyRelation(c.relation(), threshold), xs);
+		cp.createConstraint(createCrispFuzzyRelation(c.relation(), threshold), xs);
 	}
 	return cp;
 }

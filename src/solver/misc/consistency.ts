@@ -2,7 +2,7 @@
  * Utilities for calculating consistency degree.
  *
  * @author Takuto Yanagida
- * @version 2025-01-21
+ * @version 2025-01-22
  */
 
 import { Problem } from '../../problem/problem';
@@ -71,7 +71,7 @@ function highestConsistencyDegree1(c: Constraint): number {
 	const x: Variable = (c.at(0) as Variable);
 	let cd: number = 0;
 	for (const v of x.domain()) {
-		const ev: number = c.relation().degree(v);
+		const ev: number = c.relation()(v);
 		if (cd < ev) {
 			cd = ev;
 		}
@@ -93,7 +93,7 @@ function lowestConsistencyDegree1(c: Constraint): number {
 	const x: Variable = (c.at(0) as Variable);
 	let cd: number = 1;
 	for (const v of x.domain()) {
-		const ev: number = c.relation().degree(v);
+		const ev: number = c.relation()(v);
 		if (ev < cd) {
 			cd = ev;
 		}
@@ -121,7 +121,7 @@ function highestConsistencyDegree2(c: Constraint): number {
 	let cd: number = 0;
 	for (const v0 of d0) {
 		for (const v1 of d1) {
-			const ev: number = c.relation().degree(v0, v1);
+			const ev: number = c.relation()(v0, v1);
 			if (cd < ev) {
 				cd = ev;
 			}
@@ -150,7 +150,7 @@ function lowestConsistencyDegree2(c: Constraint): number {
 	let cd: number = 1;
 	for (const v0 of d0) {
 		for (const v1 of d1) {
-			const ev: number = c.relation().degree(v0, v1);
+			const ev: number = c.relation()(v0, v1);
 			if (ev < cd) {
 				cd = ev;
 			}
@@ -182,7 +182,7 @@ function highestConsistencyDegree3(c: Constraint): number {
 	for (const v0 of d0) {
 		for (const v1 of d1) {
 			for (const v2 of d2) {
-				const ev: number = c.relation().degree(v0, v1, v2);
+				const ev: number = c.relation()(v0, v1, v2);
 				if (cd < ev) {
 					cd = ev;
 				}
@@ -215,7 +215,7 @@ function lowestConsistencyDegree3(c: Constraint): number {
 	for (const v0 of d0) {
 		for (const v1 of d1) {
 			for (const v2 of d2) {
-				const ev: number = c.relation().degree(v0, v1, v2);
+				const ev: number = c.relation()(v0, v1, v2);
 				if (ev < cd) {
 					cd = ev;
 				}
@@ -283,7 +283,7 @@ function checkHCD(c: Constraint, vs: number[], emptyIndices: number[], currentSt
 	if (currentStep === emptyIndices.length - 1) {
 		for (const v of d) {
 			vs[index] = v;
-			const ev: number = c.relation().degree(...vs);
+			const ev: number = c.relation()(...vs);
 			if (cd < ev) {
 				cd = ev;
 			}
@@ -307,7 +307,7 @@ function checkLCD(c: Constraint, vs: number[], emptyIndices: number[], currentSt
 	if (currentStep === emptyIndices.length - 1) {
 		for (const v of d) {
 			vs[index] = v;
-			const ev: number = c.relation().degree(...vs);
+			const ev: number = c.relation()(...vs);
 			if (ev < cd) {
 				cd = ev;
 			}

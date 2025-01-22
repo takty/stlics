@@ -3,7 +3,6 @@ export * from './src/problem/element';
 export * from './src/problem/variable';
 export * from './src/problem/domain';
 export * from './src/problem/constraint';
-export * from './src/problem/relation';
 
 
 // -----------------------------------------------------------------------------

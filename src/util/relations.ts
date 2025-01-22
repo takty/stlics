@@ -2,165 +2,70 @@
  * Relations.
  *
  * @author Takuto Yanagida
- * @version 2025-01-02
+ * @version 2025-01-22
  */
 
-import { CrispRelation, FuzzyRelation } from '../problem/relation';
 import { Domain } from '../problem/domain';
-
-/**
- * Crisp relations defined by functions.
- */
-export class CrispRelationFunction extends CrispRelation {
-
-	#fn: (...vs: number[]) => -1 | 0 | 1;
-
-	constructor(fn: (...vs: number[]) => -1 | 0 | 1) {
-		super();
-		this.#fn = fn;
-	}
-
-	/**
-	 * Gets whether or not the relation is satisfied in this crisp relation.
-	 * @param vs Values of each variable
-	 * @return Whether or not it is satisfied.
-	 */
-	isSatisfied(...vs: number[]): -1 | 0 | 1 {
-		return this.#fn(...vs);
-	}
-
-}
-
-/**
- * Fuzzy relations defined by functions.
- */
-export class FuzzyRelationFunction extends FuzzyRelation {
-
-	#fn: (...vs: number[]) => number;
-
-	constructor(fn: (...vs: number[]) => number) {
-		super();
-		this.#fn = fn;
-	}
-
-	/**
-	 * Gets the satisfaction degree in this fuzzy relation.
-	 * @param vs Values of each variable
-	 * @return A satisfaction degree d (0 <= d <= 1).
-	 */
-	degree(...vs: number[]): number {
-		return this.#fn(...vs);
-	}
-
-}
-
-
-// -----------------------------------------------------------------------------
-
 
 /**
  * Crisp relations defined by tables.
  */
-export class CrispTabledRelation extends CrispRelation {
+export function createCrispTabledRelation(elms: (0 | 1)[], doms: Domain[]): (...vs: number[]) => number {
+	const es: (0 | 1)[] = [...elms];
+	const ds: Domain[]  = [...doms];
+	const ms: number[]  = new Array(doms.length);
 
-	#es: (0 | 1)[];
-	#ds: Domain[];
-	#ms: number[];
-
-	constructor(elms: (0 | 1)[], doms: Domain[]) {
-		super();
-		this.#es = [...elms];
-		this.#ds = [...doms];
-		this.#ms = new Array(doms.length);
-
-		let m: number = 1;
-		for (let i: number = this.#ms.length - 1; i >= 0; --i) {
-			this.#ms[i] = m;
-			m *= this.#ds[i].size();
-		}
+	let m: number = 1;
+	for (let i: number = ms.length - 1; i >= 0; --i) {
+		ms[i] = m;
+		m *= ds[i].size();
 	}
 
-	/**
-	 * Gets whether or not the relation is satisfied in this crisp relation.
-	 * @param vs Values of each variable
-	 * @return Whether or not it is satisfied.
-	 */
-	isSatisfied(...vs: number[]): -1 | 0 | 1 {
-		if (this.#ms.length !== vs.length) {
+	return (...vs: number[]): -1 | 0 | 1 => {
+		if (ms.length !== vs.length) {
 			throw new RangeError();
 		}
 		let index: number = 0;
-		for (let i: number = 0; i < this.#ms.length; ++i) {
-			index += this.#ms[i] * this.#ds[i].indexOf(vs[i]);
+		for (let i: number = 0; i < ms.length; ++i) {
+			index += ms[i] * ds[i].indexOf(vs[i]);
 		}
-		return this.#es[index];
-	}
-
+		return es[index];
+	};
 }
 
 /**
  * Fuzzy relations defined by tables.
  */
-export class FuzzyTabledRelation extends FuzzyRelation {
+export function createFuzzyTabledRelation(elms: number[], doms: Domain[]): (...vs: number[]) => number {
+	const es: number[] = [...elms];
+	const ds: Domain[] = [...doms];
+	const ms = new Array(doms.length);
 
-	#es: number[];
-	#ds: Domain[];
-	#ms: number[];
-
-	constructor(elms: number[], doms: Domain[]) {
-		super();
-		this.#es = [...elms];
-		this.#ds = [...doms];
-		this.#ms = new Array(doms.length);
-
-		let m: number = 1;
-		for (let i: number = this.#ms.length - 1; i >= 0; --i) {
-			this.#ms[i] = m;
-			m *= this.#ds[i].size();
-		}
+	let m: number = 1;
+	for (let i: number = ms.length - 1; i >= 0; --i) {
+		ms[i] = m;
+		m *= ds[i].size();
 	}
 
-	/**
-	 * Gets the satisfaction degree in this fuzzy relation.
-	 * @param vs Values of each variable
-	 * @return A satisfaction degree d (0 <= d <= 1).
-	 */
-	degree(...vs: number[]): number {
-		if (this.#ms.length !== vs.length) {
+	return (...vs: number[]): number => {
+		if (ms.length !== vs.length) {
 			throw new RangeError();
 		}
 		let index: number = 0;
-		for (let i: number = 0; i < this.#ms.length; ++i) {
-			index += this.#ms[i] * this.#ds[i].indexOf(vs[i]);
+		for (let i: number = 0; i < ms.length; ++i) {
+			index += ms[i] * ds[i].indexOf(vs[i]);
 		}
-		return this.#es[index];
-	}
-
+		return es[index];
+	};
 }
 
 
 // -----------------------------------------------------------------------------
 
 
-export class CrispFuzzyRelation extends CrispRelation {
-
-	#th: number;
-	#fr: FuzzyRelation;
-
-	constructor(fr: FuzzyRelation, th: number) {
-		super();
-		this.#fr = fr;
-		this.#th = th;
-	}
-
-	/**
-	 * Gets whether or not the relation is satisfied in this crisp relation.
-	 * @param vs Values of each variable
-	 * @return Whether or not it is satisfied.
-	 */
-	isSatisfied(...vs: number[]): -1 | 0 | 1 {
-		const d: number = this.#fr.degree(...vs);
-		return (0 < d && d < this.#th) ? 0 : d as -1 | 0 | 1;
-	}
-
+export function createCrispFuzzyRelation(fn: (...vs: number[]) => number, th: number): (...vs: number[]) => number {
+	return (...vs: number[]): -1 | 0 | 1 => {
+		const d: number = fn(...vs);
+		return (0 < d && d < th) ? 0 : d as -1 | 0 | 1;
+	};
 }

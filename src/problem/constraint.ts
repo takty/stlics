@@ -7,12 +7,11 @@
 
 import { Element } from './element';
 import { Variable } from './variable';
-import { Relation } from './relation';
 
 export abstract class Constraint extends Element {
 
 	// Called only from Problem.
-	static create(r: Relation, xs: Variable[]): Constraint {
+	static create(r: (...vs: number[]) => number, xs: Variable[]): Constraint {
 		if (1 === xs.length) {
 			return new Constraint1(r, xs[0]);
 		}
@@ -25,10 +24,10 @@ export abstract class Constraint extends Element {
 		return new ConstraintN(r, ...xs);
 	}
 
-	protected r : Relation;
+	protected r : (...vs: number[]) => number;
 	protected xs: Variable[] = [];
 
-	protected constructor(r: Relation) {
+	protected constructor(r: (...vs: number[]) => number) {
 		super();
 		this.r = r;
 	}
@@ -114,7 +113,7 @@ export abstract class Constraint extends Element {
 	 * Returns the relation between variables.
 	 * @return Relation.
 	 */
-	relation(): Relation {
+	relation(): (...vs: number[]) => number {
 		return this.r;
 	}
 
@@ -151,7 +150,7 @@ export abstract class Constraint extends Element {
 
 class Constraint1 extends Constraint {
 
-	constructor(r: Relation, x: Variable) {
+	constructor(r: (v0: number) => number, x: Variable) {
 		super(r);
 		this.xs = [x];
 	}
@@ -168,14 +167,14 @@ class Constraint1 extends Constraint {
 		if (this.xs[0].isEmpty()) {
 			return -1;  // UNDEFINED
 		}
-		return 1 === this.r.isSatisfied(this.xs[0].value()) ? 1 : 0;
+		return 1 === this.r(this.xs[0].value()) ? 1 : 0;
 	}
 
 	degree(): number {
 		if (this.xs[0].isEmpty()) {
 			return -1;  // UNDEFINED
 		}
-		return this.r.degree(this.xs[0].value());
+		return this.r(this.xs[0].value());
 	}
 
 }
@@ -186,7 +185,7 @@ class Constraint1 extends Constraint {
 
 class Constraint2 extends Constraint {
 
-	constructor(r: Relation, x1: Variable, x2: Variable) {
+	constructor(r: (v0: number, v1: number) => number, x1: Variable, x2: Variable) {
 		super(r);
 		this.xs = [x1, x2];
 	}
@@ -206,14 +205,14 @@ class Constraint2 extends Constraint {
 		if (this.xs[0].isEmpty() || this.xs[1].isEmpty()) {
 			return -1;  // UNDEFINED
 		}
-		return 1 === this.r.isSatisfied(this.xs[0].value(), this.xs[1].value()) ? 1 : 0;
+		return 1 === this.r(this.xs[0].value(), this.xs[1].value()) ? 1 : 0;
 	}
 
 	degree(): number {
 		if (this.xs[0].isEmpty() || this.xs[1].isEmpty()) {
 			return -1;  // UNDEFINED
 		}
-		return this.r.degree(this.xs[0].value(), this.xs[1].value());
+		return this.r(this.xs[0].value(), this.xs[1].value());
 	}
 
 }
@@ -224,7 +223,7 @@ class Constraint2 extends Constraint {
 
 class Constraint3 extends Constraint {
 
-	constructor(r: Relation, x1: Variable, x2: Variable, x3: Variable) {
+	constructor(r: (v0: number, v1: number, v2: number) => number, x1: Variable, x2: Variable, x3: Variable) {
 		super(r);
 		this.xs = [x1, x2, x3];
 	}
@@ -245,14 +244,14 @@ class Constraint3 extends Constraint {
 		if (this.xs[0].isEmpty() || this.xs[1].isEmpty() || this.xs[2].isEmpty()) {
 			return -1;  // UNDEFINED
 		}
-		return 1 === this.r.isSatisfied(this.xs[0].value(), this.xs[1].value(), this.xs[2].value()) ? 1 : 0;
+		return 1 === this.r(this.xs[0].value(), this.xs[1].value(), this.xs[2].value()) ? 1 : 0;
 	}
 
 	degree(): number {
 		if (this.xs[0].isEmpty() || this.xs[1].isEmpty() || this.xs[2].isEmpty()) {
 			return -1;  // UNDEFINED
 		}
-		return this.r.degree(this.xs[0].value(), this.xs[1].value(), this.xs[2].value());
+		return this.r(this.xs[0].value(), this.xs[1].value(), this.xs[2].value());
 	}
 
 }
@@ -265,7 +264,7 @@ class ConstraintN extends Constraint {
 
 	#vs: number[];  // For reuse.
 
-	constructor(r: Relation, ...xs: Variable[]) {
+	constructor(r: (...vs: number[]) => number, ...xs: Variable[]) {
 		super(r);
 		this.xs = [...xs];
 		this.#vs = new Array(this.xs.length);
@@ -296,7 +295,7 @@ class ConstraintN extends Constraint {
 			}
 			this.#vs[i] = x.value();
 		}
-		return 1 === this.r.isSatisfied(...this.#vs) ? 1 : 0;
+		return 1 === this.r(...this.#vs) ? 1 : 0;
 	}
 
 	degree(): number {
@@ -307,7 +306,7 @@ class ConstraintN extends Constraint {
 			}
 			this.#vs[i] = x.value();
 		}
-		return this.r.degree(...this.#vs);
+		return this.r(...this.#vs);
 	}
 
 }

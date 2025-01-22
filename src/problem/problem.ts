@@ -8,12 +8,11 @@
 import { Variable } from './variable';
 import { Domain } from './domain';
 import { Constraint } from './constraint';
-import { Relation } from './relation';
 
 export class Problem {
 
 	#fv: (o: Problem, d: Domain) => Variable = (o: Problem, d: Domain): Variable => new Variable(o, d);
-	#fc: (r: Relation, xs: Variable[]) => Constraint = (r: Relation, xs: Variable[]): Constraint => Constraint.create(r, xs);
+	#fc: (r: (...vs: number[]) => number, xs: Variable[]) => Constraint = (r: (...vs: number[]) => number, xs: Variable[]): Constraint => Constraint.create(r, xs);
 
 	#xs: Variable[]   = [];
 	#cs: Constraint[] = [];
@@ -32,7 +31,7 @@ export class Problem {
 	/**
 	 * Sets a variable factory.
 	 */
-	setConstraintFactory(fn: (r: Relation, xs: Variable[]) => Constraint): void {
+	setConstraintFactory(fn: (r: (...vs: number[]) => number, xs: Variable[]) => Constraint): void {
 		this.#fc = fn;
 	}
 
@@ -120,7 +119,7 @@ export class Problem {
 	 * @param name     Display name.
 	 * @return A constraint.
 	 */
-	createConstraint(relation: Relation, xs: Variable[], name?: string): Constraint {
+	createConstraint(relation: (...vs: number[]) => number, xs: Variable[], name?: string): Constraint {
 		for (const x of xs) {
 			if (x.owner() !== this) {
 				throw new RangeError();

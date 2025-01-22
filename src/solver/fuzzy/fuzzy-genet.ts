@@ -8,7 +8,6 @@
 
 import { Variable } from '../../problem/variable';
 import { Constraint } from '../../problem/constraint';
-import { Relation } from '../../problem/relation';
 import { AssignmentList } from '../misc/assignment-list';
 import { Solver } from '../solver';
 
@@ -266,11 +265,11 @@ class Connection {
 		if (!this.#n0._isActive || (this.#n1 !== null && !this.#n1._isActive)) {
 			return;
 		}
-		const rel: Relation = this.#c.relation();
+		const r: (...vs: number[]) => number = this.#c.relation();
 		if (this.#c.size() === 1) {
-			this._w += (rel.degree(this.#n0._value) - 1);
+			this._w += (r(this.#n0._value) - 1);
 		} else {
-			this._w += (rel.degree(this.#n0._value, (this.#n1 as Neuron)._value) - 1);
+			this._w += (r(this.#n0._value, (this.#n1 as Neuron)._value) - 1);
 		}
 	}
 
