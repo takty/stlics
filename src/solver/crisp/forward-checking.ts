@@ -5,7 +5,7 @@
  * Each variable must have its own domain because it hides domain elements as branch pruning.
  *
  * @author Takuto Yanagida
- * @version 2025-01-03
+ * @version 2025-01-22
  */
 
 import { Variable } from '../../problem/variable';
@@ -45,14 +45,14 @@ export class ForwardChecking extends Solver {
 	/**
 	 * {@override}
 	 */
-	name(): string {
+	override name(): string {
 		return 'Forward Checking';
 	}
 
 	/**
 	 * {@override}
 	 */
-	protected preprocess(): void {
+	protected override preprocess(): void {
 		this.#xs  = [...this.pro.variables()];
 		this.#rct = createRelatedConstraintTable(this.pro, this.#xs);
 		this.#dps = Array.from(this.#xs, (x: Variable): DomainPruner => new DomainPruner(x.domain().size()));
@@ -65,7 +65,7 @@ export class ForwardChecking extends Solver {
 	/**
 	 * {@override}
 	 */
-	protected exec(): boolean {
+	protected override exec(): boolean {
 		const ret: boolean | null = this.#branch(0);
 		this.#sol.apply();
 

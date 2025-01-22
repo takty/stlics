@@ -3,7 +3,7 @@
  * Solves a problem as a maximum CSP.
  *
  * @author Takuto Yanagida
- * @version 2025-01-03
+ * @version 2025-01-22
  */
 
 import { Variable } from '../../problem/variable';
@@ -36,14 +36,14 @@ export class Breakout extends Solver {
 	/**
 	 * {@override}
 	 */
-	name(): string {
+	override name(): string {
 		return 'Breakout';
 	}
 
 	/**
 	 * {@override}
 	 */
-	protected preprocess(): void {
+	protected override preprocess(): void {
 		this.#ws = new Array(this.pro.constraintSize());
 		this.#ws.fill(1);
 
@@ -58,7 +58,7 @@ export class Breakout extends Solver {
 	/**
 	 * {@override}
 	 */
-	protected exec(): boolean {
+	protected override exec(): boolean {
 		const defEv: number         = this.pro.ratio();
 		const sol  : AssignmentList = new AssignmentList();
 		let solEv  : number         = defEv;

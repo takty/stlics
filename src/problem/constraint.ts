@@ -2,7 +2,7 @@
  * The class that represents a constraint.
  *
  * @author Takuto Yanagida
- * @version 2025-01-21
+ * @version 2025-01-22
  */
 
 import { Element } from './element';
@@ -38,7 +38,7 @@ export abstract class Constraint extends Element {
 	 * Gets a string representation.
 	 * @return A string representation.
 	 */
-	toString(): string {
+	override toString(): string {
 		const n : string = this.name();
 		const np: string = n ? `(${n})` : '';
 		const ev: number = this.degree();

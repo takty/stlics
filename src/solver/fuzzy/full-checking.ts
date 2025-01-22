@@ -5,7 +5,7 @@
  * Forward checking is also performed for problems with polynomial constraints.
  *
  * @author Takuto Yanagida
- * @version 2025-01-16
+ * @version 2025-01-22
  */
 
 import { Variable } from '../../problem/variable';
@@ -63,14 +63,14 @@ export class FullChecking extends Solver {
 	/**
 	 * {@override}
 	 */
-	name(): string {
+	override name(): string {
 		return 'Full Checking';
 	}
 
 	/**
 	 * {@override}
 	 */
-	protected preprocess(): void {
+	protected override preprocess(): void {
 		this.#xs  = [...this.pro.variables()];
 		this.#rct = createRelatedConstraintTable(this.pro, this.#xs);
 		this.#dps = Array.from(this.#xs, (x: Variable): DomainPruner => new DomainPruner(x.domain().size()));
@@ -87,7 +87,7 @@ export class FullChecking extends Solver {
 	/**
 	 * {@override}
 	 */
-	protected exec(): boolean {
+	protected override exec(): boolean {
 		let ret: boolean | null = null;
 		while (ret === null) {
 			this.#globalRet = false;

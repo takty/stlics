@@ -3,7 +3,7 @@
  * CSPs and FCSPs (but only Binary (F)CSPs) is supported.
  *
  * @author Takuto Yanagida
- * @version 2025-01-16
+ * @version 2025-01-22
  */
 
 import { Variable } from '../../problem/variable';
@@ -37,14 +37,14 @@ export class FuzzyGENET extends Solver {
 	/**
 	 * {@override}
 	 */
-	name(): string {
+	override name(): string {
 		return 'Fuzzy GENET';
 	}
 
 	/**
 	 * {@override}
 	 */
-	protected preprocess(): void {
+	protected override preprocess(): void {
 		this.#clusters    = [];
 		this.#connections = [];
 		this.#thDeg	      = 1;
@@ -58,7 +58,7 @@ export class FuzzyGENET extends Solver {
 	/**
 	 * {@override}
 	 */
-	protected exec(): boolean {
+	protected override exec(): boolean {
 		const order: number[] = [...Array(this.#clusters.length).keys()];
 
 		const defEv: number         = this.pro.degree();

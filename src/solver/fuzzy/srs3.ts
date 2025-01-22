@@ -2,7 +2,7 @@
  * This class implements the SRS3 algorithm.
  *
  * @author Takuto Yanagida
- * @version 2025-01-16
+ * @version 2025-01-22
  */
 
 import { Constraint } from '../../problem/constraint';
@@ -40,14 +40,14 @@ export class SRS3 extends Solver {
 	/**
 	 * {@override}
 	 */
-	name(): string {
+	override name(): string {
 		return 'SRS3';
 	}
 
 	/**
 	 * {@override}
 	 */
-	protected preprocess(): void {
+	protected override preprocess(): void {
 		this.#ws = new Array(this.pro.constraintSize());
 		this.#ws.fill(1);
 
@@ -72,7 +72,7 @@ export class SRS3 extends Solver {
 	/**
 	 * {@override}
 	 */
-	protected exec(): boolean {
+	protected override exec(): boolean {
 		const defEv: number         = this.pro.degree();
 		const sol  : AssignmentList = new AssignmentList();
 		let solEv  : number         = defEv;

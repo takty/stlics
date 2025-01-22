@@ -4,7 +4,7 @@
  * Find the solution to the problem as the maximum CSP.
  *
  * @author Takuto Yanagida
- * @version 2025-01-16
+ * @version 2025-01-22
  */
 
 import { Variable } from '../../problem/variable';
@@ -28,14 +28,14 @@ export class GENET extends Solver {
 	/**
 	 * {@override}
 	 */
-	name(): string {
+	override name(): string {
 		return 'GENET';
 	}
 
 	/**
 	 * {@override}
 	 */
-	protected preprocess(): void {
+	protected override preprocess(): void {
 		this.#clusters    = [];
 		this.#connections = [];
 
@@ -48,7 +48,7 @@ export class GENET extends Solver {
 	/**
 	 * {@override}
 	 */
-	protected exec(): boolean {
+	protected override exec(): boolean {
 		const order: number[] = [...Array(this.#clusters.length).keys()];
 
 		const defEv: number         = this.pro.ratio();

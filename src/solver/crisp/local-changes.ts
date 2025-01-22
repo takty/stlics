@@ -3,7 +3,7 @@
  * The implementation is optimized by converting recursive calls to loops.
  *
  * @author Takuto Yanagida
- * @version 2025-01-18
+ * @version 2025-01-22
  */
 
 import { Variable } from '../../problem/variable';
@@ -25,14 +25,14 @@ export class LocalChanges extends Solver {
 	/**
 	 * {@override}
 	 */
-	name(): string {
+	override name(): string {
 		return 'Local Changes';
 	}
 
 	/**
 	 * {@override}
 	 */
-	protected preprocess(): void {
+	protected override preprocess(): void {
 		if (this.pro.emptyVariableSize() === 0) {
 			this.pro.clearAllVariables();
 		}
@@ -44,7 +44,7 @@ export class LocalChanges extends Solver {
 	/**
 	 * {@override}
 	 */
-	protected exec(): boolean {
+	protected override exec(): boolean {
 		const notFixed   = new Set<Variable>();
 		const unassigned = new Set<Variable>();
 		for (const x of this.pro.variables()) {

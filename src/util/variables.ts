@@ -2,7 +2,7 @@
  * Classes of utility variables.
  *
  * @author Takuto Yanagida
- * @version 2025-01-02
+ * @version 2025-01-22
  */
 
 import { Problem } from '../problem/problem';
@@ -26,7 +26,7 @@ export class ObservableVariable extends Variable {
 	 * Assign a value.
 	 * @param v Value.
 	 */
-	assign(v: number): void {
+	override assign(v: number): void {
 		super.assign(v);
 		if (this.#observer) {
 			this.#observer(this, v);
@@ -49,15 +49,15 @@ export class ImaginaryVariable extends Variable {
 		this.assign(x.value());
 	}
 
-	assign(v: number): void {
+	override assign(v: number): void {
 		this.#orig.assign(v);
 	}
 
-	domain(): Domain;
+	override domain(): Domain;
 
-	domain(d: Domain): void;
+	override domain(d: Domain): void;
 
-	domain(d?: Domain): Domain | void {
+	override domain(d?: Domain): Domain | void {
 		if (d === undefined) {
 			return this.#orig.domain();
 		} else {
@@ -65,7 +65,7 @@ export class ImaginaryVariable extends Variable {
 		}
 	}
 
-	value(): number {
+	override value(): number {
 		return this.#orig.value();
 	}
 

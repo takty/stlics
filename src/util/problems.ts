@@ -2,7 +2,7 @@
  * Utility class for constraint satisfaction problems.
  *
  * @author Takuto Yanagida
- * @version 2025-01-18
+ * @version 2025-01-22
  */
 
 import { Problem } from '../problem/problem';
@@ -189,7 +189,7 @@ export function toViewAsCrispProblem(p: Problem, threshold: number): CrispFuzzyP
 
 class CrispFuzzyProblem extends Problem {
 
-	createVariable(d_x: Domain | Variable, _value: number | null = null, _name: string = ''): Variable {
+	override createVariable(d_x: Domain | Variable, _value: number | null = null, _name: string = ''): Variable {
 		if (d_x instanceof Variable) {
 			const iv = new ImaginaryVariable(d_x);
 			this.addVariable(iv);

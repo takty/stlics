@@ -2,7 +2,7 @@
  * Class of post-stabilization.
  *
  * @author Takuto Yanagida
- * @version 2025-01-03
+ * @version 2025-01-22
  */
 
 import { Problem } from '../../problem/problem';
@@ -77,14 +77,14 @@ export class PostStabilizerWrapper extends Solver {
 	/**
 	 * {@override}
 	 */
-	name(): string {
+	override name(): string {
 		return this.#solver.name() + ' + PF';
 	}
 
 	/**
 	 * {@override}
 	 */
-	protected exec(): boolean {
+	protected override exec(): boolean {
 		let ev : number = 0;
 		let evs: number = 0;
 		if (this.monitor.isDebugMode()) {

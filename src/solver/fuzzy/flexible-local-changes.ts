@@ -3,7 +3,7 @@
  * The implementation is optimized by converting recursive calls to loops.
  *
  * @author Takuto Yanagida
- * @version 2025-01-18
+ * @version 2025-01-22
  */
 
 import { Variable } from '../../problem/variable';
@@ -30,14 +30,14 @@ export class FlexibleLocalChanges extends Solver {
 	/**
 	 * {@override}
 	 */
-	name(): string {
+	override name(): string {
 		return 'Flexible Local Changes';
 	}
 
 	/**
 	 * {@override}
 	 */
-	protected preprocess(): void {
+	protected override preprocess(): void {
 		[this.#lb, this.#lt] = consistencyDegreeOfProblem(this.pro);
 		this.#wsd = this.pro.degree();
 		if (this.pro.emptyVariableSize() === 0) {
@@ -51,7 +51,7 @@ export class FlexibleLocalChanges extends Solver {
 	/**
 	 * {@override}
 	 */
-	protected exec(): boolean {
+	protected override exec(): boolean {
 		const X1 = new Set<Variable>();
 		const X2 = new Set<Variable>();  // Currently assigned variables.
 		const X3 = new Set<Variable>();  // Currently unassigned variables.
