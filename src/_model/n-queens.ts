@@ -2,7 +2,7 @@
  * A sample implementation of the N queens problem.
  *
  * @author Takuto Yanagida
- * @version 2025-01-18
+ * @version 2025-01-22
  */
 
 import { Problem } from '../problem/problem';
@@ -25,10 +25,6 @@ export class N_queens extends Model {
 
 	setQueenSize(size: number): void {
 		this.#size = size;
-	}
-
-	isFuzzy(): boolean {
-		return false;
 	}
 
 	createProblem(p: Problem): Problem {

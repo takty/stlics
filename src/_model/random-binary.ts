@@ -2,7 +2,7 @@
  * Sample implementation of a random binary problem.
  *
  * @author Takuto Yanagida
- * @version 2025-01-18
+ * @version 2025-01-22
  */
 
 import { Problem } from '../problem/problem';
@@ -57,10 +57,6 @@ export class RandomBinary extends Model {
 
 	setDomainSize(size: number): void {
 		this.#sig = size;
-	}
-
-	isFuzzy(): boolean {
-		return true;
 	}
 
 	createProblem(p: Problem): Problem {

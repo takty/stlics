@@ -2,7 +2,7 @@
  * The class for models that provides a factory method to generate constraint satisfaction problems.
  *
  * @author Takuto Yanagida
- * @version 2024-10-21
+ * @version 2025-01-22
  */
 
 import { Problem } from '../problem/problem';
@@ -19,12 +19,6 @@ export abstract class Model {
 	 * @return A generated problem.
 	 */
 	abstract createProblem(p: Problem): Problem;
-
-	/**
-	 * Returns whether the generated problem is a fuzzy constraint satisfaction problem, i.e., whether it contains fuzzy constraints.
-	 * @return If it is a fuzzy constraint satisfaction problem, true
-	 */
-	abstract isFuzzy(): boolean;
 
 
 	// -------------------------------------------------------------------------
