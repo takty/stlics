@@ -2,7 +2,7 @@
  * This class holds the branch pruning states for a domain.
  *
  * @author Takuto Yanagida
- * @version 2025-01-02
+ * @version 2025-01-22
  */
 
 import { Variable } from '../../problem/variable';
@@ -10,7 +10,7 @@ import { Domain } from '../../problem/domain';
 
 export class DomainPruner {
 
-	static #UNPRUNED: number = Number.MIN_SAFE_INTEGER;
+	static readonly #UNPRUNED: number = Number.MIN_SAFE_INTEGER;
 
 	#prunedLvs : number[];
 	#prunedSize: number = 0;
