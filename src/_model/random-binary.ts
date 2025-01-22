@@ -8,7 +8,6 @@
 import { Problem } from '../problem/problem';
 import { Variable } from '../problem/variable';
 import { Constraint } from '../problem/constraint';
-import { FuzzyRelation } from '../problem/relation';
 import { random } from './beta';
 import { Model } from './model';
 
@@ -73,7 +72,11 @@ export class RandomBinary extends Model {
 			if (i !== j) {
 				const temp: Constraint[] = p.constraintsBetween(xs[i], xs[j]);
 				if (0 === temp.length) {
-					p.createConstraint(new TableRelation(this.#getRelationTable()), [xs[i], xs[j]]);
+					const table: number[][] = this.#getRelationTable();
+					p.createConstraint(
+						(v0: number, v1: number): number => table[v0][v1],
+						[xs[i], xs[j]]
+					);
 				}
 			}
 		}
@@ -98,19 +101,4 @@ export class RandomBinary extends Model {
 
 function nextInt(max: number): number {
 	return Math.floor(Math.random() * Math.floor(max));
-}
-
-class TableRelation extends FuzzyRelation {
-
-	#table: number[][];
-
-	constructor(table: number[][]) {
-		super();
-		this.#table = table;
-	}
-
-	degree(v1: number, v2: number): number {
-		return this.#table[v1][v2];
-	}
-
 }

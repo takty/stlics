@@ -9,7 +9,6 @@
 
 import { Problem } from '../problem/problem';
 import { Variable } from '../problem/variable';
-import { FuzzyRelation } from '../problem/relation';
 import { Model } from './model';
 
 export class N_1_queens extends Model {
@@ -37,7 +36,14 @@ export class N_1_queens extends Model {
 		}
 		for (let i: number = 0; i < this.#size; ++i) {
 			for (let j: number = i + 1; j < this.#size; ++j) {
-				p.createConstraint(new FuzzyQueenRelation(i, j, this.#size), [xs[i], xs[j]]);
+				const dist: number = j - i;
+				const ev  : number = (dist - 1) / (this.#size - 1);
+				p.createConstraint(
+					(v0: number, v1: number): number => {
+						return ((v0 !== v1) && (v0 !== v1 + dist) && (v0 !== v1 - dist)) ? 1 : ev;
+					},
+					[xs[i], xs[j]]
+				);
 			}
 		}
 		return p;
@@ -57,24 +63,6 @@ export class N_1_queens extends Model {
 			}
 			this._debugOutput(l);
 		}
-	}
-
-}
-
-class FuzzyQueenRelation extends FuzzyRelation {
-
-	#dist: number;
-	#size: number;
-
-	constructor(i: number, j: number, size: number) {
-		super();
-		this.#dist = j - i;
-		this.#size = size;
-	}
-
-	degree(v1: number, v2: number): number {
-		if ((v1 !== v2) && (v1 !== v2 + this.#dist) && (v1 !== v2 - this.#dist)) return 1;
-		return (this.#dist - 1) / (this.#size - 1);
 	}
 
 }

@@ -7,7 +7,6 @@
 
 import { Problem } from '../problem/problem';
 import { Variable } from '../problem/variable';
-import { CrispRelation } from '../problem/relation';
 import { Model } from './model';
 
 export class N_queens extends Model {
@@ -35,7 +34,13 @@ export class N_queens extends Model {
 		}
 		for (let i: number = 0; i < this.#size; ++i) {
 			for (let j: number = i + 1; j < this.#size; ++j) {
-				p.createConstraint(new CrispQueenRelation(i, j), [xs[i], xs[j]]);
+				const dist: number = j - i;
+				p.createConstraint(
+					(v0: number, v1: number): -1 | 0 | 1 => {
+						return ((v0 !== v1) && (v0 !== v1 + dist) && (v0 !== v1 - dist)) ? 1 : 0;
+					},
+					[xs[i], xs[j]]
+				);
 			}
 		}
 		return p;
@@ -55,22 +60,6 @@ export class N_queens extends Model {
 			}
 			this._debugOutput(l);
 		}
-	}
-
-}
-
-class CrispQueenRelation extends CrispRelation {
-
-	#dist: number;
-
-	constructor(i: number, j: number) {
-		super();
-		this.#dist = j - i;
-	}
-
-	isSatisfied(v1: number, v2: number): -1 | 0 | 1 {
-		if ((v1 !== v2) && (v1 !== v2 + this.#dist) && (v1 !== v2 - this.#dist)) return 1;
-		return 0;
 	}
 
 }
