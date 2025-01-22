@@ -67,11 +67,13 @@ export function wrapWithPostStabilizer(solver: Solver): Solver {
  */
 export class PostStabilizerWrapper extends Solver {
 
-	#solver: Solver;
+	#solver  : Solver;
+	#criteria: Criteria;
 
-	constructor(solver: Solver) {
+	constructor(solver: Solver, criteria: Criteria = Criteria.DEGREE) {
 		super();
-		this.#solver = solver;
+		this.#solver   = solver;
+		this.#criteria = criteria;
 	}
 
 	/**
@@ -88,7 +90,7 @@ export class PostStabilizerWrapper extends Solver {
 		let ev : number = 0;
 		let evs: number = 0;
 		if (this.monitor.isDebugMode()) {
-			ev  = this.pro.isFuzzy() ? this.pro.degree() : this.pro.ratio();
+			ev  = Criteria.DEGREE === this.#criteria ? this.pro.degree() : this.pro.ratio();
 			evs = this.pro.emptyVariableSize();
 		}
 		const orig = new AssignmentList();
@@ -99,9 +101,16 @@ export class PostStabilizerWrapper extends Solver {
 			applyPostStabilization(this.pro, orig, this.monitor.outputDebugString.bind(this.monitor));
 		}
 		this.monitor.outputDebugString(`Solver result: ${res ? 'Success' : 'Failure'}`);
-		this.monitor.outputDebugString(`Evaluation: ${ev} -> ${this.pro.isFuzzy() ? this.pro.degree() : this.pro.ratio()}`);
+		this.monitor.outputDebugString(`Evaluation: ${ev} -> ${Criteria.DEGREE === this.#criteria ? this.pro.degree() : this.pro.ratio()}`);
 		this.monitor.outputDebugString(`Empty variable size: ${evs} -> ${this.pro.emptyVariableSize()}`);
 		return res;
 	}
 
 }
+
+const Criteria = {
+	DEGREE: 'degree',
+	RATIO : 'ratio',
+};
+
+export type Criteria = (typeof Criteria)[keyof typeof Criteria];
