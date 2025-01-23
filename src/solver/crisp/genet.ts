@@ -4,7 +4,7 @@
  * Find the solution to the problem as the maximum CSP.
  *
  * @author Takuto Yanagida
- * @version 2025-01-22
+ * @version 2025-01-23
  */
 
 import { Variable } from '../../problem/variable';
@@ -100,7 +100,7 @@ export class GENET extends Solver {
 					const origV: number = x.value();  // Save the value.
 					x.assign(n._value);
 
-					if (c.isSatisfied() !== 1) {
+					if (c.status() !== 1) {
 						cons.push(new Connection(c, n));
 					}
 					x.assign(origV);  // Restore the value.
@@ -119,7 +119,7 @@ export class GENET extends Solver {
 						const origV2: number = x2.value();  // Save the value.
 						x2.assign(n_s._value);
 
-						if (c.isSatisfied() !== 1) {
+						if (c.status() !== 1) {
 							cons.push(new Connection(c, n_f, n_s));
 						}
 						x2.assign(origV2);  // Restore the value.
@@ -237,7 +237,7 @@ class Connection {
 		this.#c  = c;
 		this.#n0 = first;
 		this.#n1 = second;
-		this._w  = c.isSatisfied() - 1;
+		this._w  = c.status() - 1;
 
 		this.#n0.addConnection(this);
 		if (this.#n1) {

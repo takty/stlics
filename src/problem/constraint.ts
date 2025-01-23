@@ -2,7 +2,7 @@
  * The class that represents a constraint.
  *
  * @author Takuto Yanagida
- * @version 2025-01-22
+ * @version 2025-01-23
  */
 
 import { Element } from './element';
@@ -134,7 +134,7 @@ export abstract class Constraint extends Element {
 	 * Returns whether or not this constraint is satisfied.
 	 * @return 1 if satisfied, 0 if not, UNDEFINED if undefined
 	 */
-	abstract isSatisfied(): -1 | 0 | 1;
+	abstract status(): -1 | 0 | 1;
 
 	/**
 	 * Gets the current satisfaction degree.
@@ -163,7 +163,7 @@ class Constraint1 extends Constraint {
 		return !this.xs[0].isEmpty();
 	}
 
-	isSatisfied(): -1 | 0 | 1 {
+	status(): -1 | 0 | 1 {
 		if (this.xs[0].isEmpty()) {
 			return -1;  // UNDEFINED
 		}
@@ -201,7 +201,7 @@ class Constraint2 extends Constraint {
 		return !this.xs[0].isEmpty() && !this.xs[1].isEmpty();
 	}
 
-	isSatisfied(): -1 | 0 | 1 {
+	status(): -1 | 0 | 1 {
 		if (this.xs[0].isEmpty() || this.xs[1].isEmpty()) {
 			return -1;  // UNDEFINED
 		}
@@ -240,7 +240,7 @@ class Constraint3 extends Constraint {
 		return !this.xs[0].isEmpty() && !this.xs[1].isEmpty() && !this.xs[2].isEmpty();
 	}
 
-	isSatisfied(): -1 | 0 | 1 {
+	status(): -1 | 0 | 1 {
 		if (this.xs[0].isEmpty() || this.xs[1].isEmpty() || this.xs[2].isEmpty()) {
 			return -1;  // UNDEFINED
 		}
@@ -287,7 +287,7 @@ class ConstraintN extends Constraint {
 		return true;
 	}
 
-	isSatisfied(): -1 | 0 | 1 {
+	status(): -1 | 0 | 1 {
 		for (let i: number = 0; i < this.xs.length; ++i) {
 			const x: Variable = this.xs[i];
 			if (x.isEmpty()) {

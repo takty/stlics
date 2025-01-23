@@ -2,7 +2,7 @@
  * The class represents a constraint satisfaction problem.
  *
  * @author Takuto Yanagida
- * @version 2025-01-22
+ * @version 2025-01-23
  */
 
 import { Variable } from './variable';
@@ -417,7 +417,7 @@ export class Problem {
 	satisfiedConstraintSize(): number {
 		let n: number = 0;
 		for (const c of this.#cs) {
-			n += (c.isSatisfied() === 1) ? 1 : 0;
+			n += (c.status() === 1) ? 1 : 0;
 		}
 		return n;
 	}
@@ -439,7 +439,7 @@ export class Problem {
 	satisfiedConstraints(): Constraint[] {
 		const cs: Constraint[] = [];
 		for (const c of this.#cs) {
-			if (c.isSatisfied() === 1) {
+			if (c.status() === 1) {
 				cs.push(c);
 			}
 		}
@@ -454,7 +454,7 @@ export class Problem {
 	violatingConstraints(): Constraint[] {
 		const cs: Constraint[] = [];
 		for (const c of this.#cs) {
-			if (c.isSatisfied() === 0) {
+			if (c.status() === 0) {
 				cs.push(c);
 			}
 		}

@@ -3,7 +3,7 @@
  * Solves a problem as a maximum CSP.
  *
  * @author Takuto Yanagida
- * @version 2025-01-22
+ * @version 2025-01-23
  */
 
 import { Variable } from '../../problem/variable';
@@ -116,7 +116,7 @@ export class Breakout extends Solver {
 
 			let nowEv: number = 0;
 			for (const c of x) {
-				nowEv += (1 - c.isSatisfied()) * this.#ws[c.index()];
+				nowEv += (1 - c.status()) * this.#ws[c.index()];
 			}
 			out: for (const v of x.domain()) {
 				if (x_v === v) {
@@ -126,7 +126,7 @@ export class Breakout extends Solver {
 				let diff: number = nowEv;
 
 				for (const c of x) {
-					diff -= (1 - c.isSatisfied()) * this.#ws[c.index()];
+					diff -= (1 - c.status()) * this.#ws[c.index()];
 					// If the improvement is less than the previous improvement, try the next variable.
 					if (diff < maxDiff) {
 						continue out;

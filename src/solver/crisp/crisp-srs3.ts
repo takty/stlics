@@ -3,7 +3,7 @@
  * The given crisp CSP is treated as the maximum CSP.
  *
  * @author Takuto Yanagida
- * @version 2025-01-22
+ * @version 2025-01-23
  */
 
 import { Constraint } from '../../problem/constraint';
@@ -167,20 +167,20 @@ export class CrispSRS3 extends Solver {
 
 			let nowEv: number = 0;
 			for (const c of x) {
-				nowEv += (1 - c.isSatisfied()) * this.#ws[c.index()];
+				nowEv += (1 - c.status()) * this.#ws[c.index()];
 			}
 			out: for (const v of x.domain()) {
 				if (x_v === v) {
 					continue;
 				}
 				x.assign(v);
-				if (c0.isSatisfied() !== 1) {
+				if (c0.status() !== 1) {
 					continue;
 				}
 				let diff: number = nowEv;
 
 				for (const c of x) {
-					diff -= (1 - c.isSatisfied()) * this.#ws[c.index()];
+					diff -= (1 - c.status()) * this.#ws[c.index()];
 					// If the improvement is less than the previous improvement, try the next variable.
 					if (diff < maxDiff) {
 						continue out;

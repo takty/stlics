@@ -2,7 +2,7 @@
  * The class implements AC-3, one of the arc consistency algorithms.
  *
  * @author Takuto Yanagida
- * @version 2025-01-18
+ * @version 2025-01-23
  */
 
 import { Problem } from '../../problem/problem';
@@ -16,7 +16,7 @@ export class AC3 {
 		for (const v of x_j.domain()) {  // Is there a partner that satisfies the constraint?
 			x_j.assign(v);
 
-			if (c.isSatisfied() === 1) {  // It exists!
+			if (c.status() === 1) {  // It exists!
 				return true;  // Current assignment of v_i is consistent.
 			}
 		}

@@ -3,7 +3,7 @@
  * The implementation is optimized by converting recursive calls to loops.
  *
  * @author Takuto Yanagida
- * @version 2025-01-22
+ * @version 2025-01-23
  */
 
 import { Variable } from '../../problem/variable';
@@ -136,7 +136,7 @@ export class LocalChanges extends Solver {
 		x.assign(v);
 
 		for (const c of cs) {
-			if (c.isSatisfied() !== 1) {
+			if (c.status() !== 1) {
 				x.assign(origV);  // Restore the value.
 				return false;
 			}
@@ -158,7 +158,7 @@ export class LocalChanges extends Solver {
 		x.assign(v);
 
 		for (const c of cs) {
-			if (c.isSatisfied() !== 1) {
+			if (c.status() !== 1) {
 				for (const xi of c) {
 					newX3.add(xi);
 				}

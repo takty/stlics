@@ -5,7 +5,7 @@
  * Each variable must have its own domain because it hides domain elements as branch pruning.
  *
  * @author Takuto Yanagida
- * @version 2025-01-22
+ * @version 2025-01-23
  */
 
 import { Variable } from '../../problem/variable';
@@ -154,7 +154,7 @@ export class ForwardChecking extends Solver {
 			}
 			x.assign(d.at(i));
 
-			if (c.isSatisfied() === 0) {  // Do hide when in violation (not even UNDEFINED).
+			if (c.status() === 0) {  // Do hide when in violation (not even UNDEFINED).
 				dp.prune(i, level);
 			}
 		}
@@ -167,7 +167,7 @@ export class ForwardChecking extends Solver {
 		let vc: number = 0;
 
 		for (const c of x) {
-			if (c.isSatisfied() === 0) {  // Neither satisfied nor UNDEFINED.
+			if (c.status() === 0) {  // Neither satisfied nor UNDEFINED.
 				++vc;
 			}
 		}

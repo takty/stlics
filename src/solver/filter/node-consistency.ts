@@ -2,7 +2,7 @@
  * Utility class that performs node consistency.
  *
  * @author Takuto Yanagida
- * @version 2025-01-18
+ * @version 2025-01-23
  */
 
 import { Problem } from '../../problem/problem';
@@ -62,7 +62,7 @@ export function applyNodeConsistencyToCrispProblem(p: Problem): boolean {
 			for (const v of d) {
 				x.assign(v);
 
-				if (c.isSatisfied() === 1) {
+				if (c.status() === 1) {
 					vs.push(v);
 				}
 			}
