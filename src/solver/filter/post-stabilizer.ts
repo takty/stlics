@@ -2,7 +2,7 @@
  * Class of post-stabilization.
  *
  * @author Takuto Yanagida
- * @version 2025-01-22
+ * @version 2025-01-23
  */
 
 import { Problem } from '../../problem/problem';
@@ -91,7 +91,7 @@ export class PostStabilizerWrapper extends Solver {
 		let evs: number = 0;
 		if (this.monitor.isDebugMode()) {
 			ev  = Criteria.DEGREE === this.#criteria ? this.pro.degree() : this.pro.ratio();
-			evs = this.pro.emptyVariableSize();
+			evs = this.pro.emptySize();
 		}
 		const orig = new AssignmentList();
 		orig.setProblem(this.pro);
@@ -102,7 +102,7 @@ export class PostStabilizerWrapper extends Solver {
 		}
 		this.monitor.outputDebugString(`Solver result: ${res ? 'Success' : 'Failure'}`);
 		this.monitor.outputDebugString(`Evaluation: ${ev} -> ${Criteria.DEGREE === this.#criteria ? this.pro.degree() : this.pro.ratio()}`);
-		this.monitor.outputDebugString(`Empty variable size: ${evs} -> ${this.pro.emptyVariableSize()}`);
+		this.monitor.outputDebugString(`Empty variable size: ${evs} -> ${this.pro.emptySize()}`);
 		return res;
 	}
 

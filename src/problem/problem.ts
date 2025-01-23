@@ -328,7 +328,7 @@ export class Problem {
 	 * Returns the number of variables in the problem that have not been assigned a value.
 	 * @return Number of variables with no value assigned.
 	 */
-	emptyVariableSize(): number {
+	emptySize(): number {
 		let n: number = 0;
 
 		for (const x of this.#xs) {

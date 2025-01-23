@@ -140,7 +140,7 @@ export class MaxForwardChecking extends Solver {
 			const d_i : Domain       = x_i.domain();
 
 			for (const c of cs) {
-				if (c.emptyVariableSize() !== 1) {
+				if (c.emptySize() !== 1) {
 					continue;
 				}
 				if (!this.#checkForwardConsistency(level, x_i, d_i, dp_i, c)) {

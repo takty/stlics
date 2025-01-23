@@ -2,7 +2,7 @@
  * A class that implements the flexible local changes method.
  *
  * @author Takuto Yanagida
- * @version 2025-01-18
+ * @version 2025-01-23
  */
 
 import { Variable } from '../../../problem/variable';
@@ -39,7 +39,7 @@ export class FlexibleLocalChanges extends Solver {
 	protected preprocess(): void {
 		[this.#lb, this.#lt] = consistencyDegreeOfProblem(this.pro);
 		this.#wsd = this.pro.degree();
-		if (this.pro.emptyVariableSize() === 0) {
+		if (this.pro.emptySize() === 0) {
 			this.pro.clearAllVariables();
 		}
 		this.#globalRet = -1;

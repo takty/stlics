@@ -32,7 +32,7 @@ export class LocalChanges extends Solver {
 	 * {@override}
 	 */
 	protected override preprocess(): void {
-		if (this.pro.emptyVariableSize() === 0) {
+		if (this.pro.emptySize() === 0) {
 			this.pro.clearAllVariables();
 		}
 		this.#globalRet = false;

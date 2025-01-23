@@ -2,7 +2,7 @@
  * Utilities for calculating consistency degree.
  *
  * @author Takuto Yanagida
- * @version 2025-01-22
+ * @version 2025-01-23
  */
 
 import { Problem } from '../../problem/problem';
@@ -236,7 +236,7 @@ function highestConsistencyDegreeN(c: Constraint): number {
 	if (0 <= ev) {  // ev !== UNDEFINED
 		return ev;
 	}
-	const emptyIndices = new Array(c.emptyVariableSize());
+	const emptyIndices = new Array(c.emptySize());
 	let j: number = 0;
 
 	const vs: number[] = new Array(c.size());
@@ -261,7 +261,7 @@ function lowestConsistencyDegreeN(c: Constraint): number {
 	if (0 <= ev) {  // ev !== UNDEFINED
 		return ev;
 	}
-	const emptyIndices = new Array(c.emptyVariableSize());
+	const emptyIndices = new Array(c.emptySize());
 	let j: number = 0;
 
 	const vs: number[] = new Array(c.size());

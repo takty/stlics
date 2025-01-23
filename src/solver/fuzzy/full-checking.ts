@@ -5,7 +5,7 @@
  * Forward checking is also performed for problems with polynomial constraints.
  *
  * @author Takuto Yanagida
- * @version 2025-01-22
+ * @version 2025-01-23
  */
 
 import { Variable } from '../../problem/variable';
@@ -193,7 +193,7 @@ export class FullChecking extends Solver {
 			const d_i : Domain       = x_i.domain();
 
 			for (const c of cs) {
-				const evs: number = c.emptyVariableSize();
+				const evs: number = c.emptySize();
 				if (1 === evs) {
 					if (!this.#checkForwardConsistency(level, x_i, d_i, dp_i, c)) {
 						return false;

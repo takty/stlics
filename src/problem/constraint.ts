@@ -121,7 +121,7 @@ export abstract class Constraint extends Element {
 	 * Returns the number of scope variables that have not been assigned a value.
 	 * @return Number of variables
 	 */
-	abstract emptyVariableSize(): number;
+	abstract emptySize(): number;
 
 	/**
 	 * Returns whether or not the satisfaction (degree) is defined.
@@ -155,7 +155,7 @@ class Constraint1 extends Constraint {
 		this.xs = [x];
 	}
 
-	emptyVariableSize(): number {
+	emptySize(): number {
 		return this.xs[0].isEmpty() ? 1 : 0;
 	}
 
@@ -190,7 +190,7 @@ class Constraint2 extends Constraint {
 		this.xs = [x1, x2];
 	}
 
-	emptyVariableSize(): number {
+	emptySize(): number {
 		let n: number = 0;
 		if (this.xs[0].isEmpty()) ++n;
 		if (this.xs[1].isEmpty()) ++n;
@@ -228,7 +228,7 @@ class Constraint3 extends Constraint {
 		this.xs = [x1, x2, x3];
 	}
 
-	emptyVariableSize(): number {
+	emptySize(): number {
 		let n: number = 0;
 		if (this.xs[0].isEmpty()) ++n;
 		if (this.xs[1].isEmpty()) ++n;
@@ -270,7 +270,7 @@ class ConstraintN extends Constraint {
 		this.#vs = new Array(this.xs.length);
 	}
 
-	emptyVariableSize(): number {
+	emptySize(): number {
 		let n: number = 0;
 		for (const x of this.xs) {
 			n += x.isEmpty() ? 1 : 0;
