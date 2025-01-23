@@ -2,7 +2,7 @@
  * Sample implementation of a random binary problem.
  *
  * @author Takuto Yanagida
- * @version 2025-01-22
+ * @version 2025-01-23
  */
 
 import { Problem } from '../problem/problem';
@@ -62,8 +62,7 @@ export class RandomBinary extends Model {
 		const r: number = (this.#den * ((this.#size * this.#size - this.#size) / 2)) | 0;
 		const xs: Variable[] = [];
 		for (let i: number = 0; i < this.#size; ++i) {
-			const x: Variable = p.createVariable(p.createDomain(0, this.#sig - 1), 0);
-			xs.push(x);
+			xs.push(p.createVariable(p.createDomain(0, this.#sig - 1), 0));
 		}
 		while (p.constraintSize() < r) {
 			const i: number = nextInt(this.#size);

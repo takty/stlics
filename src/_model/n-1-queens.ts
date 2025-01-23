@@ -4,7 +4,7 @@
  * If two queens are in a position to be taken, the farther apart they are, the higher the satisfaction degree.
  *
  * @author Takuto Yanagida
- * @version 2025-01-22
+ * @version 2025-01-23
  */
 
 import { Problem } from '../problem/problem';
@@ -31,8 +31,7 @@ export class N_1_queens extends Model {
 	createProblem(p: Problem): Problem {
 		const xs: Variable[] = [];
 		for (let i: number = 0; i < this.#size; ++i) {
-			const x: Variable = p.createVariable(p.createDomain(1, this.#size - 1), 1, `Queen ${i}`);
-			xs.push(x);
+			xs.push(p.createVariable(p.createDomain(1, this.#size - 1), 1, `Queen ${i}`));
 		}
 		for (let i: number = 0; i < this.#size; ++i) {
 			for (let j: number = i + 1; j < this.#size; ++j) {
