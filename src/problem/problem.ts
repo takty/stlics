@@ -65,9 +65,9 @@ export class Problem {
 
 	createDomain(vs_min: number[] | number, max: number | null = null): Domain {
 		if (Array.isArray(vs_min)) {
-			return Domain.createArbitraryDomain(vs_min);
+			return Domain.create(vs_min);
 		} else if (null !== max) {
-			return Domain.createRangedDomain(vs_min, max);
+			return Domain.create(vs_min, max);
 		}
 		throw new RangeError();
 	}

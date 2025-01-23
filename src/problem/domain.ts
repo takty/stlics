@@ -3,17 +3,33 @@
  * The domain is immutable.
  *
  * @author Takuto Yanagida
- * @version 2025-01-16
+ * @version 2025-01-23
  */
 
 export abstract class Domain {
 
-	static createRangedDomain(min: number, max: number): Domain {
-		return new DomainRanged(min, max);
-	}
+	/**
+	 * Generates a domain.
+	 * @param vs Multiple values.
+	 * @return A domain.
+	 */
+	static create(vs: number[]): Domain;
 
-	static createArbitraryDomain(values: number[]): Domain {
-		return new DomainArbitrary(values);
+	/**
+	 * Generates a domain.
+	 * @param min Minimum value.
+	 * @param max Maximum value.
+	 * @return A domain.
+	 */
+	static create(min: number, max: number): Domain;
+
+	static create(vs_min: number[] | number, max: number | null = null): Domain {
+		if (Array.isArray(vs_min)) {
+			return new DomainArbitrary(vs_min);
+		} else if (null !== max) {
+			return new DomainRanged(vs_min, max);
+		}
+		throw new RangeError();
 	}
 
 	/**
