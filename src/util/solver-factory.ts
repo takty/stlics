@@ -2,7 +2,7 @@
  * Solver factory class.
  *
  * @author Takuto Yanagida
- * @version 2025-01-18
+ * @version 2025-01-23
  */
 
 import { Solver } from '../solver/solver';
@@ -28,7 +28,6 @@ export class SolverFactory {
 			/* 3 */ 'Fuzzy Breakout',
 			/* 4 */ 'Fuzzy GENET',
 			/* 5 */ 'SRS3',
-			/* 6 */ 'SRS3 PF',
 		];
 	}
 
@@ -100,13 +99,6 @@ export class SolverFactory {
 			case 'srs3':
 				const { SRS3 } = await import('../solver/fuzzy/srs3');
 				return new SRS3();
-			case 'SRS3PF':
-			case 'SRS3_PF':
-			case 'srs3-pf': {
-				const { SRS3 } = await import('../solver/fuzzy/srs3');
-				const { wrapWithPostStabilizer } = await import('../solver/filter/post-stabilizer');
-				return wrapWithPostStabilizer(new SRS3());
-			}
 		}
 		return null;
 	}

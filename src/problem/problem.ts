@@ -43,7 +43,7 @@ export class Problem {
 	 * Adds a variable to this problem.
 	 * @param Variable v A variable.
 	 */
-	addVariable(x: Variable): void {
+	protected addVariable(x: Variable): void {
 		x.setIndex(this.#xs.length);
 		this.#xs.push(x);
 	}
