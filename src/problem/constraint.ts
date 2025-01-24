@@ -2,7 +2,7 @@
  * The class that represents a constraint.
  *
  * @author Takuto Yanagida
- * @version 2025-01-23
+ * @version 2025-01-24
  */
 
 import { Element } from './element';
@@ -24,8 +24,8 @@ export abstract class Constraint extends Element {
 		return new ConstraintN(r, ...xs);
 	}
 
-	protected r : (...vs: number[]) => number;
-	protected xs: Variable[] = [];
+	protected r : (...vs: number[]) => number;  // Relation
+	protected es: Variable[] = [];
 
 	protected constructor(r: (...vs: number[]) => number) {
 		super();
@@ -50,7 +50,7 @@ export abstract class Constraint extends Element {
 	 * @return Order.
 	 */
 	size(): number {
-		return this.xs.length;
+		return this.es.length;
 	}
 
 	/**
@@ -59,7 +59,7 @@ export abstract class Constraint extends Element {
 	 * @return A variable.
 	 */
 	at(index: number): Variable | undefined {
-		return this.xs.at(index);
+		return this.es.at(index);
 	}
 
 	/**
@@ -68,7 +68,7 @@ export abstract class Constraint extends Element {
 	 * @return True if associated.
 	 */
 	has(x: Variable): boolean {
-		return this.xs.includes(x);
+		return this.es.includes(x);
 	}
 
 	/**
@@ -78,7 +78,7 @@ export abstract class Constraint extends Element {
 	 * @return Index.
 	 */
 	indexOf(x: Variable): number {
-		return this.xs.indexOf(x);
+		return this.es.indexOf(x);
 	}
 
 	/**
@@ -88,7 +88,7 @@ export abstract class Constraint extends Element {
 	neighbors(): Constraint[] {
 		const cs: Constraint[] = [];
 
-		for (const x of this.xs) {
+		for (const x of this.es) {
 			for (const c of x) {
 				if (c !== this) {
 					cs.push(c);
@@ -102,7 +102,7 @@ export abstract class Constraint extends Element {
 	 * Gets the iterator of the associated variables.
 	 */
 	[Symbol.iterator](): Iterator<Variable> {
-		return this.xs[Symbol.iterator]();
+		return this.es[Symbol.iterator]();
 	}
 
 
@@ -152,29 +152,29 @@ class Constraint1 extends Constraint {
 
 	constructor(r: (v0: number) => number, x: Variable) {
 		super(r);
-		this.xs = [x];
+		this.es = [x];
 	}
 
 	emptySize(): number {
-		return this.xs[0].isEmpty() ? 1 : 0;
+		return this.es[0].isEmpty() ? 1 : 0;
 	}
 
 	isDefined(): boolean {
-		return !this.xs[0].isEmpty();
+		return !this.es[0].isEmpty();
 	}
 
 	status(): -1 | 0 | 1 {
-		if (this.xs[0].isEmpty()) {
+		if (this.es[0].isEmpty()) {
 			return -1;  // UNDEFINED
 		}
-		return 1 === this.r(this.xs[0].value()) ? 1 : 0;
+		return 1 === this.r(this.es[0].value()) ? 1 : 0;
 	}
 
 	degree(): number {
-		if (this.xs[0].isEmpty()) {
+		if (this.es[0].isEmpty()) {
 			return -1;  // UNDEFINED
 		}
-		return this.r(this.xs[0].value());
+		return this.r(this.es[0].value());
 	}
 
 }
@@ -187,32 +187,32 @@ class Constraint2 extends Constraint {
 
 	constructor(r: (v0: number, v1: number) => number, x1: Variable, x2: Variable) {
 		super(r);
-		this.xs = [x1, x2];
+		this.es = [x1, x2];
 	}
 
 	emptySize(): number {
 		let n: number = 0;
-		if (this.xs[0].isEmpty()) ++n;
-		if (this.xs[1].isEmpty()) ++n;
+		if (this.es[0].isEmpty()) ++n;
+		if (this.es[1].isEmpty()) ++n;
 		return n;
 	}
 
 	isDefined(): boolean {
-		return !this.xs[0].isEmpty() && !this.xs[1].isEmpty();
+		return !this.es[0].isEmpty() && !this.es[1].isEmpty();
 	}
 
 	status(): -1 | 0 | 1 {
-		if (this.xs[0].isEmpty() || this.xs[1].isEmpty()) {
+		if (this.es[0].isEmpty() || this.es[1].isEmpty()) {
 			return -1;  // UNDEFINED
 		}
-		return 1 === this.r(this.xs[0].value(), this.xs[1].value()) ? 1 : 0;
+		return 1 === this.r(this.es[0].value(), this.es[1].value()) ? 1 : 0;
 	}
 
 	degree(): number {
-		if (this.xs[0].isEmpty() || this.xs[1].isEmpty()) {
+		if (this.es[0].isEmpty() || this.es[1].isEmpty()) {
 			return -1;  // UNDEFINED
 		}
-		return this.r(this.xs[0].value(), this.xs[1].value());
+		return this.r(this.es[0].value(), this.es[1].value());
 	}
 
 }
@@ -225,33 +225,33 @@ class Constraint3 extends Constraint {
 
 	constructor(r: (v0: number, v1: number, v2: number) => number, x1: Variable, x2: Variable, x3: Variable) {
 		super(r);
-		this.xs = [x1, x2, x3];
+		this.es = [x1, x2, x3];
 	}
 
 	emptySize(): number {
 		let n: number = 0;
-		if (this.xs[0].isEmpty()) ++n;
-		if (this.xs[1].isEmpty()) ++n;
-		if (this.xs[2].isEmpty()) ++n;
+		if (this.es[0].isEmpty()) ++n;
+		if (this.es[1].isEmpty()) ++n;
+		if (this.es[2].isEmpty()) ++n;
 		return n;
 	}
 
 	isDefined(): boolean {
-		return !this.xs[0].isEmpty() && !this.xs[1].isEmpty() && !this.xs[2].isEmpty();
+		return !this.es[0].isEmpty() && !this.es[1].isEmpty() && !this.es[2].isEmpty();
 	}
 
 	status(): -1 | 0 | 1 {
-		if (this.xs[0].isEmpty() || this.xs[1].isEmpty() || this.xs[2].isEmpty()) {
+		if (this.es[0].isEmpty() || this.es[1].isEmpty() || this.es[2].isEmpty()) {
 			return -1;  // UNDEFINED
 		}
-		return 1 === this.r(this.xs[0].value(), this.xs[1].value(), this.xs[2].value()) ? 1 : 0;
+		return 1 === this.r(this.es[0].value(), this.es[1].value(), this.es[2].value()) ? 1 : 0;
 	}
 
 	degree(): number {
-		if (this.xs[0].isEmpty() || this.xs[1].isEmpty() || this.xs[2].isEmpty()) {
+		if (this.es[0].isEmpty() || this.es[1].isEmpty() || this.es[2].isEmpty()) {
 			return -1;  // UNDEFINED
 		}
-		return this.r(this.xs[0].value(), this.xs[1].value(), this.xs[2].value());
+		return this.r(this.es[0].value(), this.es[1].value(), this.es[2].value());
 	}
 
 }
@@ -266,20 +266,20 @@ class ConstraintN extends Constraint {
 
 	constructor(r: (...vs: number[]) => number, ...xs: Variable[]) {
 		super(r);
-		this.xs = [...xs];
-		this.#vs = new Array(this.xs.length);
+		this.es = [...xs];
+		this.#vs = new Array(this.es.length);
 	}
 
 	emptySize(): number {
 		let n: number = 0;
-		for (const x of this.xs) {
+		for (const x of this.es) {
 			n += x.isEmpty() ? 1 : 0;
 		}
 		return n;
 	}
 
 	isDefined(): boolean {
-		for (const x of this.xs) {
+		for (const x of this.es) {
 			if (x.isEmpty()) {
 				return false;
 			}
@@ -288,8 +288,8 @@ class ConstraintN extends Constraint {
 	}
 
 	status(): -1 | 0 | 1 {
-		for (let i: number = 0; i < this.xs.length; ++i) {
-			const x: Variable = this.xs[i];
+		for (let i: number = 0; i < this.es.length; ++i) {
+			const x: Variable = this.es[i];
 			if (x.isEmpty()) {
 				return -1;  // UNDEFINED
 			}
@@ -299,8 +299,8 @@ class ConstraintN extends Constraint {
 	}
 
 	degree(): number {
-		for (let i: number = 0; i < this.xs.length; ++i) {
-			const x: Variable = this.xs[i];
+		for (let i: number = 0; i < this.es.length; ++i) {
+			const x: Variable = this.es[i];
 			if (x.isEmpty()) {
 				return -1;  // UNDEFINED
 			}

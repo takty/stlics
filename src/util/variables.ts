@@ -2,10 +2,9 @@
  * Classes of utility variables.
  *
  * @author Takuto Yanagida
- * @version 2025-01-22
+ * @version 2025-01-24
  */
 
-import { Problem } from '../problem/problem';
 import { Variable } from '../problem/variable';
 import { Domain } from '../problem/domain';
 
@@ -17,8 +16,8 @@ export class ObservableVariable extends Variable {
 	#observer: ((x: Variable, v: number) => void) | null;
 
 	// Called only from Problem.
-	constructor(owner: Problem, d: Domain, observer: (x: Variable, v: number) => void) {
-		super(owner, d);
+	constructor(d: Domain, observer: (x: Variable, v: number) => void) {
+		super(d);
 		this.#observer = observer;
 	}
 
@@ -43,7 +42,7 @@ export class ImaginaryVariable extends Variable {
 	#orig: Variable;
 
 	constructor(x: Variable) {
-		super(x.owner(), x.domain());
+		super(x.domain());
 		this.#orig = x;
 		this.setName(x.name());
 		this.assign(x.value());

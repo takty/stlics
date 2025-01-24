@@ -2,29 +2,26 @@
  * The class that represents a variable.
  *
  * @author Takuto Yanagida
- * @version 2025-01-22
+ * @version 2025-01-24
  */
 
-import { Problem } from './problem';
 import { Element } from './element';
-import { Constraint } from './constraint';
 import { Domain } from './domain';
+import { Constraint } from './constraint';
 
 export class Variable extends Element {
 
 	static readonly #INVALID: number = Number.MIN_VALUE;
 
-	#owner: Problem;
+	protected d : Domain;
+	protected es: Constraint[] = [];
 
-	#d : Domain;
-	#v : number = Variable.#INVALID;
-	#cs: Constraint[] = [];
+	protected v: number = Variable.#INVALID;
 
 	// Called only from Problem.
-	constructor(owner: Problem, d: Domain) {
+	constructor(d: Domain) {
 		super();
-		this.#owner = owner;
-		this.#d     = d;
+		this.d = d;
 	}
 
 	/**
@@ -44,7 +41,7 @@ export class Variable extends Element {
 	 * @return Number of constraints.
 	 */
 	size(): number {
-		return this.#cs.length;
+		return this.es.length;
 	}
 
 	/**
@@ -53,7 +50,7 @@ export class Variable extends Element {
 	 * @return A constraint.
 	 */
 	at(index: number): Constraint | undefined {
-		return this.#cs.at(index);
+		return this.es.at(index);
 	}
 
 	/**
@@ -62,7 +59,7 @@ export class Variable extends Element {
 	 * @return True if associated.
 	 */
 	has(c: Constraint): boolean {
-		return this.#cs.includes(c);
+		return this.es.includes(c);
 	}
 
 	/**
@@ -72,7 +69,7 @@ export class Variable extends Element {
 	 * @return Index.
 	 */
 	indexOf(c: Constraint): number {
-		return this.#cs.indexOf(c);
+		return this.es.indexOf(c);
 	}
 
 	/**
@@ -82,7 +79,7 @@ export class Variable extends Element {
 	neighbors(): Variable[] {
 		const xs: Variable[] = [];
 
-		for (const c of this.#cs) {
+		for (const c of this.es) {
 			for (const x of c) {
 				if (x !== this) {
 					xs.push(x);
@@ -96,35 +93,27 @@ export class Variable extends Element {
 	 * Gets the iterator of the associated constraints.
 	 */
 	[Symbol.iterator](): Iterator<Constraint> {
-		return this.#cs[Symbol.iterator]();
+		return this.es[Symbol.iterator]();
 	}
 
 
 	// -------------------------------------------------------------------------
 
 
-	/**
-	 * Gets the problem that owns this variable.
-	 * @return Owner.
-	 */
-	owner(): Problem {
-		return this.#owner;
-	}
-
 	// Called only from Problem.
 	connect(c: Constraint): void {
-		if (this.#cs.includes(c)) {
+		if (this.es.includes(c)) {
 			throw new RangeError();
 		}
-		this.#cs.push(c);
+		this.es.push(c);
 	}
 
 	// Called only from Problem.
 	disconnect(c: Constraint): void {
-		if (!this.#cs.includes(c)) {
+		if (!this.es.includes(c)) {
 			throw new RangeError();
 		}
-		this.#cs = this.#cs.filter(
+		this.es = this.es.filter(
 			(i: Constraint): boolean => i !== c
 		);
 	}
@@ -144,9 +133,9 @@ export class Variable extends Element {
 
 	domain(d?: Domain): Domain | void {
 		if (d === undefined) {
-			return this.#d;
+			return this.d;
 		} else {
-			this.#d = d;
+			this.d = d;
 			this.clear();
 		}
 	}
@@ -156,7 +145,7 @@ export class Variable extends Element {
 	 * @param value Value.
 	 */
 	assign(value: number): void {
-		this.#v = value;  // Do not change #val except here.
+		this.v = value;  // Do not change #val except here.
 	}
 
 	/**
@@ -172,7 +161,7 @@ export class Variable extends Element {
 	 * @returnThe value of the variable.
 	 */
 	value(): number {
-		return this.#v;
+		return this.v;
 	}
 
 	/**

@@ -2,7 +2,7 @@
  * The class represents a constraint satisfaction problem.
  *
  * @author Takuto Yanagida
- * @version 2025-01-23
+ * @version 2025-01-24
  */
 
 import { Variable } from './variable';
@@ -11,7 +11,7 @@ import { Constraint } from './constraint';
 
 export class Problem {
 
-	#fv: (o: Problem, d: Domain) => Variable = (o: Problem, d: Domain): Variable => new Variable(o, d);
+	#fv: (d: Domain) => Variable = (d: Domain): Variable => new Variable(d);
 	#fc: (r: (...vs: number[]) => number, xs: Variable[]) => Constraint = (r: (...vs: number[]) => number, xs: Variable[]): Constraint => Constraint.create(r, xs);
 
 	#xs: Variable[]   = [];
@@ -24,7 +24,7 @@ export class Problem {
 	/**
 	 * Sets a variable factory.
 	 */
-	setVariableFactory(fn: (o: Problem, d: Domain) => Variable): void {
+	setVariableFactory(fn: (d: Domain) => Variable): void {
 		this.#fv = fn;
 	}
 
@@ -90,7 +90,7 @@ export class Problem {
 
 	createVariable(x_d: Variable | Domain, value: number | null = null, name?: string): Variable {
 		if (x_d instanceof Variable) {
-			const x: Variable = this.#fv(this, (x_d as Variable).domain());
+			const x: Variable = this.#fv((x_d as Variable).domain());
 			this.addVariable(x);
 			x.setName(x.name());
 			x.assign(x.value());
@@ -99,7 +99,7 @@ export class Problem {
 			if (value !== null && !x_d.contains(value)) {
 				throw new Error();
 			}
-			const x: Variable = this.#fv(this, x_d);
+			const x: Variable = this.#fv(x_d);
 			this.addVariable(x);
 			if (value !== null) {
 				x.assign(value);
@@ -120,11 +120,6 @@ export class Problem {
 	 * @return A constraint.
 	 */
 	createConstraint(relation: (...vs: number[]) => number, xs: Variable[], name?: string): Constraint {
-		for (const x of xs) {
-			if (x.owner() !== this) {
-				throw new RangeError();
-			}
-		}
 		const c: Constraint = this.#fc(relation, xs);
 		c.setIndex(this.#cs.length);
 		this.#cs.push(c);
