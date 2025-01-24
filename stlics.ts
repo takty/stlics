@@ -33,6 +33,7 @@ export * from './src/solver/misc/assignment';
 export * from './src/solver/misc/assignment-list';
 export * from './src/solver/misc/consistency';
 export * from './src/solver/misc/domain-pruner';
+export * from './src/solver/misc/random';
 
 
 // -----------------------------------------------------------------------------

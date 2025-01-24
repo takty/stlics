@@ -2,12 +2,13 @@
  * The class represents multiple variables and their assignments.
  *
  * @author Takuto Yanagida
- * @version 2025-01-18
+ * @version 2025-01-24
  */
 
 import { Assignment } from './assignment';
 import { Variable } from '../../problem/variable';
 import { Problem } from '../../problem/problem';
+import { rand } from './random';
 
 export class AssignmentList {
 
@@ -136,7 +137,7 @@ export class AssignmentList {
 	 * @return An assignment.
 	 */
 	random(): Assignment {
-		return this.#as[Math.floor(Math.random() * this.#as.length)];
+		return this.#as[rand(this.#as.length)];
 	}
 
 }

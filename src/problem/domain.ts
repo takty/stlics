@@ -3,7 +3,7 @@
  * The domain is immutable.
  *
  * @author Takuto Yanagida
- * @version 2025-01-23
+ * @version 2025-01-24
  */
 
 export abstract class Domain {
@@ -67,15 +67,6 @@ export abstract class Domain {
 	 * Gets the iterator of the values of the domain.
 	 */
 	abstract [Symbol.iterator](): Iterator<number>;
-
-	/**
-	 * Gets an arbitrary value, regardless of whether it has been pruned or not.
-	 *
-	 * @return A value.
-	 */
-	random(): number {
-		return this.at(Math.floor(Math.random() * this.size()));
-	}
 
 }
 

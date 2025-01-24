@@ -4,12 +4,13 @@
  * Find the solution to the problem as the maximum CSP.
  *
  * @author Takuto Yanagida
- * @version 2025-01-23
+ * @version 2025-01-24
  */
 
 import { Variable } from '../../problem/variable';
 import { Constraint } from '../../problem/constraint';
 import { AssignmentList } from '../misc/assignment-list';
+import { rand } from '../misc/random';
 import { Solver } from '../solver';
 
 export class GENET extends Solver {
@@ -154,7 +155,7 @@ export class GENET extends Solver {
 
 	#shuffle(is: number[]): number[] {
 		for (let i: number = is.length - 1; 0 < i; --i) {
-			const j: number = Math.floor(Math.random() * (i + 1));
+			const j: number = rand(i + 1);
 			[is[i], is[j]] = [is[j], is[i]];
 		}
 		return is;
@@ -175,7 +176,7 @@ class Cluster {
 		for (const v of x.domain()) {
 			this._ns.push(new Neuron(v));
 		}
-		this.#setActivity(nextInt(this._ns.length));
+		this.#setActivity(rand(this._ns.length));
 	}
 
 	#setActivity(index: number): void {
@@ -215,7 +216,7 @@ class Cluster {
 		if (alreadyOn || 0 === this.#maxNs.length) {
 			return false;
 		}
-		this.#setActivity(this.#maxNs[nextInt(this.#maxNs.length)]);
+		this.#setActivity(this.#maxNs[rand(this.#maxNs.length)]);
 		return true;
 	}
 
@@ -290,8 +291,4 @@ class Neuron {
 		return ret;
 	}
 
-}
-
-function nextInt(max: number): number {
-	return Math.floor(Math.random() * Math.floor(max));
 }

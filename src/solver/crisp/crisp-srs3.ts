@@ -3,12 +3,13 @@
  * The given crisp CSP is treated as the maximum CSP.
  *
  * @author Takuto Yanagida
- * @version 2025-01-23
+ * @version 2025-01-24
  */
 
 import { Constraint } from '../../problem/constraint';
 import { Assignment } from '../misc/assignment';
 import { AssignmentList } from '../misc/assignment-list';
+import { rand } from '../misc/random';
 import { Solver } from '../solver';
 
 export class CrispSRS3 extends Solver {
@@ -250,7 +251,7 @@ export class CrispSRS3 extends Solver {
 
 	#getElementFromSet(set: Set<TreeNode>): TreeNode {
 		const ms : TreeNode[] = this.#selectLightestNode(this.#selectNearestNode(set));
-		return this.#isRandom ? ms[Math.floor(Math.random() * ms.length)] : ms[0];
+		return this.#isRandom ? ms[rand(ms.length)] : ms[0];
 	}
 
 	#selectLightestNode(set: Iterable<TreeNode>): TreeNode[] {
