@@ -25,7 +25,7 @@ function create(num: number): void {
 	const obs: (x: Variable, v: number) => void = (x: Variable, v: number): void => board(v - 1, x.index());
 
 	p = new Problem();
-	p.setVariableFactory((o: Problem, d: Domain): ObservableVariable => new ObservableVariable(o, d, obs));
+	p.setVariableFactory((d: Domain): ObservableVariable => new ObservableVariable(d, obs));
 	p = m.createProblem(p);
 }
 
