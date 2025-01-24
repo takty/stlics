@@ -127,11 +127,11 @@ export class SRS3 extends Solver {
 			const node: TreeNode = this.#getElementFromSet(this.#openList);
 			this.#openList.delete(node);
 
-			if (!this.#repair(node.constraint())) {
+			if (!this.#repair(node)) {
 				this.#spread(node);
 			} else if (c_stars.delete(node)) {
 				// If the repaired node is included in C* (to be deleted)
-			} else if (node.parent() && this.#repair((node.parent() as TreeNode).constraint())) {
+			} else if (node.parent() && this.#repair(node.parent() as TreeNode)) {
 				this.#shrink(node, c_stars);  // When its improvement leads to the improvement of its parents
 			} else {
 				this.#spread(node);
@@ -154,9 +154,14 @@ export class SRS3 extends Solver {
 		}
 	}
 
-	#repair(c0: Constraint): boolean {
+	#repair(tn: TreeNode): boolean {
 		this.monitor.outputDebugString('Repair');
-		this.#ws[c0.index()] += 1;
+		const c0: Constraint = tn.constraint();
+
+		let tn0: TreeNode = tn;
+		do {
+			this.#ws[tn0.constraint().index()] += 1;
+		} while (tn0 = tn0.parent() as TreeNode);
 
 		const defEv0: number = c0.degree();  // Target c0 should certainly be an improvement over this.
 		const canList = new AssignmentList();
@@ -217,7 +222,7 @@ export class SRS3 extends Solver {
 				curIsRemoved = true;
 				break;
 			}
-			if (!cur.parent() || !this.#repair((cur.parent() as TreeNode).constraint())) {
+			if (!cur.parent() || !this.#repair(cur.parent() as TreeNode)) {
 				break;
 			}
 		}
