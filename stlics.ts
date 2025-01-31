@@ -40,7 +40,8 @@ export * from './src/solver/misc/random';
 
 
 export * from './src/util/loop-detector';
+export * from './src/util/possible-degree';
 export * from './src/util/problems';
-export * from './src/util/variables';
 export * from './src/util/relations';
 export * from './src/util/solver-factory';
+export * from './src/util/variables';
