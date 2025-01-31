@@ -5,7 +5,7 @@
  * Forward checking is also performed for problems with polynomial constraints.
  *
  * @author Takuto Yanagida
- * @version 2025-01-23
+ * @version 2025-01-31
  */
 
 import { Variable } from '../../problem/variable';
@@ -25,12 +25,12 @@ export class FullChecking extends Solver {
 
 	#checkedCs!: Set<Constraint>;
 	#sequence! : Variable[];
-	#unaryCs!  : Constraint[];
 
 	#minDeg!   : number;  // Degree of existing solutions (no need to find a solution less than this).
 	#globalRet!: boolean;
 
 	#useMRV          : boolean = true;
+	#prePruningDeg   : number  = 0;
 	#pruneIntensively: boolean = false;
 
 	/**
@@ -48,6 +48,15 @@ export class FullChecking extends Solver {
 	 */
 	setUsingMinimumRemainingValuesHeuristics(flag: boolean): void {
 		this.#useMRV = flag;
+	}
+
+	/**
+	 * Set the degree of the worst solution to be pruned in the initial pruning phase.
+	 * The default is 0 (no pruning).
+	 * @param deg Degree of the worst solution.
+	 */
+	setPrePruningDegree(deg: number): void {
+		this.#prePruningDeg = deg;
 	}
 
 	/**
@@ -78,9 +87,8 @@ export class FullChecking extends Solver {
 
 		this.#checkedCs = new Set();
 		this.#sequence  = new Array(this.pro.variableSize());
-		this.#unaryCs   = this.pro.constraints().filter((c: Constraint): boolean => c.size() === 1);
 
-		this.#minDeg = 0;
+		this.#minDeg = this.#prePruningDeg;
 		this.monitor.initialize();
 	}
 
@@ -106,19 +114,23 @@ export class FullChecking extends Solver {
 
 	// Prune elements of the domain that make the unary constraint worse than the current worst degree.
 	#pruneUnaryConstraints(): boolean {
-		for (const c of this.#unaryCs) {
-			const x    : Variable     = c.at(0) as Variable;
-			const origV: number       = x.value();  // Save the value.
-			const d    : Domain       = x.domain();
-			const dp   : DomainPruner = this.#dps[x.index()];
+		for (const c of this.pro.constraints()) {
+			if (c.size() !== 1) {
+				continue;
+			}
+			const x : Variable              = c.at(0) as Variable;
+			const d : Domain                = x.domain();
+			const dp: DomainPruner          = this.#dps[x.index()];
+			const r : (v: number) => number = c.relation();
 
 			for (let i: number = 0, n: number = d.size(); i < n; ++i) {
-				x.assign(d.at(i));
-				if (c.degree() <= this.#minDeg) {
+				if (dp.isPruned(i)) {
+					continue;
+				}
+				if (r(d.at(i)) <= this.#minDeg) {
 					dp.prune(i, -1);  // Here's a branch pruning!
 				}
 			}
-			x.assign(origV);  // Restore the value.
 			if (dp.isEmpty()) {
 				return false;
 			}

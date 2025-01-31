@@ -3,7 +3,7 @@
  * The minimum-remaining-values (MRV) heuristic can also be used by specifying the option.
  *
  * @author Takuto Yanagida
- * @version 2025-01-23
+ * @version 2025-01-31
  */
 
 import { Variable } from '../../problem/variable';
@@ -24,7 +24,8 @@ export class FuzzyForwardChecking extends Solver {
 	#minDeg!   : number;  // Degree of existing solutions (no need to find a solution less than this).
 	#globalRet!: boolean;
 
-	#useMRV: boolean = true;
+	#useMRV       : boolean = true;
+	#prePruningDeg: number  = 0;
 
 	/**
 	 * Generates a solver.
@@ -44,6 +45,15 @@ export class FuzzyForwardChecking extends Solver {
 	}
 
 	/**
+	 * Set the degree of the worst solution to be pruned in the initial pruning phase.
+	 * The default is 0 (no pruning).
+	 * @param deg Degree of the worst solution.
+	 */
+	setPrePruningDegree(deg: number): void {
+		this.#prePruningDeg = deg;
+	}
+
+	/**
 	 * {@override}
 	 */
 	override name(): string {
@@ -59,7 +69,7 @@ export class FuzzyForwardChecking extends Solver {
 		this.#dps = Array.from(this.#xs, (x: Variable): DomainPruner => new DomainPruner(x.domain().size()));
 		this.#sol = new AssignmentList();
 
-		this.#minDeg = 0;
+		this.#minDeg = this.#prePruningDeg;
 		this.monitor.initialize();
 	}
 
@@ -72,11 +82,41 @@ export class FuzzyForwardChecking extends Solver {
 			this.#globalRet = false;
 			this.pro.clearAllVariables();
 
+			if (!this.#pruneUnaryConstraints()) {
+				ret = false;
+				break;
+			}
 			ret = this.#branch(0);
 			this.#sol.apply();
 		}
 
 		return ret === true;
+	}
+
+	// Prune elements of the domain that make the unary constraint worse than the current worst degree.
+	#pruneUnaryConstraints(): boolean {
+		for (const c of this.pro.constraints()) {
+			if (c.size() !== 1) {
+				continue;
+			}
+			const x : Variable              = c.at(0) as Variable;
+			const d : Domain                = x.domain();
+			const dp: DomainPruner          = this.#dps[x.index()];
+			const r : (v: number) => number = c.relation();
+
+			for (let i: number = 0, n: number = d.size(); i < n; ++i) {
+				if (dp.isPruned(i)) {
+					continue;
+				}
+				if (r(d.at(i)) <= this.#minDeg) {
+					dp.prune(i, -1);  // Here's a branch pruning!
+				}
+			}
+			if (dp.isEmpty()) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	#branch(level: number, curDeg: number = 1): boolean | null {
