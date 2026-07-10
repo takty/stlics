@@ -2,7 +2,7 @@
  * The class represents a constraint satisfaction problem.
  *
  * @author Takuto Yanagida
- * @version 2025-01-24
+ * @version 2026-07-10
  */
 
 import { Variable } from './variable';
@@ -92,8 +92,8 @@ export class Problem {
 		if (x_d instanceof Variable) {
 			const x: Variable = this.#fv((x_d as Variable).domain());
 			this.addVariable(x);
-			x.setName(x.name());
-			x.assign(x.value());
+			x.setName(x_d.name());
+			x.assign(x_d.value());
 			return x;
 		} else if (x_d instanceof Domain) {
 			if (value !== null && !x_d.contains(value)) {
