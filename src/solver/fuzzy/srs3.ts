@@ -95,6 +95,9 @@ export class SRS3 extends Solver {
 			if (null !== (ret = this.monitor.check(ev))) {
 				break;
 			}
+			if (this.pro.constraintSize() === 0) {
+				return true;
+			}
 
 			for (const tn of this.#nodes) {
 				tn.clear();
