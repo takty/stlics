@@ -2,7 +2,7 @@
  * The class for monitoring solvers.
  *
  * @author Takuto Yanagida
- * @version 2025-01-16
+ * @version 2026-07-10
  */
 
 import { AssignmentList } from './misc/assignment-list';
@@ -90,7 +90,7 @@ export class Monitor {
 			this.outputDebugString('Stop: Current evaluation value is above the target');
 			return true;
 		}
-		if (this.#iterLimit < this.#iterCount++) {
+		if (this.#iterLimit < ++this.#iterCount) {
 			this.outputDebugString('Stop: Number of iterations has reached the limit');
 			return false;
 		}
