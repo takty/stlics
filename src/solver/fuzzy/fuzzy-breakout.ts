@@ -2,7 +2,7 @@
  * Class implements a solver using the breakout method for fuzzy CSP.
  *
  * @author Takuto Yanagida
- * @version 2025-01-22
+ * @version 2026-07-10
  */
 
 import { Variable } from '../../problem/variable';
@@ -60,7 +60,7 @@ export class FuzzyBreakout extends Solver {
 	protected override exec(): boolean {
 		const defEv: number         = this.pro.degree();
 		const sol  : AssignmentList = new AssignmentList();
-		let solEv  : number         = defEv;
+		let solEv  : number         = -1;  // UNDEFINED
 
 		const canList = new AssignmentList();
 		let ret: boolean | null = null;
