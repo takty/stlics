@@ -142,7 +142,11 @@ export class Problem {
 	 */
 	removeConstraint(c: Constraint): void {
 		const index: number = this.#cs.indexOf(c);
+		if (index === -1) {
+			throw new RangeError('The constraint does not belong to this problem.');
+		}
 		this.#cs.splice(index, 1);
+
 		for (let i: number = index; i < this.#cs.length; ++i) {
 			this.#cs[i].setIndex(i);
 		}
@@ -192,7 +196,7 @@ export class Problem {
 	 * The returned list is not allowed to be modified.
 	 * @return The variable list.
 	 */
-	variables(): Variable[] {
+	variables(): readonly Variable[] {
 		return this.#xs;
 	}
 
@@ -245,7 +249,7 @@ export class Problem {
 	 * The returned list is not allowed to be modified.
 	 * @return The constraint list.
 	 */
-	constraints(): Constraint[] {
+	constraints(): readonly Constraint[] {
 		return this.#cs;
 	}
 
@@ -316,6 +320,7 @@ export class Problem {
 	 * @return Constraint density.
 	 */
 	constraintDensity(): number {
+		if (this.#xs.length === 0) return 0;
 		return this.#cs.length / this.#xs.length;
 	}
 
@@ -377,7 +382,7 @@ export class Problem {
 				cur = ev;
 				cs.length = 0;
 				cs.push(c);
-			} else if (ev - cur < Number.MIN_VALUE * 10) {
+			} else if (ev - cur < Number.EPSILON) {
 				cs.push(c);
 			}
 		}
@@ -389,6 +394,7 @@ export class Problem {
 	 * @return Average of satisfaction degrees.
 	 */
 	averageDegree(): number {
+		if (this.#cs.length === 0) return 1;
 		let s: number = 0;
 		for (const c of this.#cs) {
 			s += c.degree();
@@ -401,6 +407,7 @@ export class Problem {
 	 * @return Rate of satisfied constraints.
 	 */
 	ratio(): number {
+		if (this.#cs.length === 0) return 1;
 		return this.satisfiedConstraintSize() / this.#cs.length;
 	}
 
@@ -423,7 +430,11 @@ export class Problem {
 	 * @return Number of violating constraints.
 	 */
 	violatingConstraintSize(): number {
-		return this.#cs.length - this.satisfiedConstraintSize();
+		let n: number = 0;
+		for (const c of this.#cs) {
+			n += (c.status() === 0) ? 1 : 0;
+		}
+		return n;
 	}
 
 	/**

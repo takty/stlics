@@ -77,7 +77,9 @@ export class Monitor {
 		) : (
 			Date.now() + this.#timeLimit
 		);
-		this.#iterCount = 0;
+		this.#iterCount   = 0;
+		this.#lastEv      = -1;
+		this.#sameEvCount = 0;
 	}
 
 	/**
@@ -100,7 +102,7 @@ export class Monitor {
 		}
 		if (null !== evaluation && null !== this.#sameEvLimit) {
 			if (evaluation !== -1 && this.#lastEv === evaluation) {
-				if (this.#sameEvLimit < this.#sameEvCount++) {
+				if (this.#sameEvLimit < ++this.#sameEvCount) {
 					this.outputDebugString('Stop: Evaluation value has not changed for a certain number of times');
 					return false;
 				}
