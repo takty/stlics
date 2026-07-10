@@ -2,7 +2,7 @@
  * Class of post-stabilization.
  *
  * @author Takuto Yanagida
- * @version 2025-01-23
+ * @version 2026-07-10
  */
 
 import { Problem } from '../../problem/problem';
@@ -30,7 +30,7 @@ export function applyPostStabilization(p: Problem, orig: AssignmentList, log: (e
 		stabilized = false;
 		let ev_min: number = p.degree();
 
-		const xs: Variable[] = p.variables();
+		const xs: readonly Variable[] = p.variables();
 		for (let i: number = 0; i < xs.length; ++i) {
 			const x: Variable = xs[i];
 			const v: number   = x.value();
