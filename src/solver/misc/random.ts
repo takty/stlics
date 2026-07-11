@@ -1,7 +1,7 @@
 /**
  * Utility functions for random numbers.
  * @author Takuto Yanagida
- * @version 2025-01-24
+ * @version 2026-07-11
  */
 
 let generator: () => number = Math.random;
@@ -28,7 +28,6 @@ export function random(): number {
  * @return {number} A random integer
  */
 export function rand(n: number): number {
-	console.log(generator === Math.random)
 	return Math.floor(generator() * n);
 }
 
