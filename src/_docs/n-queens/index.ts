@@ -1,5 +1,6 @@
 import { SolverFactory } from '../../../stlics.ts';
 import { waitFor, createLogOutput } from '../util.js';
+import { QueenBoardRenderer } from '../qbr.ts';
 
 const COUNT       = 1;  // Interaction count
 const SOLVER_TYPE = 0;
@@ -33,13 +34,13 @@ document.addEventListener('DOMContentLoaded', async (): Promise<void> => {
 
 	const debugOn = document.getElementById('debug-on') as HTMLInputElement;
 
-	const board  = document.getElementById('board') as HTMLTableElement;
+	const board  = document.getElementById('board') as HTMLCanvasElement;
 	const output = document.getElementById('output') as HTMLOutputElement;
 	const log: (e: any) => void = createLogOutput();
 
 	const indicator = document.getElementById('indicator') as HTMLInputElement;
 
-	let trs: HTMLTableRowElement[]|null = null;
+	let boardRenderer: QueenBoardRenderer | null = null;
 	let worker: Worker|null = null;
 
 	const solStartBtn = document.getElementById('solver-start') as HTMLButtonElement;
@@ -54,7 +55,7 @@ document.addEventListener('DOMContentLoaded', async (): Promise<void> => {
 			board.classList.remove('small');
 		}
 
-		trs = makeBoard(board, parseInt(queenNum.value));
+		boardRenderer = new QueenBoardRenderer(board, parseInt(queenNum.value), parseInt(queenNum.value), 'crisp');
 		output.value = '';
 
 		worker = initialize((): void => solStopBtn.click());
@@ -78,26 +79,6 @@ document.addEventListener('DOMContentLoaded', async (): Promise<void> => {
 	// -------------------------------------------------------------------------
 
 
-	function makeBoard(board: HTMLTableElement, size: number): HTMLTableRowElement[] {
-		const trs: HTMLTableRowElement[] = [];
-		board.innerHTML = '';
-		for (let i: number = 0; i < size; ++i) {
-			const tr: HTMLTableRowElement = document.createElement('tr');
-			board.appendChild(tr);
-			trs.push(tr);
-
-			for (let j: number = 0; j < size; ++j) {
-				const td: HTMLTableCellElement = document.createElement('td');
-				tr.appendChild(td);
-			}
-		}
-		return trs;
-	}
-
-
-	// -------------------------------------------------------------------------
-
-
 	let count: number = 0;
 
 	function initialize(onFinish: () => void): Worker {
@@ -114,7 +95,7 @@ document.addEventListener('DOMContentLoaded', async (): Promise<void> => {
 				log(data.log);
 			} else if ('board' in data) {
 				const { x, y } = data.board;
-				(trs as HTMLTableRowElement[])[y].className = 'p' + x;
+				boardRenderer?.setQueen(x, y);
 			} else if ('result' in data) {
 				const { result, solver, time, ev } = data;
 				sumTime += time;
