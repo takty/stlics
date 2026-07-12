@@ -1,4 +1,4 @@
-export function waitFor(fn) {
+export function waitFor(fn: Function) {
 	return new Promise(r => {
 		const si = setInterval(() => {
 			if (fn()) {
@@ -11,7 +11,7 @@ export function waitFor(fn) {
 
 export function createLogOutput(id: string = 'output') {
 	const output = document.getElementById(id) as HTMLTextAreaElement;
-	return e => {
+	return (e: any) => {
 		output.value += `${e}\n`;
 		setTimeout(() => output.scrollTo(0, output.scrollHeight), 100);
 	};

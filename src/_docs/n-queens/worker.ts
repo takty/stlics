@@ -8,7 +8,7 @@ onmessage = async (e: MessageEvent<any>): Promise<void> => {
 			create(...(args as [number]));
 			break;
 		case 'solve':
-			solve(...(args as [string, number, number, boolean]));
+			solve(...(args as [number, number, number, boolean]));
 			break;
 	}
 };
@@ -29,7 +29,7 @@ function create(num: number): void {
 	p = m.createProblem(p);
 }
 
-async function solve(type: string, target: number, timeLimit: number, debug: boolean): Promise<void> {
+async function solve(type: number, target: number, timeLimit: number, debug: boolean): Promise<void> {
 	const t : number = Date.now();  // Start time measurement
 	const sn: string = SolverFactory.crispSolverNames()[type];
 
